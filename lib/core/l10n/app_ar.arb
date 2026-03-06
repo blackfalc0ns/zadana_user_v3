@@ -1,0 +1,83 @@
+{
+  "login": "تسجيل الدخول",
+  "name_is_required": "الاسم مطلوب!",
+  "name_is_not_valid": "الاسم هذا غير صحيح",
+  "email_is_required": "البريد الإلكتروني مطلوب!",
+  "email_is_not_valid": "البريد الإلكتروني غير صحيح",
+  "password_is_required": "كلمة المرور مطلوبة!",
+  "password_is_not_valid": "كلمة المرور غير صحيحة",
+  "password_must_be_at_least_6_characters": "كلمة المرور لازم تكون 6 أحرف على الأقل",
+  "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
+  "confirm_password_is_required": "تأكيد كلمة المرور مطلوب!",
+  "confirm_password_is_not_valid": "تأكيد كلمة المرور غير صحيح",
+  "password_and_confirm_password_must_be_same": "كلمة المرور وتأكيدها لازم يكونوا نفس الشي",
+  "phone_number_is_required": "رقم الجوال مطلوب!",
+  "phone_number_is_not_valid": "رقم الجوال غير صحيح",
+  "this_field_is_required": "هذا الحقل مطلوب",
+  "error": "خطأ",
+  "start_button": "ابدأ الآن",
+
+  "location_service_disabled": "خدمة الموقع غير مفعلة",
+  "location_permission_denied": "تم رفض إذن الموقع",
+  "location_permission_denied_forever": "تم رفض إذن الموقع بشكل دائم",
+
+  "auth_title": "ابدأ معنا الآن",
+  "auth_subtitle_login": "حياك الله! سجل دخولك لحسابك",
+  "auth_subtitle_signup": "أنشئ حسابك واستمتع بتجربة التسوق",
+
+  "toggle_login": "تسجيل الدخول",
+  "toggle_signup": "إنشاء حساب",
+
+  "label_full_name": "الاسم الكامل",
+  "label_email": "البريد الإلكتروني",
+  "label_phone": "رقم الجوال",
+  "label_password": "كلمة المرور",
+
+  "hint_full_name": "محمد عبدالله",
+  "hint_email": "example@gmail.com",
+  "hint_phone": "05xxxxxxxx",
+  "hint_password": "********",
+
+  "btn_login": "تسجيل الدخول",
+  "btn_signup": "إنشاء حساب",
+  "btn_forgot_password": "نسيت كلمة المرور؟",
+
+  "social_divider": "أو سجل باستخدام",
+  "btn_login_google": "جوجل",
+  "btn_login_apple": "آبل",
+
+  "footer_have_account": "عندك حساب؟ ",
+  "footer_no_account": "ما عندك حساب؟ ",
+  "footer_action_login": "تسجيل الدخول",
+  "footer_action_signup": "إنشاء حساب",
+
+  "deliver_to": "التوصيل إلى",
+  "location": "الرياض، السعودية",
+
+  "search_hint": "ابحث عن منتجات أو متاجر...",
+
+  "banner_tag": "عرض محدود",
+  "banner_title": "خضار عضوية طازجة\nخصم حتى 40%",
+  "banner_subtitle": "تسوّق طازج وعيش صحي كل يوم",
+  "banner_action": "تسوّق الآن",
+
+  "section_special_offers": "العروض الخاصة",
+  "section_best_selling": "الأكثر مبيعاً",
+  "section_featured": "منتجات مميزة",
+  "section_recommended": "مقترح لك",
+  "section_explore": "اكتشف المزيد",
+
+  "see_all": "عرض الكل",
+  "refresh": "تحديث",
+  "add_to_cart": "أضف للسلة",
+
+  "nav_home": "الرئيسية",
+  "nav_categories": "الأقسام",
+  "nav_cart": "السلة",
+  "nav_orders": "طلباتي",
+  "nav_profile": "حسابي",
+
+  "start_page_title": "منتجات طازجة\nبجودة ممتازة",
+  "start_page_subtitle": "استمتع بتجربة تسوق رائعة",
+  "start_page_button": "ابدأ الآن"
+}

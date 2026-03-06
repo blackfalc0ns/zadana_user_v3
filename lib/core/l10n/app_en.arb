@@ -1,0 +1,87 @@
+{
+  "login": "Login",
+  "name_is_required": "Name is required!",
+  "name_is_not_valid": "This name is not valid",
+  "email_is_required": "Email is required!",
+  "email_is_not_valid": "This email is not valid",
+  "password_is_required": "Password is required!",
+  "password_is_not_valid": "This password is not valid",
+  "password_must_be_at_least_6_characters": "Password must be at least 6 characters",
+  "passwords_do_not_match": "Passwords do not match",
+  "confirm_password_is_required": "Confirm password is required!",
+  "confirm_password_is_not_valid": "This confirm password is not valid",
+  "password_and_confirm_password_must_be_same": "Password and confirm password must be same!",
+  "phone_number_is_required": "Phone number is required!",
+  "phone_number_is_not_valid": "This phone number is not valid",
+  "this_field_is_required" : "This field is required",
+  "error" : "Error",
+  "start_button":"start now",
+  "location_service_disabled": "Location service is disabled",
+  "location_permission_denied": "Location permission denied",
+  "location_permission_denied_forever": "Location permission permanently denied",
+ "auth_title"           : "Get Started Now",
+"auth_subtitle_login"  : "Welcome back! Log in to your account",
+"auth_subtitle_signup" : "Create an account to explore our app",
+
+
+"toggle_login"         : "Log In",
+"toggle_signup"        : "Sign Up",
+
+
+"label_full_name"      : "Full Name",
+"label_email"          : "Email",
+"label_phone"          : "Phone",
+"label_password"       : "Password",
+
+
+"hint_full_name"       : "John Doe",
+"hint_email"           : "example@gmail.com",
+"hint_phone"           : "(454) 726-0592",
+"hint_password"        : "P@ssw0rd123",
+
+"btn_login"            : "Log In",
+"btn_signup"           : "Sign Up",
+"btn_forgot_password"  : "Forgot Password?",
+"social_divider"    : "Or continue with",
+"btn_login_google"  : "Google",
+"btn_login_apple"   : "Apple",
+"footer_have_account"    : "Already have an account? ",
+"footer_no_account"      : "Don't have an account? ",
+"footer_action_login"    : "Log In",
+"footer_action_signup"   : "Sign Up",
+
+"deliver_to"              : "DELIVER TO",
+"location"                : "Downtown, New York",
+
+
+"search_hint"             : "Search for products, stores...",
+
+
+"banner_tag"              : "LIMITED OFFER",
+"banner_title"            : "Fresh Organic\nVegetables Up to 40% Off",
+"banner_subtitle"         : "Shop fresh, eat healthy every day",
+"banner_action"           : "Shop Now",
+
+
+"section_special_offers"  : "Special Offers",
+"section_best_selling"    : "Best Selling",
+"section_featured"        : "Featured Products",
+"section_recommended"     : "Recommended For You",
+"section_explore"         : "Explore More",
+
+
+"see_all"                 : "See All",
+"refresh"                 : "Refresh",
+"add_to_cart"             : "Add to Cart",
+
+
+"nav_home"                : "Home",
+"nav_categories"          : "Categories",
+"nav_cart"                : "Cart",
+"nav_orders"              : "Orders",
+"nav_profile"             : "Profile",
+
+"start_page_title": "Fresh Products\nExcellent Quality",
+  "start_page_subtitle": "Enjoy Shopping",
+  "start_page_button": "Get Started Now"
+  }
