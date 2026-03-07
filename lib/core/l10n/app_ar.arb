@@ -79,5 +79,29 @@
 
   "start_page_title": "منتجات طازجة\nبجودة ممتازة",
   "start_page_subtitle": "استمتع بتجربة تسوق رائعة",
-  "start_page_button": "ابدأ الآن"
+  "start_page_button": "ابدأ الآن",
+
+  "profile_title": "الملف الشخصي",
+  "edit_avatar": "تعديل الصورة",
+  "personal_info": "المعلومات الشخصية",
+  "name": "الاسم",
+  "phone": "رقم الجوال",
+  "date_of_birth": "تاريخ الميلاد",
+  "gender": "الجنس",
+  "addresses": "العناوين",
+  "add_address": "إضافة عنوان جديد",
+  "settings": "الإعدادات",
+  "language": "اللغة",
+  "notifications": "الإشعارات",
+  "dark_mode": "الوضع الليلي",
+  "account": "الحساب",
+  "change_password": "تغيير كلمة المرور",
+  "help_support": "المساعدة والدعم",
+  "about_app": "حول التطبيق",
+  "legal": "الشروط القانونية",
+  "terms_conditions": "الشروط والأحكام",
+  "privacy_policy": "سياسة الخصوصية",
+  "faq": "الأسئلة الشائعة",
+  "logout": "تسجيل الخروج",
+  "logout_confirm": "هل أنت متأكد من تسجيل الخروج؟"
 }

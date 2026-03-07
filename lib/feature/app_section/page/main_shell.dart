@@ -62,6 +62,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/feature/app_section/widget/home_bottom_nav_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -79,7 +80,7 @@ class _MainShellState extends State<MainShell> {
     Center(child: Text('جمال')),
     Center(child: Text('صيدلية')),
     Center(child: Text('طلبات')),
-    Center(child: Text('حسابي')),
+    ProfileScreen()
   ];
 
   @override

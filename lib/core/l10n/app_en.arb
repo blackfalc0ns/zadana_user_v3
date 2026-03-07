@@ -83,5 +83,29 @@
 
 "start_page_title": "Fresh Products\nExcellent Quality",
   "start_page_subtitle": "Enjoy Shopping",
-  "start_page_button": "Get Started Now"
+  "start_page_button": "Get Started Now",
+
+  "profile_title": "Profile",
+  "edit_avatar": "Edit Avatar",
+  "personal_info": "Personal Information",
+  "name": "Name",
+  "phone": "Phone",
+  "date_of_birth": "Date of Birth",
+  "gender": "Gender",
+  "addresses": "Addresses",
+  "add_address": "Add New Address",
+  "settings": "Settings",
+  "language": "Language",
+  "notifications": "Notifications",
+  "dark_mode": "Dark Mode",
+  "account": "Account",
+  "change_password": "Change Password",
+  "help_support": "Help & Support",
+  "about_app": "About App",
+  "legal": "Legal",
+  "terms_conditions": "Terms & Conditions",
+  "privacy_policy": "Privacy Policy",
+  "faq": "FAQ",
+  "logout": "Logout",
+  "logout_confirm": "Are you sure you want to logout?"
   }

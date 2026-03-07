@@ -209,4 +209,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get start_page_button => 'Get Started Now';
+
+  @override
+  String get profile_title => 'Profile';
+
+  @override
+  String get edit_avatar => 'Edit Avatar';
+
+  @override
+  String get personal_info => 'Personal Information';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get date_of_birth => 'Date of Birth';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get addresses => 'Addresses';
+
+  @override
+  String get add_address => 'Add New Address';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get dark_mode => 'Dark Mode';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get change_password => 'Change Password';
+
+  @override
+  String get help_support => 'Help & Support';
+
+  @override
+  String get about_app => 'About App';
+
+  @override
+  String get legal => 'Legal';
+
+  @override
+  String get terms_conditions => 'Terms & Conditions';
+
+  @override
+  String get privacy_policy => 'Privacy Policy';
+
+  @override
+  String get faq => 'FAQ';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logout_confirm => 'Are you sure you want to logout?';
 }

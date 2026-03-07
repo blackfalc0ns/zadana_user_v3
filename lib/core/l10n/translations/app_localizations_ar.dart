@@ -208,4 +208,73 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get start_page_button => 'ابدأ الآن';
+
+  @override
+  String get profile_title => 'الملف الشخصي';
+
+  @override
+  String get edit_avatar => 'تعديل الصورة';
+
+  @override
+  String get personal_info => 'المعلومات الشخصية';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get phone => 'رقم الجوال';
+
+  @override
+  String get date_of_birth => 'تاريخ الميلاد';
+
+  @override
+  String get gender => 'الجنس';
+
+  @override
+  String get addresses => 'العناوين';
+
+  @override
+  String get add_address => 'إضافة عنوان جديد';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get dark_mode => 'الوضع الليلي';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get change_password => 'تغيير كلمة المرور';
+
+  @override
+  String get help_support => 'المساعدة والدعم';
+
+  @override
+  String get about_app => 'حول التطبيق';
+
+  @override
+  String get legal => 'الشروط القانونية';
+
+  @override
+  String get terms_conditions => 'الشروط والأحكام';
+
+  @override
+  String get privacy_policy => 'سياسة الخصوصية';
+
+  @override
+  String get faq => 'الأسئلة الشائعة';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get logout_confirm => 'هل أنت متأكد من تسجيل الخروج؟';
 }

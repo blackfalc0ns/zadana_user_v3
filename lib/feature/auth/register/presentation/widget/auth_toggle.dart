@@ -13,18 +13,25 @@ class AuthToggle extends StatelessWidget {
     required this.signUpLabel,
   });
 
-  final bool         isSignUp;
+  final bool isSignUp;
   final VoidCallback onSignUp;
   final VoidCallback onLogIn;
-
-  /// من الـ localization
   final String loginLabel;
   final String signUpLabel;
 
   static const _kDuration = Duration(milliseconds: 300);
-  static const _kCurve    = Curves.easeInOut;
-  static const _kPadding  = 3.0;
-  static const _kHeight   = 50.0;
+  static const _kCurve = Curves.easeInOut;
+  static const _kPadding = 3.0;
+  static const _kHeight = 50.0;
+
+  Alignment _pillAlignment(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    if (isRtl) {
+      return isSignUp ? Alignment.centerLeft : Alignment.centerRight;
+    } else {
+      return isSignUp ? Alignment.centerRight : Alignment.centerLeft;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +48,13 @@ class AuthToggle extends StatelessWidget {
           AnimatedAlign(
             duration: _kDuration,
             curve: _kCurve,
-            alignment: isSignUp
-                ? Alignment.centerRight  // Sign Up = يمين
-                : Alignment.centerLeft,  // Log In  = شمال ← default
+            alignment: _pillAlignment(context),
             child: FractionallySizedBox(
               widthFactor: 0.5,
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.primary,
-                  borderRadius:
-                      BorderRadius.circular(Spacing.buttonRadius - 2),
+                  borderRadius: BorderRadius.circular(Spacing.buttonRadius - 2),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.30),
@@ -67,15 +71,15 @@ class AuthToggle extends StatelessWidget {
           Row(
             children: [
               _TabLabel(
-                label:    loginLabel,
-                active:   !isSignUp,
-                onTap:    onLogIn,
+                label: loginLabel,
+                active: !isSignUp,
+                onTap: onLogIn,
                 duration: _kDuration,
               ),
               _TabLabel(
-                label:    signUpLabel,
-                active:   isSignUp,
-                onTap:    onSignUp,
+                label: signUpLabel,
+                active: isSignUp,
+                onTap: onSignUp,
                 duration: _kDuration,
               ),
             ],
@@ -95,10 +99,10 @@ class _TabLabel extends StatelessWidget {
     required this.duration,
   });
 
-  final String       label;
-  final bool         active;
+  final String label;
+  final bool active;
   final VoidCallback onTap;
-  final Duration     duration;
+  final Duration duration;
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +115,7 @@ class _TabLabel extends StatelessWidget {
             duration: duration,
             curve: Curves.easeInOut,
             style: AppTextStyles.labelLarge.copyWith(
-              color: active
-                  ? AppColors.textSecondary
-                  : AppColors.textOnPrimary,
+              color: active ? AppColors.textOnPrimary : AppColors.textSecondary,
             ),
             child: Text(label),
           ),
