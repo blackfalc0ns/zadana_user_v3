@@ -81,7 +81,7 @@
 "nav_orders"              : "Orders",
 "nav_profile"             : "Profile",
 
-"start_page_title": "Fresh Products\nExcellent Quality",
+"start_page_title": "Fresh Products Excellent Quality",
   "start_page_subtitle": "Enjoy Shopping",
   "start_page_button": "Get Started Now",
 
@@ -107,5 +107,29 @@
   "privacy_policy": "Privacy Policy",
   "faq": "FAQ",
   "logout": "Logout",
-  "logout_confirm": "Are you sure you want to logout?"
+  "logout_confirm": "Are you sure you want to logout?",
+
+  "cart_title": "My Cart",
+  "cart_items_count": "{count} items",
+  "current_vendor": "Current Vendor",
+  "change_vendor": "Change Vendor",
+  "vendor_change_warning": "Changing the vendor will affect all products in your cart. Do you want to continue?",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "promo_code": "Promo Code",
+  "apply": "Apply",
+  "subtotal": "Subtotal",
+  "shipping": "Shipping",
+  "discount": "Discount",
+  "total": "Total",
+  "checkout": "Checkout",
+  "cart_empty": "Your cart is empty",
+  "cart_empty_message": "Start shopping and add products to your cart",
+  "shop_now": "Shop Now",
+  "delete_item": "Delete Item",
+  "delete_item_confirm": "Do you want to remove this item from your cart?",
+  "available_vendors": "Available Vendors",
+  "sar": "SAR",
+  "free": "Free",
+  "quantity": "Quantity"
   }

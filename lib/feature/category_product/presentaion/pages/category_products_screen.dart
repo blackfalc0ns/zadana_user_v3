@@ -11,69 +11,60 @@ import 'package:zadana_user_v3/feature/category_product/presentaion/widget/sub_c
 import 'package:zadana_user_v3/feature/home/presentation/widget/category_circle_row.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
-  const CategoryProductsScreen({
-    super.key,
-    this.category, // null = "All" mode — كل المنتجات
-  });
+  const CategoryProductsScreen({super.key, this.category});
 
-  /// لو null يعني فتح بـ "All" وكل المنتجات
   final CategoryCircleModel? category;
 
   @override
-  State<CategoryProductsScreen> createState() =>
-      _CategoryProductsScreenState();
+  State<CategoryProductsScreen> createState() => _CategoryProductsScreenState();
 }
 
 class _CategoryProductsScreenState extends State<CategoryProductsScreen>
     with TickerProviderStateMixin {
-
-  // ── State ─────────────────────────────────────────────────────
-  CategoryCircleModel? _currentCategory; // null = All
+  CategoryCircleModel? _currentCategory;
   String _selectedSubId = 'all';
   bool _isLoading = true;
 
-  // ── Animations ────────────────────────────────────────────────
   late final AnimationController _shimmerCtrl;
-  late final Animation<double>   _shimmerAnim;
+  late final Animation<double> _shimmerAnim;
   late final AnimationController _gridCtrl;
 
-  // ── Helpers ───────────────────────────────────────────────────
   bool get _isAllMode => _currentCategory == null;
 
-  String get _appBarTitle =>
-      _isAllMode ? 'All' : _currentCategory!.name;
+  String get _appBarTitle => _isAllMode ? 'All' : _currentCategory!.name;
 
-  /// Sub-categories — فقط لو في category محددة
   List<SubCategoryModel> get _subCategories => _isAllMode
       ? []
       : CategoryProductData.subCategories[_currentCategory!.id] ?? [];
 
-  /// المنتجات — لو All جمّع كل شيء، لو category فلتر
   List<CategoryProductModel> get _filteredProducts {
     if (_isAllMode) {
-      // كل منتجات كل الـ categories
       return CategoryProductData.products.values
           .expand((list) => list)
           .toList();
     }
-    final all =
-        CategoryProductData.products[_currentCategory!.id] ?? [];
+
+    final all = CategoryProductData.products[_currentCategory!.id] ?? [];
+
     if (_selectedSubId == 'all') return all;
+
     return all.where((p) => p.subCategoryId == _selectedSubId).toList();
   }
 
   @override
   void initState() {
     super.initState();
-    _currentCategory = widget.category; // null لو جاي من "عرض جميع المنتجات"
+    _currentCategory = widget.category;
 
     _shimmerCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat();
-    _shimmerAnim = Tween<double>(begin: -1.5, end: 1.5).animate(
-      CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeInOut),
-    );
+
+    _shimmerAnim = Tween<double>(
+      begin: -1.5,
+      end: 1.5,
+    ).animate(CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeInOut));
 
     _gridCtrl = AnimationController(
       vsync: this,
@@ -85,11 +76,16 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
 
   void _loadData() {
     setState(() => _isLoading = true);
+
     _gridCtrl.reset();
+
     Future.delayed(const Duration(milliseconds: 1800), () {
       if (!mounted) return;
+
       _shimmerCtrl.stop();
+
       setState(() => _isLoading = false);
+
       _gridCtrl.forward();
     });
   }
@@ -99,6 +95,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
       _currentCategory = cat;
       _selectedSubId = 'all';
     });
+
     _shimmerCtrl.repeat();
     _loadData();
   }
@@ -126,7 +123,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
           headerSliverBuilder: (_, __) => [_buildSliverAppBar()],
           body: Column(
             children: [
-              // ── Sub-category chips (فقط لو category محددة) ──
               if (_subCategories.isNotEmpty) ...[
                 const SizedBox(height: Spacing.sm),
                 SubCategoryChips(
@@ -136,14 +132,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
                 ),
                 const SizedBox(height: Spacing.sm),
               ],
-
-              // ── Grid ─────────────────────────────────────────
               Expanded(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  child: _isLoading
-                      ? _buildShimmerGrid()
-                      : _buildProductGrid(),
+                  child: _isLoading ? _buildShimmerGrid() : _buildProductGrid(),
                 ),
               ),
             ],
@@ -153,7 +145,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
     );
   }
 
-  // ── AppBar ────────────────────────────────────────────────────
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       backgroundColor: AppColors.surface,
@@ -162,8 +153,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
       automaticallyImplyLeading: false,
       centerTitle: true,
       titleSpacing: 0,
-
-      // "All ▼" أو "اسم الـ category ▼"
       title: GestureDetector(
         onTap: _openSheet,
         child: Row(
@@ -179,7 +168,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
           ],
         ),
       ),
-
       leading: IconButton(
         icon: const Icon(
           Icons.arrow_back_rounded,
@@ -187,9 +175,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
         ),
         onPressed: () => Navigator.maybePop(context),
       ),
-
-     
-      // "اختر الفئة" تحت العنوان
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(10),
         child: GestureDetector(
@@ -209,7 +194,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
     );
   }
 
-  // ── Product grid ──────────────────────────────────────────────
   Widget _buildProductGrid() {
     final products = _filteredProducts;
 
@@ -234,19 +218,23 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
     return GridView.builder(
       key: ValueKey('${_currentCategory?.id ?? 'all'}_$_selectedSubId'),
       padding: const EdgeInsets.fromLTRB(
-        Spacing.screenH, Spacing.sm, Spacing.screenH, Spacing.xl,
+        Spacing.screenH,
+        Spacing.sm,
+        Spacing.screenH,
+        Spacing.xl,
       ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: Spacing.sm,
         mainAxisSpacing: Spacing.sm,
-        childAspectRatio: _cardAspectRatio(context),
+        childAspectRatio: 0.86,
       ),
       itemCount: products.length,
       itemBuilder: (_, i) {
         final start = ((i * 60) / 600).clamp(0.0, 1.0);
-        final end   = (start + 0.5).clamp(0.0, 1.0);
-        final fade  = Tween<double>(begin: 0.0, end: 1.0).animate(
+        final end = (start + 0.5).clamp(0.0, 1.0);
+
+        final fade = Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
             parent: _gridCtrl,
             curve: Interval(start, end, curve: Curves.easeOut),
@@ -265,27 +253,23 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
     );
   }
 
-  // ── Shimmer grid ──────────────────────────────────────────────
   Widget _buildShimmerGrid() {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
-        Spacing.screenH, Spacing.sm, Spacing.screenH, Spacing.xl,
+        Spacing.screenH,
+        Spacing.sm,
+        Spacing.screenH,
+        Spacing.xl,
       ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: Spacing.sm,
         mainAxisSpacing: Spacing.sm,
-        childAspectRatio: _cardAspectRatio(context),
+        childAspectRatio: 0.86,
       ),
       itemCount: 6,
       itemBuilder: (_, __) => ShimmerCard(animation: _shimmerAnim),
     );
-  }
-
-  double _cardAspectRatio(BuildContext context) {
-    final w = MediaQuery.sizeOf(context).width;
-    return ((w - Spacing.screenH * 2 - Spacing.sm) / 2) /
-        ((w - Spacing.screenH * 2 - Spacing.sm) / 2 / 0.72);
   }
 }

@@ -253,11 +253,11 @@ class CategoryCircleRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: circleSize + 38, // circle + label + spacing
-      child: ListView.separated(
+      child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
+       // separatorBuilder: (_, __) => const SizedBox(width:5),
         itemBuilder: (_, i) => CategoryCircleItem(
           category: categories[i],
           size: circleSize,

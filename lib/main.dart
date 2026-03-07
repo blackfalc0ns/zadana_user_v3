@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       ],
       theme: AppTheme.light,
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.splash,
+      initialRoute: AppRoutes.startSelectLocationPage,
     );
   }
 }

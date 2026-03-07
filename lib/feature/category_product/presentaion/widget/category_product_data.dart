@@ -13,7 +13,7 @@ class CategoryProductData {
     ],
     'hc2': [
       SubCategoryModel(id: 'all',    name: 'الكل'),
-      SubCategoryModel(id: 'butter', name: 'زبدة وكريمة طهي'),
+      SubCategoryModel(id: 'butter', name: 'زبدة'),
       SubCategoryModel(id: 'laban',  name: 'لبن'),
       SubCategoryModel(id: 'yogurt', name: 'زبادي'),
       SubCategoryModel(id: 'cheese', name: 'جبن'),

@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: Spacing.sm),
 
           // ── Search ─────────────────────────────────────────────
-          HomeSearchBar(hint: locale.search_hint),
+          HomeSearchBar(),
 
           const SizedBox(height: Spacing.base),
 
@@ -139,8 +139,8 @@ const SizedBox(height: Spacing.xl),
                   .map(
                     (p) => Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                          right: p == HomeData.featured.last ? 0 : Spacing.sm,
+                        padding: EdgeInsets.all(
+                          Spacing.sm,
                         ),
                         child: FeaturedProductCard(product: p),
                       ),

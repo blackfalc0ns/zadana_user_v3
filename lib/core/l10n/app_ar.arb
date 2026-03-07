@@ -103,5 +103,31 @@
   "privacy_policy": "سياسة الخصوصية",
   "faq": "الأسئلة الشائعة",
   "logout": "تسجيل الخروج",
-  "logout_confirm": "هل أنت متأكد من تسجيل الخروج؟"
+  "logout_confirm": "هل أنت متأكد من تسجيل الخروج؟",
+
+  "cart_title": "عربيتي",
+  "cart_items_count": "{count} منتج",
+  "current_vendor": "المتجر الحالي",
+  "change_vendor": "تغيير المتجر",
+  "vendor_change_warning": "تغيير المتجر سيؤثر على جميع المنتجات في العربية. هل تريد المتابعة؟",
+  "cancel": "إلغاء",
+  "confirm": "تأكيد",
+  "promo_code": "كود الخصم",
+  "apply": "تطبيق",
+  "subtotal": "المجموع الفرعي",
+  "shipping": "الشحن",
+  "discount": "الخصم",
+  "total": "الإجمالي",
+  "checkout": "إتمام الطلب",
+  "cart_empty": "عربيتك فاضية",
+  "cart_empty_message": "ابدأ التسوق وأضف منتجات لعربيتك",
+  "shop_now": "تسوق الآن",
+  "delete_item": "حذف المنتج",
+  "delete_item_confirm": "هل تريد حذف هذا المنتج من العربية؟",
+  "available_vendors": "المتاجر المتاحة",
+  "sar": "ر.س",
+  "free": "مجاني",
+  "quantity": "الكمية",
+  "search_hint": "... ابحث عن منتج"
+
 }

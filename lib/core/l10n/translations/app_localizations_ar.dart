@@ -147,7 +147,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location => 'الرياض، السعودية';
 
   @override
-  String get search_hint => 'ابحث عن منتجات أو متاجر...';
+  String get search_hint => '... ابحث عن منتج';
 
   @override
   String get banner_tag => 'عرض محدود';
@@ -277,4 +277,76 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logout_confirm => 'هل أنت متأكد من تسجيل الخروج؟';
+
+  @override
+  String get cart_title => 'عربيتي';
+
+  @override
+  String cart_items_count(Object count) {
+    return '$count منتج';
+  }
+
+  @override
+  String get current_vendor => 'المتجر الحالي';
+
+  @override
+  String get change_vendor => 'تغيير المتجر';
+
+  @override
+  String get vendor_change_warning =>
+      'تغيير المتجر سيؤثر على جميع المنتجات في العربية. هل تريد المتابعة؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get promo_code => 'كود الخصم';
+
+  @override
+  String get apply => 'تطبيق';
+
+  @override
+  String get subtotal => 'المجموع الفرعي';
+
+  @override
+  String get shipping => 'الشحن';
+
+  @override
+  String get discount => 'الخصم';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
+  String get checkout => 'إتمام الطلب';
+
+  @override
+  String get cart_empty => 'عربيتك فاضية';
+
+  @override
+  String get cart_empty_message => 'ابدأ التسوق وأضف منتجات لعربيتك';
+
+  @override
+  String get shop_now => 'تسوق الآن';
+
+  @override
+  String get delete_item => 'حذف المنتج';
+
+  @override
+  String get delete_item_confirm => 'هل تريد حذف هذا المنتج من العربية؟';
+
+  @override
+  String get available_vendors => 'المتاجر المتاحة';
+
+  @override
+  String get sar => 'ر.س';
+
+  @override
+  String get free => 'مجاني';
+
+  @override
+  String get quantity => 'الكمية';
 }

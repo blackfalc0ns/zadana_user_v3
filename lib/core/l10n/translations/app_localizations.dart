@@ -479,7 +479,7 @@ abstract class AppLocalizations {
   /// No description provided for @start_page_title.
   ///
   /// In en, this message translates to:
-  /// **'Fresh Products\nExcellent Quality'**
+  /// **'Fresh Products Excellent Quality'**
   String get start_page_title;
 
   /// No description provided for @start_page_subtitle.
@@ -631,6 +631,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to logout?'**
   String get logout_confirm;
+
+  /// No description provided for @cart_title.
+  ///
+  /// In en, this message translates to:
+  /// **'My Cart'**
+  String get cart_title;
+
+  /// No description provided for @cart_items_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items'**
+  String cart_items_count(Object count);
+
+  /// No description provided for @current_vendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Vendor'**
+  String get current_vendor;
+
+  /// No description provided for @change_vendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Vendor'**
+  String get change_vendor;
+
+  /// No description provided for @vendor_change_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the vendor will affect all products in your cart. Do you want to continue?'**
+  String get vendor_change_warning;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @promo_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Promo Code'**
+  String get promo_code;
+
+  /// No description provided for @apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// No description provided for @subtotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtotal'**
+  String get subtotal;
+
+  /// No description provided for @shipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping'**
+  String get shipping;
+
+  /// No description provided for @discount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get discount;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @checkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout'**
+  String get checkout;
+
+  /// No description provided for @cart_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your cart is empty'**
+  String get cart_empty;
+
+  /// No description provided for @cart_empty_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Start shopping and add products to your cart'**
+  String get cart_empty_message;
+
+  /// No description provided for @shop_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop Now'**
+  String get shop_now;
+
+  /// No description provided for @delete_item.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Item'**
+  String get delete_item;
+
+  /// No description provided for @delete_item_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to remove this item from your cart?'**
+  String get delete_item_confirm;
+
+  /// No description provided for @available_vendors.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Vendors'**
+  String get available_vendors;
+
+  /// No description provided for @sar.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get sar;
+
+  /// No description provided for @free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get free;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
 }
 
 class _AppLocalizationsDelegate

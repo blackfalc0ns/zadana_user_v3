@@ -202,7 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nav_profile => 'Profile';
 
   @override
-  String get start_page_title => 'Fresh Products\nExcellent Quality';
+  String get start_page_title => 'Fresh Products Excellent Quality';
 
   @override
   String get start_page_subtitle => 'Enjoy Shopping';
@@ -278,4 +278,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout_confirm => 'Are you sure you want to logout?';
+
+  @override
+  String get cart_title => 'My Cart';
+
+  @override
+  String cart_items_count(Object count) {
+    return '$count items';
+  }
+
+  @override
+  String get current_vendor => 'Current Vendor';
+
+  @override
+  String get change_vendor => 'Change Vendor';
+
+  @override
+  String get vendor_change_warning =>
+      'Changing the vendor will affect all products in your cart. Do you want to continue?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get promo_code => 'Promo Code';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get subtotal => 'Subtotal';
+
+  @override
+  String get shipping => 'Shipping';
+
+  @override
+  String get discount => 'Discount';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get checkout => 'Checkout';
+
+  @override
+  String get cart_empty => 'Your cart is empty';
+
+  @override
+  String get cart_empty_message =>
+      'Start shopping and add products to your cart';
+
+  @override
+  String get shop_now => 'Shop Now';
+
+  @override
+  String get delete_item => 'Delete Item';
+
+  @override
+  String get delete_item_confirm =>
+      'Do you want to remove this item from your cart?';
+
+  @override
+  String get available_vendors => 'Available Vendors';
+
+  @override
+  String get sar => 'SAR';
+
+  @override
+  String get free => 'Free';
+
+  @override
+  String get quantity => 'Quantity';
 }

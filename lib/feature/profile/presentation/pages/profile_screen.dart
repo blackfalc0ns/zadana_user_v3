@@ -76,101 +76,101 @@ class _ProfileView extends StatelessWidget {
                     const SizedBox(height: Spacing.base),
 
                     // Personal Info Section
-                    ProfileSectionCard(
-                      title: l10n.personal_info,
-                      children: [
-                        ProfileMenuItem(
-                          icon: Icons.person_outline,
-                          title: l10n.name,
-                          subtitle: state.fullName,
-                          onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
-                        ),
-                        const Divider(height: 1),
-                        if (state.phone != null)
-                          ProfileMenuItem(
-                            icon: Icons.phone_outlined,
-                            title: l10n.phone,
-                            subtitle: state.phone!,
-                            onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
-                          ),
-                        if (state.phone != null) const Divider(height: 1),
-                        if (state.dateOfBirth != null)
-                          ProfileMenuItem(
-                            icon: Icons.cake_outlined,
-                            title: l10n.date_of_birth,
-                            subtitle: state.dateOfBirth!,
-                            onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
-                          ),
-                        if (state.dateOfBirth != null) const Divider(height: 1),
-                        if (state.gender != null)
-                          ProfileMenuItem(
-                            icon: Icons.person_outline,
-                            title: l10n.gender,
-                            subtitle: state.gender!,
-                            onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
-                          ),
-                      ],
-                    ),
+                    // ProfileSectionCard(
+                    //   title: l10n.personal_info,
+                    //   children: [
+                    //     ProfileMenuItem(
+                    //       icon: Icons.person_outline,
+                    //       title: l10n.name,
+                    //       subtitle: state.fullName,
+                    //       onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
+                    //     ),
+                    //     const Divider(height: 1),
+                    //     if (state.phone != null)
+                    //       ProfileMenuItem(
+                    //         icon: Icons.phone_outlined,
+                    //         title: l10n.phone,
+                    //         subtitle: state.phone!,
+                    //         onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
+                    //       ),
+                    //     if (state.phone != null) const Divider(height: 1),
+                    //     if (state.dateOfBirth != null)
+                    //       ProfileMenuItem(
+                    //         icon: Icons.cake_outlined,
+                    //         title: l10n.date_of_birth,
+                    //         subtitle: state.dateOfBirth!,
+                    //         onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
+                    //       ),
+                    //     if (state.dateOfBirth != null) const Divider(height: 1),
+                    //     if (state.gender != null)
+                    //       ProfileMenuItem(
+                    //         icon: Icons.person_outline,
+                    //         title: l10n.gender,
+                    //         subtitle: state.gender!,
+                    //         onTap: () => context.read<ProfileCubit>().updatePersonalInfo(),
+                    //       ),
+                    //   ],
+                    // ),
 
-                    // Addresses Section
-                    ProfileSectionCard(
-                      title: l10n.addresses,
-                      children: [
-                        ...state.addresses.map(
-                          (address) => ProfileAddressCard(
-                            title: address.title,
-                            address: address.fullAddress,
-                            isDefault: address.isDefault,
-                            onEdit: () => context.read<ProfileCubit>().editAddress(address),
-                            onDelete: () => context.read<ProfileCubit>().deleteAddress(address),
-                          ),
-                        ),
-                        ProfileMenuItem(
-                          icon: Icons.add_location_outlined,
-                          title: l10n.add_address,
-                          onTap: () => context.read<ProfileCubit>().addAddress(),
-                        ),
-                      ],
-                    ),
+                    // // Addresses Section
+                    // ProfileSectionCard(
+                    //   title: l10n.addresses,
+                    //   children: [
+                    //     ...state.addresses.map(
+                    //       (address) => ProfileAddressCard(
+                    //         title: address.title,
+                    //         address: address.fullAddress,
+                    //         isDefault: address.isDefault,
+                    //         onEdit: () => context.read<ProfileCubit>().editAddress(address),
+                    //         onDelete: () => context.read<ProfileCubit>().deleteAddress(address),
+                    //       ),
+                    //     ),
+                    //     ProfileMenuItem(
+                    //       icon: Icons.add_location_outlined,
+                    //       title: l10n.add_address,
+                    //       onTap: () => context.read<ProfileCubit>().addAddress(),
+                    //     ),
+                    //   ],
+                    // ),
 
                     // Settings Section
-                    ProfileSectionCard(
-                      title: l10n.settings,
-                      children: [
-                        ProfileMenuItem(
-                          icon: Icons.language_outlined,
-                          title: l10n.language,
-                          subtitle: state.currentLanguage == 'ar' ? 'العربية' : 'English',
-                          trailing: Switch(
-                            value: state.currentLanguage == 'ar',
-                            onChanged: (value) {
-                              context.read<ProfileCubit>().changeLanguage(value ? 'ar' : 'en');
-                            },
-                            activeColor: AppColors.primary,
-                          ),
-                        ),
-                        const Divider(height: 1),
-                        ProfileMenuItem(
-                          icon: Icons.notifications_outlined,
-                          title: l10n.notifications,
-                          trailing: Switch(
-                            value: state.notificationsEnabled,
-                            onChanged: (value) => context.read<ProfileCubit>().toggleNotifications(value),
-                            activeColor: AppColors.primary,
-                          ),
-                        ),
-                        const Divider(height: 1),
-                        // ProfileMenuItem(
-                        //   icon: Icons.dark_mode_outlined,
-                        //   title: l10n.dark_mode,
-                        //   trailing: Switch(
-                        //     value: state.isDarkMode,
-                        //     onChanged: (value) => context.read<ProfileCubit>().toggleDarkMode(value),
-                        //     activeColor: AppColors.primary,
-                        //   ),
-                        // ),
-                      ],
-                    ),
+                    // ProfileSectionCard(
+                    //   title: l10n.settings,
+                    //   children: [
+                    //     ProfileMenuItem(
+                    //       icon: Icons.language_outlined,
+                    //       title: l10n.language,
+                    //       subtitle: state.currentLanguage == 'ar' ? 'العربية' : 'English',
+                    //       trailing: Switch(
+                    //         value: state.currentLanguage == 'ar',
+                    //         onChanged: (value) {
+                    //           context.read<ProfileCubit>().changeLanguage(value ? 'ar' : 'en');
+                    //         },
+                    //         activeColor: AppColors.primary,
+                    //       ),
+                    //     ),
+                    //     const Divider(height: 1),
+                    //     ProfileMenuItem(
+                    //       icon: Icons.notifications_outlined,
+                    //       title: l10n.notifications,
+                    //       trailing: Switch(
+                    //         value: state.notificationsEnabled,
+                    //         onChanged: (value) => context.read<ProfileCubit>().toggleNotifications(value),
+                    //         activeColor: AppColors.primary,
+                    //       ),
+                    //     ),
+                    //     const Divider(height: 1),
+                    //     // ProfileMenuItem(
+                    //     //   icon: Icons.dark_mode_outlined,
+                    //     //   title: l10n.dark_mode,
+                    //     //   trailing: Switch(
+                    //     //     value: state.isDarkMode,
+                    //     //     onChanged: (value) => context.read<ProfileCubit>().toggleDarkMode(value),
+                    //     //     activeColor: AppColors.primary,
+                    //     //   ),
+                    //     // ),
+                    //   ],
+                    // ),
 
                     // Account Section
                     ProfileSectionCard(

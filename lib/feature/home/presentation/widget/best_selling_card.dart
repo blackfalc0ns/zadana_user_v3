@@ -32,8 +32,8 @@ class BestSellingCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: AppColors.shadow,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              blurRadius: 5,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
