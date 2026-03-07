@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
@@ -46,60 +45,59 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // ── Promo Banner ───────────────────────────────────────
           PromoBanner(
-            tag:         locale.banner_tag,
-            title:       locale.banner_title,
-            subtitle:    locale.banner_subtitle,
+            tag: locale.banner_tag,
+            title: locale.banner_title,
+            subtitle: locale.banner_subtitle,
             actionLabel: locale.banner_action,
-            imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600',
+            imageUrl:
+                'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600',
           ),
 
           const SizedBox(height: Spacing.xl),
           // ── Shop by Category ───────────────────────────────────────
-const SizedBox(height: Spacing.md),
-// ── Categories ─────────────────────────────────
-SectionHeader(
-  title: 'تسوق حسب القسم',
-  actionLabel: locale.see_all,
-  onActionTap: () => Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => CategoryProductsScreen(
-      category: kHomeCategories.first,
-    ),
-  ),
-),
-),
-const SizedBox(height: Spacing.md),
-CategoryCircleRow(
-  categories: kHomeCategories,
-  onCategoryTap: (cat) => Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => CategoryProductsScreen(category: cat),
-    ),
-  ),
-),
+          const SizedBox(height: Spacing.md),
+          // ── Categories ─────────────────────────────────
+          SectionHeader(
+            title: 'تسوق حسب القسم',
+            actionLabel: locale.see_all,
+            onActionTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    CategoryProductsScreen(category: kHomeCategories.first),
+              ),
+            ),
+          ),
+          const SizedBox(height: Spacing.md),
+          CategoryCircleRow(
+            categories: kHomeCategories,
+            onCategoryTap: (cat) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => CategoryProductsScreen(category: cat),
+              ),
+            ),
+          ),
 
-const SizedBox(height: Spacing.xl),
+          const SizedBox(height: Spacing.xl),
 
-// ── Special Offers ...
+          // ── Special Offers ...
 
           // ── Special Offers ─────────────────────────────────────
           SectionHeader(
-            title:       locale.section_special_offers,
+            title: locale.section_special_offers,
             actionLabel: locale.see_all,
           ),
           const SizedBox(height: Spacing.md),
           SizedBox(
-            height: 210,
+            height: 190,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
               scrollDirection: Axis.horizontal,
               itemCount: HomeData.specialOffers.length,
               separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-              itemBuilder: (_, i) => SpecialOfferCard(
-                product: HomeData.specialOffers[i],
-              ),
+              itemBuilder: (_, i) =>
+                  SpecialOfferCard(product: HomeData.specialOffers[i]),
             ),
           ),
 
@@ -107,20 +105,19 @@ const SizedBox(height: Spacing.xl),
 
           // ── Best Selling ───────────────────────────────────────
           SectionHeader(
-            title:       locale.section_best_selling,
+            title: locale.section_best_selling,
             actionLabel: locale.see_all,
           ),
           const SizedBox(height: Spacing.md),
           SizedBox(
-            height: 220,
+            height: 190,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
               scrollDirection: Axis.horizontal,
               itemCount: HomeData.bestSelling.length,
               separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-              itemBuilder: (_, i) => BestSellingCard(
-                product: HomeData.bestSelling[i],
-              ),
+              itemBuilder: (_, i) =>
+                  BestSellingCard(product: HomeData.bestSelling[i]),
             ),
           ),
 
@@ -128,7 +125,7 @@ const SizedBox(height: Spacing.xl),
 
           // ── Featured Products ──────────────────────────────────
           SectionHeader(
-            title:       locale.section_featured,
+            title: locale.section_featured,
             actionLabel: locale.see_all,
           ),
           const SizedBox(height: Spacing.md),
@@ -139,9 +136,7 @@ const SizedBox(height: Spacing.xl),
                   .map(
                     (p) => Expanded(
                       child: Padding(
-                        padding: EdgeInsets.all(
-                          Spacing.sm,
-                        ),
+                        padding: EdgeInsets.all(Spacing.sm),
                         child: FeaturedProductCard(product: p),
                       ),
                     ),
@@ -159,10 +154,7 @@ const SizedBox(height: Spacing.xl),
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(locale.section_recommended, style: AppTextStyles.h4),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(locale.refresh),
-                ),
+                TextButton(onPressed: () {}, child: Text(locale.refresh)),
               ],
             ),
           ),
@@ -174,9 +166,8 @@ const SizedBox(height: Spacing.xl),
               scrollDirection: Axis.horizontal,
               itemCount: HomeData.recommended.length,
               separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-              itemBuilder: (_, i) => RecommendedCard(
-                product: HomeData.recommended[i],
-              ),
+              itemBuilder: (_, i) =>
+                  RecommendedCard(product: HomeData.recommended[i]),
             ),
           ),
 
@@ -184,15 +175,13 @@ const SizedBox(height: Spacing.xl),
 
           // ── Explore More ───────────────────────────────────────
           SectionHeader(
-            title:       locale.section_explore,
+            title: locale.section_explore,
             actionLabel: locale.see_all,
           ),
           const SizedBox(height: Spacing.sm),
           ...HomeData.exploreMore.map(
-            (p) => ExploreMoreTile(
-              product: p,
-              addToCartLabel: locale.add_to_cart,
-            ),
+            (p) =>
+                ExploreMoreTile(product: p, addToCartLabel: locale.add_to_cart),
           ),
 
           const SizedBox(height: Spacing.xl),

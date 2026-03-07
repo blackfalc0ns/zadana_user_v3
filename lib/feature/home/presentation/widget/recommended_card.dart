@@ -6,18 +6,17 @@ import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/product_image.dart';
 
 class RecommendedCard extends StatelessWidget {
-  const RecommendedCard({
-    super.key,
-    required this.product,
-    this.onTap,
-  });
+  const RecommendedCard({super.key, required this.product, this.onTap});
 
   final ProductModel product;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final cardWidth = (MediaQuery.sizeOf(context).width / 2.4).clamp(140.0, 200.0);
+    final cardWidth = (MediaQuery.sizeOf(context).width / 2.4).clamp(
+      140.0,
+      200.0,
+    );
 
     return GestureDetector(
       onTap: onTap,
@@ -27,9 +26,7 @@ class RecommendedCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(Spacing.cardRadius),
-          boxShadow: [
-            BoxShadow(color: AppColors.shadow, blurRadius: 6),
-          ],
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +35,7 @@ class RecommendedCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(Spacing.sm.toDouble()),
               child: ProductImage(
-                 emoji: product.emoji,       
+                emoji: product.emoji,
                 url: product.imageUrl,
                 width: 48,
                 height: 48,

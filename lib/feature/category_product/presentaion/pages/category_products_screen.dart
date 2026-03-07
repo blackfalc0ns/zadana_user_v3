@@ -101,10 +101,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
   }
 
   void _openSheet() => CategoryBrowserSheet.show(
-        context,
-        categories: kHomeCategories,
-        onCategorySelected: _switchCategory,
-      );
+    context,
+    categories: kHomeCategories,
+    onCategorySelected: _switchCategory,
+  );
 
   @override
   void dispose() {
@@ -227,7 +227,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
         crossAxisCount: 2,
         crossAxisSpacing: Spacing.sm,
         mainAxisSpacing: Spacing.sm,
-        childAspectRatio: 0.86,
+        childAspectRatio: 1.0,
       ),
       itemCount: products.length,
       itemBuilder: (_, i) {
@@ -266,7 +266,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen>
         crossAxisCount: 2,
         crossAxisSpacing: Spacing.sm,
         mainAxisSpacing: Spacing.sm,
-        childAspectRatio: 0.86,
+        childAspectRatio: 1.2,
       ),
       itemCount: 6,
       itemBuilder: (_, __) => ShimmerCard(animation: _shimmerAnim),

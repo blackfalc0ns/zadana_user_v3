@@ -36,15 +36,12 @@ class _SelectAddressFromMapView extends StatefulWidget {
       _SelectAddressFromMapViewState();
 }
 
-class _SelectAddressFromMapViewState 
-    extends State<_SelectAddressFromMapView> {
+class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
   late final MapController _mapController;
-  final TextEditingController _searchController = 
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   // Cairo, Egypt default coordinates
-  final ll.LatLng _initialPosition = 
-      const ll.LatLng(30.0444, 31.2357);
+  final ll.LatLng _initialPosition = const ll.LatLng(30.0444, 31.2357);
 
   @override
   void initState() {
@@ -163,8 +160,7 @@ class _SelectAddressFromMapViewState
                                   color: AppColors.textSecondary,
                                   size: Spacing.iconMd,
                                 ),
-                                suffixIcon: _searchController
-                                    .text.isNotEmpty
+                                suffixIcon: _searchController.text.isNotEmpty
                                     ? IconButton(
                                         icon: const Icon(
                                           Icons.close,
@@ -189,9 +185,9 @@ class _SelectAddressFromMapViewState
                               onChanged: (query) {
                                 setState(() {});
                                 if (query.trim().length >= 3) {
-                                  context
-                                      .read<LocationCubit>()
-                                      .searchLocations(query);
+                                  context.read<LocationCubit>().searchLocations(
+                                    query,
+                                  );
                                 }
                               },
                             ),
@@ -207,9 +203,7 @@ class _SelectAddressFromMapViewState
                           top: Spacing.sm,
                           left: 52,
                         ),
-                        constraints: const BoxConstraints(
-                          maxHeight: 250,
-                        ),
+                        constraints: const BoxConstraints(maxHeight: 250),
                         decoration: BoxDecoration(
                           color: AppColors.surface,
                           borderRadius: BorderRadius.circular(
@@ -250,16 +244,11 @@ class _SelectAddressFromMapViewState
                                 style: AppTextStyles.bodySmall,
                               ),
                               onTap: () {
-                                _mapController.move(
-                                  result.coordinates,
-                                  15.0,
+                                _mapController.move(result.coordinates, 15.0);
+                                context.read<LocationCubit>().selectLocation(
+                                  result.coordinates.latitude,
+                                  result.coordinates.longitude,
                                 );
-                                context
-                                    .read<LocationCubit>()
-                                    .selectLocation(
-                                      result.coordinates.latitude,
-                                      result.coordinates.longitude,
-                                    );
                                 _searchController.text = result.name;
                                 context
                                     .read<LocationCubit>()
@@ -282,9 +271,7 @@ class _SelectAddressFromMapViewState
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   ),
                 ),
 
@@ -298,8 +285,8 @@ class _SelectAddressFromMapViewState
                     left: Spacing.lg,
                     right: Spacing.lg,
                     top: Spacing.lg,
-                    bottom: MediaQuery.of(context).padding.bottom + 
-                        Spacing.base,
+                    bottom:
+                        MediaQuery.of(context).padding.bottom + Spacing.base,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
@@ -321,9 +308,7 @@ class _SelectAddressFromMapViewState
                       Container(
                         width: 40,
                         height: 4,
-                        margin: const EdgeInsets.only(
-                          bottom: Spacing.base,
-                        ),
+                        margin: const EdgeInsets.only(bottom: Spacing.base),
                         decoration: BoxDecoration(
                           color: AppColors.divider,
                           borderRadius: BorderRadius.circular(2),
@@ -351,8 +336,7 @@ class _SelectAddressFromMapViewState
                           const SizedBox(width: Spacing.md),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: 
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   state.selectedAddress ??
@@ -380,8 +364,7 @@ class _SelectAddressFromMapViewState
                           onPressed: state.isLoading
                               ? null
                               : () async {
-                                  final center = 
-                                      _mapController.camera.center;
+                                  final center = _mapController.camera.center;
                                   await context
                                       .read<LocationCubit>()
                                       .selectLocation(
@@ -391,7 +374,7 @@ class _SelectAddressFromMapViewState
                                   if (context.mounted) {
                                     Navigator.pushNamedAndRemoveUntil(
                                       context,
-                                      AppRoutes.mainShell,
+                                      AppRoutes.signUp,
                                       (route) => false,
                                     );
                                   }
@@ -424,10 +407,7 @@ class _CircleButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _CircleButton({
-    required this.icon,
-    required this.onTap,
-  });
+  const _CircleButton({required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -442,11 +422,7 @@ class _CircleButton extends StatelessWidget {
         child: SizedBox(
           width: 44,
           height: 44,
-          child: Icon(
-            icon,
-            color: AppColors.textPrimary,
-            size: 22,
-          ),
+          child: Icon(icon, color: AppColors.textPrimary, size: 22),
         ),
       ),
     );

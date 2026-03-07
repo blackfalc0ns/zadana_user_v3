@@ -5,7 +5,6 @@ import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/product_image.dart';
 
-
 class ExploreMoreTile extends StatelessWidget {
   const ExploreMoreTile({
     super.key,
@@ -35,15 +34,13 @@ class ExploreMoreTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(Spacing.cardRadius),
-          boxShadow: [
-            BoxShadow(color: AppColors.shadow, blurRadius: 6),
-          ],
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
             // ── Image ───────────────────────────────────────────
             ProductImage(
-               emoji: product.emoji,       
+              emoji: product.emoji,
               url: product.imageUrl,
               width: 72,
               height: 72,
@@ -63,10 +60,7 @@ class ExploreMoreTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    product.store,
-                    style: AppTextStyles.bodySmall,
-                  ),
+                  Text(product.store, style: AppTextStyles.bodySmall),
                   const SizedBox(height: Spacing.xs),
                   Text(
                     '\$${product.price.toStringAsFixed(2)}${product.unit != null ? '/${product.unit}' : ''}',

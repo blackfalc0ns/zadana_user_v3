@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/product_image.dart';
 import 'category_product_model.dart';
 
 class CategoryProductCard extends StatefulWidget {
@@ -34,9 +37,10 @@ class _CategoryProductCardState extends State<CategoryProductCard>
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
-    _scaleAnim = Tween<double>(begin: 1.0, end: 0.97).animate(
-      CurvedAnimation(parent: _pressCtrl, curve: Curves.easeOut),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 1.0,
+      end: 0.97,
+    ).animate(CurvedAnimation(parent: _pressCtrl, curve: Curves.easeOut));
   }
 
   @override
@@ -62,130 +66,84 @@ class _CategoryProductCardState extends State<CategoryProductCard>
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(Spacing.cardRadius),
-            border: Border.all(color: AppColors.border),
-            boxShadow: const [
-              BoxShadow(
-                color: AppColors.shadow,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: AppColors.divider),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image + favorite
-              AspectRatio(
-                aspectRatio: 2.0, // كان 1.6 => خليناه أعرض وأقل ارتفاع
-                child: Stack(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(Spacing.cardRadius),
+              // ── Image + Favorite ────────────────────────────────
+              Stack(
+                children: [
+                  ProductImage(
+                    emoji: product.emoji,
+                    url: '', // لا يوجد imageUrl في الموديل حالياً
+                    width: double.infinity,
+                    height: 100, // الارتفاع المناسب للجريد
+                    borderRadius: Spacing.cardRadius,
+                  ),
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: GestureDetector(
+                      onTap: widget.onFavTap,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface.withOpacity(0.8),
+                          shape: BoxShape.circle,
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          product.emoji,
-                          style: const TextStyle(fontSize: 34), // كان 40
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 6,
-                      right: 6,
-                      child: GestureDetector(
-                        onTap: widget.onFavTap,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface.withOpacity(0.9),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            product.isFavorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            color: product.isFavorite
-                                ? AppColors.error
-                                : AppColors.textSecondary,
-                            size: 15,
-                          ),
+                        child: Icon(
+                          product.isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: product.isFavorite
+                              ? AppColors.error
+                              : AppColors.textSecondary,
+                          size: 14,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
 
-              // Product info
+              // ── Info ─────────────────────────────────────────────
               Padding(
-                padding: const EdgeInsets.all(Spacing.xs), // كان sm
+                padding: const EdgeInsets.all(Spacing.sm),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   
                     Text(
                       product.name,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1.1,
-                        fontSize: 12,
-                      ),
-                      maxLines: 1, // كان 2
+                      style: AppTextStyles.labelMedium,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
-
+                    const SizedBox(height: 2),
+                    // بما أن الـ CategoryProductModel لا يحتوي على Store حالياً
+                    // نكتفي بالاسم والسعر كما في التصميم الموحد
+                    const SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '${product.price.toStringAsFixed(2)} ريال',
-                                style: AppTextStyles.labelMedium.copyWith(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 11,
-                                ),
-                              ),
-                              if (product.oldPrice != null)
-                                Text(
-                                  '${product.oldPrice!.toStringAsFixed(2)} ريال',
-                                  style: AppTextStyles.caption.copyWith(
-                                    decoration: TextDecoration.lineThrough,
-                                    color: AppColors.textHint,
-                                    fontSize: 10,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                            ],
-                          ),
+                        PriceText(
+                          price: product.price,
+                          oldPrice: product.oldPrice,
                         ),
-
                         GestureDetector(
                           onTap: widget.onAddTap,
                           child: Container(
-                            width: 26, // كان 28
-                            height: 26,
+                            width: 28,
+                            height: 28,
                             alignment: Alignment.center,
                             decoration: const BoxDecoration(
                               color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
-                              Icons.add,
+                            child: const FaIcon(
+                              FontAwesomeIcons.cartPlus,
                               color: AppColors.white,
-                              size: 15,
+                              size: 14,
                             ),
                           ),
                         ),

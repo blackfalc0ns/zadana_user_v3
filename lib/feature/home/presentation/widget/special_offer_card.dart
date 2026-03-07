@@ -199,23 +199,17 @@ class SpecialOfferCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(Spacing.cardRadius),
-         boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 5,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          border: Border.all(color: AppColors.divider),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Image ────────────────────────────────────────────
             ProductImage(
-              emoji: product.emoji,       
+              emoji: product.emoji,
               url: product.imageUrl,
-              width: 150,
-              height: 110,
+              width: 140,
+              height: 90,
               borderRadius: Spacing.cardRadius,
             ),
 
