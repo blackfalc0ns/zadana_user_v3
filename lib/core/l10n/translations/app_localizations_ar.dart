@@ -279,7 +279,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get start_page_button => 'ابدأ الآن';
 
   @override
-  String get profile_title => 'الملف الشخصي';
+  String get profile_title => 'البروفايل';
 
   @override
   String get edit_avatar => 'تعديل الصورة';
@@ -475,4 +475,64 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unknownError => 'حدث خطأ ما';
+
+  @override
+  String get product_details => 'تفاصيل المنتج';
+
+  @override
+  String get product_description => 'وصف المنتج';
+
+  @override
+  String get product_description_text =>
+      'هذا منتج عالي الجودة يتميز بخصائص ممتازة ومناسب لجميع الاستخدامات.';
+
+  @override
+  String get quantity_label => 'الكمية:';
+
+  @override
+  String get add_to_cart_button => 'إضافة للسلة';
+
+  @override
+  String get added_to_favorites => 'تم إضافة المنتج للمفضلة';
+
+  @override
+  String get removed_from_favorites => 'تم إزالة المنتج من المفضلة';
+
+  @override
+  String product_added_to_cart(Object quantity, Object name) {
+    return 'تم إضافة $quantity من $name للسلة';
+  }
+
+  @override
+  String get egp => 'ج.م';
+
+  @override
+  String get buy_now => 'اشتري الآن';
+
+  @override
+  String get store_price_comparison => 'مقارنة الأسعار بين المتاجر';
+
+  @override
+  String get fresh_products => 'منتجات طازجة';
+
+  @override
+  String get nutrition_info => 'معلومات غذائية';
+
+  @override
+  String get high_fiber => 'غني بالألياف';
+
+  @override
+  String get high_protein => 'بروتين عالي';
+
+  @override
+  String get natural_100 => 'طبيعي 100%';
+
+  @override
+  String get available => 'متوفر';
+
+  @override
+  String get not_available => 'غير متوفر';
+
+  @override
+  String get redirecting_to_checkout => 'جاري تحويلك لإتمام الطلب...';
 }

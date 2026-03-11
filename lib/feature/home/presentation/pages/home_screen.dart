@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_search_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/promo_banner.dart';
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      drawer: const AppDrawer(),
       appBar: HomeAppBar(
         deliverToLabel: locale.deliver_to,
         location: locale.location,
@@ -39,14 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: Spacing.base),
 
           // Promo Banner
-          PromoBanner(
-            tag: locale.banner_tag,
-            title: locale.banner_title,
-            subtitle: locale.banner_subtitle,
-            actionLabel: locale.banner_action,
-            imageUrl:
-                'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600',
-          ),
+          const PromoBanner(),
 
           const SizedBox(height: Spacing.xl),
 

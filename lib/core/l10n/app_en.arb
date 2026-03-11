@@ -176,5 +176,35 @@
    "locationServicesDisabled": "Location services are disabled",
   "locationPermissionDenied": "Location permission denied",
   "locationPermissionDeniedForever": "Location permission permanently denied",
-  "unknownError": "Something went wrong"
+  "unknownError": "Something went wrong",
+
+  "product_details": "Product Details",
+  "product_description": "Product Description",
+  "product_description_text": "This is a high-quality product with excellent features suitable for all uses.",
+  "quantity_label": "Quantity:",
+  "add_to_cart_button": "Add to Cart",
+  "added_to_favorites": "Product added to favorites",
+  "removed_from_favorites": "Product removed from favorites",
+  "product_added_to_cart": "Added {quantity} of {name} to cart",
+  "@product_added_to_cart": {
+    "placeholders": {
+      "quantity": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "egp": "EGP",
+  "buy_now": "Buy Now",
+  "store_price_comparison": "Store Price Comparison",
+  "fresh_products": "Fresh Products",
+  "nutrition_info": "Nutrition Info",
+  "high_fiber": "High Fiber",
+  "high_protein": "High Protein",
+  "natural_100": "100% Natural",
+  "available": "Available",
+  "not_available": "Not Available",
+  "redirecting_to_checkout": "Redirecting to checkout..."
   }

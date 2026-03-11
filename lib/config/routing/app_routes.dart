@@ -14,4 +14,5 @@ abstract class AppRoutes {
   static const String verifyOtp = '/verify-otp';
   static const String manualAddressEntry = '/manual-address-entry';
   static const String buildingDetails = '/building-details';
+  static const String productDetails = '/product-details';
 }

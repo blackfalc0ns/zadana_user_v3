@@ -484,4 +484,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknownError => 'Something went wrong';
+
+  @override
+  String get product_details => 'Product Details';
+
+  @override
+  String get product_description => 'Product Description';
+
+  @override
+  String get product_description_text =>
+      'This is a high-quality product with excellent features suitable for all uses.';
+
+  @override
+  String get quantity_label => 'Quantity:';
+
+  @override
+  String get add_to_cart_button => 'Add to Cart';
+
+  @override
+  String get added_to_favorites => 'Product added to favorites';
+
+  @override
+  String get removed_from_favorites => 'Product removed from favorites';
+
+  @override
+  String product_added_to_cart(Object quantity, Object name) {
+    return 'Added $quantity of $name to cart';
+  }
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get buy_now => 'Buy Now';
+
+  @override
+  String get store_price_comparison => 'Store Price Comparison';
+
+  @override
+  String get fresh_products => 'Fresh Products';
+
+  @override
+  String get nutrition_info => 'Nutrition Info';
+
+  @override
+  String get high_fiber => 'High Fiber';
+
+  @override
+  String get high_protein => 'High Protein';
+
+  @override
+  String get natural_100 => '100% Natural';
+
+  @override
+  String get available => 'Available';
+
+  @override
+  String get not_available => 'Not Available';
+
+  @override
+  String get redirecting_to_checkout => 'Redirecting to checkout...';
 }

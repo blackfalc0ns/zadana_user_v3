@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
 import 'package:zadana_user_v3/feature/app_section/widget/home_bottom_nav_bar.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -14,11 +15,10 @@ class _MainShellState extends State<MainShell> {
   int _navIndex = 0;
 
   static const List<Widget> _screens = [
-    
     HomeScreen(),
-   // CategoryScreen(),
-    Center(child: Text('Order')),
-    Center(child: Text('Profile')),
+    Center(child: Text('الأقسام')),
+    Center(child: Text('الطلبات')),
+    ProfileScreen(),
   ];
 
   @override

@@ -107,7 +107,7 @@
   "start_page_subtitle": "توصيل سريع لجميع احتياجاتك اليومية",
   "start_page_button": "ابدأ الآن",
 
-  "profile_title": "الملف الشخصي",
+  "profile_title": "البروفايل",
   "edit_avatar": "تعديل الصورة",
   "personal_info": "المعلومات الشخصية",
   "name": "الاسم",
@@ -188,5 +188,35 @@
   "locationServicesDisabled": "خدمات الموقع غير مفعلة",
   "locationPermissionDenied": "تم رفض إذن الموقع",
   "locationPermissionDeniedForever": "تم رفض إذن الموقع نهائيًا",
-  "unknownError": "حدث خطأ ما"
+  "unknownError": "حدث خطأ ما",
+
+  "product_details": "تفاصيل المنتج",
+  "product_description": "وصف المنتج",
+  "product_description_text": "هذا منتج عالي الجودة يتميز بخصائص ممتازة ومناسب لجميع الاستخدامات.",
+  "quantity_label": "الكمية:",
+  "add_to_cart_button": "إضافة للسلة",
+  "added_to_favorites": "تم إضافة المنتج للمفضلة",
+  "removed_from_favorites": "تم إزالة المنتج من المفضلة",
+  "product_added_to_cart": "تم إضافة {quantity} من {name} للسلة",
+  "@product_added_to_cart": {
+    "placeholders": {
+      "quantity": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "egp": "ج.م",
+  "buy_now": "اشتري الآن",
+  "store_price_comparison": "مقارنة الأسعار بين المتاجر",
+  "fresh_products": "منتجات طازجة",
+  "nutrition_info": "معلومات غذائية",
+  "high_fiber": "غني بالألياف",
+  "high_protein": "بروتين عالي",
+  "natural_100": "طبيعي 100%",
+  "available": "متوفر",
+  "not_available": "غير متوفر",
+  "redirecting_to_checkout": "جاري تحويلك لإتمام الطلب..."
 }

@@ -51,6 +51,26 @@ class HomeData {
       price: 3.25, imageUrl: '',
       isFavorite: true, unit: 'جم', emoji: '🥜',
     ),
+    ProductModel(
+      id: 'fp3', name: 'أرز بسمتي', store: 'حبوب الشرق',
+      price: 2.75, imageUrl: '',
+      isFavorite: false, unit: 'كجم', emoji: '🍚',
+    ),
+    ProductModel(
+      id: 'fp4', name: 'زيت عباد الشمس', store: 'طبيعة نقية',
+      price: 4.50, imageUrl: '',
+      isFavorite: true, unit: 'لتر', emoji: '🌻',
+    ),
+    ProductModel(
+      id: 'fp5', name: 'سكر أبيض', store: 'حلاوة البيت',
+      price: 1.80, imageUrl: '',
+      isFavorite: false, unit: 'كجم', emoji: '🍯',
+    ),
+    ProductModel(
+      id: 'fp6', name: 'ملح البحر', store: 'كنوز البحر',
+      price: 0.99, imageUrl: '',
+      isFavorite: false, unit: 'كجم', emoji: '🧂',
+    ),
   ];
 
   // ── Recommended ───────────────────────────────────────────────

@@ -1021,6 +1021,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong'**
   String get unknownError;
+
+  /// No description provided for @product_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Details'**
+  String get product_details;
+
+  /// No description provided for @product_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Description'**
+  String get product_description;
+
+  /// No description provided for @product_description_text.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a high-quality product with excellent features suitable for all uses.'**
+  String get product_description_text;
+
+  /// No description provided for @quantity_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity:'**
+  String get quantity_label;
+
+  /// No description provided for @add_to_cart_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Cart'**
+  String get add_to_cart_button;
+
+  /// No description provided for @added_to_favorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Product added to favorites'**
+  String get added_to_favorites;
+
+  /// No description provided for @removed_from_favorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Product removed from favorites'**
+  String get removed_from_favorites;
+
+  /// No description provided for @product_added_to_cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {quantity} of {name} to cart'**
+  String product_added_to_cart(Object quantity, Object name);
+
+  /// No description provided for @egp.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egp;
+
+  /// No description provided for @buy_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy Now'**
+  String get buy_now;
+
+  /// No description provided for @store_price_comparison.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Price Comparison'**
+  String get store_price_comparison;
+
+  /// No description provided for @fresh_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh Products'**
+  String get fresh_products;
+
+  /// No description provided for @nutrition_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition Info'**
+  String get nutrition_info;
+
+  /// No description provided for @high_fiber.
+  ///
+  /// In en, this message translates to:
+  /// **'High Fiber'**
+  String get high_fiber;
+
+  /// No description provided for @high_protein.
+  ///
+  /// In en, this message translates to:
+  /// **'High Protein'**
+  String get high_protein;
+
+  /// No description provided for @natural_100.
+  ///
+  /// In en, this message translates to:
+  /// **'100% Natural'**
+  String get natural_100;
+
+  /// No description provided for @available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get available;
+
+  /// No description provided for @not_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Available'**
+  String get not_available;
+
+  /// No description provided for @redirecting_to_checkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirecting to checkout...'**
+  String get redirecting_to_checkout;
 }
 
 class _AppLocalizationsDelegate
