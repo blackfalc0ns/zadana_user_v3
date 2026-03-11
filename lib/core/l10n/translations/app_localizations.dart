@@ -631,6 +631,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to logout?'**
   String get logout_confirm;
+
+  /// No description provided for @cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping Cart'**
+  String get cart;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'product'**
+  String get product;
+
+  /// No description provided for @clear_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clear_all;
+
+  /// No description provided for @delete_item.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Item'**
+  String get delete_item;
+
+  /// No description provided for @delete_item_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete_item_confirmation;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @clear_cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cart'**
+  String get clear_cart;
+
+  /// No description provided for @clear_cart_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all items from cart?'**
+  String get clear_cart_confirmation;
+
+  /// No description provided for @cart_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Cart is Empty!'**
+  String get cart_empty;
+
+  /// No description provided for @start_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Shopping'**
+  String get start_shopping;
+
+  /// No description provided for @start_shopping_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Start shopping and add products to cart'**
+  String get start_shopping_message;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @item.
+  ///
+  /// In en, this message translates to:
+  /// **'item'**
+  String get item;
+
+  /// No description provided for @complete_from.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete from'**
+  String get complete_from;
+
+  /// No description provided for @compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compare;
+
+  /// No description provided for @select_vendor_to_show_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Select vendor to show price'**
+  String get select_vendor_to_show_price;
+
+  /// No description provided for @comparison_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparison Results'**
+  String get comparison_results;
+
+  /// No description provided for @save_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save_amount;
+
+  /// No description provided for @if_buy_from.
+  ///
+  /// In en, this message translates to:
+  /// **'if you buy from'**
+  String get if_buy_from;
+
+  /// No description provided for @cheapest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheapest'**
+  String get cheapest;
+
+  /// No description provided for @more_expensive_by.
+  ///
+  /// In en, this message translates to:
+  /// **'More expensive by'**
+  String get more_expensive_by;
+
+  /// No description provided for @currently_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently Selected'**
+  String get currently_selected;
+
+  /// No description provided for @select_one_more_vendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one more vendor'**
+  String get select_one_more_vendor;
+
+  /// No description provided for @compare_prices.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Prices'**
+  String get compare_prices;
+
+  /// No description provided for @select_cheapest.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select_cheapest;
+
+  /// No description provided for @select_vendors_to_compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Vendors to Compare'**
+  String get select_vendors_to_compare;
+
+  /// No description provided for @select_2_to_3_vendors.
+  ///
+  /// In en, this message translates to:
+  /// **'Select 2 to 3 vendors to compare prices'**
+  String get select_2_to_3_vendors;
 }
 
 class _AppLocalizationsDelegate

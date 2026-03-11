@@ -277,4 +277,89 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logout_confirm => 'هل أنت متأكد من تسجيل الخروج؟';
+
+  @override
+  String get cart => 'عربة التسوق';
+
+  @override
+  String get product => 'منتج';
+
+  @override
+  String get clear_all => 'مسح الكل';
+
+  @override
+  String get delete_item => 'حذف المنتج';
+
+  @override
+  String get delete_item_confirmation => 'هتحذف';
+
+  @override
+  String get delete => 'احذف';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get clear_cart => 'مسح العربة';
+
+  @override
+  String get clear_cart_confirmation => 'هتمسح كل المنتجات من العربة؟';
+
+  @override
+  String get cart_empty => 'العربة فاضية!';
+
+  @override
+  String get start_shopping => 'ابدأ التسوق';
+
+  @override
+  String get start_shopping_message => 'ابدأ التسوق وأضف منتجات للعربة';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
+  String get item => 'صنف';
+
+  @override
+  String get complete_from => 'أكمل من';
+
+  @override
+  String get compare => 'مقارنة';
+
+  @override
+  String get select_vendor_to_show_price => 'اختار متجر لعرض السعر';
+
+  @override
+  String get comparison_results => 'نتيجة المقارنة';
+
+  @override
+  String get save_amount => 'وفر';
+
+  @override
+  String get if_buy_from => 'لو اشتريت من';
+
+  @override
+  String get cheapest => 'الأرخص';
+
+  @override
+  String get more_expensive_by => 'أغلى بـ';
+
+  @override
+  String get currently_selected => 'مختار حالياً';
+
+  @override
+  String get select_one_more_vendor => 'اختار متجر واحد على الأقل كمان';
+
+  @override
+  String get compare_prices => 'قارن الأسعار';
+
+  @override
+  String get select_cheapest => 'اختار';
+
+  @override
+  String get select_vendors_to_compare => 'اختار المتاجر للمقارنة';
+
+  @override
+  String get select_2_to_3_vendors =>
+      'اختار من 2 لـ 3 متاجر عشان تقارن الأسعار';
 }

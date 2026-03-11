@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/routing/routing_generator.dart';
 import 'package:zadana_user_v3/config/theme/app_theme.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
 
 void main() {
   runApp( DevicePreview(
@@ -24,8 +25,9 @@ class MyApp extends StatelessWidget {
         Locale('ar'),
       ],
       theme: AppTheme.light,
-      onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.splash,
+      // onGenerateRoute: RouteGenerator.getRoute,
+      // initialRoute: AppRoutes.splash,
+      home: CartScreen(),
     );
   }
 }

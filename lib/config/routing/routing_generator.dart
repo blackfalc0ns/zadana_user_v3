@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/pages/sign_up_screen.dart';
-import 'package:zadana_user_v3/feature/category/presentaion/pages/category_screen.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/onbarding/presentation/splash_page.dart';
@@ -20,8 +20,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomeScreen());
         case AppRoutes.mainShell:
         return MaterialPageRoute(builder: (_) => MainShell());
-        case AppRoutes.category:
-        return  MaterialPageRoute(builder: (_) => CategoryScreen());
+      case AppRoutes.cart:
+      return MaterialPageRoute(builder: (_)=>CartScreen() );
 
       default:
         return unDefinedRoute();

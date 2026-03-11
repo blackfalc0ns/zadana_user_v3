@@ -278,4 +278,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout_confirm => 'Are you sure you want to logout?';
+
+  @override
+  String get cart => 'Shopping Cart';
+
+  @override
+  String get product => 'product';
+
+  @override
+  String get clear_all => 'Clear All';
+
+  @override
+  String get delete_item => 'Delete Item';
+
+  @override
+  String get delete_item_confirmation => 'Delete';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get clear_cart => 'Clear Cart';
+
+  @override
+  String get clear_cart_confirmation =>
+      'Are you sure you want to clear all items from cart?';
+
+  @override
+  String get cart_empty => 'Cart is Empty!';
+
+  @override
+  String get start_shopping => 'Start Shopping';
+
+  @override
+  String get start_shopping_message =>
+      'Start shopping and add products to cart';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get item => 'item';
+
+  @override
+  String get complete_from => 'Complete from';
+
+  @override
+  String get compare => 'Compare';
+
+  @override
+  String get select_vendor_to_show_price => 'Select vendor to show price';
+
+  @override
+  String get comparison_results => 'Comparison Results';
+
+  @override
+  String get save_amount => 'Save';
+
+  @override
+  String get if_buy_from => 'if you buy from';
+
+  @override
+  String get cheapest => 'Cheapest';
+
+  @override
+  String get more_expensive_by => 'More expensive by';
+
+  @override
+  String get currently_selected => 'Currently Selected';
+
+  @override
+  String get select_one_more_vendor => 'Select at least one more vendor';
+
+  @override
+  String get compare_prices => 'Compare Prices';
+
+  @override
+  String get select_cheapest => 'Select';
+
+  @override
+  String get select_vendors_to_compare => 'Select Vendors to Compare';
+
+  @override
+  String get select_2_to_3_vendors => 'Select 2 to 3 vendors to compare prices';
 }
