@@ -1,0 +1,18 @@
+import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/network/api_services.dart';
+import '../models/profile_response_model_dto.dart';
+import 'profile_remote_data_source.dart';
+
+/// Profile remote data source implementation
+/// Data layer - API implementation using Retrofit
+@Injectable(as: ProfileRemoteDataSource)
+class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
+  final ApiServices _apiServices;
+
+  ProfileRemoteDataSourceImpl(this._apiServices);
+
+  @override
+  Future<ProfileResponseModelDto> getProfile() {
+    return _apiServices.getProfile();
+  }
+}

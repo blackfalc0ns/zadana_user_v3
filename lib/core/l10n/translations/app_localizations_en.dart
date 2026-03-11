@@ -103,10 +103,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hint_full_name => 'John Doe';
 
   @override
-  String get hint_email => 'example@gmail.com';
+  String get hint_email => 'example@gmail.com ';
 
   @override
-  String get hint_phone => '(454) 726-0592';
+  String get hint_email_or_phone => 'example@email.com or 5xxxxxxxx';
+
+  @override
+  String get label_email_or_phone => 'Email or phone number';
+
+  @override
+  String get hint_phone => '(+966) 726-0592';
 
   @override
   String get hint_password => 'P@ssw0rd123';
@@ -119,6 +125,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get btn_forgot_password => 'Forgot Password?';
+
+  @override
+  String get forget_password_title => 'Forgot Password';
+
+  @override
+  String get forget_password_description =>
+      'Enter your phone number or email to receive a verification code';
+
+  @override
+  String get btn_send_verification_code => 'Send Verification Code';
+
+  @override
+  String get msg_verification_code_sent =>
+      'Verification code sent successfully';
+
+  @override
+  String get reset_password_title => 'Reset Password';
+
+  @override
+  String get reset_password_description_prefix =>
+      'Enter the verification code sent to';
+
+  @override
+  String get label_verification_code => 'Verification Code';
+
+  @override
+  String get hint_verification_code => 'Enter verification code';
+
+  @override
+  String get label_new_password => 'New Password';
+
+  @override
+  String get hint_new_password => 'Enter new password';
+
+  @override
+  String get btn_confirm => 'Confirm';
+
+  @override
+  String get msg_password_reset_success => 'Password changed successfully';
+
+  @override
+  String get verification_code_required => 'Please enter verification code';
+
+  @override
+  String get verification_code_invalid => 'Invalid verification code';
+
+  @override
+  String get otp_description => 'Enter the verification code sent to you';
+
+  @override
+  String get otp_code_sent_to => 'Code sent to';
+
+  @override
+  String get otp_verify_button => 'Verify';
+
+  @override
+  String get otp_complete_code_required =>
+      'Please enter the complete verification code';
+
+  @override
+  String get otp_success_message => 'Account verified successfully';
+
+  @override
+  String get otp_screen_title => 'Verification Code';
+
+  @override
+  String get otp_screen_subtitle =>
+      'Enter the verification code sent to you to confirm your account';
 
   @override
   String get social_divider => 'Or continue with';
@@ -202,10 +276,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nav_profile => 'Profile';
 
   @override
-  String get start_page_title => 'Fresh Products Excellent Quality';
+  String get start_page_title => 'Order Everything You Need Easily';
 
   @override
-  String get start_page_subtitle => 'Enjoy Shopping';
+  String get start_page_subtitle => 'Fast delivery for all your daily needs';
 
   @override
   String get start_page_button => 'Get Started Now';
@@ -352,4 +426,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quantity => 'Quantity';
+
+  @override
+  String get error_connection_timeout => 'Connection timeout with server';
+
+  @override
+  String get error_send_timeout => 'Send timeout with server';
+
+  @override
+  String get error_receive_timeout => 'Receive timeout with server';
+
+  @override
+  String get error_bad_certificate => 'Invalid security certificate';
+
+  @override
+  String get error_request_cancelled => 'Request was cancelled';
+
+  @override
+  String get error_no_internet => 'No internet connection';
+
+  @override
+  String get error_unknown => 'Unexpected error occurred';
+
+  @override
+  String get error_no_response => 'No response received from server';
+
+  @override
+  String get error_bad_request => 'Bad request';
+
+  @override
+  String get error_unauthorized => 'Unauthorized, please sign in again';
+
+  @override
+  String get error_forbidden => 'You do not have permission';
+
+  @override
+  String get error_not_found => 'Resource not found';
+
+  @override
+  String get error_conflict => 'Data conflict occurred';
+
+  @override
+  String get error_validation => 'Invalid input data';
+
+  @override
+  String get error_server => 'Server error, please try again later';
+
+  @override
+  String get locationServicesDisabled => 'Location services are disabled';
+
+  @override
+  String get locationPermissionDenied => 'Location permission denied';
+
+  @override
+  String get locationPermissionDeniedForever =>
+      'Location permission permanently denied';
+
+  @override
+  String get unknownError => 'Something went wrong';
 }

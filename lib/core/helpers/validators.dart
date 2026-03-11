@@ -65,4 +65,14 @@ abstract class Validations {
     }
     return null;
   }
+
+  static String? validOtp(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return AppLocalizations.of(context)!.verification_code_required;
+    }
+    if (value.length < 4) {
+      return AppLocalizations.of(context)!.verification_code_invalid;
+    }
+    return null;
+  }
 }

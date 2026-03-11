@@ -281,13 +281,25 @@ abstract class AppLocalizations {
   /// No description provided for @hint_email.
   ///
   /// In en, this message translates to:
-  /// **'example@gmail.com'**
+  /// **'example@gmail.com '**
   String get hint_email;
+
+  /// No description provided for @hint_email_or_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'example@email.com or 5xxxxxxxx'**
+  String get hint_email_or_phone;
+
+  /// No description provided for @label_email_or_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Email or phone number'**
+  String get label_email_or_phone;
 
   /// No description provided for @hint_phone.
   ///
   /// In en, this message translates to:
-  /// **'(454) 726-0592'**
+  /// **'(+966) 726-0592'**
   String get hint_phone;
 
   /// No description provided for @hint_password.
@@ -313,6 +325,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Forgot Password?'**
   String get btn_forgot_password;
+
+  /// No description provided for @forget_password_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forget_password_title;
+
+  /// No description provided for @forget_password_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number or email to receive a verification code'**
+  String get forget_password_description;
+
+  /// No description provided for @btn_send_verification_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Verification Code'**
+  String get btn_send_verification_code;
+
+  /// No description provided for @msg_verification_code_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent successfully'**
+  String get msg_verification_code_sent;
+
+  /// No description provided for @reset_password_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get reset_password_title;
+
+  /// No description provided for @reset_password_description_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to'**
+  String get reset_password_description_prefix;
+
+  /// No description provided for @label_verification_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Code'**
+  String get label_verification_code;
+
+  /// No description provided for @hint_verification_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter verification code'**
+  String get hint_verification_code;
+
+  /// No description provided for @label_new_password.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get label_new_password;
+
+  /// No description provided for @hint_new_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get hint_new_password;
+
+  /// No description provided for @btn_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get btn_confirm;
+
+  /// No description provided for @msg_password_reset_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed successfully'**
+  String get msg_password_reset_success;
+
+  /// No description provided for @verification_code_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter verification code'**
+  String get verification_code_required;
+
+  /// No description provided for @verification_code_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid verification code'**
+  String get verification_code_invalid;
+
+  /// No description provided for @otp_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to you'**
+  String get otp_description;
+
+  /// No description provided for @otp_code_sent_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Code sent to'**
+  String get otp_code_sent_to;
+
+  /// No description provided for @otp_verify_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get otp_verify_button;
+
+  /// No description provided for @otp_complete_code_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the complete verification code'**
+  String get otp_complete_code_required;
+
+  /// No description provided for @otp_success_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Account verified successfully'**
+  String get otp_success_message;
+
+  /// No description provided for @otp_screen_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Code'**
+  String get otp_screen_title;
+
+  /// No description provided for @otp_screen_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to you to confirm your account'**
+  String get otp_screen_subtitle;
 
   /// No description provided for @social_divider.
   ///
@@ -479,13 +617,13 @@ abstract class AppLocalizations {
   /// No description provided for @start_page_title.
   ///
   /// In en, this message translates to:
-  /// **'Fresh Products Excellent Quality'**
+  /// **'Order Everything You Need Easily'**
   String get start_page_title;
 
   /// No description provided for @start_page_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enjoy Shopping'**
+  /// **'Fast delivery for all your daily needs'**
   String get start_page_subtitle;
 
   /// No description provided for @start_page_button.
@@ -769,6 +907,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quantity'**
   String get quantity;
+
+  /// No description provided for @error_connection_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timeout with server'**
+  String get error_connection_timeout;
+
+  /// No description provided for @error_send_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Send timeout with server'**
+  String get error_send_timeout;
+
+  /// No description provided for @error_receive_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive timeout with server'**
+  String get error_receive_timeout;
+
+  /// No description provided for @error_bad_certificate.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid security certificate'**
+  String get error_bad_certificate;
+
+  /// No description provided for @error_request_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Request was cancelled'**
+  String get error_request_cancelled;
+
+  /// No description provided for @error_no_internet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get error_no_internet;
+
+  /// No description provided for @error_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error occurred'**
+  String get error_unknown;
+
+  /// No description provided for @error_no_response.
+  ///
+  /// In en, this message translates to:
+  /// **'No response received from server'**
+  String get error_no_response;
+
+  /// No description provided for @error_bad_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Bad request'**
+  String get error_bad_request;
+
+  /// No description provided for @error_unauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized, please sign in again'**
+  String get error_unauthorized;
+
+  /// No description provided for @error_forbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission'**
+  String get error_forbidden;
+
+  /// No description provided for @error_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource not found'**
+  String get error_not_found;
+
+  /// No description provided for @error_conflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Data conflict occurred'**
+  String get error_conflict;
+
+  /// No description provided for @error_validation.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid input data'**
+  String get error_validation;
+
+  /// No description provided for @error_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error, please try again later'**
+  String get error_server;
+
+  /// No description provided for @locationServicesDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are disabled'**
+  String get locationServicesDisabled;
+
+  /// No description provided for @locationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied'**
+  String get locationPermissionDenied;
+
+  /// No description provided for @locationPermissionDeniedForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission permanently denied'**
+  String get locationPermissionDeniedForever;
+
+  /// No description provided for @unknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get unknownError;
 }
 
 class _AppLocalizationsDelegate

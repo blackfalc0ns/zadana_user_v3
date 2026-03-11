@@ -8,7 +8,7 @@
 //     super.key,
 //     required this.hint,
 //     this.onTap,
-//   });
+// });
 
 //   final String hint;
 //   final VoidCallback? onTap;
@@ -48,7 +48,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
@@ -83,7 +82,7 @@ class HomeSearchBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 8,
               offset: const Offset(0, 1),
             ),

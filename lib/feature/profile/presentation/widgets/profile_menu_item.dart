@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final IconData icon;
@@ -25,6 +23,9 @@ class ProfileMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(Spacing.cardRadius),
@@ -38,7 +39,7 @@ class ProfileMenuItem extends StatelessWidget {
             Icon(
               icon,
               size: Spacing.iconMd,
-              color: iconColor ?? AppColors.primary,
+              color: iconColor ?? colorScheme.primary,
             ),
             const SizedBox(width: Spacing.base),
             Expanded(
@@ -47,15 +48,17 @@ class ProfileMenuItem extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: textColor ?? AppColors.textPrimary,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: textColor ?? colorScheme.onSurface,
                     ),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: Spacing.xs),
                     Text(
                       subtitle!,
-                      style: AppTextStyles.bodySmall,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                     ),
                   ],
                 ],
@@ -69,7 +72,7 @@ class ProfileMenuItem extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 size: Spacing.iconMd,
-                color: AppColors.textSecondary,
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ],
           ],

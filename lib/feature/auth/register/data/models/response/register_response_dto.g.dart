@@ -8,10 +8,17 @@ part of 'register_response_dto.dart';
 
 RegisterResponseDto _$RegisterResponseDtoFromJson(Map<String, dynamic> json) =>
     RegisterResponseDto(
-      message: json['message'] as String,
-      userId: json['userId'] as String?,
+      user: json['user'] == null
+          ? null
+          : UserModelRegisterDto.fromJson(json['user'] as Map<String, dynamic>),
+      isVerified: json['isVerified'] as bool?,
+      message: json['message'] as String?,
     );
 
 Map<String, dynamic> _$RegisterResponseDtoToJson(
   RegisterResponseDto instance,
-) => <String, dynamic>{'message': instance.message, 'userId': instance.userId};
+) => <String, dynamic>{
+  'user': instance.user,
+  'isVerified': instance.isVerified,
+  'message': instance.message,
+};

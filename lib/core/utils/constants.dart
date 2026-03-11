@@ -1,8 +1,10 @@
 /// Application-wide constants used across the project.
 abstract class AppConstants {
   // 🔹 Shared Preferences Keys
-  static const String token = 'token';
-  static const String isTokenSaved = 'isTokenSaved';
+  static const String accessToken = 'accessToken';
+  static const String refreshToken='refreshToken';
+  static const String isAccessTokenSaved = 'isAccessTokenSaved';
+  static const String isRefreshTokenSaved='isRefreshTokenSaved';
   static const String isRemember = 'isRemember';
 
   // 🔹 Localization Keys
