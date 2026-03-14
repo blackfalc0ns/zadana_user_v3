@@ -11,6 +11,7 @@ class DrawerMenuItem extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.textColor,
+    this.iconColor,
     required this.onTap,
   });
 
@@ -18,6 +19,7 @@ class DrawerMenuItem extends StatelessWidget {
   final String title;
   final String? subtitle;
   final Color? textColor;
+  final Color? iconColor;
   final VoidCallback onTap;
 
   @override
@@ -25,7 +27,7 @@ class DrawerMenuItem extends StatelessWidget {
     return ListTile(
       leading: FaIcon(
         icon,
-        color: textColor ?? AppColors.textPrimary,
+        color: iconColor ?? textColor ?? AppColors.textPrimary,
         size: 20,
       ),
       title: Text(

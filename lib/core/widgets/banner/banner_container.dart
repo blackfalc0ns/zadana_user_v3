@@ -6,7 +6,7 @@ class BannerContainer extends StatelessWidget {
   const BannerContainer({
     super.key,
     required this.child,
-    this.height = 180,
+    this.height = 140, // تقليل الطول من 180 إلى 140
     this.margin,
   });
 
@@ -24,8 +24,8 @@ class BannerContainer extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            blurRadius: 4, // تقليل الشادو من 8 إلى 4
+            offset: const Offset(0, 1), // تقليل الإزاحة من 2 إلى 1
           ),
         ],
       ),

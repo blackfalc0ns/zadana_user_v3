@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_data.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/recommended_card.dart';
 
@@ -35,8 +36,15 @@ class RecommendedSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: HomeData.recommended.length,
             separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
-            itemBuilder: (_, i) =>
-                RecommendedCard(product: HomeData.recommended[i]),
+            itemBuilder: (_, i) {
+              final product = HomeData.recommended[i];
+              return RecommendedCard(
+                product: product,
+                onTap: () {
+                  ProductNavigationHelper.navigateToProductDetails(context, product);
+                },
+              );
+            },
           ),
         ),
       ],

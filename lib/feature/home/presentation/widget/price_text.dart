@@ -18,33 +18,58 @@ class PriceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final priceStr =
-        '\$${price.toStringAsFixed(2)}${unit != null ? '/$unit' : ''}';
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          priceStr,
+          _formatPrice(price),
           style: style ??
               AppTextStyles.labelLarge.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w700,
               ),
         ),
+        const SizedBox(width: 2),
+        Text(
+          'ريال',
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.primary,
+            fontSize: 10,
+          ),
+        ),
         if (oldPrice != null) ...[
           const SizedBox(width: 4),
           Text(
-            '\$${oldPrice!.toStringAsFixed(2)}',
+            _formatPrice(oldPrice!),
             style: AppTextStyles.bodySmall.copyWith(
               decoration: TextDecoration.lineThrough,
               color: AppColors.textHint,
               fontSize: 11,
             ),
           ),
+          const SizedBox(width: 2),
+          Text(
+            'ريال',
+            style: AppTextStyles.bodySmall.copyWith(
+              decoration: TextDecoration.lineThrough,
+              color: AppColors.textHint,
+              fontSize: 9,
+            ),
+          ),
         ],
       ],
     );
+  }
+
+  String _formatPrice(double price) {
+    // إزالة الأصفار الزائدة من نهاية السعر
+    if (price == price.toInt()) {
+      // لو السعر رقم صحيح، اعرضه بدون كسور
+      return price.toInt().toString();
+    } else {
+      // لو السعر فيه كسور، اعرضه مع إزالة الأصفار الزائدة
+      return price.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
+    }
   }
 }

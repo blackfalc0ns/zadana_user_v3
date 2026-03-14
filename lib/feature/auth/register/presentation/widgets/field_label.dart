@@ -11,7 +11,10 @@ class FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
-      child: Text(text, style: AppTextStyles.input),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Text(text, style: AppTextStyles.input),
+      ),
     );
   }
 }

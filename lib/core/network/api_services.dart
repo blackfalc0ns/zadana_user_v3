@@ -13,7 +13,6 @@ import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/location/data/models/location_response_dto.dart';
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
 part 'api_services.g.dart';
 

@@ -258,16 +258,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nav_home => 'الرئيسية';
 
   @override
-  String get nav_categories => 'الأقسام';
+  String get nav_categories => 'التسوق';
 
   @override
   String get nav_cart => 'السلة';
 
   @override
-  String get nav_orders => 'الطلبات';
+  String get nav_orders => 'المفضلة';
 
   @override
-  String get nav_profile => 'الملف الشخصي';
+  String get nav_profile => 'الحساب';
 
   @override
   String get start_page_title => 'اطلب كل ما تحتاجه بسهولة';
@@ -279,7 +279,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get start_page_button => 'ابدأ الآن';
 
   @override
-  String get profile_title => 'البروفايل';
+  String get profile_title => 'الملف الشخصي';
 
   @override
   String get edit_avatar => 'تعديل الصورة';
@@ -345,7 +345,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logout => 'تسجيل الخروج';
 
   @override
-  String get logout_confirm => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
+  String get logout_confirm => 'هل أنت متأكد من تسجيل الخروج؟';
 
   @override
   String get cart_title => 'سلة التسوق';
@@ -393,7 +393,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get checkout => 'إتمام الطلب';
 
   @override
-  String get cart_empty => 'سلة التسوق فارغة';
+  String get cart_empty => 'العربة فاضية!';
 
   @override
   String get cart_empty_message => 'ابدأ التسوق وأضف المنتجات إلى سلتك';
@@ -535,4 +535,176 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get redirecting_to_checkout => 'جاري تحويلك لإتمام الطلب...';
+
+  @override
+  String get cart => 'عربة التسوق';
+
+  @override
+  String get product => 'منتج';
+
+  @override
+  String get clear_all => 'مسح الكل';
+
+  @override
+  String get delete_item_confirmation => 'هتحذف';
+
+  @override
+  String get delete => 'احذف';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get clear_cart => 'مسح العربة';
+
+  @override
+  String get clear_cart_confirmation => 'هتمسح كل المنتجات من العربة؟';
+
+  @override
+  String get start_shopping => 'ابدأ التسوق';
+
+  @override
+  String get start_shopping_message => 'ابدأ التسوق وأضف منتجات للعربة';
+
+  @override
+  String get item => 'صنف';
+
+  @override
+  String get complete_from => 'أكمل من';
+
+  @override
+  String get compare => 'مقارنة';
+
+  @override
+  String get select_vendor_to_show_price => 'اختار متجر لعرض السعر';
+
+  @override
+  String get comparison_results => 'نتيجة المقارنة';
+
+  @override
+  String get save_amount => 'وفر';
+
+  @override
+  String get if_buy_from => 'لو اشتريت من';
+
+  @override
+  String get cheapest => 'الأرخص';
+
+  @override
+  String get more_expensive_by => 'أغلى بـ';
+
+  @override
+  String get currently_selected => 'مختار حالياً';
+
+  @override
+  String get select_one_more_vendor => 'اختار متجر واحد على الأقل كمان';
+
+  @override
+  String get compare_prices => 'قارن الأسعار';
+
+  @override
+  String get select_cheapest => 'اختار';
+
+  @override
+  String get select_vendors_to_compare => 'اختار المتاجر للمقارنة';
+
+  @override
+  String get select_2_to_3_vendors =>
+      'اختار من 2 لـ 3 متاجر عشان تقارن الأسعار';
+
+  @override
+  String get category_vegetables => 'خضروات';
+
+  @override
+  String get category_fruits => 'فواكه';
+
+  @override
+  String get category_meat => 'لحوم';
+
+  @override
+  String get category_poultry => 'دواجن';
+
+  @override
+  String get category_dairy => 'ألبان';
+
+  @override
+  String get category_bakery => 'مخبوزات';
+
+  @override
+  String get category_beverages => 'مشروبات';
+
+  @override
+  String get category_household => 'منزلية';
+
+  @override
+  String get category_personal_care => 'عناية';
+
+  @override
+  String get category_snacks => 'سناكس';
+
+  @override
+  String get sort_newest => 'الأحدث';
+
+  @override
+  String get sort_newest_desc => 'المنتجات المضافة حديثاً';
+
+  @override
+  String get sort_price_low => 'الأقل سعراً';
+
+  @override
+  String get sort_price_low_desc => 'من الأرخص إلى الأغلى';
+
+  @override
+  String get sort_price_high => 'الأعلى سعراً';
+
+  @override
+  String get sort_price_high_desc => 'من الأغلى إلى الأرخص';
+
+  @override
+  String get sort_best_selling => 'الأكثر مبيعاً';
+
+  @override
+  String get sort_best_selling_desc => 'المنتجات الأكثر شراءً';
+
+  @override
+  String get sort_highest_rated => 'الأعلى تقييماً';
+
+  @override
+  String get sort_highest_rated_desc => 'حسب تقييم العملاء';
+
+  @override
+  String get sort_alphabetical => 'ترتيب أبجدي';
+
+  @override
+  String get sort_alphabetical_desc => 'من أ إلى ي';
+
+  @override
+  String get filter_title => 'تصفية المنتجات';
+
+  @override
+  String get sort_title => 'ترتيب المنتجات';
+
+  @override
+  String get search_hint_category => 'ابحث عن خضروات، فواكه، لحوم...';
+
+  @override
+  String get filter_button => 'التصنيف';
+
+  @override
+  String get sort_button => 'ترتيب';
+
+  @override
+  String get all_categories => 'الكل';
+
+  @override
+  String get select_product_type => 'اختر نوع المنتج';
+
+  @override
+  String get category => 'الفئة';
+
+  @override
+  String get price_range => 'نطاق السعر';
+
+  @override
+  String get currency => 'ريال';
 }

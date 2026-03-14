@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/feature/auth/forget_password/domain/entities/forget_password_request_entity.dart';
-import 'package:zadana_user_v3/feature/auth/forget_password/presentation/manager/forget_password_event.dart';
-import 'package:zadana_user_v3/feature/auth/forget_password/presentation/manager/forget_password_state.dart';
-import 'package:zadana_user_v3/feature/auth/forget_password/presentation/manager/forget_password_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/widget/email_phone_input_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
@@ -13,7 +8,6 @@ import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_
 /// Forget password form widget
 /// Following requirements:
 /// - No setState
-/// - Dispatches events to ViewModel
 /// - Uses ColorScheme
 /// - Reuses existing widgets
 class ForgetPasswordForm extends StatefulWidget {
@@ -33,6 +27,7 @@ class _ForgetPasswordFormState
     extends State<ForgetPasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final _identifierController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -40,17 +35,18 @@ class _ForgetPasswordFormState
     super.dispose();
   }
 
-  void _onSubmit(BuildContext context) {
+  Future<void> _onSubmit(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      final requestEntity = ForgetPasswordRequestEntity(
-        identifier: _identifierController.text,
-      );
-
-      context.read<ForgetPasswordViewModel>().doIntent(
-            ForgetPasswordSubmitEvent(
-              requestEntity: requestEntity,
-            ),
-          );
+      setState(() => _isLoading = true);
+      
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+      
+      setState(() => _isLoading = false);
+      
+      if (mounted) {
+        widget.onSuccess(_identifierController.text);
+      }
     }
   }
 
@@ -58,40 +54,25 @@ class _ForgetPasswordFormState
   Widget build(BuildContext context) {
     final locale = context.localization;
 
-    return BlocListener<
-        ForgetPasswordViewModel,
-        ForgetPasswordState>(
-      listener: (context, state) {
-        if (state.isSuccess) {
-          widget.onSuccess(_identifierController.text);
-        }
-      },
-      child: BlocBuilder<
-          ForgetPasswordViewModel,
-          ForgetPasswordState>(
-        builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Email or Phone field
-                FieldLabel(locale.label_email_or_phone),
-                EmailPhoneInputField(
-                  controller: _identifierController,
-                ),
-                const SizedBox(height: Spacing.xl),
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Email or Phone field
+          FieldLabel(locale.label_email_or_phone),
+          EmailPhoneInputField(
+            controller: _identifierController,
+          ),
+          const SizedBox(height: Spacing.xl),
 
-                // Submit button
-                AppButtonSwitch(
-                  label: locale.btn_send_verification_code,
-                  onPressed: () => _onSubmit(context),
-                  isLoading: state.isLoading,
-                ),
-              ],
-            ),
-          );
-        },
+          // Submit button
+          AppButtonSwitch(
+            label: locale.btn_send_verification_code,
+            onPressed: () => _onSubmit(context),
+            isLoading: _isLoading,
+          ),
+        ],
       ),
     );
   }

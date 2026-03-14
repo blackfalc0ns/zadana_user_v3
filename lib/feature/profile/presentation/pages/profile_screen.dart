@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
@@ -14,141 +16,180 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: AppColors.surface,
+        elevation: 0,
         automaticallyImplyLeading: false,
-        title: Text(l10n.profile_title),
+        title: Text(
+          'الحساب',
+          style: AppTextStyles.h4.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(Spacing.base),
         child: Column(
           children: [
-            _buildProfileHeader(l10n),
             const SizedBox(height: Spacing.lg),
-            _buildInfoSection(l10n),
+            _buildProfileCard(context),
             const SizedBox(height: Spacing.lg),
-            _buildSettingsSection(l10n),
+            _buildMenuList(l10n, context),
             const SizedBox(height: Spacing.lg),
             _buildLogoutButton(l10n),
+            const SizedBox(height: Spacing.xl),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileHeader(AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.all(Spacing.base),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: AppColors.primary,
-            child: Text(
-              'م',
-              style: AppTextStyles.h2.copyWith(color: AppColors.white),
-            ),
+  Widget _buildProfileCard(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed(AppRoutes.editProfile);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(Spacing.base),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow.withValues(alpha: 0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          const SizedBox(width: Spacing.base),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('محمد أحمد', style: AppTextStyles.h4),
-                const SizedBox(height: 4),
-                Text(
-                  'mohamed@example.com',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+          child: Row(
+            children: [
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 32,
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    child: Text(
+                      'م',
+                      style: AppTextStyles.h3.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '+966 50 123 4567',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.surface, width: 2),
+                      ),
+                      child: const FaIcon(
+                        FontAwesomeIcons.pen,
+                        size: 10,
+                        color: AppColors.white,
+                      ),
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(width: Spacing.base),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'محمد أحمد',
+                      style: AppTextStyles.h4.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'mohamed@example.com',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '+966 50 123 4567',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const FaIcon(
+                FontAwesomeIcons.chevronLeft,
+                color: AppColors.textSecondary,
+                size: 16,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildInfoSection(AppLocalizations l10n) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: AppColors.border),
-      ),
+  Widget _buildMenuList(AppLocalizations l10n, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
       child: Column(
         children: [
-          _buildListTile(
-            icon: Icons.location_on_outlined,
+          _buildMenuTile(
+            icon: FontAwesomeIcons.locationDot,
             title: l10n.addresses,
+            iconColor: AppColors.primary,
             onTap: () {},
           ),
-          const Divider(height: 1),
-          _buildListTile(
-            icon: Icons.receipt_long_outlined,
+          _buildMenuTile(
+            icon: FontAwesomeIcons.clockRotateLeft,
             title: l10n.nav_orders,
+            iconColor: AppColors.success,
             onTap: () {},
           ),
-          const Divider(height: 1),
-          _buildListTile(
-            icon: Icons.favorite_outline,
-            title: 'المفضلة',
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsSection(AppLocalizations l10n) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        children: [
-          _buildListTile(
-            icon: Icons.language_outlined,
+          const SizedBox(height: Spacing.base),
+          _buildMenuTile(
+            icon: FontAwesomeIcons.globe,
             title: l10n.language,
-            trailing: Text('العربية', style: AppTextStyles.bodyMedium),
-            onTap: () {},
+            iconColor: AppColors.primary,
+            trailing: Text(
+              'العربية',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            onTap: () => _showLanguageBottomSheet(context),
           ),
-          const Divider(height: 1),
-          _buildListTile(
-            icon: Icons.notifications_outlined,
+          _buildMenuTile(
+            icon: FontAwesomeIcons.bell,
             title: l10n.notifications,
+            iconColor: AppColors.warning,
             onTap: () {},
           ),
-          const Divider(height: 1),
-          _buildListTile(
-            icon: Icons.lock_outline,
+          _buildMenuTile(
+            icon: FontAwesomeIcons.lock,
             title: l10n.change_password,
+            iconColor: AppColors.textSecondary,
             onTap: () {},
           ),
-          const Divider(height: 1),
-          _buildListTile(
-            icon: Icons.help_outline,
+          _buildMenuTile(
+            icon: FontAwesomeIcons.circleQuestion,
             title: l10n.help_support,
+            iconColor: AppColors.info,
             onTap: () {},
           ),
-          const Divider(height: 1),
-          _buildListTile(
-            icon: Icons.info_outline,
+          _buildMenuTile(
+            icon: FontAwesomeIcons.circleInfo,
             title: l10n.about_app,
+            iconColor: AppColors.textSecondary,
             onTap: () {},
           ),
         ],
@@ -156,29 +197,202 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile({
+  Widget _buildMenuTile({
     required IconData icon,
     required String title,
+    required Color iconColor,
     Widget? trailing,
     required VoidCallback onTap,
   }) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(title, style: AppTextStyles.bodyLarge),
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: AppColors.textSecondary),
-      onTap: onTap,
+    return Container(
+      margin: const EdgeInsets.only(bottom: Spacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: Spacing.base,
+          vertical: Spacing.xs,
+        ),
+        leading: FaIcon(
+          icon,
+          color: iconColor,
+          size: 20,
+        ),
+        title: Text(
+          title,
+          style: AppTextStyles.bodyLarge.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: trailing ??
+            const FaIcon(
+              FontAwesomeIcons.chevronLeft,
+              color: AppColors.textSecondary,
+              size: 14,
+            ),
+      ),
     );
   }
 
   Widget _buildLogoutButton(AppLocalizations l10n) {
-    return OutlinedButton.icon(
-      onPressed: () {},
-      icon: const Icon(Icons.logout),
-      label: Text(l10n.logout),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.error,
-        side: const BorderSide(color: AppColors.error),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ListTile(
+          onTap: () {},
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: Spacing.base,
+            vertical: Spacing.xs,
+          ),
+          leading: const FaIcon(
+            FontAwesomeIcons.rightFromBracket,
+            color: AppColors.error,
+            size: 20,
+          ),
+          title: Text(
+            l10n.logout,
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.error,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ),
+    );
+  }
+
+  void _showLanguageBottomSheet(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: Spacing.sm),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.divider,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: Spacing.base),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
+              child: Text(
+                'اختر اللغة',
+                style: AppTextStyles.h4.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: Spacing.base),
+            _buildLanguageOption(
+              context: context,
+              title: 'العربية',
+              subtitle: 'Arabic',
+              isSelected: true,
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: Change language to Arabic
+              },
+            ),
+            const Divider(height: 1),
+            _buildLanguageOption(
+              context: context,
+              title: 'English',
+              subtitle: 'الإنجليزية',
+              isSelected: false,
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: Change language to English
+              },
+            ),
+            const SizedBox(height: Spacing.base),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: Spacing.base,
+        vertical: Spacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(Spacing.sm),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.1)
+              : AppColors.background,
+          borderRadius: BorderRadius.circular(Spacing.sm),
+        ),
+        child: FaIcon(
+          FontAwesomeIcons.globe,
+          color: isSelected ? AppColors.primary : AppColors.textSecondary,
+          size: 20,
+        ),
+      ),
+      title: Text(
+        title,
+        style: AppTextStyles.bodyLarge.copyWith(
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+          color: isSelected ? AppColors.primary : AppColors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: AppTextStyles.bodySmall.copyWith(
+          color: AppColors.textSecondary,
+        ),
+      ),
+      trailing: isSelected
+          ? const FaIcon(
+              FontAwesomeIcons.circleCheck,
+              color: AppColors.primary,
+              size: 20,
+            )
+          : null,
     );
   }
 }

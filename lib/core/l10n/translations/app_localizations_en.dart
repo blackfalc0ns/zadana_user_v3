@@ -399,7 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkout => 'Checkout';
 
   @override
-  String get cart_empty => 'Your cart is empty';
+  String get cart_empty => 'Cart is Empty!';
 
   @override
   String get cart_empty_message =>
@@ -544,4 +544,177 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get redirecting_to_checkout => 'Redirecting to checkout...';
+
+  @override
+  String get cart => 'Shopping Cart';
+
+  @override
+  String get product => 'product';
+
+  @override
+  String get clear_all => 'Clear All';
+
+  @override
+  String get delete_item_confirmation => 'Delete';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get clear_cart => 'Clear Cart';
+
+  @override
+  String get clear_cart_confirmation =>
+      'Are you sure you want to clear all items from cart?';
+
+  @override
+  String get start_shopping => 'Start Shopping';
+
+  @override
+  String get start_shopping_message =>
+      'Start shopping and add products to cart';
+
+  @override
+  String get item => 'item';
+
+  @override
+  String get complete_from => 'Complete from';
+
+  @override
+  String get compare => 'Compare';
+
+  @override
+  String get select_vendor_to_show_price => 'Select vendor to show price';
+
+  @override
+  String get comparison_results => 'Comparison Results';
+
+  @override
+  String get save_amount => 'Save';
+
+  @override
+  String get if_buy_from => 'if you buy from';
+
+  @override
+  String get cheapest => 'Cheapest';
+
+  @override
+  String get more_expensive_by => 'More expensive by';
+
+  @override
+  String get currently_selected => 'Currently Selected';
+
+  @override
+  String get select_one_more_vendor => 'Select at least one more vendor';
+
+  @override
+  String get compare_prices => 'Compare Prices';
+
+  @override
+  String get select_cheapest => 'Select';
+
+  @override
+  String get select_vendors_to_compare => 'Select Vendors to Compare';
+
+  @override
+  String get select_2_to_3_vendors => 'Select 2 to 3 vendors to compare prices';
+
+  @override
+  String get category_vegetables => 'Vegetables';
+
+  @override
+  String get category_fruits => 'Fruits';
+
+  @override
+  String get category_meat => 'Meat';
+
+  @override
+  String get category_poultry => 'Poultry';
+
+  @override
+  String get category_dairy => 'Dairy';
+
+  @override
+  String get category_bakery => 'Bakery';
+
+  @override
+  String get category_beverages => 'Beverages';
+
+  @override
+  String get category_household => 'Household';
+
+  @override
+  String get category_personal_care => 'Personal Care';
+
+  @override
+  String get category_snacks => 'Snacks';
+
+  @override
+  String get sort_newest => 'Newest';
+
+  @override
+  String get sort_newest_desc => 'Recently added products';
+
+  @override
+  String get sort_price_low => 'Price Low to High';
+
+  @override
+  String get sort_price_low_desc => 'From cheapest to most expensive';
+
+  @override
+  String get sort_price_high => 'Price High to Low';
+
+  @override
+  String get sort_price_high_desc => 'From most expensive to cheapest';
+
+  @override
+  String get sort_best_selling => 'Best Selling';
+
+  @override
+  String get sort_best_selling_desc => 'Most purchased products';
+
+  @override
+  String get sort_highest_rated => 'Highest Rated';
+
+  @override
+  String get sort_highest_rated_desc => 'Based on customer ratings';
+
+  @override
+  String get sort_alphabetical => 'Alphabetical';
+
+  @override
+  String get sort_alphabetical_desc => 'From A to Z';
+
+  @override
+  String get filter_title => 'Filter Products';
+
+  @override
+  String get sort_title => 'Sort Products';
+
+  @override
+  String get search_hint_category => 'Search for vegetables, fruits, meat...';
+
+  @override
+  String get filter_button => 'Filter';
+
+  @override
+  String get sort_button => 'Sort';
+
+  @override
+  String get all_categories => 'All';
+
+  @override
+  String get select_product_type => 'Select Product Type';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get price_range => 'Price Range';
+
+  @override
+  String get currency => 'SAR';
 }

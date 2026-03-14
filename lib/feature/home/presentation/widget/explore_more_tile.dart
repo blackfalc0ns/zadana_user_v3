@@ -3,7 +3,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/product_image.dart';
+import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
 class ExploreMoreTile extends StatelessWidget {
   const ExploreMoreTile({

@@ -857,7 +857,7 @@ abstract class AppLocalizations {
   /// No description provided for @cart_empty.
   ///
   /// In en, this message translates to:
-  /// **'Your cart is empty'**
+  /// **'Cart is Empty!'**
   String get cart_empty;
 
   /// No description provided for @cart_empty_message.
@@ -1135,6 +1135,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Redirecting to checkout...'**
   String get redirecting_to_checkout;
+
+  /// No description provided for @cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping Cart'**
+  String get cart;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'product'**
+  String get product;
+
+  /// No description provided for @clear_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clear_all;
+
+  /// No description provided for @delete_item_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete_item_confirmation;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @clear_cart.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cart'**
+  String get clear_cart;
+
+  /// No description provided for @clear_cart_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all items from cart?'**
+  String get clear_cart_confirmation;
+
+  /// No description provided for @start_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Shopping'**
+  String get start_shopping;
+
+  /// No description provided for @start_shopping_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Start shopping and add products to cart'**
+  String get start_shopping_message;
+
+  /// No description provided for @item.
+  ///
+  /// In en, this message translates to:
+  /// **'item'**
+  String get item;
+
+  /// No description provided for @complete_from.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete from'**
+  String get complete_from;
+
+  /// No description provided for @compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compare;
+
+  /// No description provided for @select_vendor_to_show_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Select vendor to show price'**
+  String get select_vendor_to_show_price;
+
+  /// No description provided for @comparison_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparison Results'**
+  String get comparison_results;
+
+  /// No description provided for @save_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save_amount;
+
+  /// No description provided for @if_buy_from.
+  ///
+  /// In en, this message translates to:
+  /// **'if you buy from'**
+  String get if_buy_from;
+
+  /// No description provided for @cheapest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheapest'**
+  String get cheapest;
+
+  /// No description provided for @more_expensive_by.
+  ///
+  /// In en, this message translates to:
+  /// **'More expensive by'**
+  String get more_expensive_by;
+
+  /// No description provided for @currently_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently Selected'**
+  String get currently_selected;
+
+  /// No description provided for @select_one_more_vendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one more vendor'**
+  String get select_one_more_vendor;
+
+  /// No description provided for @compare_prices.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Prices'**
+  String get compare_prices;
+
+  /// No description provided for @select_cheapest.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select_cheapest;
+
+  /// No description provided for @select_vendors_to_compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Vendors to Compare'**
+  String get select_vendors_to_compare;
+
+  /// No description provided for @select_2_to_3_vendors.
+  ///
+  /// In en, this message translates to:
+  /// **'Select 2 to 3 vendors to compare prices'**
+  String get select_2_to_3_vendors;
+
+  /// No description provided for @category_vegetables.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetables'**
+  String get category_vegetables;
+
+  /// No description provided for @category_fruits.
+  ///
+  /// In en, this message translates to:
+  /// **'Fruits'**
+  String get category_fruits;
+
+  /// No description provided for @category_meat.
+  ///
+  /// In en, this message translates to:
+  /// **'Meat'**
+  String get category_meat;
+
+  /// No description provided for @category_poultry.
+  ///
+  /// In en, this message translates to:
+  /// **'Poultry'**
+  String get category_poultry;
+
+  /// No description provided for @category_dairy.
+  ///
+  /// In en, this message translates to:
+  /// **'Dairy'**
+  String get category_dairy;
+
+  /// No description provided for @category_bakery.
+  ///
+  /// In en, this message translates to:
+  /// **'Bakery'**
+  String get category_bakery;
+
+  /// No description provided for @category_beverages.
+  ///
+  /// In en, this message translates to:
+  /// **'Beverages'**
+  String get category_beverages;
+
+  /// No description provided for @category_household.
+  ///
+  /// In en, this message translates to:
+  /// **'Household'**
+  String get category_household;
+
+  /// No description provided for @category_personal_care.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Care'**
+  String get category_personal_care;
+
+  /// No description provided for @category_snacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks'**
+  String get category_snacks;
+
+  /// No description provided for @sort_newest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get sort_newest;
+
+  /// No description provided for @sort_newest_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently added products'**
+  String get sort_newest_desc;
+
+  /// No description provided for @sort_price_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Low to High'**
+  String get sort_price_low;
+
+  /// No description provided for @sort_price_low_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'From cheapest to most expensive'**
+  String get sort_price_low_desc;
+
+  /// No description provided for @sort_price_high.
+  ///
+  /// In en, this message translates to:
+  /// **'Price High to Low'**
+  String get sort_price_high;
+
+  /// No description provided for @sort_price_high_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'From most expensive to cheapest'**
+  String get sort_price_high_desc;
+
+  /// No description provided for @sort_best_selling.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Selling'**
+  String get sort_best_selling;
+
+  /// No description provided for @sort_best_selling_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Most purchased products'**
+  String get sort_best_selling_desc;
+
+  /// No description provided for @sort_highest_rated.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Rated'**
+  String get sort_highest_rated;
+
+  /// No description provided for @sort_highest_rated_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on customer ratings'**
+  String get sort_highest_rated_desc;
+
+  /// No description provided for @sort_alphabetical.
+  ///
+  /// In en, this message translates to:
+  /// **'Alphabetical'**
+  String get sort_alphabetical;
+
+  /// No description provided for @sort_alphabetical_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'From A to Z'**
+  String get sort_alphabetical_desc;
+
+  /// No description provided for @filter_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Products'**
+  String get filter_title;
+
+  /// No description provided for @sort_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort Products'**
+  String get sort_title;
+
+  /// No description provided for @search_hint_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for vegetables, fruits, meat...'**
+  String get search_hint_category;
+
+  /// No description provided for @filter_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter_button;
+
+  /// No description provided for @sort_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sort_button;
+
+  /// No description provided for @all_categories.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all_categories;
+
+  /// No description provided for @select_product_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Product Type'**
+  String get select_product_type;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @price_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Range'**
+  String get price_range;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get currency;
 }
 
 class _AppLocalizationsDelegate

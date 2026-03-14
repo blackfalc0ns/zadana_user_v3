@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/base_product_card.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_data.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.dart';
 
@@ -20,7 +21,7 @@ class SpecialOffersSection extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.md),
         SizedBox(
-          height: 190,
+          height: 140, // تقليل الارتفاع للـ CompactProductCard
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,
@@ -28,23 +29,21 @@ class SpecialOffersSection extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
             itemBuilder: (_, i) {
               final product = HomeData.specialOffers[i];
-              return BaseProductCard(
-                product: product,
-                width: 150,
-                imageHeight: 90,
-                showFavorite: true,
-                onAddTap: () {
-                  // TODO: إضافة المنتج للعربة
-                  print('Added ${product.name} to cart');
-                },
-                onCardTap: () {
-                  // TODO: الانتقال لصفحة المنتج
-                  print('Navigate to ${product.name} details');
-                },
-                onFavoriteTap: () {
-                  // TODO: إضافة/إزالة من المفضلة
-                  print('Toggle favorite for ${product.name}');
-                },
+              return SizedBox(
+                width: 120, // عرض أصغر للـ CompactProductCard
+                child: CustomProductCard(
+                  product: product,
+                  showFavorite: true,
+                  onAddTap: () {
+                    // TODO: إضافة المنتج للعربة
+                  },
+                  onCardTap: () {
+                    ProductNavigationHelper.navigateToProductDetails(context, product);
+                  },
+                  onFavoriteTap: () {
+                    // TODO: إضافة/إزالة من المفضلة
+                  },
+                ),
               );
             },
           ),

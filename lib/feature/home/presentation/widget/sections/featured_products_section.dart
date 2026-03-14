@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/base_product_card.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_data.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.dart';
 
@@ -22,7 +23,7 @@ class FeaturedProductsSection extends StatelessWidget {
         
         // Grid View للمنتجات المميزة (2 صف × scroll أفقي)
         SizedBox(
-          height: 340, // ارتفاع أصغر للكاردز الصغيرة
+          height: 290, // تقليل الارتفاع للـ CompactProductCard
           child: GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal, // scroll أفقي
@@ -30,27 +31,22 @@ class FeaturedProductsSection extends StatelessWidget {
               crossAxisCount: 2, // 2 صف
               crossAxisSpacing: Spacing.sm,
               mainAxisSpacing: Spacing.sm,
-             childAspectRatio: 1.1, // نسبة أفضل للكاردز الصغيرة
+              childAspectRatio: 1.1, // نسبة أفضل للـ CompactProductCard
             ),
             itemCount: HomeData.featured.length,
             itemBuilder: (context, index) {
               final product = HomeData.featured[index];
-              return BaseProductCard(
+              return CustomProductCard(
                 product: product,
-                width: 150,
-                imageHeight: 70,
                 showFavorite: true,
                 onAddTap: () {
                   // TODO: إضافة المنتج للعربة
-                  print('Added ${product.name} to cart');
                 },
                 onCardTap: () {
-                  // TODO: الانتقال لصفحة المنتج
-                  print('Navigate to ${product.name} details');
+                  ProductNavigationHelper.navigateToProductDetails(context, product);
                 },
                 onFavoriteTap: () {
                   // TODO: إضافة/إزالة من المفضلة
-                  print('Toggle favorite for ${product.name}');
                 },
               );
             },

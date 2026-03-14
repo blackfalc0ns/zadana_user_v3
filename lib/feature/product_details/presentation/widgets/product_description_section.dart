@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/nutrition_info_card.dart';
 
 class ProductDescriptionSection extends StatelessWidget {
   final String title;
@@ -24,7 +23,9 @@ class ProductDescriptionSection extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold),
+            style: AppTextStyles.labelLarge.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: Spacing.sm),
           Text(
@@ -34,8 +35,6 @@ class ProductDescriptionSection extends StatelessWidget {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: Spacing.sm),
-          const NutritionInfoCard(),
         ],
       ),
     );

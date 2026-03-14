@@ -23,13 +23,8 @@ class BannerItem extends StatelessWidget {
         const BannerOverlay(),
         BannerContent(
           banner: banner,
-          onActionTap: onTap ?? () => _handleDefaultAction(banner),
         ),
       ],
     );
-  }
-
-  void _handleDefaultAction(BannerData banner) {
-    debugPrint('Banner action tapped: ${banner.actionLabel}');
   }
 }

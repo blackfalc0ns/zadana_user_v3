@@ -73,10 +73,10 @@ import '../../feature/auth/verify_otp/domain/usecase/verify_otp_usecase.dart'
     as _i851;
 import '../../feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart'
     as _i718;
+import '../../feature/location/data/datasources/location_data_source.dart'
+    as _i408;
 import '../../feature/location/data/datasources/location_data_source_imp.dart'
     as _i1072;
-import '../../feature/location/data/datasources/location_datasource.dart'
-    as _i139;
 import '../../feature/location/data/repo/location_repo_imp.dart' as _i232;
 import '../../feature/location/domain/repo/location_repo.dart' as _i912;
 import '../../feature/location/domain/usecase/get_address_from_coordinates_use_case.dart'
@@ -147,17 +147,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i819.LanguageService>(
       () => _i819.LanguageService(gh<_i460.SharedPreferences>()),
     );
-    gh.factory<_i139.LocationDataSource>(
+    gh.factory<_i408.LocationDataSource>(
       () => _i1072.LocationDataSourceImpl(
         gh<_i777.OsmApiServices>(),
         gh<_i367.LocationPermissionService>(),
       ),
     );
-    gh.factory<_i912.LocationRepository>(
-      () => _i232.LocationRepositoryImpl(gh<_i139.LocationDataSource>()),
-    );
     gh.factory<_i32.LanguageInterceptor>(
       () => _i32.LanguageInterceptor(gh<_i819.LanguageService>()),
+    );
+    gh.factory<_i912.LocationRepository>(
+      () => _i232.LocationRepositoryImpl(gh<_i408.LocationDataSource>()),
+    );
+    gh.lazySingleton<_i361.Dio>(
+      () => externalModules.provideDio(
+        gh<_i528.PrettyDioLogger>(),
+        gh<_i1056.TokenInterceptor>(),
+        gh<_i32.LanguageInterceptor>(),
+      ),
     );
     gh.factory<_i1061.GetAddressFromCoordinatesUseCase>(
       () => _i1061.GetAddressFromCoordinatesUseCase(
@@ -171,20 +178,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i903.SearchLocationsUseCase>(
       () => _i903.SearchLocationsUseCase(gh<_i912.LocationRepository>()),
-    );
-    gh.factory<_i343.LocationViewModel>(
-      () => _i343.LocationViewModel(
-        gh<_i903.SearchLocationsUseCase>(),
-        gh<_i117.GetCurrentLocationWithAddressUseCase>(),
-        gh<_i1061.GetAddressFromCoordinatesUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i361.Dio>(
-      () => externalModules.provideDio(
-        gh<_i528.PrettyDioLogger>(),
-        gh<_i1056.TokenInterceptor>(),
-        gh<_i32.LanguageInterceptor>(),
-      ),
     );
     gh.factory<_i804.ApiServices>(() => _i804.ApiServices(gh<_i361.Dio>()));
     gh.factory<_i596.ForgetPasswordRemoteDataSource>(
@@ -202,6 +195,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i548.VerifyOtpRepositoryImpl(
         gh<_i698.VerifyOtpRemoteDataSource>(),
         gh<_i227.TokenService>(),
+      ),
+    );
+    gh.factory<_i343.LocationViewModel>(
+      () => _i343.LocationViewModel(
+        gh<_i903.SearchLocationsUseCase>(),
+        gh<_i117.GetCurrentLocationWithAddressUseCase>(),
+        gh<_i1061.GetAddressFromCoordinatesUseCase>(),
       ),
     );
     gh.factory<_i371.ProfileRemoteDataSource>(

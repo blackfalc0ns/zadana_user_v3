@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/feature/location/data/datasources/location_datasource.dart';
+import 'package:zadana_user_v3/feature/location/data/datasources/location_data_source.dart';
 import 'package:zadana_user_v3/feature/location/data/mapper/location_mapper.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_search_entity.dart';

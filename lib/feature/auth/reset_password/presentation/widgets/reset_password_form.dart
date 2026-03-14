@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
-import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_password_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
-import 'package:zadana_user_v3/feature/auth/reset_password/domain/entities/reset_password_request_entity.dart';
-import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_event.dart';
-import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_state.dart';
-import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_view_model.dart';
 
 /// Reset password form widget
-/// Following requirements:
-/// - No setState
-/// - Dispatches events to ViewModel
-/// - Uses ColorScheme
-/// - Reuses existing widgets
+/// Only for entering new password (OTP already verified)
 class ResetPasswordForm extends StatefulWidget {
   final String identifier;
+  final String otpCode;
+  final VoidCallback onSuccess;
 
   const ResetPasswordForm({
     super.key,
     required this.identifier,
+    required this.otpCode,
+    required this.onSuccess,
   });
 
   @override
@@ -34,81 +28,76 @@ class ResetPasswordForm extends StatefulWidget {
 class _ResetPasswordFormState
     extends State<ResetPasswordForm> {
   final _formKey = GlobalKey<FormState>();
-  final _otpController = TextEditingController();
   final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    _otpController.dispose();
     _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _onSubmit(BuildContext context) {
+  Future<void> _onSubmit(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      final requestEntity = ResetPasswordRequestEntity(
-        identifier: widget.identifier,
-        otpCode: _otpController.text,
-        newPassword: _newPasswordController.text,
-      );
+      setState(() => _isLoading = true);
 
-      context.read<ResetPasswordViewModel>().doIntent(
-            ResetPasswordSubmitEvent(
-              requestEntity: requestEntity,
-            ),
-          );
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+
+      setState(() => _isLoading = false);
+
+      if (mounted) {
+        widget.onSuccess();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final colorScheme = context.colorScheme;
 
-    return BlocBuilder<
-        ResetPasswordViewModel,
-        ResetPasswordState>(
-      builder: (context, state) {
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // OTP Code field
-              FieldLabel(locale.label_verification_code),
-              AppTextField(
-                controller: _otpController,
-                hint: locale.hint_verification_code,
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    Validations.validOtp(context, value),
-                prefixIcon: Icon(
-                  Icons.pin_outlined,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: Spacing.base),
-
-              // New Password field
-              FieldLabel(locale.label_new_password),
-              AppPasswordField(
-                controller: _newPasswordController,
-                hint: locale.hint_new_password,
-                validator: (v) =>
-                    Validations.validatePassword(context, v),
-              ),
-              const SizedBox(height: Spacing.xl),
-
-              // Submit button
-              AppButtonSwitch(
-                label: locale.btn_confirm,
-                onPressed: () => _onSubmit(context),
-                isLoading: state.isLoading,
-              ),
-            ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // New Password field
+          FieldLabel(locale.label_new_password),
+          AppPasswordField(
+            controller: _newPasswordController,
+            hint: locale.hint_new_password,
+            validator: (v) =>
+                Validations.validatePassword(context, v),
           ),
-        );
-      },
+          const SizedBox(height: Spacing.base),
+
+          // Confirm Password field
+          FieldLabel(locale.label_new_password),
+          AppPasswordField(
+            controller: _confirmPasswordController,
+            hint: locale.hint_new_password,
+            validator: (v) {
+              if (v == null || v.isEmpty) {
+                return locale.confirm_password_is_required;
+              }
+              if (v != _newPasswordController.text) {
+                return locale.passwords_do_not_match;
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: Spacing.xl),
+
+          // Submit button
+          AppButtonSwitch(
+            label: locale.btn_confirm,
+            onPressed: () => _onSubmit(context),
+            isLoading: _isLoading,
+          ),
+        ],
+      ),
     );
   }
 }

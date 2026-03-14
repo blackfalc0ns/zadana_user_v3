@@ -1,47 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
-import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_state.dart';
-import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/widgets/reset_password_form.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/widgets/reset_password_header.dart';
 
 /// Reset Password Screen
-/// Allows users to reset their password using OTP
-///
-/// Architecture:
-/// - BlocProvider provides ResetPasswordViewModel
-/// - BlocListener handles side effects
-/// - Reusable widgets for clean separation
+/// Second step: User enters new password after OTP verification
 ///
 /// Location: features/auth/reset_password/presentation/pages/
 class ResetPasswordScreen extends StatelessWidget {
-  final String identifier;
+  final Map<String, String> arguments;
 
   const ResetPasswordScreen({
     super.key,
-    required this.identifier,
+    required this.arguments,
   });
+
+  String get identifier => arguments['identifier'] ?? '';
+  String get otpCode => arguments['otpCode'] ?? '';
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ResetPasswordViewModel>(),
-      child: _ResetPasswordView(identifier: identifier),
+    return _ResetPasswordView(
+      identifier: identifier,
+      otpCode: otpCode,
     );
   }
 }
 
 class _ResetPasswordView extends StatelessWidget {
   final String identifier;
+  final String otpCode;
 
   const _ResetPasswordView({
     required this.identifier,
+    required this.otpCode,
   });
 
   @override
@@ -49,48 +45,49 @@ class _ResetPasswordView extends StatelessWidget {
     final locale = context.localization;
     final colorScheme = context.colorScheme;
 
-    return BlocListener<
-        ResetPasswordViewModel,
-        ResetPasswordState>(
-      listener: (context, state) {
-        if (state.isSuccess) {
-          CustomSnackbar.showSuccess(
-            context: context,
-            message: state.responseEntity?.message ??
-                locale.msg_password_reset_success,
-          );
-          // Navigate back to login
-          context.pushNamedAndRemoveUntil(
-            AppRoutes.signUp,
-            predicate: (route) => false,
-          );
-        }
-        if (state.errorMessage != null) {
-          CustomSnackbar.showError(
-            context: context,
-            message: state.errorMessage!,
-          );
-        }
-      },
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      appBar: AppBar(
         backgroundColor: colorScheme.surface,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.screenH,
-              vertical: Spacing.screenV,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with title and description
-                ResetPasswordHeader(identifier: identifier),
-                const SizedBox(height: Spacing.xl),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: colorScheme.onSurface,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.screenH,
+            vertical: Spacing.screenV,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with title and description
+              ResetPasswordHeader(identifier: identifier),
+              const SizedBox(height: Spacing.xl),
 
-                // Form with fields and submit button
-                ResetPasswordForm(identifier: identifier),
-              ],
-            ),
+              // Form with fields and submit button
+              ResetPasswordForm(
+                identifier: identifier,
+                otpCode: otpCode,
+                onSuccess: () {
+                  CustomSnackbar.showSuccess(
+                    context: context,
+                    message: locale.msg_password_reset_success,
+                  );
+                  // Navigate back to login
+                  context.pushNamedAndRemoveUntil(
+                    AppRoutes.signUp,
+                    predicate: (route) => false,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

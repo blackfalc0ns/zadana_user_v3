@@ -66,24 +66,24 @@ class _PromoBannerState extends State<PromoBanner> {
     final locale = context.localization;
     return [
       BannerData(
-        tag: locale.banner_tag,
-        title: locale.banner_title,
-        subtitle: locale.banner_subtitle,
-        actionLabel: locale.banner_action,
+        tag: 'عرض خاص',
+        title: 'توصيل مجاني للطلبات فوق 100 ريال',
+        subtitle: 'استمتع بالتوصيل المجاني لجميع أنحاء المدينة',
+        actionLabel: 'اطلب الآن',
         imageUrl: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600',
       ),
       BannerData(
-        tag: 'جديد',
-        title: 'منتجات طازجة يومياً',
-        subtitle: 'أفضل الخضروات والفواكه',
-        actionLabel: 'اكتشف المزيد',
+        tag: 'جودة عالية',
+        title: 'منتجات طازجة يومياً من أفضل المزارع',
+        subtitle: 'ضمان الجودة والطعم الأصيل',
+        actionLabel: 'تسوق الآن',
         imageUrl: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=600',
       ),
       BannerData(
-        tag: 'توصيل مجاني',
-        title: 'توصيل مجاني للطلبات فوق 100 ريال',
-        subtitle: 'سرعة في التوصيل وجودة في الخدمة',
-        actionLabel: 'اطلب الآن',
+        tag: 'خدمة سريعة',
+        title: 'توصيل في نفس اليوم لجميع الطلبات',
+        subtitle: 'خدمة عملاء متميزة على مدار الساعة',
+        actionLabel: 'اكتشف المزيد',
         imageUrl: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=600',
       ),
     ];

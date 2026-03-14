@@ -7,12 +7,10 @@ class BannerContent extends StatelessWidget {
   const BannerContent({
     super.key,
     required this.banner,
-    this.onActionTap,
     this.padding,
   });
 
   final BannerData banner;
-  final VoidCallback? onActionTap;
   final EdgeInsetsGeometry? padding;
 
   @override
@@ -37,18 +35,9 @@ class BannerContent extends StatelessWidget {
             BannerTitle(text: banner.title),
             const SizedBox(height: 3),
             BannerSubtitle(text: banner.subtitle),
-            const SizedBox(height: 8),
-            BannerActionButton(
-              text: banner.actionLabel,
-              onTap: onActionTap ?? () => _handleDefaultAction(),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  void _handleDefaultAction() {
-    debugPrint('Banner action tapped: ${banner.actionLabel}');
   }
 }

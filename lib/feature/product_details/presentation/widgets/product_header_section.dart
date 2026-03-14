@@ -46,9 +46,9 @@ class ProductHeaderSection extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
                       ),
                       child: Text(
                         '1 كجم',
@@ -71,55 +71,45 @@ class ProductHeaderSection extends StatelessWidget {
   }
 
   Widget _buildQuantitySelector() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(Spacing.sm),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildButton(Icons.remove, quantity > 1 ? onDecrease : null, quantity > 1),
-          Container(
-            width: 40,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              border: Border(
-                left: BorderSide(color: AppColors.border),
-                right: BorderSide(color: AppColors.border),
-              ),
-            ),
-            child: Text(
-              quantity.toString(),
-              style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.bold),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildButton(Icons.remove, quantity > 1 ? onDecrease : null),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            quantity.toString(),
+            style: AppTextStyles.labelMedium.copyWith(
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+              fontSize: 16,
             ),
           ),
-          _buildButton(Icons.add, onIncrease, true),
-        ],
-      ),
+        ),
+        _buildButton(Icons.add, onIncrease),
+      ],
     );
   }
 
-  Widget _buildButton(IconData icon, VoidCallback? onTap, bool enabled) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.horizontal(
-          right: icon == Icons.remove ? const Radius.circular(Spacing.sm) : Radius.zero,
-          left: icon == Icons.add ? const Radius.circular(Spacing.sm) : Radius.zero,
+  Widget _buildButton(IconData icon, VoidCallback? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: onTap != null ? AppColors.primary : AppColors.disabled,
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Container(
-          width: 32,
-          height: 32,
-          alignment: Alignment.center,
-          child: Icon(
-            icon,
-            size: 16,
-            color: enabled ? AppColors.primary : AppColors.disabled,
-          ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: AppColors.white,
         ),
       ),
     );

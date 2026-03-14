@@ -26,4 +26,34 @@ class ProductModel {
     this.unit,
     this.emoji,
   });
+
+  ProductModel copyWith({
+    String? id,
+    String? name,
+    String? store,
+    double? price,
+    double? oldPrice,
+    String? imageUrl,
+    double? rating,
+    int? reviewCount,
+    String? discount,
+    bool? isFavorite,
+    String? unit,
+    String? emoji,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      store: store ?? this.store,
+      price: price ?? this.price,
+      oldPrice: oldPrice ?? this.oldPrice,
+      imageUrl: imageUrl ?? this.imageUrl,
+      rating: rating ?? this.rating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      discount: discount ?? this.discount,
+      isFavorite: isFavorite ?? this.isFavorite,
+      unit: unit ?? this.unit,
+      emoji: emoji ?? this.emoji,
+    );
+  }
 }

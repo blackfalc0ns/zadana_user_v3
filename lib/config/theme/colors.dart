@@ -14,7 +14,8 @@ class AppColors {
   static const Color primarySurface = Color(0XFF007A92);
 
   // ── Secondary / Accent ──
-  static const Color secondary = Color(0xFFFFC107);
+ // static const Color secondary = Color(0xFFFFC107);
+ static const Color secondary=Color(0xffe48215);
   static const Color secondaryLight = Color(0xFFFFD54F);
   static const Color secondaryDark = Color(0xFFF9A825);
 

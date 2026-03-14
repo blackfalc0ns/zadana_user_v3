@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/feature/category_product/presentaion/widget/categ
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/price_comparison_section.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_description_section.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_header_section.dart';
+import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final CategoryProductModel product;
@@ -38,12 +39,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           children: [
             Container(
               width: double.infinity,
-              height: 350,
+              height: 250,
               color: AppColors.surface,
               child: Center(
-                child: Text(
-                  widget.product.emoji,
-                  style: const TextStyle(fontSize: 180),
+                child: ProductImage(
+                  emoji: widget.product.emoji,
+                  url: '',
+                  width: double.infinity,
+                  height: 250,
+                  borderRadius: 0,
+                  heroTag: 'product_image_${widget.product.id}',
                 ),
               ),
             ),
@@ -86,7 +91,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           child: Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: ElevatedButton.icon(
                   onPressed: () => CustomSnackbar.showSuccess(
                     context: context,
                     message: l10n.product_added_to_cart(
@@ -94,24 +99,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       widget.product.name,
                     ),
                   ),
-                  icon: FaIcon(FontAwesomeIcons.cartPlus, size: 20),
+                  icon: const FaIcon(FontAwesomeIcons.cartPlus, size: 18),
                   label: Text(l10n.add_to_cart_button),
-                  style: OutlinedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
               ),
               const SizedBox(width: Spacing.sm),
               Expanded(
-                child: ElevatedButton(
+                child: OutlinedButton.icon(
                   onPressed: () => CustomSnackbar.showInfo(
                     context: context,
-                    message: l10n.redirecting_to_checkout,
+                    message: 'الانتقال للسلة',
                   ),
-                  style: ElevatedButton.styleFrom(
+                  icon: const FaIcon(FontAwesomeIcons.shoppingCart, size: 18),
+                  label: const Text('السلة'),
+                  style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: Text(l10n.buy_now),
                 ),
               ),
             ],

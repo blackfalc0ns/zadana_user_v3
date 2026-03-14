@@ -31,6 +31,9 @@ class Assets {
   static const String icMenu = '$_icons/ic_menu.svg';
   static const String icLocation = '$_icons/ic_location.svg';
   static const String icWallet = '$_icons/ic_wallet.svg';
+  
+  // ── Search Icon ──
+  static const String searchNormal = '$_images/search-normal.svg';
 
   // ── Fonts ──
   static const String cairoRegular = '$_fonts/Cairo-Regular.ttf';
