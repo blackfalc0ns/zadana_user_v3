@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/constants/font_manger.dart';
 import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 
 class PriceText extends StatelessWidget {

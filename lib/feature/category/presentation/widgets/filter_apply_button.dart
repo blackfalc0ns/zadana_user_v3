@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/constants/font_manger.dart';
-import 'package:zadana_user_v3/core/constants/styles_manger.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class FilterApplyButton extends StatelessWidget {
@@ -29,7 +25,7 @@ class FilterApplyButton extends StatelessWidget {
             ),
           ],
         ),
-        child: AppButton(onPressed: onApply, text: 'تطبيق الفلتر'),
+        child: AppButton(onPressed: onApply, text: 'تطبيق التصفيه'),
       ),
     );
   }

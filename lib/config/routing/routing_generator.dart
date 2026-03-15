@@ -83,28 +83,28 @@ class RouteGenerator {
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               ProductDetailsScreen(product: product),
-          transitionDuration: const Duration(milliseconds: 600),
-          reverseTransitionDuration: const Duration(milliseconds: 400),
+          transitionDuration: const Duration(milliseconds: 350),
+          reverseTransitionDuration: const Duration(milliseconds: 250),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // Custom slide transition مع Hero Animation
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0), // يدخل من اليمين
-                end: Offset.zero,
+            // نفس الانيميشن المستخدم في ProductNavigationHelper
+            return FadeTransition(
+              opacity: Tween<double>(
+                begin: 0.0,
+                end: 1.0,
               ).animate(
                 CurvedAnimation(
                   parent: animation,
-                  curve: Curves.easeOutCubic,
+                  curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
                 ),
               ),
-              child: FadeTransition(
-                opacity: Tween<double>(
-                  begin: 0.0,
+              child: ScaleTransition(
+                scale: Tween<double>(
+                  begin: 0.92,
                   end: 1.0,
                 ).animate(
                   CurvedAnimation(
                     parent: animation,
-                    curve: const Interval(0.0, 0.7, curve: Curves.easeOut),
+                    curve: Curves.easeOutBack,
                   ),
                 ),
                 child: child,

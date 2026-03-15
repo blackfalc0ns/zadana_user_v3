@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('ar')],
       theme: AppTheme.light,
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.splash,
+      initialRoute: AppRoutes.mainShell,
       //  home: VerifyOtpScreen(),
     );
   }

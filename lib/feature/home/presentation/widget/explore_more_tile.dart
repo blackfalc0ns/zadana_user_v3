@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 
 class ExploreMoreTile extends StatelessWidget {
   const ExploreMoreTile({
@@ -62,11 +63,13 @@ class ExploreMoreTile extends StatelessWidget {
                   ),
                   Text(product.store, style: AppTextStyles.bodySmall),
                   const SizedBox(height: Spacing.xs),
-                  Text(
-                    '\$${product.price.toStringAsFixed(2)}${product.unit != null ? '/${product.unit}' : ''}',
-                    style: AppTextStyles.labelLarge.copyWith(
-                      color: AppColors.primary,
-                    ),
+                  Row(
+                    children: [
+                      PriceText(
+                        price: product.price,
+                        unit: product.unit,
+                      ),
+                    ],
                   ),
                 ],
               ),

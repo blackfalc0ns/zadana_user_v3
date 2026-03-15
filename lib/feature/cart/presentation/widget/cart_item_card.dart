@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
@@ -97,12 +99,12 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 2))
+              blurRadius: 6,
+              offset: const Offset(0, 1))
         ],
       ),
       padding: const EdgeInsets.all(12),
@@ -113,7 +115,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
             height: 80,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(color: AppColors.border, width: 1),
             ),
             child: Center(
@@ -140,7 +142,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
                           horizontal: 16, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppColors.background,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text('${widget.item.quantity}',
                           style: AppTextStyles.labelMedium.copyWith(
@@ -160,7 +162,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(Icons.delete_outline, size: 20, color: AppColors.error),
             ),
@@ -213,9 +215,9 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
                   const SizedBox(width: 4),
                   Text(
                     '${price.toStringAsFixed(0)} ريال/${widget.item.unit}',
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: AppColors.primary, 
-                      fontWeight: FontWeight.w700,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: AppColors.primary,
                       fontSize: 12,
                     ),
                   ),
@@ -236,7 +238,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
         height: 32,
         decoration: BoxDecoration(
           color: AppColors.primary,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Icon(icon, size: 18, color: AppColors.white),
       ),

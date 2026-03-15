@@ -30,13 +30,13 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: Spacing.lg),
+            const SizedBox(height: Spacing.sm),
             _buildProfileCard(context),
-            const SizedBox(height: Spacing.lg),
+            const SizedBox(height: Spacing.sm),
             _buildMenuList(l10n, context),
-            const SizedBox(height: Spacing.lg),
+            const SizedBox(height: Spacing.sm),
             _buildLogoutButton(l10n),
-            const SizedBox(height: Spacing.xl),
+            const SizedBox(height: Spacing.base),
           ],
         ),
       ),
@@ -45,21 +45,21 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildProfileCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).pushNamed(AppRoutes.editProfile);
         },
         child: Container(
-          padding: const EdgeInsets.all(Spacing.base),
+          padding: const EdgeInsets.all(Spacing.sm),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow.withValues(alpha: 0.08),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
+                color: AppColors.shadow.withValues(alpha: 0.06),
+                blurRadius: 6,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -68,11 +68,11 @@ class ProfileScreen extends StatelessWidget {
               Stack(
                 children: [
                   CircleAvatar(
-                    radius: 32,
+                    radius: 24,
                     backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                     child: Text(
                       'م',
-                      style: AppTextStyles.h3.copyWith(
+                      style: AppTextStyles.h4.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
@@ -82,33 +82,33 @@ class ProfileScreen extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.surface, width: 2),
+                        border: Border.all(color: AppColors.surface, width: 1.5),
                       ),
                       child: const FaIcon(
                         FontAwesomeIcons.pen,
-                        size: 10,
+                        size: 8,
                         color: AppColors.white,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: Spacing.base),
+              const SizedBox(width: Spacing.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'محمد أحمد',
-                      style: AppTextStyles.h4.copyWith(
+                      style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       'mohamed@example.com',
                       style: AppTextStyles.bodySmall.copyWith(
@@ -116,7 +116,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 1),
                     Text(
                       '+966 50 123 4567',
                       style: AppTextStyles.bodySmall.copyWith(
@@ -129,7 +129,7 @@ class ProfileScreen extends StatelessWidget {
               const FaIcon(
                 FontAwesomeIcons.chevronLeft,
                 color: AppColors.textSecondary,
-                size: 16,
+                size: 14,
               ),
             ],
           ),
@@ -140,7 +140,7 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildMenuList(AppLocalizations l10n, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: Column(
         children: [
           _buildMenuTile(
@@ -152,10 +152,10 @@ class ProfileScreen extends StatelessWidget {
           _buildMenuTile(
             icon: FontAwesomeIcons.clockRotateLeft,
             title: l10n.nav_orders,
-            iconColor: AppColors.success,
+            iconColor: AppColors.secondary,
             onTap: () {},
           ),
-          const SizedBox(height: Spacing.base),
+          const SizedBox(height: Spacing.xs),
           _buildMenuTile(
             icon: FontAwesomeIcons.globe,
             title: l10n.language,
@@ -171,25 +171,25 @@ class ProfileScreen extends StatelessWidget {
           _buildMenuTile(
             icon: FontAwesomeIcons.bell,
             title: l10n.notifications,
-            iconColor: AppColors.warning,
+            iconColor: AppColors.secondary,
             onTap: () {},
           ),
           _buildMenuTile(
             icon: FontAwesomeIcons.lock,
             title: l10n.change_password,
-            iconColor: AppColors.textSecondary,
+            iconColor: AppColors.primary,
             onTap: () {},
           ),
           _buildMenuTile(
             icon: FontAwesomeIcons.circleQuestion,
             title: l10n.help_support,
-            iconColor: AppColors.info,
+            iconColor: AppColors.secondary,
             onTap: () {},
           ),
           _buildMenuTile(
             icon: FontAwesomeIcons.circleInfo,
             title: l10n.about_app,
-            iconColor: AppColors.textSecondary,
+            iconColor: AppColors.primary,
             onTap: () {},
           ),
         ],
@@ -205,32 +205,32 @@ class ProfileScreen extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: Spacing.sm),
+      margin: const EdgeInsets.only(bottom: Spacing.xs),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: AppColors.shadow.withValues(alpha: 0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
       child: ListTile(
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: Spacing.base,
-          vertical: Spacing.xs,
+          horizontal: Spacing.sm,
+          vertical: 2,
         ),
         leading: FaIcon(
           icon,
           color: iconColor,
-          size: 20,
+          size: 18,
         ),
         title: Text(
           title,
-          style: AppTextStyles.bodyLarge.copyWith(
+          style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -238,7 +238,7 @@ class ProfileScreen extends StatelessWidget {
             const FaIcon(
               FontAwesomeIcons.chevronLeft,
               color: AppColors.textSecondary,
-              size: 14,
+              size: 12,
             ),
       ),
     );
@@ -246,34 +246,34 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildLogoutButton(AppLocalizations l10n) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: AppColors.shadow.withValues(alpha: 0.04),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
         child: ListTile(
           onTap: () {},
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: Spacing.base,
-            vertical: Spacing.xs,
+            horizontal: Spacing.sm,
+            vertical: 2,
           ),
           leading: const FaIcon(
             FontAwesomeIcons.rightFromBracket,
             color: AppColors.error,
-            size: 20,
+            size: 18,
           ),
           title: Text(
             l10n.logout,
-            style: AppTextStyles.bodyLarge.copyWith(
+            style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.error,
               fontWeight: FontWeight.w600,
             ),

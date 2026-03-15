@@ -21,9 +21,41 @@ class ProductNavigationHelper {
   /// الانتقال لصفحة تفاصيل المنتج
   static void navigateToProductDetails(BuildContext context, ProductModel product) {
     final navigationModel = convertToNavigationModel(product);
-    pushScreenWithoutNavBar(
-      context,
-      ProductDetailsScreen(product: navigationModel),
+    
+    // استخدام الـ routing المحسن بدلاً من pushScreenWithoutNavBar
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ProductDetailsScreen(product: navigationModel),
+        transitionDuration: const Duration(milliseconds: 350),
+        reverseTransitionDuration: const Duration(milliseconds: 250),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // انيميشن محسن يعمل من أي مكان في الشاشة
+          return FadeTransition(
+            opacity: Tween<double>(
+              begin: 0.0,
+              end: 1.0,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+              ),
+            ),
+            child: ScaleTransition(
+              scale: Tween<double>(
+                begin: 0.92,
+                end: 1.0,
+              ).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutBack,
+                ),
+              ),
+              child: child,
+            ),
+          );
+        },
+      ),
     );
   }
 }

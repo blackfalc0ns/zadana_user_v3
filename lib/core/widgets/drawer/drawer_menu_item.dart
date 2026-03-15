@@ -24,35 +24,38 @@ class DrawerMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: FaIcon(
-        icon,
-        color: iconColor ?? textColor ?? AppColors.textPrimary,
-        size: 20,
-      ),
-      title: Text(
-        title,
-        style: AppTextStyles.labelMedium.copyWith(
-          color: textColor ?? AppColors.textPrimary,
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: ListTile(minTileHeight: 10,
+        leading: FaIcon(
+          icon,
+          color: iconColor ?? textColor ?? AppColors.textPrimary,
+          size: 18,
         ),
-      ),
-      subtitle: subtitle != null
-          ? Text(
-              subtitle!,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            )
-          : null,
-      trailing: FaIcon(
-        FontAwesomeIcons.chevronLeft,
-        color: AppColors.textSecondary,
-        size: 14,
-      ),
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: Spacing.lg,
-        vertical: Spacing.xs,
+        title: Text(
+          title,
+          style: AppTextStyles.labelMedium.copyWith(
+            color: textColor ?? AppColors.textPrimary,
+          ),
+        ),
+        subtitle: subtitle != null
+            ? Text(
+                subtitle!,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              )
+            : null,
+        trailing: FaIcon(
+          FontAwesomeIcons.chevronLeft,
+          color: AppColors.textSecondary,
+          size: 12,
+        ),
+        onTap: onTap,
+        // contentPadding: const EdgeInsets.symmetric(
+        //   horizontal: Spacing.sm,
+        //   vertical: Spacing.xs,
+        // ),
       ),
     );
   }

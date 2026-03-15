@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
@@ -27,7 +29,13 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       title: Column(
         children: [
-          Text(l10n.cart, style: AppTextStyles.h4),
+          Text(
+            l10n.cart,
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size13,
+            ),
+          ),
           if (itemCount > 0)
             Text(
               '$totalQuantity ${l10n.product}',

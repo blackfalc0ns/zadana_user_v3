@@ -336,17 +336,17 @@ const List<Map<String, dynamic>> kSortOptions = [
   },
   {
     'title': 'الأقل سعراً',
-    'subtitle': 'من الأرخص إلى الأغلى',
+    'subtitle': 'من الأقل إلى الأعلى',
     'value': 'price_low_high',
   },
   {
     'title': 'الأعلى سعراً',
-    'subtitle': 'من الأغلى إلى الأرخص',
+    'subtitle': 'من الأعلى إلى الأقل',
     'value': 'price_high_low',
   },
   {
     'title': 'الأكثر مبيعاً',
-    'subtitle': 'المنتجات الأكثر شراءً',
+    'subtitle': 'المنتجات الأكثر طلباً',
     'value': 'best_selling',
   },
   {
@@ -356,7 +356,7 @@ const List<Map<String, dynamic>> kSortOptions = [
   },
   {
     'title': 'ترتيب أبجدي',
-    'subtitle': 'من أ إلى ي',
+    'subtitle': 'من الألف إلى الياء',
     'value': 'alphabetical',
   },
 ];

@@ -44,29 +44,6 @@ class HomeSearchBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // ── Filter icon — على اليمين في RTL ─────────────
-            GestureDetector(
-              onTap: onFilterTap,
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Icon(
-                  Icons.tune_rounded,
-                  color: onFilterTap != null
-                      ? AppColors.primary
-                      : AppColors.textHint,
-                  size: 20,
-                ),
-              ),
-            ),
-      
-            // ── Divider ──────────────────────────────────────
-            Container(
-              width: 1,
-              height: 24,
-              color: AppColors.border,
-            ),
-      
             // ── Search icon + field ──────────────────────────
             Expanded(
               child: TextFormField(
@@ -82,7 +59,7 @@ class HomeSearchBar extends StatelessWidget {
                   hintStyle: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textHint,
                   ),
-                  suffixIcon: const Icon(
+                  prefixIcon: const Icon(
                     Icons.search_rounded,
                     color: AppColors.textHint,
                     size: 20,
@@ -94,6 +71,29 @@ class HomeSearchBar extends StatelessWidget {
                     vertical: 14,
                     horizontal: 8,
                   ),
+                ),
+              ),
+            ),
+
+            // ── Divider ──────────────────────────────────────
+            Container(
+              width: 1,
+              height: 24,
+              color: AppColors.border,
+            ),
+
+            // ── Filter icon — على اليسار في RTL ─────────────
+            GestureDetector(
+              onTap: onFilterTap,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Icon(
+                  Icons.tune_rounded,
+                  color: onFilterTap != null
+                      ? AppColors.primary
+                      : AppColors.textHint,
+                  size: 20,
                 ),
               ),
             ),

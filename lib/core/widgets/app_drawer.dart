@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_header.dart'
@@ -15,32 +17,39 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.localization;
 
-    return Drawer(
-      backgroundColor: AppColors.surface,
-      child: Column(
-        children: [
-          // Header
-          const custom_header.DrawerHeader(),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.75, // 75% من عرض الشاشة
+      child: Drawer(
+        backgroundColor: AppColors.surface,
+        child: Column(
+          children: [
+            // Header
+            const custom_header.DrawerHeader(),
 
-          // Menu Items
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                // Personal Information Section
-                _buildPersonalInfoSection(context, locale),
-                const Divider(color: AppColors.divider),
-                _buildMainMenuItems(context, locale),
-                const Divider(color: AppColors.divider),
-                _buildSettingsMenuItems(context, locale),
-                const Divider(color: AppColors.divider),
-                _buildSupportMenuItems(context, locale),
-                const Divider(color: AppColors.divider),
-                _buildLogoutMenuItem(context, locale),
-              ],
+            // Menu Items
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      // Personal Information Section
+                      _buildPersonalInfoSection(context, locale),
+                      const Divider(color: AppColors.divider),
+                      _buildMainMenuItems(context, locale),
+                      const Divider(color: AppColors.divider),
+                      _buildSettingsMenuItems(context, locale),
+                      const Divider(color: AppColors.divider),
+                      _buildSupportMenuItems(context, locale),
+                      const Divider(color: AppColors.divider),
+                      _buildLogoutMenuItem(context, locale),
+                      const SizedBox(height: 20), // مساحة من تحت
+                    ]),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -49,35 +58,32 @@ class AppDrawer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            'المعلومات الشخصية',
-            style: AppTextStyles.labelLarge.copyWith(
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: Text(
+        //     'المعلومات الشخصية',
+        //     style: getMediumStyle(fontFamily: FontConstant.cairo)
+        //   ),
+        // ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.user,
-          title: 'الاسم الكامل',
+          title: 'الاسم',
           subtitle: 'abdo mohamed',
-          iconColor: AppColors.secondary,
+          iconColor: AppColors.primary,
           onTap: () {},
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.phone,
           title: 'رقم الهاتف',
           subtitle: '01028233582',
-          iconColor: AppColors.info,
+          iconColor: AppColors.secondary,
           onTap: () {},
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.envelope,
           title: 'البريد الإلكتروني',
           subtitle: 'baderahmed40@gmail.com',
-          iconColor: AppColors.warning,
+          iconColor: AppColors.primary,
           onTap: () {},
         ),
       ],
@@ -96,19 +102,19 @@ class AppDrawer extends StatelessWidget {
         DrawerMenuItem(
           icon: FontAwesomeIcons.heart,
           title: 'المفضلة',
-          iconColor: AppColors.error,
+          iconColor: AppColors.primary,
           onTap: () => DrawerActions.handleFavorites(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.listUl,
           title: 'الأقسام',
-          iconColor: AppColors.primary,
+          iconColor: AppColors.secondary,
           onTap: () => DrawerActions.handleCategories(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.bagShopping,
           title: 'طلباتي',
-          iconColor: AppColors.success,
+          iconColor: AppColors.primary,
           onTap: () => DrawerActions.handleMyOrders(context),
         ),
       ],
@@ -133,13 +139,13 @@ class AppDrawer extends StatelessWidget {
         DrawerMenuItem(
           icon: FontAwesomeIcons.circleInfo,
           title: 'عن التطبيق',
-          iconColor: AppColors.info,
+          iconColor: AppColors.secondary,
           onTap: () => DrawerActions.handleAboutApp(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.code,
           title: 'المطور',
-          iconColor: AppColors.success,
+          iconColor: AppColors.primary,
           onTap: () => DrawerActions.handleDeveloper(context),
         ),
         DrawerMenuItem(
@@ -159,7 +165,7 @@ class AppDrawer extends StatelessWidget {
         DrawerMenuItem(
           icon: FontAwesomeIcons.phone,
           title: 'التواصل معنا',
-          iconColor: AppColors.success,
+          iconColor: AppColors.primary,
           onTap: () => DrawerActions.handleContactUs(context),
         ),
         DrawerMenuItem(

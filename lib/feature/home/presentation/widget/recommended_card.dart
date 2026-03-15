@@ -6,10 +6,16 @@ import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
 class RecommendedCard extends StatelessWidget {
-  const RecommendedCard({super.key, required this.product, this.onTap});
+  const RecommendedCard({
+    super.key, 
+    required this.product, 
+    this.onTap,
+    this.onFavoriteTap,
+  });
 
   final ProductModel product;
   final VoidCallback? onTap;
+  final VoidCallback? onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -20,61 +26,91 @@ class RecommendedCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: cardWidth,
-        padding: const EdgeInsets.all(Spacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(Spacing.cardRadius),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ── Image ─────────────────────────────────────────────
-            ClipRRect(
-              borderRadius: BorderRadius.circular(Spacing.sm.toDouble()),
-              child: ProductImage(
-                emoji: product.emoji,
-                url: product.imageUrl,
-                width: 48,
-                height: 48,
-                borderRadius: Spacing.sm.toDouble(),
-              ),
+      child: Stack(
+        children: [
+          Container(
+            width: cardWidth,
+            padding: const EdgeInsets.all(Spacing.sm),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(Spacing.cardRadius),
+              border: Border.all(color: AppColors.border),
             ),
-
-            const SizedBox(width: Spacing.sm),
-
-            // ── Text ──────────────────────────────────────────────
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min, // ← مش بياخد أكتر من اللازم
-                children: [
-                  Text(
-                    product.name,
-                    style: AppTextStyles.labelMedium.copyWith(fontSize: 12),
-                    maxLines: 1, // ← 1 بدل 2 عشان ميتعداش الـ height
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    product.store,
-                    style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    '\$${product.price.toStringAsFixed(2)}',
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: AppColors.primary,
-                      fontSize: 12,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // ── Image ─────────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.only(right: 8), // إضافة مساحة من اليمين
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Spacing.sm.toDouble()),
+                    child: ProductImage(
+                      emoji: product.emoji,
+                      url: product.imageUrl,
+                      width: 48,
+                      height: 48,
+                      borderRadius: Spacing.sm.toDouble(),
                     ),
                   ),
-                ],
+                ),
+
+                const SizedBox(width: Spacing.sm),
+
+                // ── Text ──────────────────────────────────────────────
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        product.name,
+                        style: AppTextStyles.labelMedium.copyWith(fontSize: 12),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        product.store,
+                        style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // ── Favorite Icon ─────────────────────────────────────────
+          if (onFavoriteTap != null)
+            Positioned(
+              top: 4,
+              right: 4,
+              child: GestureDetector(
+                onTap: onFavoriteTap,
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
+                    ],
+                  ),
+                  child: Icon(
+                    product.isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    size: 16,
+                    color: product.isFavorite
+                        ? AppColors.error
+                        : AppColors.textSecondary,
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

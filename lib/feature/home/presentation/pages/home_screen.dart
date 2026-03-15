@@ -12,6 +12,7 @@ import 'package:zadana_user_v3/feature/home/presentation/widget/sections/explore
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/featured_products_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/recommended_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/special_offers_section.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/sections/stores_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,23 +51,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          // 2. Special Offers Section
+          // 3. Recommended For You Section
+
+          // 3. Special Offers Section
           SliverToBoxAdapter(child: const SpecialOffersSection()),
 
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-          // 3. Best Selling Section
-          SliverToBoxAdapter(child: const BestSellingSection()),
-
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-          // 4. Featured Products Section
-          SliverToBoxAdapter(child: const FeaturedProductsSection()),
-
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-          // 5. Recommended For You Section
           SliverToBoxAdapter(child: const RecommendedSection()),
+
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+          // 4. Best Selling Section
+          SliverToBoxAdapter(child: const BestSellingSection()),
+          // 2. Stores Section
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+          SliverToBoxAdapter(child: const StoresSection()),
+
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+          // 5. Featured Products Section
+          SliverToBoxAdapter(child: const FeaturedProductsSection()),
 
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
