@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/font_manger.dart';
+import 'package:zadana_user_v3/core/constants/styles_manger.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
@@ -25,8 +27,8 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
 
   @override
   Widget build(BuildContext context) {
-    final displayedCategories = showAllCategories 
-        ? kCategoryList 
+    final displayedCategories = showAllCategories
+        ? kCategoryList
         : kCategoryList.take(4).toList();
 
     return Column(
@@ -39,7 +41,7 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            childAspectRatio: 0.8,
+            childAspectRatio: 1.1,
             crossAxisSpacing: Spacing.sm,
             mainAxisSpacing: Spacing.sm,
           ),
@@ -65,14 +67,16 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
                   children: [
                     Text(
                       showAllCategories ? 'عرض أقل' : 'عرض المزيد',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.secondary,
-                        fontWeight: FontWeight.w600,
+                      style: getBoldStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size16,
                       ),
                     ),
                     const SizedBox(width: 4),
                     Icon(
-                      showAllCategories ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                      showAllCategories
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
                       color: AppColors.secondary,
                       size: 18,
                     ),
@@ -93,7 +97,10 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          gradient: isSelected 
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.lightGrey,
+          ),
+          gradient: isSelected
               ? LinearGradient(
                   colors: [
                     AppColors.primary.withValues(alpha: 0.9),
@@ -102,37 +109,30 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
-              : LinearGradient(
-                  colors: [
-                    Colors.grey[100]!,
-                    Colors.grey[50]!,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+              : null,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : Colors.transparent,
-          ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ] : null,
+
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(category.emoji, style: const TextStyle(fontSize: 20)),
+            Text(category.emoji, style: const TextStyle(fontSize: 24)),
             const SizedBox(height: 4),
             Text(
               category.name,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: isSelected ? Colors.white : AppColors.textPrimary,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                fontSize: 11,
+              style: getRegularStyle(
+                color: isSelected ? AppColors.white : AppColors.textPrimary,
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size12,
               ),
               textAlign: TextAlign.center,
               maxLines: 1,

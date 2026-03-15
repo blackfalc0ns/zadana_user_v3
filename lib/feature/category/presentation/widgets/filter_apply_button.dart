@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/font_manger.dart';
+import 'package:zadana_user_v3/core/constants/styles_manger.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class FilterApplyButton extends StatelessWidget {
-  const FilterApplyButton({
-    super.key,
-    required this.onApply,
-  });
+  const FilterApplyButton({super.key, required this.onApply});
 
   final VoidCallback onApply;
 
@@ -29,24 +29,7 @@ class FilterApplyButton extends StatelessWidget {
             ),
           ],
         ),
-        child: ElevatedButton(
-          onPressed: onApply,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 2,
-          ),
-          child: Text(
-            'تطبيق الفلتر',
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
+        child: AppButton(onPressed: onApply, text: 'تطبيق الفلتر'),
       ),
     );
   }

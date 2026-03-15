@@ -3,7 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/drawer/drawer_header.dart' as custom_header;
+import 'package:zadana_user_v3/core/widgets/drawer/drawer_header.dart'
+    as custom_header;
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_menu_item.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_actions.dart';
 
@@ -13,35 +14,33 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    
+
     return Drawer(
       backgroundColor: AppColors.surface,
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            const custom_header.DrawerHeader(),
-            
-            // Menu Items
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  // Personal Information Section
-                  _buildPersonalInfoSection(context, locale),
-                  const Divider(color: AppColors.divider),
-                  _buildMainMenuItems(context, locale),
-                  const Divider(color: AppColors.divider),
-                  _buildSettingsMenuItems(context, locale),
-                  const Divider(color: AppColors.divider),
-                  _buildSupportMenuItems(context, locale),
-                  const Divider(color: AppColors.divider),
-                  _buildLogoutMenuItem(context, locale),
-                ],
-              ),
+      child: Column(
+        children: [
+          // Header
+          const custom_header.DrawerHeader(),
+
+          // Menu Items
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                // Personal Information Section
+                _buildPersonalInfoSection(context, locale),
+                const Divider(color: AppColors.divider),
+                _buildMainMenuItems(context, locale),
+                const Divider(color: AppColors.divider),
+                _buildSettingsMenuItems(context, locale),
+                const Divider(color: AppColors.divider),
+                _buildSupportMenuItems(context, locale),
+                const Divider(color: AppColors.divider),
+                _buildLogoutMenuItem(context, locale),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

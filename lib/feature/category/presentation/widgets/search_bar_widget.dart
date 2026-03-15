@@ -33,7 +33,7 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
+      height: 54,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
       ),
@@ -50,23 +50,12 @@ class SearchBarWidget extends StatelessWidget {
                 ),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        Assets.searchNormal,
-                        width: 16,
-                        height: 16,
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.textSecondary,
-                          BlendMode.srcIn,
-                        ),
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: SvgPicture.asset(
+                      Assets.searchNormal,
+                      width: 16,
+                      height: 16,
                     ),
                   ),
                 ),
@@ -81,18 +70,15 @@ class SearchBarWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.all(6),
             width: 42,
-            height: 42,
+            height: 48,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border),
-              borderRadius: BorderRadius.circular(6),
+              color: AppColors.primary,
+              border: Border.all(color: AppColors.primary),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: IconButton(
               onPressed: () => _showFilterBottomSheet(context),
-              icon: const Icon(
-                Icons.tune,
-                color: AppColors.textSecondary,
-                size: 24,
-              ),
+              icon: const Icon(Icons.tune, color: AppColors.white, size: 24),
               padding: EdgeInsets.zero,
             ),
           ),

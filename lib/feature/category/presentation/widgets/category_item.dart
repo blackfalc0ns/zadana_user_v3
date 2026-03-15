@@ -30,12 +30,12 @@ class CategoryItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.white,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.border, width: 1),
+                border: Border.all(color: AppColors.border, width: .5),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.shadow,
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    blurRadius: 1,
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),

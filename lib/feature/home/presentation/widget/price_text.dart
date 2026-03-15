@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/font_manger.dart';
+import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 
 class PriceText extends StatelessWidget {
   const PriceText({
@@ -23,8 +26,9 @@ class PriceText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          _formatPrice(price),
-          style: style ??
+          PriceFormatter.formatPrice(price),
+          style:
+              style ??
               AppTextStyles.labelLarge.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w700,
@@ -33,15 +37,16 @@ class PriceText extends StatelessWidget {
         const SizedBox(width: 2),
         Text(
           'ريال',
-          style: AppTextStyles.bodySmall.copyWith(
+          style: getMediumStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size10,
             color: AppColors.primary,
-            fontSize: 10,
           ),
         ),
         if (oldPrice != null) ...[
           const SizedBox(width: 4),
           Text(
-            _formatPrice(oldPrice!),
+            PriceFormatter.formatPrice(oldPrice!),
             style: AppTextStyles.bodySmall.copyWith(
               decoration: TextDecoration.lineThrough,
               color: AppColors.textHint,
@@ -60,16 +65,5 @@ class PriceText extends StatelessWidget {
         ],
       ],
     );
-  }
-
-  String _formatPrice(double price) {
-    // إزالة الأصفار الزائدة من نهاية السعر
-    if (price == price.toInt()) {
-      // لو السعر رقم صحيح، اعرضه بدون كسور
-      return price.toInt().toString();
-    } else {
-      // لو السعر فيه كسور، اعرضه مع إزالة الأصفار الزائدة
-      return price.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
-    }
   }
 }

@@ -7,13 +7,13 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int itemCount;
   final int totalQuantity;
   final VoidCallback? onClearAll;
-final VoidCallback? onBack; 
+  final VoidCallback? onBack;
   const CartAppBar({
     super.key,
     required this.itemCount,
     required this.totalQuantity,
     this.onClearAll,
-    this.onBack
+    this.onBack,
   });
 
   @override
@@ -22,7 +22,7 @@ final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return AppBar(
       centerTitle: true,
       title: Column(
@@ -37,10 +37,7 @@ final VoidCallback? onBack;
             ),
         ],
       ),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-        onPressed: onBack, // ← بدل Navigator.pop
-      ),
+
       actions: [
         if (onClearAll != null)
           TextButton(

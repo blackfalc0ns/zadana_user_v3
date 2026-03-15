@@ -21,18 +21,26 @@ class ProductsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<ProductModel> products = _getProductsForCategory(category, subCategory);
-    
+    List<ProductModel> products = _getProductsForCategory(
+      category,
+      subCategory,
+    );
+
     products = _applySorting(products, sortOption);
     products = _applyFilters(products, filters);
 
     return GridView.builder(
-      padding: const EdgeInsets.all(Spacing.md),
+      padding: const EdgeInsets.only(
+        top: Spacing.md,
+        left: Spacing.md,
+        right: Spacing.md,
+        bottom: 65,
+      ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: 0.86,
-        crossAxisSpacing: Spacing.xs,
-        mainAxisSpacing: Spacing.xs,
+        crossAxisSpacing: Spacing.xss,
+        mainAxisSpacing: Spacing.xss,
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {
@@ -57,11 +65,17 @@ class ProductsGrid extends StatelessWidget {
     );
   }
 
-  List<ProductModel> _getProductsForCategory(String category, String subCategory) {
+  List<ProductModel> _getProductsForCategory(
+    String category,
+    String subCategory,
+  ) {
     return kCategoryProducts[category] ?? [];
   }
 
-  List<ProductModel> _applySorting(List<ProductModel> products, String sortOption) {
+  List<ProductModel> _applySorting(
+    List<ProductModel> products,
+    String sortOption,
+  ) {
     switch (sortOption) {
       case 'price_low_high':
         return products..sort((a, b) => a.price.compareTo(b.price));
@@ -74,13 +88,16 @@ class ProductsGrid extends StatelessWidget {
     }
   }
 
-  List<ProductModel> _applyFilters(List<ProductModel> products, List<String> filters) {
+  List<ProductModel> _applyFilters(
+    List<ProductModel> products,
+    List<String> filters,
+  ) {
     if (filters.isEmpty) return products;
-    
+
     return products.where((product) {
-      return filters.every((filter) => 
-        product.name.contains(filter) || 
-        product.store.contains(filter)
+      return filters.every(
+        (filter) =>
+            product.name.contains(filter) || product.store.contains(filter),
       );
     }).toList();
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/styles_manger.dart';
 
 class VendorModel {
   final String id;
@@ -42,13 +44,15 @@ class VendorSelector extends StatelessWidget {
       height: 70,
       decoration: BoxDecoration(
         color: AppColors.surface,
-        boxShadow: selectedVendorId == null ? [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-          ),
-        ] : null,
+        boxShadow: selectedVendorId == null
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 1),
+                ),
+              ]
+            : null,
       ),
       child: Column(
         children: [
@@ -61,9 +65,9 @@ class VendorSelector extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               itemCount: vendors.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) => const SizedBox(width: 6),
               itemBuilder: (_, i) => _VendorChip(
                 vendor: vendors[i],
                 isSelected: vendors[i].id == selectedVendorId,
@@ -99,36 +103,41 @@ class _VendorChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected 
-            ? LinearGradient(
-                colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : !hasSelection 
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withValues(alpha: 0.8),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : !hasSelection
               ? null
               : null,
-          color: !isSelected && hasSelection 
-            ? AppColors.background 
-            : !hasSelection 
+          color: !isSelected && hasSelection
+              ? AppColors.background
+              : !hasSelection
               ? AppColors.surface
               : null,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
-              ? AppColors.primary 
-              : !hasSelection 
+            color: isSelected
+                ? AppColors.primary
+                : !hasSelection
                 ? AppColors.primary.withValues(alpha: 0.15)
                 : AppColors.border,
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: !hasSelection ? [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.05),
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ] : null,
+          boxShadow: !hasSelection
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.05),
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -137,17 +146,9 @@ class _VendorChip extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               vendor.name,
-              style: AppTextStyles.labelMedium.copyWith(
-                color: isSelected 
-                  ? AppColors.white 
-                  : !hasSelection 
-                    ? AppColors.textPrimary
-                    : AppColors.textPrimary,
-                fontWeight: isSelected 
-                  ? FontWeight.w700 
-                  : !hasSelection 
-                    ? FontWeight.w600
-                    : FontWeight.w500,
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                color: isSelected ? AppColors.white : AppColors.textPrimary,
               ),
             ),
           ],

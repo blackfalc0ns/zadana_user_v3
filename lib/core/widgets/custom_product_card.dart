@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/font_manger.dart';
+import 'package:zadana_user_v3/core/constants/styles_manger.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
@@ -67,29 +69,38 @@ class CustomProductCard extends StatelessWidget {
                 // ── Info ─────────────────────────────────────────────
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(padding, padding * 0.6, padding, padding * 0.8), // تقليل الـ padding العلوي والسفلي
+                    padding: EdgeInsets.fromLTRB(
+                      padding,
+                      padding * 0.6,
+                      padding,
+                      padding * 0.8,
+                    ), // تقليل الـ padding العلوي والسفلي
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // تغيير من end إلى spaceBetween
+                      mainAxisAlignment: MainAxisAlignment
+                          .spaceBetween, // تغيير من end إلى spaceBetween
                       children: [
                         // Product name
-                        Flexible( // إضافة Flexible للنص
+                        Flexible(
+                          // إضافة Flexible للنص
                           child: Text(
                             product.name,
-                            style: AppTextStyles.labelMedium.copyWith(
+                            style: getSemiBoldStyle(
+                              fontFamily: FontConstant.cairo,
                               fontSize: fontSize,
-                              height: 1.1, // تقليل من 1.2 إلى 1.1
-                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
 
-                        SizedBox(height: isSmallScreen ? 1 : 2), // تقليل المساحة
-
+                        SizedBox(
+                          height: isSmallScreen ? 1 : 2,
+                        ), // تقليل المساحة
                         // Price and cart button
-                        Flexible( // إضافة Flexible للـ Row
+                        Flexible(
+                          // إضافة Flexible للـ Row
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,7 +148,7 @@ class CustomProductCard extends StatelessWidget {
                       color: AppColors.white,
                       shape: BoxShape.circle,
                       boxShadow: [
-                        BoxShadow(color: AppColors.shadow, blurRadius: 2),
+                        BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
                       ],
                     ),
                     child: Icon(

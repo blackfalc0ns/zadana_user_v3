@@ -9,6 +9,7 @@ class Spacing {
 
   // ── Named sizes ──
   static const double xs = 4.0; // unit × 1
+  static const double xss = 6.0; // unit × 1.5
   static const double sm = 8.0; // unit × 2
   static const double md = 12.0; // unit × 3
   static const double base = 16.0; // unit × 4  (default)

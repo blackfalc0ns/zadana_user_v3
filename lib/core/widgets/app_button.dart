@@ -34,7 +34,7 @@ class AppButton extends StatelessWidget {
     this.borderRadius,
     this.color,
     this.textColor,
-    this.fontWeight, 
+    this.fontWeight,
   });
 
   /// Named factories for convenience.
@@ -145,7 +145,7 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _buildContent(Color effectiveColor) {
-    final style = getSemiBoldStyle(
+    final style = getBoldStyle(
       fontSize: FontSize.size16,
       fontFamily: FontConstant.cairo,
       color: variant == AppButtonVariant.filled

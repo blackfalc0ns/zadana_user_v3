@@ -14,8 +14,8 @@ class AppColors {
   static const Color primarySurface = Color(0XFF007A92);
 
   // ── Secondary / Accent ──
- // static const Color secondary = Color(0xFFFFC107);
- static const Color secondary=Color(0xffe48215);
+  // static const Color secondary = Color(0xFFFFC107);
+  static const Color secondary = Color(0xffe48215);
   static const Color secondaryLight = Color(0xFFFFD54F);
   static const Color secondaryDark = Color(0xFFF9A825);
 
@@ -42,6 +42,7 @@ class AppColors {
   static const Color textOnPrimary = Color(0xFFFFFFFF);
   static const Color textPrimaryDark = Color(0xFFE0E0E0);
   static const Color textSecondaryDark = Color(0xFF9E9E9E);
+  static const Color lightGrey = Color.fromARGB(221, 227, 232, 238);
 
   // ── Semantic ──
   static const Color success = Color(0xFF4CAF50);

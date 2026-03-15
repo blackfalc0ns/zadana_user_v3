@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/styles_manger.dart';
 
 class SortOptionItem extends StatelessWidget {
   const SortOptionItem({
@@ -22,17 +24,12 @@ class SortOptionItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: Spacing.sm),
-        padding: const EdgeInsets.all(Spacing.md),
+        margin: const EdgeInsets.only(bottom: Spacing.xss),
+        padding: const EdgeInsets.all(Spacing.xss),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? const Color(0xFF1E3A8A).withValues(alpha: 0.1)
-              : Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
-                ? const Color(0xFF1E3A8A)
-                : Colors.transparent,
+            color: isSelected ? AppColors.secondary : AppColors.lightGrey,
             width: 2,
           ),
         ),
@@ -46,15 +43,17 @@ class SortOptionItem extends StatelessWidget {
                     title,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isSelected 
-                          ? const Color(0xFF1E3A8A)
+                      color: isSelected
+                          ? AppColors.secondary
                           : AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: AppTextStyles.bodySmall.copyWith(
+                    style: getSemiBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size11,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -62,11 +61,7 @@ class SortOptionItem extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: Color(0xFF1E3A8A),
-                size: 24,
-              ),
+              Icon(Icons.check_circle, color: AppColors.secondary, size: 24),
           ],
         ),
       ),

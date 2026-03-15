@@ -17,71 +17,54 @@ class PriceComparisonSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // عنوان مقارنة الأسعار مع تصميم مودرن
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withValues(alpha: 0.1),
-                  AppColors.secondary.withValues(alpha: 0.05),
-                ],
-                begin: Alignment.centerRight,
-                end: Alignment.centerLeft,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.2),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.trending_down,
-                    color: AppColors.primary,
-                    size: 16,
-                  ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                Text(
-                  'مقارنة الأسعار',
-                  style: AppTextStyles.labelLarge.copyWith(
+                child: Icon(
+                  Icons.trending_down,
+                  color: AppColors.primary,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'مقارنة الأسعار',
+                style: AppTextStyles.labelLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'وفر ${(_getHighestPrice() - _getLowestPrice()).toStringAsFixed(0)} ريال',
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: AppColors.success,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    fontSize: 10,
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'وفر ${(_getHighestPrice() - _getLowestPrice()).toStringAsFixed(0)} ريال',
-                    style: AppTextStyles.labelSmall.copyWith(
-                      color: AppColors.success,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // مربعات المتاجر مع تصميم كريتيف
           SizedBox(
             height: 80, // زيادة من 70 إلى 80
@@ -89,11 +72,12 @@ class PriceComparisonSection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               itemCount: _getStores().length,
-              separatorBuilder: (_, index) => const SizedBox(width: 4), // تقليل من 8 إلى 4
+              separatorBuilder: (_, index) =>
+                  const SizedBox(width: 8), // تقليل من 8 إلى 4
               itemBuilder: (_, index) {
                 final store = _getStores()[index];
                 return SizedBox(
-                  width: 140,
+                  width: 125,
                   child: _buildModernStoreCard(
                     storeName: store['name'] as String,
                     price: store['price'] as double,
@@ -130,7 +114,10 @@ class PriceComparisonSection extends StatelessWidget {
         'price': 28.0,
         'isLowest': true,
         'icon': Icons.language,
-        'gradientColors': [AppColors.primary, AppColors.primary.withValues(alpha: 0.7)],
+        'gradientColors': [
+          AppColors.primary,
+          AppColors.primary.withValues(alpha: 0.7),
+        ],
         'savings': null,
       },
       {
@@ -138,7 +125,10 @@ class PriceComparisonSection extends StatelessWidget {
         'price': 32.0,
         'isLowest': false,
         'icon': Icons.store,
-        'gradientColors': [AppColors.info, AppColors.info.withValues(alpha: 0.7)],
+        'gradientColors': [
+          AppColors.info,
+          AppColors.info.withValues(alpha: 0.7),
+        ],
         'savings': '4 ريال',
       },
       {
@@ -146,7 +136,10 @@ class PriceComparisonSection extends StatelessWidget {
         'price': 35.0,
         'isLowest': false,
         'icon': Icons.shopping_bag,
-        'gradientColors': [AppColors.secondary, AppColors.secondary.withValues(alpha: 0.7)],
+        'gradientColors': [
+          AppColors.secondary,
+          AppColors.secondary.withValues(alpha: 0.7),
+        ],
         'savings': '7 ريال',
       },
       {
@@ -154,7 +147,10 @@ class PriceComparisonSection extends StatelessWidget {
         'price': 30.0,
         'isLowest': false,
         'icon': Icons.local_grocery_store,
-        'gradientColors': [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
+        'gradientColors': [
+          AppColors.success,
+          AppColors.success.withValues(alpha: 0.7),
+        ],
         'savings': '2 ريال',
       },
       {
@@ -162,7 +158,10 @@ class PriceComparisonSection extends StatelessWidget {
         'price': 33.0,
         'isLowest': false,
         'icon': Icons.shopping_cart,
-        'gradientColors': [AppColors.warning, AppColors.warning.withValues(alpha: 0.7)],
+        'gradientColors': [
+          AppColors.warning,
+          AppColors.warning.withValues(alpha: 0.7),
+        ],
         'savings': '5 ريال',
       },
       {
@@ -170,7 +169,10 @@ class PriceComparisonSection extends StatelessWidget {
         'price': 31.0,
         'isLowest': false,
         'icon': Icons.storefront,
-        'gradientColors': [AppColors.error, AppColors.error.withValues(alpha: 0.7)],
+        'gradientColors': [
+          AppColors.error,
+          AppColors.error.withValues(alpha: 0.7),
+        ],
         'savings': '3 ريال',
       },
     ];
@@ -188,7 +190,7 @@ class PriceComparisonSection extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.1),
@@ -233,9 +235,8 @@ class PriceComparisonSection extends StatelessWidget {
                 size: 16, // تقليل من 20 إلى 16
               ),
             ),
-            
+
             const SizedBox(height: 4), // زيادة من 3 إلى 4
-            
             // اسم المتجر والسعر في نفس الصف
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,7 +246,8 @@ class PriceComparisonSection extends StatelessWidget {
                   child: Text(
                     storeName,
                     style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.w700, // زيادة الوزن من bold إلى w700
+                      fontWeight:
+                          FontWeight.w700, // زيادة الوزن من bold إلى w700
                       color: AppColors.textPrimary,
                       fontSize: 12, // تكبير من 11 إلى 12
                       height: 1.2, // إضافة line height للوضوح

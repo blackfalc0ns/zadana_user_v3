@@ -44,11 +44,11 @@ class _FloatingFilterSortBar extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       width: 240,
       decoration: BoxDecoration(
-        color: AppColors.secondary.withValues(alpha: 0.6),
+        color: AppColors.primary.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: AppColors.secondary.withValues(alpha: 0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

@@ -32,48 +32,48 @@ class _HomeScreenState extends State<HomeScreen> {
         deliverToLabel: locale.deliver_to,
         location: locale.location,
       ),
-      body: ListView(
-        children: [
-          const SizedBox(height: Spacing.sm),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
 
           // Search Bar
-          HomeSearchBar(),
-          const SizedBox(height: Spacing.base),
+          SliverToBoxAdapter(child: HomeSearchBar()),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
 
           // Promo Banner
-          const PromoBanner(),
+          SliverToBoxAdapter(child: const PromoBanner()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
           // 1. Categories Section
-          const CategoriesSection(),
+          SliverToBoxAdapter(child: const CategoriesSection()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
           // 2. Special Offers Section
-          const SpecialOffersSection(),
+          SliverToBoxAdapter(child: const SpecialOffersSection()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
           // 3. Best Selling Section
-          const BestSellingSection(),
+          SliverToBoxAdapter(child: const BestSellingSection()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
           // 4. Featured Products Section
-          const FeaturedProductsSection(),
+          SliverToBoxAdapter(child: const FeaturedProductsSection()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
           // 5. Recommended For You Section
-          const RecommendedSection(),
+          SliverToBoxAdapter(child: const RecommendedSection()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
           // 6. Explore More Section
-          const ExploreMoreSection(),
+          SliverToBoxAdapter(child: const ExploreMoreSection()),
 
-          const SizedBox(height: Spacing.xl),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
         ],
       ),
     );

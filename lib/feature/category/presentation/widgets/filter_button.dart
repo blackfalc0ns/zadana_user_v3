@@ -18,15 +18,11 @@ class FilterButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(25),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon, 
-              size: 18,
-              color: Colors.white,
-            ),
+            Icon(icon, size: 18, color: Colors.white),
             const SizedBox(width: 5),
             Text(
               label,

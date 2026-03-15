@@ -62,10 +62,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
                     ),
                   ),
                 ),
-                Text(
-                  'ترتيب المنتجات',
-                  style: AppTextStyles.h3,
-                ),
+                Text('ترتيب المنتجات', style: AppTextStyles.h3),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context, selectedOption);
@@ -83,12 +80,12 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
               itemCount: kSortOptions.length,
               itemBuilder: (context, index) {
                 final option = kSortOptions[index];
                 final isSelected = selectedOption == option['value'];
-                
+
                 return SortOptionItem(
                   title: option['title'],
                   subtitle: option['subtitle'],

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/font_manger.dart';
+import 'package:zadana_user_v3/core/constants/styles_manger.dart';
 
 /// ─── Section Title + "See All" ───
 class SectionHeader extends StatelessWidget {
@@ -28,8 +30,10 @@ class SectionHeader extends StatelessWidget {
             onTap: onActionTap,
             child: Text(
               actionLabel,
-              style: AppTextStyles.labelMedium.copyWith(
-                color: AppColors.primary,
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size12,
+                color: AppColors.secondary,
               ),
             ),
           ),

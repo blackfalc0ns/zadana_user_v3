@@ -27,7 +27,7 @@ class MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _controller = PersistentTabController(initialIndex: 0);
-    
+
     // إضافة listener للـ controller عشان نعرف لما يتم الانتقال للتاب
     _controller.addListener(_onTabChanged);
   }
@@ -56,7 +56,7 @@ class MainShellState extends State<MainShell> {
 
   List<PersistentTabConfig> _tabs(BuildContext context) {
     final locale = context.localization;
-    
+
     return [
       PersistentTabConfig(
         screen: const HomeScreen(),
@@ -111,9 +111,8 @@ class MainShellState extends State<MainShell> {
     return PersistentTabView(
       controller: _controller,
       tabs: _tabs(context),
-      navBarBuilder: (navBarConfig) => CustomBottomNavBar(
-        navBarConfig: navBarConfig,
-      ),
+      navBarBuilder: (navBarConfig) =>
+          CustomBottomNavBar(navBarConfig: navBarConfig),
     );
   }
 }
@@ -121,15 +120,12 @@ class MainShellState extends State<MainShell> {
 class CustomBottomNavBar extends StatelessWidget {
   final NavBarConfig navBarConfig;
 
-  const CustomBottomNavBar({
-    super.key,
-    required this.navBarConfig,
-  });
+  const CustomBottomNavBar({super.key, required this.navBarConfig});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 72,
+      height: 60,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -172,8 +168,8 @@ class CustomBottomNavBar extends StatelessWidget {
                   height: 56,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: navBarConfig.selectedIndex == 4 
-                        ? AppColors.primary 
+                    color: navBarConfig.selectedIndex == 4
+                        ? AppColors.primary
                         : AppColors.primary,
                     shape: BoxShape.circle,
                     boxShadow: [
