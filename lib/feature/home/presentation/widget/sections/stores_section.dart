@@ -29,28 +29,26 @@ class StoresSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.base),
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(Spacing.cardRadius),
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
+      decoration: const BoxDecoration(color: AppColors.primary),
+      margin: EdgeInsets.zero,
       child: Column(
         children: [
           // Header using SectionHeader
           SectionHeader(
             title: 'تصفح حسب المتاجر',
             actionLabel: 'عرض الكل',
-          
+            titleColor: AppColors.white,
+            horizontalPadding: 16,
           ),
 
-          const SizedBox(height: Spacing.sm),
+          const SizedBox(height: Spacing.md),
 
           // Scrollable Grid of stores
           SizedBox(
             height: 180, // Fixed height for scrolling
             child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
               scrollDirection: Axis.horizontal,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

@@ -13,6 +13,7 @@ class SectionHeader extends StatelessWidget {
     this.onActionTap,
     this.titleColor,
     this.actionColor,
+    this.horizontalPadding,
   });
 
   final String title;
@@ -20,11 +21,14 @@ class SectionHeader extends StatelessWidget {
   final VoidCallback? onActionTap;
   final Color? titleColor;
   final Color? actionColor;
+  final double? horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding ?? Spacing.screenH,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -32,10 +36,11 @@ class SectionHeader extends StatelessWidget {
             title,
             style: getBoldStyle(
               fontFamily: FontConstant.cairo,
-              color: titleColor ?? AppColors.black,
+              color: titleColor,
               fontSize: FontSize.size15,
             ),
           ),
+
           GestureDetector(
             onTap: onActionTap,
             child: Text(

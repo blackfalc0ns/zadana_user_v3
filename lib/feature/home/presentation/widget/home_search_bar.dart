@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class HomeSearchBar extends StatelessWidget {
@@ -28,7 +29,7 @@ class HomeSearchBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 10,right: 10),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
       child: Container(
         height: 48,
         decoration: BoxDecoration(
