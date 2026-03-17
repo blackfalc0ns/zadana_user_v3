@@ -99,12 +99,28 @@ class MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: _selectedIndex,
-        navItems: _navItems,
-        onItemSelected: _onItemTapped,
-      ),
+      body: Stack(
+        children: [
+          ...List.generate(_screens.length, (index) => 
+            Offstage(
+              offstage: _selectedIndex != index,
+              child: _screens[index],
+            ),
+          ),
+          Positioned(
+            bottom: 12,
+            left: 12,
+            right: 12,
+            child: CustomBottomNavBar(
+              selectedIndex: _selectedIndex,
+              navItems: _navItems,
+              onItemSelected: _onItemTapped,
+            ),
+          ),
+        ],
+      )
+      
+    
     );
   }
 }
@@ -142,14 +158,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Widget build(BuildContext context) {
     return Container(
       height: 75,
-      margin: EdgeInsets.only(
-        bottom: 20,
-        left: 16,
-        right: 16,
-        top: 5,
-      ),
+      margin: EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.card,
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
