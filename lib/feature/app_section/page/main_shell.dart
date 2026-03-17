@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
@@ -21,29 +20,72 @@ class MainShell extends StatefulWidget {
 }
 
 class MainShellState extends State<MainShell> {
-  late PersistentTabController _controller;
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const CategoryScreen(),
+    const CartScreen(), 
+      const FavoritesScreen(),
+     const ProfileScreen(),
+  ];
+
+  final List<NavBarItem> _navItems = [];
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = PersistentTabController(initialIndex: 0);
-
-    // إضافة listener للـ controller عشان نعرف لما يتم الانتقال للتاب
-    _controller.addListener(_onTabChanged);
   }
 
   @override
-  void dispose() {
-    _controller.removeListener(_onTabChanged);
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _initializeNavItems();
+      _isInitialized = true;
+    }
   }
 
-  void _onTabChanged() {
+  void _initializeNavItems() {
+    final locale = context.localization;
+    _navItems.addAll([
+      NavBarItem(
+        icon: Iconsax.home,
+        activeIcon: Iconsax.home_15,
+        title: locale.nav_home,
+      ),
+      NavBarItem(
+        icon: Iconsax.shopping_bag,
+        activeIcon: Iconsax.shopping_bag5,
+        title: 'تسوق',
+      ),
+           NavBarItem(
+        icon: Iconsax.shopping_cart,
+        activeIcon: Iconsax.shopping_cart5,
+        title: locale.nav_cart,
+      ),
+      NavBarItem(
+        icon: Iconsax.heart,
+        activeIcon: Iconsax.heart5,
+        title: locale.nav_orders,
+      ),
+      NavBarItem(
+        icon: Iconsax.profile_circle,
+        activeIcon: Iconsax.profile_circle5,
+        title: locale.nav_profile,
+      ),
+    ]);
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
     // لما ننتقل لتاب التسوق (index 1)، نتحقق من القسم المختار
-    if (_controller.index == 1) {
-      // إعطاء وقت قصير للتاب للتحميل ثم إرسال إشعار
+    if (index == 1) {
       Future.delayed(const Duration(milliseconds: 50), () {
-        // إرسال إشعار للـ CategoryScreen للتحقق من القسم المختار
         CategoryNavigationService().notifyTabChanged();
       });
     }
@@ -51,144 +93,75 @@ class MainShellState extends State<MainShell> {
 
   // Method للانتقال لتاب معين
   void jumpToTab(int index) {
-    _controller.jumpToTab(index);
-  }
-
-  List<PersistentTabConfig> _tabs(BuildContext context) {
-    final locale = context.localization;
-
-    return [
-      PersistentTabConfig(
-        screen: const HomeScreen(),
-        item: ItemConfig(
-          icon: const Icon(Icons.home_rounded),
-          title: locale.nav_home,
-          activeForegroundColor: AppColors.primary,
-          inactiveForegroundColor: AppColors.textSecondary,
-        ),
-      ),
-      PersistentTabConfig(
-        screen: const CategoryScreen(),
-        item: ItemConfig(
-          icon: const Icon(Icons.shopping_bag_outlined),
-          title: 'تسوق',
-          activeForegroundColor: AppColors.primary,
-          inactiveForegroundColor: AppColors.textSecondary,
-        ),
-      ),
-      PersistentTabConfig(
-        screen: const FavoritesScreen(),
-        item: ItemConfig(
-          icon: const Icon(Icons.favorite_outline_rounded),
-          title: locale.nav_orders,
-          activeForegroundColor: AppColors.primary,
-          inactiveForegroundColor: AppColors.textSecondary,
-        ),
-      ),
-      PersistentTabConfig(
-        screen: const ProfileScreen(),
-        item: ItemConfig(
-          icon: const Icon(Icons.person_outline_rounded),
-          title: locale.nav_profile,
-          activeForegroundColor: AppColors.primary,
-          inactiveForegroundColor: AppColors.textSecondary,
-        ),
-      ),
-      PersistentTabConfig(
-        screen: const CartScreen(),
-        item: ItemConfig(
-          icon: const FaIcon(FontAwesomeIcons.cartPlus),
-          title: 'العربة',
-          activeForegroundColor: AppColors.primary,
-          inactiveForegroundColor: AppColors.textSecondary,
-        ),
-      ),
-    ];
+    _onItemTapped(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView(
-      controller: _controller,
-      tabs: _tabs(context),
-      navBarBuilder: (navBarConfig) =>
-          CustomBottomNavBar(navBarConfig: navBarConfig),
+    return Scaffold(
+      body: IndexedStack(index: _selectedIndex, children: _screens),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: _selectedIndex,
+        navItems: _navItems,
+        onItemSelected: _onItemTapped,
+      ),
     );
   }
 }
 
-class CustomBottomNavBar extends StatelessWidget {
-  final NavBarConfig navBarConfig;
+class NavBarItem {
+  final IconData icon;
+  final String title;
+  final IconData activeIcon;
 
-  const CustomBottomNavBar({super.key, required this.navBarConfig});
+  NavBarItem({
+    required this.icon,
+    required this.title,
+    required this.activeIcon,
+  });
+}
+
+class CustomBottomNavBar extends StatefulWidget {
+  final int selectedIndex;
+  final List<NavBarItem> navItems;
+  final Function(int) onItemSelected;
+
+  const CustomBottomNavBar({
+    super.key,
+    required this.selectedIndex,
+    required this.navItems,
+    required this.onItemSelected,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // ── Bar background ────────────────────────────────────
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadow,
-                    blurRadius: 12,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // Left 2 items
-                  ..._buildItems(context, 0, 2),
-                  // Center placeholder for cart
-                  const Expanded(child: SizedBox()),
-                  // Right 2 items
-                  ..._buildItems(context, 2, 4),
-                ],
-              ),
-            ),
-          ),
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
 
-          // ── Floating cart button ──────────────────────────────
-          Positioned(
-            top: -18,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: GestureDetector(
-                onTap: () => navBarConfig.onItemSelected(4), // Cart is index 4
-                child: Container(
-                  width: 56,
-                  height: 56,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: navBarConfig.selectedIndex == 4
-                        ? AppColors.primary
-                        : AppColors.primary,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.40),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const FaIcon(
-                    FontAwesomeIcons.cartPlus,
-                    color: AppColors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ),
+class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 75,
+      margin: EdgeInsets.only(
+        bottom: 20,
+        left: 16,
+        right: 16,
+        top: 5,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 12,
+            offset: const Offset(0, -2),
           ),
+        ],
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Row(
+        children: [
+          ..._buildItems(context, 0, 5),
         ],
       ),
     );
@@ -197,31 +170,57 @@ class CustomBottomNavBar extends StatelessWidget {
   List<Widget> _buildItems(BuildContext context, int from, int to) {
     return List.generate(to - from, (i) {
       final index = from + i;
-      final item = navBarConfig.items[index];
-      final active = navBarConfig.selectedIndex == index;
+      final item = widget.navItems[index];
+      final active = widget.selectedIndex == index;
 
       return Expanded(
         child: GestureDetector(
-          onTap: () => navBarConfig.onItemSelected(index),
+          onTap: () => widget.onItemSelected(index),
           behavior: HitTestBehavior.opaque,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                (item.icon as Icon).icon,
-                size: 22,
-                color: active ? AppColors.primary : AppColors.textSecondary,
-              ),
-              const SizedBox(height: 3),
-              Text(
-                item.title ?? '',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: active ? AppColors.primary : AppColors.textSecondary,
-                  fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+          child: TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 1.0, end: active ? 1.1 : 1.0),
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            builder: (context, scale, child) {
+              return Transform.scale(
+                scale: scale,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      padding: EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        color: active ? AppColors.primary : AppColors.surface,
+                        shape: BoxShape.circle,
+                      ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          active ? item.activeIcon : item.icon,
+                          key: ValueKey(active ? item.activeIcon : item.icon),
+                          size: 24,
+                          color: active ? AppColors.white : AppColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 200),
+                      style: TextStyle(
+                        fontSize: active ? 11 : 10,
+                        color: active ? AppColors.primary : AppColors.textSecondary,
+                        fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                      child: Text(
+                        item.title,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       );
