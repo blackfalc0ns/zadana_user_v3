@@ -84,7 +84,8 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView> with Address
   @override
   Widget build(BuildContext context) {
     return AddressFormPage(
-      title: 'تفاصيل المبنى', confirmButtonText: 'متابعة للتسجيل',
+      title: 'تفاصيل المبنى',
+       confirmButtonText: 'متابعة للتسجيل',
       isLoading: false, onConfirm: _onConfirm,
       formContent: Form(
         key: _formKey,

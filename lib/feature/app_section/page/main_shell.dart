@@ -21,6 +21,7 @@ class MainShell extends StatefulWidget {
 
 class MainShellState extends State<MainShell> {
   int _selectedIndex = 0;
+  bool _isKeyboardVisible = false;
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -36,11 +37,26 @@ class MainShellState extends State<MainShell> {
   @override
   void initState() {
     super.initState();
+    _keyboardVisibilityListener();
+  }
+
+  void _keyboardVisibilityListener() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateKeyboardVisibility();
+    });
+  }
+
+  void _updateKeyboardVisibility() {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    setState(() {
+      _isKeyboardVisible = bottomInset > 0;
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _updateKeyboardVisibility();
     if (!_isInitialized) {
       _initializeNavItems();
       _isInitialized = true;
@@ -107,6 +123,7 @@ class MainShellState extends State<MainShell> {
               child: _screens[index],
             ),
           ),
+          if(!_isKeyboardVisible)
           Positioned(
             bottom: 12,
             left: 12,

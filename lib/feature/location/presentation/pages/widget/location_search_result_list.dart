@@ -21,7 +21,7 @@ class LocationSearchResultsList extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(
         top: Spacing.sm,
-        left: 52,
+        right: 55
       ),
       constraints: const BoxConstraints(maxHeight: 250),
       decoration: BoxDecoration(

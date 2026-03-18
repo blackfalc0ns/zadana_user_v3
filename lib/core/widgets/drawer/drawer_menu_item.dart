@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class DrawerMenuItem extends StatelessWidget {
   const DrawerMenuItem({
@@ -24,31 +24,37 @@ class DrawerMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Padding(
       padding: const EdgeInsets.all(2),
-      child: ListTile(minTileHeight: 10,
+      child: ListTile(
+        minTileHeight: 10,
         leading: FaIcon(
           icon,
-          color: iconColor ?? textColor ?? AppColors.textPrimary,
+          color: iconColor ?? textColor ?? color.onSurface,
           size: 18,
         ),
         title: Text(
           title,
-          style: AppTextStyles.labelMedium.copyWith(
-            color: textColor ?? AppColors.textPrimary,
+          style: getMediumStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size12,
+            color: textColor ?? color.onSurface,
           ),
         ),
         subtitle: subtitle != null
             ? Text(
                 subtitle!,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+                style: getRegularStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size10,
+                  color: color.onSurfaceVariant,
                 ),
               )
             : null,
         trailing: FaIcon(
           FontAwesomeIcons.chevronLeft,
-          color: AppColors.textSecondary,
+          color: color.onSurfaceVariant,
           size: 12,
         ),
         onTap: onTap,

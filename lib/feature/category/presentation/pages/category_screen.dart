@@ -23,7 +23,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   String selectedSubCategory = '';
   String selectedSortOption = '';
   List<String> selectedFilters = [];
-                                      
+
   late CategoryNavigationService _navigationService;
 
   @override
@@ -31,7 +31,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     super.initState();
     _navigationService = CategoryNavigationService();
     _navigationService.addListener(_onNavigationServiceChanged);
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkSelectedCategoryFromHome();
     });
@@ -49,14 +49,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   void _checkSelectedCategoryFromHome() {
     final categoryName = _navigationService.getCategoryNameForScreen();
-    
-    if (categoryName != null && kCategorySubCategories.containsKey(categoryName)) {
+
+    if (categoryName != null &&
+        kCategorySubCategories.containsKey(categoryName)) {
       if (mounted) {
         setState(() {
           selectedCategory = categoryName;
           selectedSubCategory = '';
         });
-        
+
         _navigationService.clearSelectedCategory();
       }
     }
@@ -67,9 +68,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => FilterBottomSheet(
-        preSelectedCategory: selectedCategory,
-      ),
+      builder: (context) =>
+          FilterBottomSheet(preSelectedCategory: selectedCategory),
     ).then((result) {
       if (result != null) {
         setState(() {
@@ -103,7 +103,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -154,14 +154,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 filters: selectedFilters,
               ),
             ),
+            // SizedBox(height: 100),
           ],
         ),
       ),
-      floatingActionButton: BottomFilterButtons(
-        locale: locale,
-        onSortPressed: _showSortBottomSheet,
-        onCategoryPressed: _showFilterBottomSheet,
-        hasActiveFilters: selectedFilters.isNotEmpty || selectedSortOption.isNotEmpty,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50),
+        child: BottomFilterButtons(
+          locale: locale,
+          onSortPressed: _showSortBottomSheet,
+          onCategoryPressed: _showFilterBottomSheet,
+          hasActiveFilters:
+              selectedFilters.isNotEmpty || selectedSortOption.isNotEmpty,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

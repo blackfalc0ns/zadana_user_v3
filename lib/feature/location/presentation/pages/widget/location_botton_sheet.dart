@@ -19,11 +19,12 @@ class LocationBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.23,
       padding: EdgeInsets.only(
         left: Spacing.lg,
         right: Spacing.lg,
         top: Spacing.lg,
-        bottom: MediaQuery.of(context).padding.bottom + Spacing.base,
+        bottom: Spacing.base + MediaQuery.of(context).padding.bottom- 20,
       ),
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -86,11 +87,12 @@ class LocationBottomSheet extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: Spacing.base),
+          const Spacer(),
           SizedBox(
             width: double.infinity,
+            height: 50,
             child: ElevatedButton(
-             onPressed: isLoading ? null : onConfirm,
+              onPressed: isLoading ? null : onConfirm,
               child: isLoading
                   ? const SizedBox(
                       height: 20,

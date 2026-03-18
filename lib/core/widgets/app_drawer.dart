@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/drawer/drawer_header.dart'
-    as custom_header;
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/utils/assets.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_menu_item.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_actions.dart';
 
@@ -15,34 +15,50 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.localization;
+    final locale = AppLocalizations.of(context)!;
+    final color = context.colorScheme;
 
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75, // 75% من عرض الشاشة
+      width: MediaQuery.of(context).size.width * 0.65, // 75% من عرض الشاشة
       child: Drawer(
-        backgroundColor: AppColors.surface,
+        backgroundColor: color.surface,
         child: Column(
           children: [
-            // Header
-            const custom_header.DrawerHeader(),
-
             // Menu Items
             Expanded(
               child: CustomScrollView(
                 slivers: [
                   SliverList(
                     delegate: SliverChildListDelegate([
+                      _buildHeader(context),
                       // Personal Information Section
-                      _buildPersonalInfoSection(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildMainMenuItems(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildSettingsMenuItems(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildSupportMenuItems(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildLogoutMenuItem(context, locale),
-                      const SizedBox(height: 20), // مساحة من تحت
+                      _buildPersonalInfoSection(context, locale, color),
+                      Divider(
+                        color: color.outlineVariant.withValues(alpha: 0.1),
+                        height: 0.01,
+                      ),
+                      _buildMainMenuItems(context, locale, color),
+                      Divider(
+                        color: color.outlineVariant.withValues(alpha: 0.1),
+                        height: 0.01,
+                      ),
+
+                      _buildSettingsMenuItems(context, locale, color),
+                      Divider(
+                        color: color.outlineVariant.withValues(alpha: 0.1),
+                        height: 0.01,
+                      ),
+
+                      _buildSupportMenuItems(context, locale, color),
+                      Divider(
+                        color: color.outlineVariant.withValues(alpha: 0.1),
+                        height: 0.01,
+                      ),
+
+                      _buildLogoutMenuItem(context, locale, color),
+                      const SizedBox(height: 20),
+                      _buildDeveloperInfo(context),
+                      const SizedBox(height: 120), // مساحة من تحت
                     ]),
                   ),
                 ],
@@ -54,137 +70,427 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalInfoSection(BuildContext context, dynamic locale) {
+  Widget _buildHeader(BuildContext context) {
+    final color = context.colorScheme;
+    return Container(
+      padding: const EdgeInsets.only(top: 50, bottom: 20),
+      decoration: BoxDecoration(
+        color: color.primary,
+        borderRadius: BorderRadius.only(
+          bottomRight: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          // User Avatar
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: color.onPrimary,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Iconsax.user, color: color.primary, size: 32),
+          ),
+
+          const SizedBox(height: 10),
+          // User Details
+          Text(
+            'محمد أحمد',
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size16,
+              color: color.onPrimary,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'mohamed@example.com',
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size12,
+              color: color.onPrimary.withValues(alpha: 0.8),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPersonalInfoSection(
+    BuildContext context,
+    AppLocalizations locale,
+    ColorScheme color,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: Text(
-        //     'المعلومات الشخصية',
-        //     style: getMediumStyle(fontFamily: FontConstant.cairo)
-        //   ),
-        // ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.user,
+          icon: Iconsax.user,
           title: 'الاسم',
           subtitle: 'abdo mohamed',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () {},
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.phone,
+          icon: Iconsax.call,
           title: 'رقم الهاتف',
           subtitle: '01028233582',
-          iconColor: AppColors.secondary,
+          iconColor: color.primary,
           onTap: () {},
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.envelope,
+          icon: Iconsax.sms,
           title: 'البريد الإلكتروني',
           subtitle: 'baderahmed40@gmail.com',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () {},
         ),
       ],
     );
   }
 
-  Widget _buildMainMenuItems(BuildContext context, dynamic locale) {
+  Widget _buildMainMenuItems(
+    BuildContext context,
+    AppLocalizations locale,
+    ColorScheme color,
+  ) {
     return Column(
       children: [
         DrawerMenuItem(
-          icon: FontAwesomeIcons.bell,
+          icon: Iconsax.notification,
           title: 'الإشعارات',
-          iconColor: AppColors.secondary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleNotifications(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.heart,
+          icon: Iconsax.heart,
           title: 'المفضلة',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleFavorites(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.listUl,
+          icon: Iconsax.category,
           title: 'الأقسام',
-          iconColor: AppColors.secondary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleCategories(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.bagShopping,
+          icon: Iconsax.shopping_bag,
           title: 'طلباتي',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleMyOrders(context),
         ),
       ],
     );
   }
 
-  Widget _buildSettingsMenuItems(BuildContext context, dynamic locale) {
+  Widget _buildSettingsMenuItems(
+    BuildContext context,
+    AppLocalizations locale,
+    ColorScheme color,
+  ) {
     return Column(
       children: [
         DrawerMenuItem(
-          icon: FontAwesomeIcons.globe,
+          icon: Iconsax.global,
           title: 'اللغة',
-          iconColor: AppColors.secondary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleLanguage(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.shield,
+          icon: Iconsax.shield,
           title: 'السياسة والخصوصية',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handlePrivacyPolicy(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.circleInfo,
+          icon: Iconsax.info_circle,
           title: 'عن التطبيق',
-          iconColor: AppColors.secondary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleAboutApp(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.code,
+          icon: Iconsax.code,
           title: 'المطور',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleDeveloper(context),
-        ),
-        DrawerMenuItem(
-          icon: FontAwesomeIcons.tag,
-          title: 'الإصدار',
-          subtitle: 'v1.0.0',
-          iconColor: AppColors.secondary,
-          onTap: () {},
         ),
       ],
     );
   }
 
-  Widget _buildSupportMenuItems(BuildContext context, dynamic locale) {
+  Widget _buildSupportMenuItems(
+    BuildContext context,
+    AppLocalizations locale,
+    ColorScheme color,
+  ) {
     return Column(
       children: [
         DrawerMenuItem(
-          icon: FontAwesomeIcons.phone,
+          icon: Iconsax.call,
           title: 'التواصل معنا',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleContactUs(context),
         ),
         DrawerMenuItem(
-          icon: FontAwesomeIcons.headset,
+          icon: Iconsax.headphone,
           title: 'المساعدة والدعم',
-          iconColor: AppColors.secondary,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleSupport(context),
         ),
       ],
     );
   }
 
-  Widget _buildLogoutMenuItem(BuildContext context, dynamic locale) {
+  Widget _buildLogoutMenuItem(
+    BuildContext context,
+    AppLocalizations locale,
+    ColorScheme color,
+  ) {
     return DrawerMenuItem(
-      icon: FontAwesomeIcons.rightFromBracket,
+      icon: Iconsax.logout,
       title: 'تسجيل الخروج',
-      textColor: AppColors.error,
-      iconColor: AppColors.error,
+      textColor: color.error,
+      iconColor: color.error,
       onTap: () => DrawerActions.handleLogout(context),
+    );
+  }
+
+  Widget _buildDeveloperInfo(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showDeveloperDialog(context),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // App Name and Developer Credit
+            _buildDeveloperCredit(context),
+
+            // Company Logo
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: AssetImage(AppAssets.blackFalconsIcon),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDeveloperDialog(BuildContext context) {
+    final color = context.colorScheme;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          contentPadding: const EdgeInsets.all(24),
+          content: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Close Button
+              Positioned(
+                top: -8,
+                right: -8,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      Iconsax.close_circle,
+                      size: 24,
+                      color: color.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+              // Dialog Content
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Developer Logo
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: AssetImage(AppAssets.blackFalconsIcon),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Developer Name
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Black ',
+                          style: getBoldStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onSurface,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'Falcons',
+                          style: getBoldStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: Colors.orange,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Developer Description
+                  Text(
+                    'Black Falcons for digital solutions',
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size10,
+                      color: color.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Contact Info
+                  _buildContactButton(
+                    icon: Iconsax.call,
+                    title: 'اتصل بنا',
+                    subtitle: '000000000',
+                    onTap: () => _launchWhatsApp('000000000'),
+                    color: color.onSurface,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  _buildContactButton(
+                    icon: Iconsax.sms,
+                    title: 'البريد الإلكتروني',
+                    subtitle: 'example@gmail.com',
+                    onTap: () => _launchEmail('example@gmail.com'),
+                    color: color.onSurface,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildContactButton({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: getSemiBoldStyle(
+                    fontSize: FontSize.size10,
+                    fontFamily: FontConstant.cairo,
+                    color: color,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: getSemiBoldStyle(
+                    fontSize: FontSize.size10,
+                    fontFamily: FontConstant.cairo,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _launchWhatsApp(String phone) async {
+    final url = Uri.parse('https://wa.me/$phone');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _launchEmail(String email) async {
+    final url = Uri.parse('mailto:$email');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    }
+  }
+
+  Widget _buildDeveloperCredit(BuildContext context) {
+    final color = context.colorScheme;
+    return Column(
+      children: [
+        Text(
+          AppConstants.appName,
+          style: getMediumStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size13,
+            color: color.onSurface,
+          ),
+        ),
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'Developed by Black Falcons ',
+                style: getSemiBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size10,
+                  color: color.onSurface,
+                ),
+              ),
+              TextSpan(
+                text: 'v.1.0',
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size10,
+                  color: color.primary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

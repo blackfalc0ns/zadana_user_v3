@@ -45,6 +45,7 @@ dependencies:
   dartz: ^0.10.1
   persistent_bottom_nav_bar_v2: ^6.3.1
   flutter_svg: ^2.2.4
+  iconsax: ^0.0.8
 
 dev_dependencies:
   flutter_test:

@@ -44,18 +44,16 @@ class AddressFormPage extends StatelessWidget {
             );
           }
         },
-        builder: (context, state) => SafeArea(
-          child: Column(
-            children: [
-              Expanded(child: formContent),
-              AddressFormWidgets.buildConfirmButton(
-                isLoading: state.isLoading,
-                onPressed: onConfirm,
-                text: confirmButtonText,
-                context: context,
-              ),
-            ],
-          ),
+        builder: (context, state) => Column(
+          children: [
+            Expanded(child: formContent),
+            AddressFormWidgets.buildConfirmButton(
+              isLoading: state.isLoading,
+              onPressed: onConfirm,
+              text: confirmButtonText,
+              context: context,
+            ),
+          ],
         ),
       ),
     );

@@ -44,6 +44,7 @@ class CartBottomBar extends StatelessWidget {
 
   Widget _buildSelectedVendorBottomBar() {
     return Container(
+
       key: ValueKey('selected_bottom_$selectedVendorId'),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -56,24 +57,22 @@ class CartBottomBar extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            VendorInfoRow(
-              selectedVendorId: selectedVendorId!,
-              selectedVendorName: selectedVendorName,
-              itemsCount: items.length,
-              totalPrice: totalPrice,
-              animations: animations,
-            ),
-            const SizedBox(height: 8),
-            CartActionButtons(
-              onComparison: onComparison,
-              onCheckout: onCheckout,
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          VendorInfoRow(
+            selectedVendorId: selectedVendorId!,
+            selectedVendorName: selectedVendorName,
+            itemsCount: items.length,
+            totalPrice: totalPrice,
+            animations: animations,
+          ),
+          const SizedBox(height: 8),
+          CartActionButtons(
+            onComparison: onComparison,
+            onCheckout: onCheckout,
+          ),
+        ],
       ),
     );
   }

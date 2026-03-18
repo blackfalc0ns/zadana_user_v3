@@ -163,6 +163,7 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                 left: Spacing.base,
                 right: Spacing.base,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Row(
                       children: [

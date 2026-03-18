@@ -141,15 +141,19 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
               ),
         bottomNavigationBar: _isEmpty
             ? null
-            : CartBottomBar(
-                selectedVendorId: _selectedVendorId,
-                items: _items,
-                totalPrice: _totalPrice,
-                selectedVendorName: _selectedVendorName,
-                animations: _animations,
-                onComparison: _showComparison,
-                onCheckout: _onCheckout,
-              ),
+            : Padding(
+              padding: const EdgeInsets.only(bottom: 90),
+              child: CartBottomBar(
+              
+                  selectedVendorId: _selectedVendorId,
+                  items: _items,
+                  totalPrice: _totalPrice,
+                  selectedVendorName: _selectedVendorName,
+                  animations: _animations,
+                  onComparison: _showComparison,
+                  onCheckout: _onCheckout,
+                ),
+            ),
       ),
     );
   }

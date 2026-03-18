@@ -27,7 +27,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   void _toggleFavorite(ProductModel product) {
     setState(() {
       final index = _products.indexWhere((p) => p.id == product.id);
-      if (index != -1) _products[index] = _products[index].copyWith(isFavorite: false);
+      if (index != -1)
+        _products[index] = _products[index].copyWith(isFavorite: false);
     });
     _showSnackBar('تم إزالة ${product.name} من المفضلة', AppColors.error);
   }
@@ -45,7 +46,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color, duration: const Duration(seconds: 2)),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 
@@ -67,7 +72,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         body: _products.isEmpty
             ? const FavoritesEmptyState()
             : Padding(
-                padding: const EdgeInsets.all(Spacing.base),
+                padding: const EdgeInsets.only(
+                  top: Spacing.base,
+                  left: Spacing.base,
+                  right: Spacing.base,
+                  bottom: 70,
+                ),
                 child: FavoritesGrid(
                   products: _products,
                   onAddToCart: _addToCart,
