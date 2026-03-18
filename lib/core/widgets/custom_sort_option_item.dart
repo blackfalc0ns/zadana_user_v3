@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-class SortOptionItem extends StatelessWidget {
-  const SortOptionItem({
+class CustomSortOptionItem extends StatelessWidget {
+  const CustomSortOptionItem({
     super.key,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.isSelected,
     this.onTap,
   });
 
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final bool isSelected;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -29,8 +30,8 @@ class SortOptionItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.secondary : AppColors.lightGrey,
-            width: 2,
+            color: isSelected ? color.secondary : color.outline,
+            width: 1,
           ),
         ),
         child: Row(
@@ -41,27 +42,28 @@ class SortOptionItem extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? AppColors.secondary
-                          : AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
                     style: getSemiBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size11,
-                      color: AppColors.textSecondary,
+                      fontSize: FontSize.size16,
+                      color: isSelected ? color.secondary : color.onSurface,
                     ),
                   ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle!,
+                      style: getRegularStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size11,
+                        color: color.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: AppColors.secondary, size: 24),
+              Icon(Icons.check_circle, color: color.secondary, size: 24),
           ],
         ),
       ),

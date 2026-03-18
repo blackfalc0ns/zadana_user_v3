@@ -1,35 +1,138 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-class ClearAllDialog extends StatelessWidget {
-  final VoidCallback onConfirm;
+void showClearAllDialog({
+  required BuildContext context,
+  required VoidCallback onConfirm,
+}) {
+  final locale = context.localization;
+  final color = context.colorScheme;
 
-  const ClearAllDialog({
-    super.key,
-    required this.onConfirm,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('مسح جميع المفضلة'),
-      content: const Text('هل أنت متأكد من أنك تريد إزالة جميع المنتجات من المفضلة؟'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('إلغاء'),
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (_) => Directionality(
+      textDirection: TextDirection.rtl,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onConfirm();
-          },
-          child: const Text(
-            'مسح الكل',
-            style: TextStyle(color: AppColors.error),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: color.surface,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: color.shadow.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: color.errorContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.favorite_border_rounded,
+                  size: 32,
+                  color: color.error,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                locale.clear_favorites,
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size18,
+                  color: color.onSurface,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                locale.clear_favorites_confirmation,
+                style: getRegularStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size12,
+                  color: color.onSurfaceVariant,
+                ).copyWith(height: 1.5),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 48,
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: color.onSurfaceVariant,
+                          side: BorderSide(
+                            color: color.outlineVariant,
+                            width: 1.5,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          locale.no,
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          onConfirm();
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: color.error,
+                          foregroundColor: color.onError,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          locale.clear_all,
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onError,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ),
+  );
 }

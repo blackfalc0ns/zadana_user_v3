@@ -16,11 +16,9 @@ void main() async {
   final currentLang = languageService.getLanguageCode();
   if (currentLang.isEmpty || currentLang != 'ar') {
     await languageService.saveLanguageCode('ar');
- 
   }
 
   runApp(DevicePreview(enabled: true, builder: (context) => const MyApp()));
-
 }
 
 class MyApp extends StatelessWidget {
@@ -36,7 +34,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('ar')],
       theme: AppTheme.light,
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.splash,
+      initialRoute: AppRoutes.mainShell,
       //  home: VerifyOtpScreen(),
     );
   }

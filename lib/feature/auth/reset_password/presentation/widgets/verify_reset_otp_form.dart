@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/widget/otp_input_field.dart';
 
-/// Verify Reset OTP form widget with 4-digit OTP input
 class VerifyResetOtpForm extends StatefulWidget {
   const VerifyResetOtpForm({
     super.key,
@@ -96,7 +97,6 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
 
     setState(() => _isLoading = true);
 
-    // Simulate API call
     await Future.delayed(const Duration(seconds: 2));
 
     setState(() => _isLoading = false);
@@ -118,21 +118,21 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final color = context.colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Description
         Text(
           '${localizations.otp_code_sent_to} ${widget.identifier}',
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: context.colorScheme.primary,
-            fontWeight: FontWeight.w600,
+          style: getMediumStyle(
+            fontSize: FontSize.size14,
+            fontFamily: FontConstant.cairo,
+            color: color.primary,
           ),
         ),
         const SizedBox(height: Spacing.lg),
 
-        // OTP Input Fields
         Row(
           textDirection: TextDirection.ltr,
           children: List.generate(4, (index) {
@@ -152,7 +152,6 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
         ),
         const SizedBox(height: Spacing.lg),
 
-        // Verify Button
         AppButtonSwitch(
           label: localizations.otp_verify_button,
           onPressed: isOtpComplete ? () => _submitOtp(context) : () {},

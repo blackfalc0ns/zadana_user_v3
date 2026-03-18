@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_filter_chip.dart';
 
 class CategoryChip extends StatelessWidget {
   const CategoryChip({
@@ -19,39 +20,20 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
-          vertical: Spacing.xs,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
-          ),
-        ),
-        child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                emoji,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: AppTextStyles.labelMedium.copyWith(
-                  color: isSelected ? AppColors.white : AppColors.textPrimary,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
+    final color = context.colorScheme;
+
+    return CustomFilterChip(
+      label: label,
+      icon: emoji,
+      isSelected: isSelected,
+      onTap: onTap ?? () {},
+      backgroundColor: color.surface,
+      selectedColor: color.primary,
+      borderColor: color.onSurface,
+      textStyle: getMediumStyle(
+        fontSize: FontSize.size14,
+        fontFamily: FontConstant.cairo,
+        color: isSelected ? color.onPrimary : color.onSurface,
       ),
     );
   }

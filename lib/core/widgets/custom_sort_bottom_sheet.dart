@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/sort_option_item.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_sort_option_item.dart';
 
-class SortBottomSheet extends StatefulWidget {
-  const SortBottomSheet({
+class CustomSortBottomSheet extends StatefulWidget {
+  const CustomSortBottomSheet({
     super.key,
     this.selectedSortOption,
-    required this.locale,
+    required this.sortOptions,
+    this.title = 'ترتيب حسب',
+    this.cancelLabel = 'إلغاء',
+    this.applyLabel = 'تطبيق',
   });
 
   final String? selectedSortOption;
-  final AppLocalizations locale;
+  final List<Map<String, dynamic>> sortOptions; // تغيير النوع
+  final String title;
+  final String cancelLabel;
+  final String applyLabel;
 
   @override
-  State<SortBottomSheet> createState() => _SortBottomSheetState();
+  State<CustomSortBottomSheet> createState() => _CustomSortBottomSheetState();
 }
 
-class _SortBottomSheetState extends State<SortBottomSheet> {
+class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
   String? selectedOption;
 
   @override
@@ -31,11 +35,13 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: color.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
       ),
       child: Column(
         children: [
@@ -44,7 +50,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: color.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -56,21 +62,19 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text(
-                    widget.locale.cancel,
+                    widget.cancelLabel,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                      color: color.onSurfaceVariant,
                     ),
                   ),
                 ),
-                Text('ترتيب المنتجات', style: AppTextStyles.h3),
+                Text(widget.title, style: AppTextStyles.h3),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, selectedOption);
-                  },
+                  onPressed: () => Navigator.pop(context, selectedOption),
                   child: Text(
-                    widget.locale.apply,
+                    widget.applyLabel,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: const Color(0xFF1E3A8A),
+                      color: color.primary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -81,13 +85,13 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
-              itemCount: kSortOptions.length,
+              itemCount: widget.sortOptions.length,
               itemBuilder: (context, index) {
-                final option = kSortOptions[index];
+                final option = widget.sortOptions[index];
                 final isSelected = selectedOption == option['value'];
 
-                return SortOptionItem(
-                  title: option['title'],
+                return CustomSortOptionItem(
+                  title: option['title'] ?? '',
                   subtitle: option['subtitle'],
                   isSelected: isSelected,
                   onTap: () {

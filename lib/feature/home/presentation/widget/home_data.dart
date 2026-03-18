@@ -44,7 +44,7 @@ class HomeData {
     ProductModel(
       id: 'fp1', name: 'شوفان كامل', store: 'فريش فارم',
       price: 1.99, imageUrl: '',
-      isFavorite: false, unit: 'كجم', emoji: '🌾',
+      isFavorite: true, unit: 'كجم', emoji: '🌾',
     ),
     ProductModel(
       id: 'fp2', name: 'زبدة فول سوداني', store: 'ركن الفاكهة',
@@ -54,7 +54,7 @@ class HomeData {
     ProductModel(
       id: 'fp3', name: 'أرز بسمتي', store: 'حبوب الشرق',
       price: 2.75, imageUrl: '',
-      isFavorite: false, unit: 'كجم', emoji: '🍚',
+      isFavorite: true, unit: 'كجم', emoji: '🍚',
     ),
     ProductModel(
       id: 'fp4', name: 'زيت عباد الشمس', store: 'طبيعة نقية',
@@ -64,12 +64,57 @@ class HomeData {
     ProductModel(
       id: 'fp5', name: 'سكر أبيض', store: 'حلاوة البيت',
       price: 1.80, imageUrl: '',
-      isFavorite: false, unit: 'كجم', emoji: '🍯',
+      isFavorite: true, unit: 'كجم', emoji: '🍯',
     ),
     ProductModel(
       id: 'fp6', name: 'ملح البحر', store: 'كنوز البحر',
       price: 0.99, imageUrl: '',
-      isFavorite: false, unit: 'كجم', emoji: '🧂',
+      isFavorite: true, unit: 'كجم', emoji: '🧂',
+    ),
+    ProductModel(
+      id: 'fp7', name: 'معكرونة إيطالية', store: 'المطبخ الإيطالي',
+      price: 5.50, imageUrl: '',
+      isFavorite: true, unit: 'كجم', emoji: '🍝',
+    ),
+    ProductModel(
+      id: 'fp8', name: 'صلصة طماطم', store: 'مزرعة فريش',
+      price: 2.99, imageUrl: '',
+      isFavorite: true, unit: 'علبة', emoji: '🍅',
+    ),
+    ProductModel(
+      id: 'fp9', name: 'جبنة موزاريلا', store: 'عالم الألبان',
+      price: 8.50, imageUrl: '',
+      isFavorite: true, unit: 'كجم', emoji: '🧀',
+    ),
+    ProductModel(
+      id: 'fp10', name: 'خبز توست', store: 'مخبز البيت',
+      price: 3.75, imageUrl: '',
+      isFavorite: true, unit: 'كيس', emoji: '🍞',
+    ),
+    ProductModel(
+      id: 'fp11', name: 'بيض طازج', store: 'مزرعة مباشر',
+      price: 4.20, imageUrl: '',
+      isFavorite: true, unit: 'كرتونة', emoji: '🥚',
+    ),
+    ProductModel(
+      id: 'fp12', name: 'حليب طازج', store: 'عالم الألبان',
+      price: 2.50, imageUrl: '',
+      isFavorite: true, unit: 'لتر', emoji: '🥛',
+    ),
+    ProductModel(
+      id: 'fp13', name: 'زبدة طبيعية', store: 'طبيعة نقية',
+      price: 6.99, imageUrl: '',
+      isFavorite: true, unit: 'علبة', emoji: '🧈',
+    ),
+    ProductModel(
+      id: 'fp14', name: 'مربى فراولة', store: 'حلاوة البيت',
+      price: 4.50, imageUrl: '',
+      isFavorite: true, unit: 'برطمان', emoji: '🍓',
+    ),
+    ProductModel(
+      id: 'fp15', name: 'شاي أخضر', store: 'ركن المشروبات',
+      price: 7.25, imageUrl: '',
+      isFavorite: true, unit: 'علبة', emoji: '🍵',
     ),
   ];
 

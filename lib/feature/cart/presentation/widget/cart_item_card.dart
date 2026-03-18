@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 
 class CartItemCard extends StatefulWidget {
@@ -94,17 +92,19 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final locale = context.localization;
+    final color = context.colorScheme;
     
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 6,
-              offset: const Offset(0, 1))
+            color: color.shadow.withValues(alpha: 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
+          )
         ],
       ),
       padding: const EdgeInsets.all(12),
@@ -114,42 +114,54 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: color.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.border, width: 1),
+              border: Border.all(color: Colors.grey.shade300, width: 1),
             ),
             child: Center(
-                child: Text(widget.item.imageUrl, style: const TextStyle(fontSize: 40))),
+              child: Text(
+                widget.item.imageUrl,
+                style: const TextStyle(fontSize: 40),
+              ),
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.item.name,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
+                Text(
+                  widget.item.name,
+                  style: getBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size14,
+                    color: color.onSurface,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                _buildAnimatedPrice(l10n),
+                _buildAnimatedPrice(locale, color),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    _buildButton(Icons.remove, widget.onDecrement),
+                    _buildButton(Icons.remove, widget.onDecrement, color),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 12),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 6),
                       decoration: BoxDecoration(
-                        color: AppColors.background,
+                        color: color.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text('${widget.item.quantity}',
-                          style: AppTextStyles.labelMedium.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary)),
+                      child: Text(
+                        '${widget.item.quantity}',
+                        style: getBoldStyle(
+                          fontFamily: FontConstant.cairo,
+                          fontSize: FontSize.size14,
+                          color: color.onSurface,
+                        ),
+                      ),
                     ),
-                    _buildButton(Icons.add, widget.onIncrement),
+                    _buildButton(Icons.add, widget.onIncrement, color),
                   ],
                 ),
               ],
@@ -161,10 +173,14 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
+                color: Colors.red.shade50,
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+              child: Icon(
+                Icons.delete_outline,
+                size: 20,
+                color: Colors.red.shade400,
+              ),
             ),
           ),
         ],
@@ -172,13 +188,18 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
     );
   }
 
-  Widget _buildAnimatedPrice(AppLocalizations l10n) {
+  Widget _buildAnimatedPrice(locale, color) {
     final price = _currentPrice;
     
     if (price == null) {
-      return Text(l10n.select_vendor_to_show_price,
-          style: AppTextStyles.labelSmall
-              .copyWith(color: AppColors.textSecondary));
+      return Text(
+        locale.select_vendor_to_show_price,
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: FontSize.size11,
+          color: color.onSurfaceVariant,
+        ),
+      );
     }
     
     return AnimatedBuilder(
@@ -192,15 +213,10 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
               key: ValueKey('price_${widget.selectedVendorId}_$price'),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primary.withValues(alpha: 0.1),
-                    AppColors.primary.withValues(alpha: 0.05),
-                  ],
-                ),
+                color: color.primaryContainer,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.2),
+                  color: Colors.grey.shade300,
                   width: 1,
                 ),
               ),
@@ -209,15 +225,15 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
                 children: [
                   Icon(
                     Icons.local_offer,
-                    color: AppColors.primary,
+                    color: color.onPrimaryContainer,
                     size: 12,
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${price.toStringAsFixed(0)} ريال/${widget.item.unit}',
+                    '${price.toStringAsFixed(0)} ${locale.currency}/${widget.item.unit}',
                     style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      color: AppColors.primary,
+                      color: color.onPrimaryContainer,
                       fontSize: 12,
                     ),
                   ),
@@ -230,17 +246,17 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
     );
   }
 
-  Widget _buildButton(IconData icon, VoidCallback onTap) {
+  Widget _buildButton(IconData icon, VoidCallback onTap, color) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: color.primary,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Icon(icon, size: 18, color: AppColors.white),
+        child: Icon(icon, size: 18, color: color.onPrimary),
       ),
     );
   }

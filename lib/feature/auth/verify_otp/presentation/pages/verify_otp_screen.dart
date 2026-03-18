@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
@@ -11,7 +13,6 @@ import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/veri
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/widget/verify_otp_form.dart';
 
-/// Verify OTP screen for account verification
 class VerifyOtpScreen extends StatelessWidget {
   const VerifyOtpScreen({super.key, this.identifier});
 
@@ -80,21 +81,26 @@ class VerifyOtpScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, AppLocalizations localizations) {
+    final color = context.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           localizations.otp_screen_title,
-          style: context.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: context.colorScheme.onSurface,
+          style: getBoldStyle(
+            fontSize: FontSize.size24,
+            fontFamily: FontConstant.cairo,
+            color: color.onSurface,
           ),
         ),
         const SizedBox(height: Spacing.sm),
         Text(
           localizations.otp_screen_subtitle,
-          style: context.textTheme.bodyLarge?.copyWith(
-            color: context.colorScheme.onSurface.withValues(alpha: 0.7),
+          style: getRegularStyle(
+            fontSize: FontSize.size16,
+            fontFamily: FontConstant.cairo,
+            color: color.onSurface.withValues(alpha: 0.7),
           ),
         ),
       ],

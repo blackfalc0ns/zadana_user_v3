@@ -21,45 +21,63 @@ class PriceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          PriceFormatter.formatPrice(price),
-          style:
-              style ??
-              AppTextStyles.labelLarge.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-              ),
-        ),
-        const SizedBox(width: 2),
-        Text(
-          'ريال',
-          style: getMediumStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size10,
-            color: AppColors.primary,
-          ),
-        ),
-        if (oldPrice != null) ...[
-          const SizedBox(width: 4),
-          Text(
-            PriceFormatter.formatPrice(oldPrice!),
-            style: AppTextStyles.bodySmall.copyWith(
-              decoration: TextDecoration.lineThrough,
-              color: AppColors.textHint,
-              fontSize: 11,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              PriceFormatter.formatPrice(price),
+              style:
+                  style ??
+                  AppTextStyles.labelLarge.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
-          ),
-          const SizedBox(width: 2),
+            const SizedBox(width: 2),
+            Text(
+              'ريال',
+              style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size10,
+                color: AppColors.primary,
+              ),
+            ),
+            if (oldPrice != null) ...[
+              const SizedBox(width: 4),
+              Text(
+                PriceFormatter.formatPrice(oldPrice!),
+                style: AppTextStyles.bodySmall.copyWith(
+                  decoration: TextDecoration.lineThrough,
+                  color: AppColors.textHint,
+                  fontSize: 11,
+                ),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                'ريال',
+                style: AppTextStyles.bodySmall.copyWith(
+                  decoration: TextDecoration.lineThrough,
+                  color: AppColors.textHint,
+                  fontSize: 9,
+                ),
+              ),
+            ],
+          ],
+        ),
+        if (unit != null && unit!.isNotEmpty) ...[
+          const SizedBox(height: 2),
           Text(
-            'ريال',
+            unit!,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.bodySmall.copyWith(
-              decoration: TextDecoration.lineThrough,
               color: AppColors.textHint,
-              fontSize: 9,
+              fontSize: 10,
             ),
           ),
         ],

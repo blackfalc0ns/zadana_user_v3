@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class VendorPromptCard extends StatelessWidget {
   const VendorPromptCard({super.key});
@@ -13,63 +13,63 @@ class VendorPromptCard extends StatelessWidget {
       width: double.infinity,
       child: Row(
         children: [
-          _buildStoreIcon(),
+          _buildStoreIcon(context),
           const SizedBox(width: 12),
-          Expanded(child: _buildPromptText()),
-          _buildTouchIcon(),
+          Expanded(child: _buildPromptText(context)),
+          _buildTouchIcon(context),
         ],
       ),
     );
   }
 
-  Widget _buildStoreIcon() {
+  Widget _buildStoreIcon(BuildContext context) {
+    final color = context.colorScheme;
+    
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withValues(alpha: 0.1),
-            AppColors.secondary.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: color.primaryContainer,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.15),
+          color: color.primary.withValues(alpha: 0.15),
           width: 0.8,
         ),
       ),
-      child: Icon(Icons.store, color: AppColors.primary, size: 20),
+      child: Icon(Icons.store, color: color.primary, size: 20),
     );
   }
 
-  Widget _buildPromptText() {
+  Widget _buildPromptText(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'اختر متجر لعرض الأسعار',
+          locale.select_vendor_to_show_price,
           style: getBoldStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size16,
-            color: AppColors.textPrimary,
+            color: color.onSurface,
           ),
         ),
         const SizedBox(height: 4),
         Text(
-          'اختر من المتاجر أعلاه لمشاهدة أسعار المنتجات والمتابعة للدفع',
+          locale.select_vendors_to_compare,
           style: getRegularStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size12,
-            color: AppColors.textSecondary,
+            color: color.onSurfaceVariant,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildTouchIcon() {
-    return Icon(Icons.touch_app, color: AppColors.primary, size: 24);
+  Widget _buildTouchIcon(BuildContext context) {
+    final color = context.colorScheme;
+    
+    return Icon(Icons.touch_app, color: color.primary, size: 24);
   }
 }

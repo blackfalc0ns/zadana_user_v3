@@ -128,6 +128,20 @@
 
   "help_support": "المساعدة والدعم",
   "about_app": "حول التطبيق",
+  "developer": "المطور",
+  "version": "الإصدار",
+  "contact_us": "التواصل معنا",
+  "select_language": "اختر اللغة",
+  "arabic": "العربية",
+  "english": "English",
+  "about_app_title": "عن التطبيق",
+  "app_name": "تطبيق زدانة للتسوق الذكي",
+  "version_label": "الإصدار",
+  "release_date": "تاريخ الإصدار",
+  "app_description": "تطبيق متكامل للتسوق الإلكتروني يوفر تجربة تسوق مميزة وسهلة.",
+  "ok": "حسناً",
+  "login_success": "تم تسجيل الدخول بنجاح",
+  "register_success": "تم إنشاء الحساب بنجاح، يرجى التحقق من البريد الإلكتروني",
 
   "legal": "القانوني",
   "terms_conditions": "الشروط والأحكام",
@@ -283,5 +297,17 @@
   "select_product_type": "اختر نوع المنتج",
   "category": "الفئة",
   "price_range": "نطاق السعر",
-  "currency": "ريال"
+  "currency": "ريال",
+  "filter_type": "النوع",
+  "filter_part": "الصنف",
+  "filter_category_title": "الفئة",
+  "filter_apply": "تطبيق التصفيه",
+  "show_more": "عرض المزيد",
+  "show_less": "عرض أقل",
+
+  "favorites": "المفضلة",
+  "favorites_empty": "لا توجد منتجات مفضلة",
+  "favorites_empty_message": "ابدأ بإضافة منتجاتك المفضلة لتسهيل الوصول إليها",
+  "clear_favorites": "مسح جميع المفضلة",
+  "clear_favorites_confirmation": "هل أنت متأكد من حذف جميع المنتجات من المفضلة؟"
 }

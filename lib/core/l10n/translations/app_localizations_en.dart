@@ -336,6 +336,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about_app => 'About App';
 
   @override
+  String get developer => 'Developer';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get contact_us => 'Contact Us';
+
+  @override
+  String get select_language => 'Select Language';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get about_app_title => 'About App';
+
+  @override
+  String get app_name => 'Zadana Smart Shopping App';
+
+  @override
+  String get version_label => 'Version';
+
+  @override
+  String get release_date => 'Release Date';
+
+  @override
+  String get app_description =>
+      'A comprehensive e-commerce app that provides a distinctive and easy shopping experience.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get login_success => 'Login successful';
+
+  @override
+  String get register_success =>
+      'Account created successfully, please verify your email';
+
+  @override
   String get legal => 'Legal';
 
   @override
@@ -717,4 +761,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get currency => 'SAR';
+
+  @override
+  String get filter_type => 'Type';
+
+  @override
+  String get filter_part => 'Part';
+
+  @override
+  String get filter_category_title => 'Category';
+
+  @override
+  String get filter_apply => 'Apply Filter';
+
+  @override
+  String get show_more => 'Show More';
+
+  @override
+  String get show_less => 'Show Less';
+
+  @override
+  String get favorites => 'Favorites';
+
+  @override
+  String get favorites_empty => 'No favorite products';
+
+  @override
+  String get favorites_empty_message =>
+      'Start adding your favorite products for easy access';
+
+  @override
+  String get clear_favorites => 'Clear All Favorites';
+
+  @override
+  String get clear_favorites_confirmation =>
+      'Are you sure you want to remove all products from favorites?';
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 
 class SelectVendorBar extends StatelessWidget {
@@ -14,14 +14,16 @@ class SelectVendorBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    
     return Container(
       key: const ValueKey('select_bottom'),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: color.shadow.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -31,60 +33,66 @@ class SelectVendorBar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildInfoRow(),
+            _buildInfoRow(context),
             const SizedBox(height: 8),
-            _buildSelectButton(),
+            _buildSelectButton(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow() {
+  Widget _buildInfoRow(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+    
     return Row(
       children: [
         Icon(Icons.shopping_cart_outlined,
-            color: AppColors.textSecondary, size: 16),
+            color: color.onSurfaceVariant, size: 16),
         const SizedBox(width: 5),
         Text(
-          '${items.length} منتج في السلة',
+          '${items.length} ${locale.product}',
           style: getRegularStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size14,
-            color: AppColors.textSecondary,
+            color: color.onSurfaceVariant,
           ),
         ),
         const Spacer(),
         Text(
-          'اختر متجر لمشاهدة الأسعار',
+          locale.select_vendor_to_show_price,
           style: getMediumStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size14,
-            color: AppColors.primary,
+            color: color.primary,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSelectButton() {
+  Widget _buildSelectButton(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+    
     return SizedBox(
       width: double.infinity,
       height: 36,
       child: ElevatedButton(
         onPressed: null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.textSecondary,
+          backgroundColor: color.onSurfaceVariant,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
         ),
         child: Text(
-          'يرجى اختيار متجر أولاً',
+          locale.select_vendor_to_show_price,
           style: getMediumStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size14,
-            color: AppColors.white,
+            color: color.surface,
           ),
         ),
       ),

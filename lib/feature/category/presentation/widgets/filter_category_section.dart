@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
@@ -23,9 +24,26 @@ class FilterCategorySection extends StatefulWidget {
 
 class _FilterCategorySectionState extends State<FilterCategorySection> {
   bool showAllCategories = false;
+  String? localSelectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    localSelectedCategory = widget.selectedCategory;
+  }
+
+  @override
+  void didUpdateWidget(FilterCategorySection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedCategory != oldWidget.selectedCategory) {
+      localSelectedCategory = widget.selectedCategory;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
     final displayedCategories = showAllCategories
         ? kCategoryList
         : kCategoryList.take(4).toList();
@@ -33,22 +51,22 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const GradientSectionTitle(title: 'الفئة'),
+        GradientSectionTitle(title: locale.filter_category_title),
         const SizedBox(height: Spacing.sm),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            childAspectRatio: 1.1,
+            childAspectRatio: 1.0, // زيادة من 0.75 إلى 1.0 عشان الكارد بقى أقصر
             crossAxisSpacing: Spacing.sm,
             mainAxisSpacing: Spacing.sm,
           ),
           itemCount: displayedCategories.length,
           itemBuilder: (context, index) {
             final category = displayedCategories[index];
-            final isSelected = widget.selectedCategory == category.name;
-            return _buildCategoryChip(category, isSelected);
+            final isSelected = localSelectedCategory == category.name;
+            return _buildCategoryChip(context, category, isSelected);
           },
         ),
         if (kCategoryList.length > 4)
@@ -56,19 +74,16 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
             padding: const EdgeInsets.only(top: Spacing.md),
             child: Center(
               child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    showAllCategories = !showAllCategories;
-                  });
-                },
+                onPressed: () => setState(() => showAllCategories = !showAllCategories),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      showAllCategories ? 'عرض أقل' : 'عرض المزيد',
+                      showAllCategories ? locale.show_less : locale.show_more,
                       style: getBoldStyle(
                         fontFamily: FontConstant.cairo,
                         fontSize: FontSize.size16,
+                        color: color.secondary,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -76,7 +91,7 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
                       showAllCategories
                           ? Icons.keyboard_arrow_up
                           : Icons.keyboard_arrow_down,
-                      color: AppColors.secondary,
+                      color: color.secondary,
                       size: 18,
                     ),
                   ],
@@ -88,57 +103,27 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
     );
   }
 
-  Widget _buildCategoryChip(CategoryEntity category, bool isSelected) {
-    return GestureDetector(
-      onTap: () {
-        widget.onCategorySelected(isSelected ? null : category.name);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.lightGrey,
-          ),
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [
-                    AppColors.primary.withValues(alpha: 0.9),
-                    AppColors.primary.withValues(alpha: 0.7),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-          borderRadius: BorderRadius.circular(12),
+  Widget _buildCategoryChip(BuildContext context, CategoryEntity category, bool isSelected) {
+    final color = context.colorScheme;
 
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(category.emoji, style: const TextStyle(fontSize: 24)),
-            const SizedBox(height: 4),
-            Text(
-              category.name,
-              style: getRegularStyle(
-                color: isSelected ? AppColors.white : AppColors.textPrimary,
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size12,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+    return CustomVerticalFilterChip(
+      label: category.name,
+      icon: category.emoji,
+      isSelected: isSelected,
+      onTap: () {
+        final newSelection = isSelected ? null : category.name;
+        setState(() {
+          localSelectedCategory = newSelection;
+        });
+        widget.onCategorySelected(newSelection);
+      },
+      backgroundColor: color.surface,
+      selectedColor: color.primary,
+      borderColor: color.outline.withValues(alpha: 0.2),
+      textStyle: getRegularStyle(
+        color: isSelected ? color.onPrimary : color.onSurface,
+        fontFamily: FontConstant.cairo,
+        fontSize: FontSize.size12,
       ),
     );
   }

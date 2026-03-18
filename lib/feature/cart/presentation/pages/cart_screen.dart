@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_app_bar.dart';
@@ -54,9 +54,12 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
           }
         });
 
-  String get _selectedVendorName => _selectedVendorId == null
-      ? 'لم يتم اختيار متجر'
-      : dummyVendors.firstWhere((v) => v.id == _selectedVendorId).name;
+  String _selectedVendorName(BuildContext context) {
+    final locale = context.localization;
+    return _selectedVendorId == null
+        ? locale.select_vendor_to_show_price
+        : dummyVendors.firstWhere((v) => v.id == _selectedVendorId).name;
+  }
 
   // Actions
   void _updateQuantity(CartItemModel item, bool increment) {
@@ -72,19 +75,20 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   }
 
   void _showDeleteDialog(CartItemModel item) => showDeleteItemDialog(
-        context: context,
-        itemName: item.name,
-        onConfirm: () => setState(() => _items.remove(item)),
-      );
+    context: context,
+    itemName: item.name,
+    onConfirm: () => setState(() => _items.remove(item)),
+  );
 
   void _showClearDialog() => showClearCartDialog(
-        context: context,
-        onConfirm: () => setState(() => _items.clear()),
-      );
+    context: context,
+    onConfirm: () => setState(() => _items.clear()),
+  );
 
   void _showComparison() {
+    final locale = context.localization;
     if (_selectedVendorId == null) {
-      _showSnackBar('يرجى اختيار متجر أولاً');
+      _showSnackBar(locale.select_vendor_to_show_price);
       return;
     }
 
@@ -103,28 +107,28 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   }
 
   void _onCheckout() {
+    final locale = context.localization;
     if (_selectedVendorId == null) {
-      _showSnackBar('يرجى اختيار متجر أولاً');
+      _showSnackBar(locale.select_vendor_to_show_price);
       return;
     }
     // TODO: Implement checkout logic
   }
 
   void _showSnackBar(String message) {
+    final color = context.colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.error,
-      ),
+      SnackBar(content: Text(message), backgroundColor: color.error),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: color.surface,
         appBar: CartAppBar(
           itemCount: _items.length,
           totalQuantity: _totalQuantity,
@@ -145,7 +149,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                 selectedVendorId: _selectedVendorId,
                 items: _items,
                 totalPrice: _totalPrice,
-                selectedVendorName: _selectedVendorName,
+                selectedVendorName: _selectedVendorName(context),
                 animations: _animations,
                 onComparison: _showComparison,
                 onCheckout: _onCheckout,

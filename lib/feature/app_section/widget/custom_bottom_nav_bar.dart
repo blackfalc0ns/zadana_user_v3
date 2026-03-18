@@ -1,44 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-class HomeNavItem {
-  final IconData icon;
-  final String label;
+class CustomBottomNavBar extends StatelessWidget {
+  final NavBarConfig navBarConfig;
 
-  const HomeNavItem({required this.icon, required this.label});
-}
-
-class HomeBottomNavBar extends StatelessWidget {
-  const HomeBottomNavBar({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-    required this.items,
-    required this.onCartTap,
-  });
-
-  final int currentIndex;
-  final ValueChanged<int> onTap;
-  final List<HomeNavItem> items; // 4 items فقط (بدون Cart)
-  final VoidCallback onCartTap;
+  const CustomBottomNavBar({super.key, required this.navBarConfig});
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return SizedBox(
-      height: 72,
+      height: 60,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // ── Bar background ────────────────────────────────────
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: color.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.shadow,
+                    color: color.shadow.withValues(alpha: 0.1),
                     blurRadius: 12,
                     offset: const Offset(0, -2),
                   ),
@@ -46,44 +33,39 @@ class HomeBottomNavBar extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // Left 2 items
                   ..._buildItems(context, 0, 2),
-                  // Center placeholder for cart
                   const Expanded(child: SizedBox()),
-                  // Right 2 items
                   ..._buildItems(context, 2, 4),
                 ],
               ),
             ),
           ),
-
-          // ── Floating cart button ──────────────────────────────
           Positioned(
             top: -18,
             left: 0,
             right: 0,
             child: Center(
               child: GestureDetector(
-                onTap: onCartTap,
+                onTap: () => navBarConfig.onItemSelected(4),
                 child: Container(
                   width: 56,
                   height: 56,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: navBarConfig.selectedIndex == 4 ? color.primary : color.primary,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.40),
+                        color: color.primary.withValues(alpha: 0.40),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
                     ],
                   ),
-                  child: const FaIcon(
+                  child: FaIcon(
                     FontAwesomeIcons.cartPlus,
-                    color: AppColors.white,
-                    size:20,
+                    color: color.onPrimary,
+                    size: 20,
                   ),
                 ),
               ),
@@ -95,30 +77,31 @@ class HomeBottomNavBar extends StatelessWidget {
   }
 
   List<Widget> _buildItems(BuildContext context, int from, int to) {
+    final color = context.colorScheme;
     return List.generate(to - from, (i) {
       final index = from + i;
-      final item = items[index];
-      final active = currentIndex == index;
+      final item = navBarConfig.items[index];
+      final active = navBarConfig.selectedIndex == index;
 
       return Expanded(
         child: GestureDetector(
-          onTap: () => onTap(index),
+          onTap: () => navBarConfig.onItemSelected(index),
           behavior: HitTestBehavior.opaque,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                item.icon,
+                (item.icon as Icon).icon,
                 size: 22,
-                color: active ? AppColors.primary : AppColors.textSecondary,
+                color: active ? color.primary : color.onSurface.withValues(alpha: 0.6),
               ),
               const SizedBox(height: 3),
               Text(
-                item.label,
-                style: AppTextStyles.bodySmall.copyWith(
-                  fontSize: 10,
-                  color: active ? AppColors.primary : AppColors.textSecondary,
-                  fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                item.title ?? '',
+                style: getMediumStyle(
+                  fontSize: FontSize.size10,
+                  fontFamily: FontConstant.cairo,
+                  color: active ? color.primary : color.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],

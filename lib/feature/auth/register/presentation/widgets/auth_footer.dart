@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_event.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_state.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
 
-/// Footer widget with toggle text
-/// Following requirements:
-/// - Uses context.textTheme
-/// - Uses ColorScheme
-/// - No hardcoded colors
-/// - Dispatches events to ViewModel
 class AuthFooter extends StatelessWidget {
   const AuthFooter({super.key});
 
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final textTheme = context.textTheme;
-    final colorScheme = context.colorScheme;
+    final color = context.colorScheme;
 
     return BlocBuilder<RegisterViewModel, RegisterState>(
       builder: (context, state) {
@@ -36,8 +31,10 @@ class AuthFooter extends StatelessWidget {
             children: [
               Text(
                 promptText,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                style: getRegularStyle(
+                  fontSize: FontSize.size14,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurfaceVariant,
                 ),
               ),
               TextButton(
@@ -58,8 +55,10 @@ class AuthFooter extends StatelessWidget {
                 },
                 child: Text(
                   actionText,
-                  style: textTheme.labelLarge?.copyWith(
-                    color: colorScheme.primary,
+                  style: getMediumStyle(
+                    fontSize: FontSize.size14,
+                    fontFamily: FontConstant.cairo,
+                    color: color.primary,
                   ),
                 ),
               ),

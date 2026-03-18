@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_chip.dart';
 
@@ -9,12 +8,12 @@ class CategoryChips extends StatelessWidget {
     super.key,
     required this.selectedCategory,
     required this.onCategorySelected,
-    required this.locale,
+   
   });
 
   final String selectedCategory;
   final Function(String) onCategorySelected;
-  final AppLocalizations locale;
+  
 
   @override
   Widget build(BuildContext context) {

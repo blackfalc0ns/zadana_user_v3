@@ -12,7 +12,7 @@ import 'package:zadana_user_v3/feature/home/presentation/widget/sections/explore
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/featured_products_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/recommended_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/special_offers_section.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/sections/stores_section.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/sections/brands_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -63,10 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // 4. Best Selling Section
           SliverToBoxAdapter(child: const BestSellingSection()),
-          // 2. Stores Section
+          // 2. Brands Section
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          SliverToBoxAdapter(child: const StoresSection()),
+          SliverToBoxAdapter(child: const BrandsSection()),
 
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 

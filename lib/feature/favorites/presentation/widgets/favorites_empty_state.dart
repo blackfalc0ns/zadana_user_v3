@@ -1,72 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class FavoritesEmptyState extends StatelessWidget {
-  const FavoritesEmptyState({super.key});
+  final VoidCallback onStartShopping;
+
+  const FavoritesEmptyState({super.key, required this.onStartShopping});
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 120,
-              height: 120,
+              width: 100,
+              height: 100,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primary.withValues(alpha: 0.1),
-                    AppColors.secondary.withValues(alpha: 0.05),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: color.errorContainer.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.favorite_outline_rounded,
-                size: 60,
-                color: AppColors.primary,
+              child: Icon(
+                Icons.favorite_border_rounded,
+                size: 48,
+                color: color.error,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: Spacing.lg),
             Text(
-              'لا توجد منتجات مفضلة',
-              style: AppTextStyles.labelLarge.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+              locale.favorites_empty,
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size18,
+                color: color.onSurface,
+              ),
+            ),
+            const SizedBox(height: Spacing.sm),
+            Text(
+              locale.favorites_empty_message,
+              style: getRegularStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size12,
+                color: color.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'ابدأ بإضافة المنتجات التي تحبها إلى المفضلة\nلتجدها بسهولة هنا',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                DefaultTabController.of(context).animateTo(0);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: Spacing.xl),
+            SizedBox(
+              width: 200,
+              height: Spacing.buttonHeight,
+              child: ElevatedButton(
+                onPressed: onStartShopping,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: color.primary,
+                  foregroundColor: color.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(Spacing.buttonRadius),
+                  ),
+                  elevation: 0,
                 ),
-              ),
-              child: Text(
-                'تصفح المنتجات',
-                style: AppTextStyles.labelLarge.copyWith(
-                  color: AppColors.white,
-                  fontWeight: FontWeight.bold,
+                child: Text(
+                  locale.start_shopping,
+                  style: getMediumStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size14,
+                    color: color.onPrimary,
+                  ),
                 ),
               ),
             ),

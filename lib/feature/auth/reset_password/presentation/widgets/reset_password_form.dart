@@ -6,8 +6,6 @@ import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_pa
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
 
-/// Reset password form widget
-/// Only for entering new password (OTP already verified)
 class ResetPasswordForm extends StatefulWidget {
   final String identifier;
   final String otpCode;
@@ -43,7 +41,6 @@ class _ResetPasswordFormState
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // Simulate API call
       await Future.delayed(const Duration(seconds: 2));
 
       setState(() => _isLoading = false);
@@ -63,7 +60,6 @@ class _ResetPasswordFormState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // New Password field
           FieldLabel(locale.label_new_password),
           AppPasswordField(
             controller: _newPasswordController,
@@ -73,7 +69,6 @@ class _ResetPasswordFormState
           ),
           const SizedBox(height: Spacing.base),
 
-          // Confirm Password field
           FieldLabel(locale.label_new_password),
           AppPasswordField(
             controller: _confirmPasswordController,
@@ -90,7 +85,6 @@ class _ResetPasswordFormState
           ),
           const SizedBox(height: Spacing.xl),
 
-          // Submit button
           AppButtonSwitch(
             label: locale.btn_confirm,
             onPressed: () => _onSubmit(context),

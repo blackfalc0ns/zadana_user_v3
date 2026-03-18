@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_header.dart'
     as custom_header;
@@ -15,34 +11,30 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.localization;
+    final color = context.colorScheme;
 
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75, // 75% من عرض الشاشة
+      width: MediaQuery.of(context).size.width * 0.75,
       child: Drawer(
-        backgroundColor: AppColors.surface,
+        backgroundColor: color.surface,
         child: Column(
           children: [
-            // Header
             const custom_header.DrawerHeader(),
-
-            // Menu Items
             Expanded(
               child: CustomScrollView(
                 slivers: [
                   SliverList(
                     delegate: SliverChildListDelegate([
-                      // Personal Information Section
-                      _buildPersonalInfoSection(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildMainMenuItems(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildSettingsMenuItems(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildSupportMenuItems(context, locale),
-                      const Divider(color: AppColors.divider),
-                      _buildLogoutMenuItem(context, locale),
-                      const SizedBox(height: 20), // مساحة من تحت
+                      _buildPersonalInfoSection(context),
+                      Divider(color: color.onSurface.withValues(alpha: 0.12)),
+                      _buildMainMenuItems(context),
+                      Divider(color: color.onSurface.withValues(alpha: 0.12)),
+                      _buildSettingsMenuItems(context),
+                      Divider(color: color.onSurface.withValues(alpha: 0.12)),
+                      _buildSupportMenuItems(context),
+                      Divider(color: color.onSurface.withValues(alpha: 0.12)),
+                      _buildLogoutMenuItem(context),
+                      const SizedBox(height: 20),
                     ]),
                   ),
                 ],
@@ -54,136 +46,139 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalInfoSection(BuildContext context, dynamic locale) {
+  Widget _buildPersonalInfoSection(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: Text(
-        //     'المعلومات الشخصية',
-        //     style: getMediumStyle(fontFamily: FontConstant.cairo)
-        //   ),
-        // ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.user,
-          title: 'الاسم',
+          title: locale.name,
           subtitle: 'abdo mohamed',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () {},
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.phone,
-          title: 'رقم الهاتف',
+          title: locale.phone,
           subtitle: '01028233582',
-          iconColor: AppColors.secondary,
+          iconColor: color.secondary,
           onTap: () {},
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.envelope,
-          title: 'البريد الإلكتروني',
+          title: locale.label_email,
           subtitle: 'baderahmed40@gmail.com',
-          iconColor: AppColors.primary,
+          iconColor: color.primary,
           onTap: () {},
         ),
       ],
     );
   }
 
-  Widget _buildMainMenuItems(BuildContext context, dynamic locale) {
+  Widget _buildMainMenuItems(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
     return Column(
       children: [
         DrawerMenuItem(
           icon: FontAwesomeIcons.bell,
-          title: 'الإشعارات',
-          iconColor: AppColors.secondary,
+          title: locale.notifications,
+          iconColor: color.secondary,
           onTap: () => DrawerActions.handleNotifications(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.heart,
-          title: 'المفضلة',
-          iconColor: AppColors.primary,
+          title: locale.nav_orders,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleFavorites(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.listUl,
-          title: 'الأقسام',
-          iconColor: AppColors.secondary,
+          title: locale.nav_categories,
+          iconColor: color.secondary,
           onTap: () => DrawerActions.handleCategories(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.bagShopping,
-          title: 'طلباتي',
-          iconColor: AppColors.primary,
+          title: locale.nav_cart,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleMyOrders(context),
         ),
       ],
     );
   }
 
-  Widget _buildSettingsMenuItems(BuildContext context, dynamic locale) {
+  Widget _buildSettingsMenuItems(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
     return Column(
       children: [
         DrawerMenuItem(
           icon: FontAwesomeIcons.globe,
-          title: 'اللغة',
-          iconColor: AppColors.secondary,
+          title: locale.language,
+          iconColor: color.secondary,
           onTap: () => DrawerActions.handleLanguage(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.shield,
-          title: 'السياسة والخصوصية',
-          iconColor: AppColors.primary,
+          title: locale.privacy_policy,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handlePrivacyPolicy(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.circleInfo,
-          title: 'عن التطبيق',
-          iconColor: AppColors.secondary,
+          title: locale.about_app,
+          iconColor: color.secondary,
           onTap: () => DrawerActions.handleAboutApp(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.code,
-          title: 'المطور',
-          iconColor: AppColors.primary,
+          title: locale.developer,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleDeveloper(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.tag,
-          title: 'الإصدار',
+          title: locale.version,
           subtitle: 'v1.0.0',
-          iconColor: AppColors.secondary,
+          iconColor: color.secondary,
           onTap: () {},
         ),
       ],
     );
   }
 
-  Widget _buildSupportMenuItems(BuildContext context, dynamic locale) {
+  Widget _buildSupportMenuItems(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
     return Column(
       children: [
         DrawerMenuItem(
           icon: FontAwesomeIcons.phone,
-          title: 'التواصل معنا',
-          iconColor: AppColors.primary,
+          title: locale.contact_us,
+          iconColor: color.primary,
           onTap: () => DrawerActions.handleContactUs(context),
         ),
         DrawerMenuItem(
           icon: FontAwesomeIcons.headset,
-          title: 'المساعدة والدعم',
-          iconColor: AppColors.secondary,
+          title: locale.help_support,
+          iconColor: color.secondary,
           onTap: () => DrawerActions.handleSupport(context),
         ),
       ],
     );
   }
 
-  Widget _buildLogoutMenuItem(BuildContext context, dynamic locale) {
+  Widget _buildLogoutMenuItem(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
     return DrawerMenuItem(
       icon: FontAwesomeIcons.rightFromBracket,
-      title: 'تسجيل الخروج',
-      textColor: AppColors.error,
-      iconColor: AppColors.error,
+      title: locale.logout,
+      textColor: color.error,
+      iconColor: color.error,
       onTap: () => DrawerActions.handleLogout(context),
     );
   }

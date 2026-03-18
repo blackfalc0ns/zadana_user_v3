@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/constants/register_constants.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_event.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_state.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
 
-/// Toggle widget for switching between login and signup
-/// Following requirements:
-/// - Uses ColorScheme only
-/// - Uses context.textTheme
-/// - No hardcoded colors
-/// - Dispatches events to ViewModel
 class AuthToggle extends StatelessWidget {
   const AuthToggle({super.key});
 
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final colorScheme = Theme.of(context).colorScheme;
+    final color = context.colorScheme;
 
     return BlocBuilder<RegisterViewModel, RegisterState>(
       builder: (context, state) {
@@ -27,7 +23,7 @@ class AuthToggle extends StatelessWidget {
           isSignUp: state.isSignUp,
           loginLabel: locale.toggle_login,
           signUpLabel: locale.toggle_signup,
-          colorScheme: colorScheme,
+          colorScheme: color,
           onSignUp: () => context
             .read<RegisterViewModel>()
             .doIntent(const SwitchToSignUpEvent()),
@@ -74,21 +70,18 @@ class _AuthToggleContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: RegisterConstants.toggleHeight,
+      height: AppConstants.toggleHeight,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: 
           BorderRadius.circular(Spacing.buttonRadius),
       ),
-      padding: const EdgeInsets.all(
-        RegisterConstants.togglePadding
-      ),
+      padding: const EdgeInsets.all(AppConstants.togglePadding),
       child: Stack(
         children: [
-          // Sliding pill
           AnimatedAlign(
             duration: 
-              RegisterConstants.pillAnimationDuration,
+              AppConstants.pillAnimationDuration,
             curve: Curves.easeInOut,
             alignment: _pillAlignment(context),
             child: FractionallySizedBox(
@@ -112,7 +105,6 @@ class _AuthToggleContent extends StatelessWidget {
             ),
           ),
           
-          // Labels
           Row(
             children: [
               _TabLabel(
@@ -150,8 +142,6 @@ class _TabLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = context.textTheme;
-    
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -159,9 +149,11 @@ class _TabLabel extends StatelessWidget {
         child: Center(
           child: AnimatedDefaultTextStyle(
             duration: 
-              RegisterConstants.pillAnimationDuration,
+              AppConstants.pillAnimationDuration,
             curve: Curves.easeInOut,
-            style: textTheme.labelLarge!.copyWith(
+            style: getMediumStyle(
+              fontSize: FontSize.size14,
+              fontFamily: FontConstant.cairo,
               color: active 
                 ? colorScheme.onPrimary 
                 : colorScheme.onSurfaceVariant,

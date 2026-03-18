@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-/// Primary CTA — fully styled by [ElevatedButtonThemeData] from [AppTheme].
 class AppButtonSwitch extends StatelessWidget {
   const AppButtonSwitch({
     super.key,
@@ -15,15 +15,17 @@ class AppButtonSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       child: isLoading
-          ? const SizedBox(
+          ? SizedBox(
               width: 22,
               height: 22,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: Colors.white,
+                color: color.onPrimary,
               ),
             )
           : Text(label),

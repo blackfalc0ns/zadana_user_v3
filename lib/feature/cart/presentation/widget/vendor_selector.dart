@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class VendorModel {
   final String id;
@@ -39,14 +39,16 @@ class VendorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color.surface,
         boxShadow: selectedVendorId == null
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.05),
+                  color: color.primary.withValues(alpha: 0.05),
                   blurRadius: 6,
                   offset: const Offset(0, 1),
                 ),
@@ -59,7 +61,7 @@ class VendorSelector extends StatelessWidget {
             Container(
               width: double.infinity,
               height: 2,
-              color: AppColors.primary.withValues(alpha: 0.2),
+              color: color.primary.withValues(alpha: 0.2),
             ),
           Expanded(
             child: ListView.separated(
@@ -96,42 +98,30 @@ class _VendorChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [
-                    AppColors.primary,
-                    AppColors.primary.withValues(alpha: 0.8),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
+          color: isSelected
+              ? color.primary
               : !hasSelection
-              ? null
-              : null,
-          color: !isSelected && hasSelection
-              ? AppColors.background
-              : !hasSelection
-              ? AppColors.surface
-              : null,
+              ? color.surface
+              : color.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? AppColors.primary
-                : !hasSelection
-                ? AppColors.primary.withValues(alpha: 0.15)
-                : AppColors.border,
+                ? color.primary
+                : Colors.grey.shade300,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: !hasSelection
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.05),
+                    color: color.primary.withValues(alpha: 0.05),
                     blurRadius: 3,
                     offset: const Offset(0, 1),
                   ),
@@ -147,7 +137,7 @@ class _VendorChip extends StatelessWidget {
               vendor.name,
               style: getBoldStyle(
                 fontFamily: FontConstant.cairo,
-                color: isSelected ? AppColors.white : AppColors.textPrimary,
+                color: isSelected ? color.onPrimary : color.onSurface,
               ),
             ),
           ],

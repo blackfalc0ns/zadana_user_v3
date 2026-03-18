@@ -734,6 +734,90 @@ abstract class AppLocalizations {
   /// **'About App'**
   String get about_app;
 
+  /// No description provided for @developer.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get developer;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @contact_us.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contact_us;
+
+  /// No description provided for @select_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get select_language;
+
+  /// No description provided for @arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get arabic;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @about_app_title.
+  ///
+  /// In en, this message translates to:
+  /// **'About App'**
+  String get about_app_title;
+
+  /// No description provided for @app_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Zadana Smart Shopping App'**
+  String get app_name;
+
+  /// No description provided for @version_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version_label;
+
+  /// No description provided for @release_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Release Date'**
+  String get release_date;
+
+  /// No description provided for @app_description.
+  ///
+  /// In en, this message translates to:
+  /// **'A comprehensive e-commerce app that provides a distinctive and easy shopping experience.'**
+  String get app_description;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @login_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Login successful'**
+  String get login_success;
+
+  /// No description provided for @register_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully, please verify your email'**
+  String get register_success;
+
   /// No description provided for @legal.
   ///
   /// In en, this message translates to:
@@ -1477,6 +1561,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SAR'**
   String get currency;
+
+  /// No description provided for @filter_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get filter_type;
+
+  /// No description provided for @filter_part.
+  ///
+  /// In en, this message translates to:
+  /// **'Part'**
+  String get filter_part;
+
+  /// No description provided for @filter_category_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get filter_category_title;
+
+  /// No description provided for @filter_apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Filter'**
+  String get filter_apply;
+
+  /// No description provided for @show_more.
+  ///
+  /// In en, this message translates to:
+  /// **'Show More'**
+  String get show_more;
+
+  /// No description provided for @show_less.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Less'**
+  String get show_less;
+
+  /// No description provided for @favorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favorites;
+
+  /// No description provided for @favorites_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite products'**
+  String get favorites_empty;
+
+  /// No description provided for @favorites_empty_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Start adding your favorite products for easy access'**
+  String get favorites_empty_message;
+
+  /// No description provided for @clear_favorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Favorites'**
+  String get clear_favorites;
+
+  /// No description provided for @clear_favorites_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove all products from favorites?'**
+  String get clear_favorites_confirmation;
 }
 
 class _AppLocalizationsDelegate

@@ -330,6 +330,50 @@ class AppLocalizationsAr extends AppLocalizations {
   String get about_app => 'حول التطبيق';
 
   @override
+  String get developer => 'المطور';
+
+  @override
+  String get version => 'الإصدار';
+
+  @override
+  String get contact_us => 'التواصل معنا';
+
+  @override
+  String get select_language => 'اختر اللغة';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get about_app_title => 'عن التطبيق';
+
+  @override
+  String get app_name => 'تطبيق زدانة للتسوق الذكي';
+
+  @override
+  String get version_label => 'الإصدار';
+
+  @override
+  String get release_date => 'تاريخ الإصدار';
+
+  @override
+  String get app_description =>
+      'تطبيق متكامل للتسوق الإلكتروني يوفر تجربة تسوق مميزة وسهلة.';
+
+  @override
+  String get ok => 'حسناً';
+
+  @override
+  String get login_success => 'تم تسجيل الدخول بنجاح';
+
+  @override
+  String get register_success =>
+      'تم إنشاء الحساب بنجاح، يرجى التحقق من البريد الإلكتروني';
+
+  @override
   String get legal => 'القانوني';
 
   @override
@@ -707,4 +751,39 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get currency => 'ريال';
+
+  @override
+  String get filter_type => 'النوع';
+
+  @override
+  String get filter_part => 'الصنف';
+
+  @override
+  String get filter_category_title => 'الفئة';
+
+  @override
+  String get filter_apply => 'تطبيق التصفيه';
+
+  @override
+  String get show_more => 'عرض المزيد';
+
+  @override
+  String get show_less => 'عرض أقل';
+
+  @override
+  String get favorites => 'المفضلة';
+
+  @override
+  String get favorites_empty => 'لا توجد منتجات مفضلة';
+
+  @override
+  String get favorites_empty_message =>
+      'ابدأ بإضافة منتجاتك المفضلة لتسهيل الوصول إليها';
+
+  @override
+  String get clear_favorites => 'مسح جميع المفضلة';
+
+  @override
+  String get clear_favorites_confirmation =>
+      'هل أنت متأكد من حذف جميع المنتجات من المفضلة؟';
 }

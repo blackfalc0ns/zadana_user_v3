@@ -37,4 +37,14 @@ class AppConstants {
   static const int minPasswordLength = 6;
   static const int maxPasswordLength = 32;
   static const int otpLength = 6;
+
+  // ── Animation durations ──
+  static const tabSwitchDuration = Duration(milliseconds: 300);
+  static const subtitleSwitchDuration = Duration(milliseconds: 250);
+  static const pillAnimationDuration = Duration(milliseconds: 300);
+
+  // ── UI Dimensions ──
+  static const double logoHeight = 52.0;
+  static const double toggleHeight = 50.0;
+  static const double togglePadding = 3.0;
 }

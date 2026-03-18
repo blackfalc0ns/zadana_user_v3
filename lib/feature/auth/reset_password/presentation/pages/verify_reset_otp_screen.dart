@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/widgets/verify_reset_otp_form.dart';
 
-/// Verify OTP Screen for Password Reset
-/// First step: User enters 4-digit OTP code
 class VerifyResetOtpScreen extends StatelessWidget {
   final String identifier;
 
@@ -19,17 +19,17 @@ class VerifyResetOtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final colorScheme = context.colorScheme;
+    final color = context.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: color.surface,
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: color.surface,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: colorScheme.onSurface,
+            color: color.onSurface,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -43,24 +43,25 @@ class VerifyResetOtpScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Text(
                 locale.reset_password_title,
-                style: context.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
+                style: getBoldStyle(
+                  fontSize: FontSize.size24,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurface,
                 ),
               ),
               const SizedBox(height: Spacing.sm),
               Text(
                 locale.otp_description,
-                style: context.textTheme.bodyLarge?.copyWith(
-                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+                style: getRegularStyle(
+                  fontSize: FontSize.size16,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: Spacing.xl),
 
-              // OTP Form
               VerifyResetOtpForm(
                 identifier: identifier,
                 onSuccess: (otpCode) {
@@ -68,7 +69,6 @@ class VerifyResetOtpScreen extends StatelessWidget {
                     context: context,
                     message: locale.otp_success_message,
                   );
-                  // Navigate to new password screen
                   context.pushNamed(
                     AppRoutes.resetPassword,
                     arguments: {

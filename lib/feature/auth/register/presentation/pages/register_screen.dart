@@ -3,16 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/widget/login_form_wrapper.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/constants/register_constants.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_state.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/sign_up_form.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/auth_footer.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/auth_header.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/auth_toggle.dart';
+import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/sign_up_form.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 
 /// Main authentication screen
@@ -42,15 +43,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final locale = context.localization;
+    final color = context.colorScheme;
 
     return BlocProvider(
       create: (_) => getIt<RegisterViewModel>(),
       child: BlocListener<RegisterViewModel, RegisterState>(
         listener: (context, state) {
-          // Register success/error handling only
           if (state.isSuccess) {
-            // Navigate to verify OTP with email
             if (_registeredEmail != null && _registeredEmail!.isNotEmpty) {
               context.pushNamed(
                 AppRoutes.verifyOtp,
@@ -58,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               );
               CustomSnackbar.showSuccess(
                 context: context,
-                message: 'تم إنشاء الحساب بنجاح، يرجى التحقق من البريد الإلكتروني',
+                message: locale.register_success,
               );
             }
           }
@@ -70,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
         },
         child: Scaffold(
-          backgroundColor: colorScheme.surface,
+          backgroundColor: color.surface,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
@@ -92,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   BlocBuilder<RegisterViewModel, RegisterState>(
                     builder: (context, state) {
                       return AnimatedSwitcher(
-                        duration: RegisterConstants.tabSwitchDuration,
+                        duration: AppConstants.tabSwitchDuration,
                         transitionBuilder: (child, animation) =>
                             FadeTransition(opacity: animation, child: child),
                         child: state.isSignUp

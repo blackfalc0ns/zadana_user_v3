@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class CartActionButtons extends StatelessWidget {
@@ -16,50 +14,8 @@ class CartActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: _buildComparisonButton()),
-        const SizedBox(width: 8),
-        Expanded(child: _buildCheckoutButton()),
-      ],
-    );
-  }
+    final locale = context.localization;
 
-  Widget _buildComparisonButton() {
-    return SizedBox(
-      height: 36,
-      child: OutlinedButton(
-        onPressed: onComparison,
-        style: OutlinedButton.styleFrom(
-          side: BorderSide(color: AppColors.primary),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.compare_arrows, color: AppColors.primary, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              'مقارنة',
-              style: getMediumStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size14,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCheckoutButton() {
-    return AppButton(
-      height: 36,
-      onPressed: onCheckout,
-      text: 'متابعة الدفع',
-    );
+    return AppButton(height: 36, onPressed: onCheckout, text: locale.checkout);
   }
 }

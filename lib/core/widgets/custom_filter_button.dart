@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-class FilterButton extends StatelessWidget {
-  const FilterButton({
+class CustomFilterButton extends StatelessWidget {
+  const CustomFilterButton({
     super.key,
     required this.icon,
     required this.label,
@@ -14,6 +17,8 @@ class FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(25),
@@ -22,14 +27,14 @@ class FilterButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: Colors.white),
+            Icon(icon, size: 18, color: color.onPrimary),
             const SizedBox(width: 5),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+              style: getMediumStyle(
+                fontSize: FontSize.size13,
+                fontFamily: FontConstant.cairo,
+                color: color.onPrimary,
               ),
             ),
           ],

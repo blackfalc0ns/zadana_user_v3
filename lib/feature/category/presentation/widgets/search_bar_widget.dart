@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_bottom_sheet.dart';
 
 class SearchBarWidget extends StatelessWidget {
   const SearchBarWidget({
@@ -18,20 +18,19 @@ class SearchBarWidget extends StatelessWidget {
   final AppLocalizations locale;
 
   void _showFilterBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const FilterBottomSheet(),
-    ).then((result) {
-      if (result != null && onFilterApplied != null) {
-        onFilterApplied!(result);
-      }
-    });
+    // TODO: Implement filter functionality or remove if not needed
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Filter functionality will be implemented'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return Container(
       height: 54,
       decoration: BoxDecoration(
@@ -42,11 +41,17 @@ class SearchBarWidget extends StatelessWidget {
           Expanded(
             child: TextField(
               textAlign: TextAlign.right,
-              style: AppTextStyles.bodyMedium,
+              style: getRegularStyle(
+                fontSize: FontSize.size16,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurface,
+              ),
               decoration: InputDecoration(
                 hintText: locale.search_hint,
-                hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                hintStyle: getRegularStyle(
+                  fontSize: FontSize.size16,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurface.withValues(alpha: 0.5),
                 ),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -72,13 +77,13 @@ class SearchBarWidget extends StatelessWidget {
             width: 42,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primary,
-              border: Border.all(color: AppColors.primary),
+              color: color.primary,
+              border: Border.all(color: color.primary),
               borderRadius: BorderRadius.circular(8),
             ),
             child: IconButton(
               onPressed: () => _showFilterBottomSheet(context),
-              icon: const Icon(Icons.tune, color: AppColors.white, size: 24),
+              icon: Icon(Icons.tune, color: color.onPrimary, size: 24),
               padding: EdgeInsets.zero,
             ),
           ),

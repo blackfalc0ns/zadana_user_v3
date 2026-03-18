@@ -1,31 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-/// ─── Or continue with ───
 class OrDivider extends StatelessWidget {
   const OrDivider({super.key, required this.label});
   final String label;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return Row(
       children: [
-        const Expanded(
-          child: Divider(thickness: 1, color: AppColors.border),
+        Expanded(
+          child: Divider(
+            thickness: 1,
+            color: color.outline.withValues(alpha: 0.2),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
           child: Text(
             label,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+            style: getRegularStyle(
+              fontSize: FontSize.size14,
+              fontFamily: FontConstant.cairo,
+              color: color.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),
-        const Expanded(
-          child: Divider(thickness: 1, color: AppColors.border),
+        Expanded(
+          child: Divider(
+            thickness: 1,
+            color: color.outline.withValues(alpha: 0.2),
+          ),
         ),
       ],
     );

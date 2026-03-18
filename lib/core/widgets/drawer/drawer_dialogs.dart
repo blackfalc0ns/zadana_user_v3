@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class DrawerDialogs {
   static void showLanguageDialog(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: color.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -16,40 +21,58 @@ class DrawerDialogs {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
             Container(
               width: 40,
               height: 4,
               margin: const EdgeInsets.only(bottom: Spacing.md),
               decoration: BoxDecoration(
-                color: AppColors.textSecondary,
+                color: color.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
-            // Title
-            Text('اختر اللغة', style: AppTextStyles.h4),
+
+            Text(
+              locale.select_language,
+              style: getBoldStyle(
+                fontSize: FontSize.size20,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurface,
+              ),
+            ),
             const SizedBox(height: Spacing.lg),
-            
-            // Language options
+
             ListTile(
-              title: Text('العربية', style: AppTextStyles.labelMedium),
+              title: Text(
+                locale.arabic,
+                style: getMediumStyle(
+                  fontSize: FontSize.size16,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurface,
+                ),
+              ),
               leading: const Text('🇸🇦', style: TextStyle(fontSize: 24)),
-              trailing: Icon(Icons.check, color: AppColors.primary),
+              trailing: Icon(Icons.check, color: color.primary),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Change language to Arabic
               },
             ),
             ListTile(
-              title: Text('English', style: AppTextStyles.labelMedium),
+              title: Text(
+                locale.english,
+                style: getMediumStyle(
+                  fontSize: FontSize.size16,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurface,
+                ),
+              ),
               leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Change language to English
               },
             ),
-            
+
             const SizedBox(height: Spacing.md),
           ],
         ),
@@ -58,9 +81,12 @@ class DrawerDialogs {
   }
 
   static void showAboutDialog(BuildContext context) {
+    final locale = context.localization;
+    final color = context.colorScheme;
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: color.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -70,58 +96,77 @@ class DrawerDialogs {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
             Container(
               width: 40,
               height: 4,
               margin: const EdgeInsets.only(bottom: Spacing.md),
               decoration: BoxDecoration(
-                color: AppColors.textSecondary,
+                color: color.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
-            // Title
-            Text('عن التطبيق', style: AppTextStyles.h4),
+
+            Text(
+              locale.about_app_title,
+              style: getBoldStyle(
+                fontSize: FontSize.size20,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurface,
+              ),
+            ),
             const SizedBox(height: Spacing.lg),
-            
-            // Content
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('تطبيق زدانة للتسوق الذكي', style: AppTextStyles.labelMedium),
-                const SizedBox(height: Spacing.sm),
-                Text('الإصدار: v1.0.0', style: AppTextStyles.bodySmall),
-                Text('تاريخ الإصدار: 2024', style: AppTextStyles.bodySmall),
+                Text(
+                  locale.app_name,
+                  style: getMediumStyle(
+                    fontSize: FontSize.size16,
+                    fontFamily: FontConstant.cairo,
+                    color: color.onSurface,
+                  ),
+                ),
                 const SizedBox(height: Spacing.sm),
                 Text(
-                  'تطبيق متكامل للتسوق الإلكتروني يوفر تجربة تسوق مميزة وسهلة.',
-                  style: AppTextStyles.bodySmall,
+                  '${locale.version_label}: v1.0.0',
+                  style: getRegularStyle(
+                    fontSize: FontSize.size14,
+                    fontFamily: FontConstant.cairo,
+                    color: color.onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+                Text(
+                  '${locale.release_date}: 2024',
+                  style: getRegularStyle(
+                    fontSize: FontSize.size14,
+                    fontFamily: FontConstant.cairo,
+                    color: color.onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+                const SizedBox(height: Spacing.sm),
+                Text(
+                  locale.app_description,
+                  style: getRegularStyle(
+                    fontSize: FontSize.size14,
+                    fontFamily: FontConstant.cairo,
+                    color: color.onSurface.withValues(alpha: 0.7),
+                  ),
                 ),
               ],
             ),
-            
+
             const SizedBox(height: Spacing.lg),
-            
-            // Close button
+
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: AppButton(
                 onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.md),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(Spacing.cardRadius),
-                  ),
-                ),
-                child: Text(
-                  'حسناً',
-                  style: AppTextStyles.button.copyWith(color: AppColors.white),
-                ),
+
+                text: locale.ok,
               ),
             ),
-            
+
             const SizedBox(height: Spacing.md),
           ],
         ),

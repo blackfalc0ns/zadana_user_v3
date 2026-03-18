@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 
 class CategoryItem extends StatelessWidget {
@@ -17,6 +18,8 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
@@ -28,16 +31,12 @@ class CategoryItem extends StatelessWidget {
               width: size,
               height: size,
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: color.surface,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.border, width: .5),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadow,
-                    blurRadius: 1,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
+                border: Border.all(
+                  color: color.outline.withValues(alpha: 0.2),
+                  width: .5,
+                ),
               ),
               padding: const EdgeInsets.all(10),
               child: Center(
@@ -51,10 +50,10 @@ class CategoryItem extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               category.name,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+              style: getRegularStyle(
+                fontSize: FontSize.size11,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurface,
               ),
               textAlign: TextAlign.center,
               maxLines: 1,

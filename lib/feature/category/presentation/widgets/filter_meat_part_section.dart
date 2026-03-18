@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
 
-class FilterMeatPartSection extends StatelessWidget {
+class FilterMeatPartSection extends StatefulWidget {
   const FilterMeatPartSection({
     super.key,
     required this.selectedCategory,
@@ -20,35 +21,64 @@ class FilterMeatPartSection extends StatelessWidget {
   final Function(String?) onPartSelected;
 
   @override
+  State<FilterMeatPartSection> createState() => _FilterMeatPartSectionState();
+}
+
+class _FilterMeatPartSectionState extends State<FilterMeatPartSection> {
+  String? localSelectedPart;
+
+  @override
+  void initState() {
+    super.initState();
+    localSelectedPart = widget.selectedPart;
+  }
+
+  @override
+  void didUpdateWidget(FilterMeatPartSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedPart != oldWidget.selectedPart) {
+      localSelectedPart = widget.selectedPart;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (selectedCategory == null || 
-        selectedProductType == null || 
-        !kProductParts.containsKey(selectedCategory) ||
-        !kProductParts[selectedCategory]!.containsKey(selectedProductType)) {
+    final locale = context.localization;
+
+    if (widget.selectedCategory == null || 
+        widget.selectedProductType == null || 
+        !kProductParts.containsKey(widget.selectedCategory) ||
+        !kProductParts[widget.selectedCategory]!.containsKey(widget.selectedProductType)) {
       return const SizedBox.shrink();
     }
 
-    final parts = kProductParts[selectedCategory!]![selectedProductType!] ?? [];
+    final parts = kProductParts[widget.selectedCategory!]![widget.selectedProductType!] ?? [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const GradientSectionTitle(title: 'الصنف'),
+        GradientSectionTitle(title: locale.filter_part),
         const SizedBox(height: Spacing.sm),
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: parts.map((part) => _buildPartChip(part)).toList(),
+          children: parts.map((part) => _buildPartChip(context, part)).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildPartChip(String part) {
-    final isSelected = selectedPart == part;
+  Widget _buildPartChip(BuildContext context, String part) {
+    final color = context.colorScheme;
+    final isSelected = localSelectedPart == part;
+
     return GestureDetector(
       onTap: () {
-        onPartSelected(isSelected ? null : part);
+        final newSelection = isSelected ? null : part;
+        setState(() {
+          localSelectedPart = newSelection;
+        });
+        widget.onPartSelected(newSelection);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -56,27 +86,27 @@ class FilterMeatPartSection extends StatelessWidget {
           gradient: isSelected 
               ? LinearGradient(
                   colors: [
-                    AppColors.secondary.withValues(alpha: 0.9),
-                    AppColors.secondary.withValues(alpha: 0.7),
+                    color.secondary.withValues(alpha: 0.9),
+                    color.secondary.withValues(alpha: 0.7),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )
               : LinearGradient(
                   colors: [
-                    Colors.grey[100]!,
-                    Colors.grey[50]!,
+                    color.surfaceContainerHighest,
+                    color.surfaceContainerHigh,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.secondary : Colors.transparent,
+            color: isSelected ? color.secondary : Colors.transparent,
           ),
           boxShadow: isSelected ? [
             BoxShadow(
-              color: AppColors.secondary.withValues(alpha: 0.3),
+              color: color.secondary.withValues(alpha: 0.3),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -84,9 +114,10 @@ class FilterMeatPartSection extends StatelessWidget {
         ),
         child: Text(
           part,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: isSelected ? Colors.white : AppColors.textPrimary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          style: getRegularStyle(
+            fontSize: FontSize.size12,
+            fontFamily: FontConstant.cairo,
+            color: isSelected ? color.onSecondary : color.onSurface,
           ),
         ),
       ),

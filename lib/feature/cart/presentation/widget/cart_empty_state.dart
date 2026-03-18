@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CartEmptyState extends StatelessWidget {
   final VoidCallback onStartShopping;
@@ -11,7 +11,8 @@ class CartEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final locale = context.localization;
+    final color = context.colorScheme;
     
     return Center(
       child: Padding(
@@ -22,19 +23,35 @@ class CartEmptyState extends StatelessWidget {
             Container(
               width: 100,
               height: 100,
-              decoration: const BoxDecoration(
-                  color: Color(0xFFE0F4F7), shape: BoxShape.circle),
-              child: const Icon(Icons.shopping_cart_outlined,
-                  size: 48, color: AppColors.primary),
+              decoration: BoxDecoration(
+                color: color.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.shopping_cart_outlined,
+                size: 48,
+                color: color.primary,
+              ),
             ),
             const SizedBox(height: Spacing.lg),
-            Text(l10n.cart_empty,
-                style: AppTextStyles.h4.copyWith(color: AppColors.textPrimary)),
+            Text(
+              locale.cart_empty,
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size18,
+                color: color.onSurface,
+              ),
+            ),
             const SizedBox(height: Spacing.sm),
-            Text(l10n.start_shopping_message,
-                style: AppTextStyles.bodySmall
-                    .copyWith(color: AppColors.textSecondary),
-                textAlign: TextAlign.center),
+            Text(
+              locale.start_shopping_message,
+              style: getRegularStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size12,
+                color: color.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: Spacing.xl),
             SizedBox(
               width: 200,
@@ -42,13 +59,21 @@ class CartEmptyState extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onStartShopping,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.textOnPrimary,
+                  backgroundColor: color.primary,
+                  foregroundColor: color.onPrimary,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Spacing.buttonRadius)),
+                    borderRadius: BorderRadius.circular(Spacing.buttonRadius),
+                  ),
                   elevation: 0,
                 ),
-                child: Text(l10n.start_shopping, style: AppTextStyles.button),
+                child: Text(
+                  locale.start_shopping,
+                  style: getMediumStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size14,
+                    color: color.onPrimary,
+                  ),
+                ),
               ),
             ),
           ],

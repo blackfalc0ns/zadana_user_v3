@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 // ══════════════════════════════════════════════
 // DELETE ITEM DIALOG
@@ -12,7 +12,8 @@ void showDeleteItemDialog({
   required String itemName,
   required VoidCallback onConfirm,
 }) {
-  final l10n = AppLocalizations.of(context)!;
+  final locale = context.localization;
+  final color = context.colorScheme;
   
   showDialog(
     context: context,
@@ -28,11 +29,11 @@ void showDeleteItemDialog({
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: color.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: color.shadow.withValues(alpha: 0.1),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -41,48 +42,45 @@ void showDeleteItemDialog({
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon
               Container(
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
+                  color: color.errorContainer,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.delete_outline_rounded,
                   size: 32,
-                  color: AppColors.error,
+                  color: color.error,
                 ),
               ),
               const SizedBox(height: 20),
-              
-              // Title
               Text(
-                l10n.delete_item,
-                style: AppTextStyles.h4.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w700,
+                locale.delete_item,
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size18,
+                  color: color.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              
-              // Message
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                    height: 1.5,
-                  ),
+                  style: getRegularStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size12,
+                    color: color.onSurfaceVariant,
+                  ).copyWith(height: 1.5),
                   children: [
-                    TextSpan(text: '${l10n.delete_item_confirmation} '),
+                    TextSpan(text: '${locale.delete_item_confirmation} '),
                     TextSpan(
                       text: '"$itemName"',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: color.onSurface,
                       ),
                     ),
                     const TextSpan(text: ' من العربة؟'),
@@ -90,8 +88,6 @@ void showDeleteItemDialog({
                 ),
               ),
               const SizedBox(height: 24),
-              
-              // Buttons
               Row(
                 children: [
                   Expanded(
@@ -100,9 +96,9 @@ void showDeleteItemDialog({
                       child: OutlinedButton(
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.textSecondary,
+                          foregroundColor: color.onSurfaceVariant,
                           side: BorderSide(
-                            color: AppColors.border,
+                            color: color.outlineVariant,
                             width: 1.5,
                           ),
                           shape: RoundedRectangleBorder(
@@ -110,9 +106,11 @@ void showDeleteItemDialog({
                           ),
                         ),
                         child: Text(
-                          l10n.no,
-                          style: AppTextStyles.button.copyWith(
-                            color: AppColors.textSecondary,
+                          locale.no,
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -128,16 +126,20 @@ void showDeleteItemDialog({
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.error,
-                          foregroundColor: AppColors.white,
+                          backgroundColor: color.error,
+                          foregroundColor: color.onError,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         child: Text(
-                          l10n.delete,
-                          style: AppTextStyles.button,
+                          locale.delete,
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onError,
+                          ),
                         ),
                       ),
                     ),
@@ -160,7 +162,8 @@ void showClearCartDialog({
   required BuildContext context,
   required VoidCallback onConfirm,
 }) {
-  final l10n = AppLocalizations.of(context)!;
+  final locale = context.localization;
+  final color = context.colorScheme;
   
   showDialog(
     context: context,
@@ -176,11 +179,11 @@ void showClearCartDialog({
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: color.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: color.shadow.withValues(alpha: 0.1),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -189,45 +192,40 @@ void showClearCartDialog({
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon
               Container(
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
+                  color: color.errorContainer,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.remove_shopping_cart_outlined,
                   size: 32,
-                  color: AppColors.error,
+                  color: color.error,
                 ),
               ),
               const SizedBox(height: 20),
-              
-              // Title
               Text(
-                l10n.clear_cart,
-                style: AppTextStyles.h4.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w700,
+                locale.clear_cart,
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size18,
+                  color: color.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              
-              // Message
               Text(
-                l10n.clear_cart_confirmation,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
+                locale.clear_cart_confirmation,
+                style: getRegularStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size12,
+                  color: color.onSurfaceVariant,
+                ).copyWith(height: 1.5),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              
-              // Buttons
               Row(
                 children: [
                   Expanded(
@@ -236,9 +234,9 @@ void showClearCartDialog({
                       child: OutlinedButton(
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.textSecondary,
+                          foregroundColor: color.onSurfaceVariant,
                           side: BorderSide(
-                            color: AppColors.border,
+                            color: color.outlineVariant,
                             width: 1.5,
                           ),
                           shape: RoundedRectangleBorder(
@@ -246,9 +244,11 @@ void showClearCartDialog({
                           ),
                         ),
                         child: Text(
-                          l10n.no,
-                          style: AppTextStyles.button.copyWith(
-                            color: AppColors.textSecondary,
+                          locale.no,
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -264,16 +264,20 @@ void showClearCartDialog({
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.error,
-                          foregroundColor: AppColors.white,
+                          backgroundColor: color.error,
+                          foregroundColor: color.onError,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         child: Text(
-                          l10n.clear_all,
-                          style: AppTextStyles.button,
+                          locale.clear_all,
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onError,
+                          ),
                         ),
                       ),
                     ),

@@ -12,12 +12,14 @@ class ProductsGrid extends StatelessWidget {
     required this.subCategory,
     this.sortOption = '',
     this.filters = const [],
+    this.selectedQuantity,
   });
 
   final String category;
   final String subCategory;
   final String sortOption;
   final List<String> filters;
+  final String? selectedQuantity;
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +46,15 @@ class ProductsGrid extends StatelessWidget {
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {
-        final product = products[index];
+        final product = selectedQuantity == null
+            ? products[index]
+            : products[index].copyWith(unit: selectedQuantity);
         return CustomProductCard(
           product: product,
           onCardTap: () {
             ProductNavigationHelper.navigateToProductDetails(context, product);
           },
-          onAddTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('تم إضافة ${product.name} إلى العربة'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          },
+          onAddTap: () {},
           showFavorite: true,
           onFavoriteTap: () {},
         );
@@ -76,15 +73,30 @@ class ProductsGrid extends StatelessWidget {
     List<ProductModel> products,
     String sortOption,
   ) {
+    final sortedProducts = List<ProductModel>.from(products);
+    
     switch (sortOption) {
+      case 'newest':
+        // For now, we'll sort by ID (assuming higher ID = newer)
+        return sortedProducts..sort((a, b) => b.id.compareTo(a.id));
       case 'price_low_high':
-        return products..sort((a, b) => a.price.compareTo(b.price));
+        return sortedProducts..sort((a, b) => a.price.compareTo(b.price));
       case 'price_high_low':
-        return products..sort((a, b) => b.price.compareTo(a.price));
+        return sortedProducts..sort((a, b) => b.price.compareTo(a.price));
+      case 'best_selling':
+        // For now, we'll sort by favorites (assuming favorites = popular)
+        return sortedProducts..sort((a, b) {
+          if (a.isFavorite && !b.isFavorite) return -1;
+          if (!a.isFavorite && b.isFavorite) return 1;
+          return 0;
+        });
+      case 'highest_rated':
+        // For now, we'll sort by price (assuming higher price = better quality)
+        return sortedProducts..sort((a, b) => b.price.compareTo(a.price));
       case 'alphabetical':
-        return products..sort((a, b) => a.name.compareTo(b.name));
+        return sortedProducts..sort((a, b) => a.name.compareTo(b.name));
       default:
-        return products;
+        return sortedProducts;
     }
   }
 

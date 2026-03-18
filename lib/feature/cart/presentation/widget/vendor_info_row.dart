@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/animated_price_display.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
@@ -24,9 +24,11 @@ class VendorInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
+    
     return Row(
       children: [
-        _buildVendorInfo(),
+        _buildVendorInfo(context, locale),
         const Spacer(),
         AnimatedPriceDisplay(
           totalPrice: totalPrice,
@@ -36,48 +38,52 @@ class VendorInfoRow extends StatelessWidget {
     );
   }
 
-  Widget _buildVendorInfo() {
+  Widget _buildVendorInfo(BuildContext context, locale) {
     return Row(
       children: [
-        _buildVendorEmoji(),
-        const SizedBox(width: 5),
-        _buildVendorDetails(),
+        _buildVendorEmoji(context),
+        const SizedBox(width: 10),
+        _buildVendorDetails(context, locale),
       ],
     );
   }
 
-  Widget _buildVendorEmoji() {
+  Widget _buildVendorEmoji(BuildContext context) {
+    final color = context.colorScheme;
+    
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
+        color: color.primaryContainer,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         dummyVendors.firstWhere((v) => v.id == selectedVendorId).emoji,
-        style: const TextStyle(fontSize: 14),
+        style: const TextStyle(fontSize: 24),
       ),
     );
   }
 
-  Widget _buildVendorDetails() {
+  Widget _buildVendorDetails(BuildContext context, locale) {
+    final color = context.colorScheme;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           selectedVendorName,
-          style: getMediumStyle(
+          style: getBoldStyle(
             fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size14,
-            color: AppColors.textPrimary,
+            fontSize: FontSize.size16,
+            color: color.onSurface,
           ),
         ),
         Text(
-          '$itemsCount منتج',
-          style: getRegularStyle(
+          '$itemsCount ${locale.product}',
+          style: getMediumStyle(
             fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size12,
-            color: AppColors.textSecondary,
+            fontSize: FontSize.size14,
+            color: color.onSurfaceVariant,
           ),
         ),
       ],
