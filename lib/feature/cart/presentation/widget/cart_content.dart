@@ -56,18 +56,18 @@ class CartContent extends StatelessWidget {
   Widget _buildItemsList() {
     return ListView.separated(
       key: ValueKey('items_list_${selectedVendorId ?? "no_vendor"}'),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: 4.0,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       itemCount: items.length,
       separatorBuilder: (_, index) => const SizedBox(height: 3.0),
-      itemBuilder: (_, index) => CartItemCard(
-        item: items[index],
-        selectedVendorId: selectedVendorId,
-        onIncrement: () => onUpdateQuantity(items[index], true),
-        onDecrement: () => onUpdateQuantity(items[index], false),
-        onDelete: () => onDeleteItem(items[index]),
+      itemBuilder: (_, index) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        child: CartItemCard(
+          item: items[index],
+          selectedVendorId: selectedVendorId,
+          onIncrement: () => onUpdateQuantity(items[index], true),
+          onDecrement: () => onUpdateQuantity(items[index], false),
+          onDelete: () => onDeleteItem(items[index]),
+        ),
       ),
     );
   }

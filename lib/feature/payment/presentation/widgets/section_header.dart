@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
@@ -22,7 +23,7 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -34,11 +35,7 @@ class SectionHeader extends StatelessWidget {
                 color: backgroundColor ?? colors.secondary,
                 borderRadius: BorderRadius.circular(Spacing.sm),
               ),
-              child: Icon(
-                icon,
-                color: iconColor ?? colors.onSecondary,
-                size: 20,
-              ),
+              child: Icon(icon, color: AppColors.white, size: 20),
             ),
             const SizedBox(width: Spacing.md),
             Text(

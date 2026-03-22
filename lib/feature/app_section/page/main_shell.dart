@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
@@ -12,10 +14,7 @@ import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen
 final GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
 
 class MainShell extends StatefulWidget {
-  const MainShell({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const MainShell({super.key, this.initialIndex = 0});
 
   final int initialIndex;
 
@@ -29,9 +28,9 @@ class MainShellState extends State<MainShell> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const CategoryScreen(),
-    const CartScreen(), 
-      const FavoritesScreen(),
-     const ProfileScreen(),
+    const CartScreen(),
+    const FavoritesScreen(),
+    const ProfileScreen(),
   ];
 
   final List<NavBarItem> _navItems = [];
@@ -65,7 +64,7 @@ class MainShellState extends State<MainShell> {
         activeIcon: Iconsax.shopping_bag5,
         title: 'تسوق',
       ),
-           NavBarItem(
+      NavBarItem(
         icon: Iconsax.shopping_cart,
         activeIcon: Iconsax.shopping_cart5,
         title: locale.nav_cart,
@@ -105,8 +104,9 @@ class MainShellState extends State<MainShell> {
     return Scaffold(
       body: Stack(
         children: [
-          ...List.generate(_screens.length, (index) => 
-            Offstage(
+          ...List.generate(
+            _screens.length,
+            (index) => Offstage(
               offstage: _selectedIndex != index,
               child: _screens[index],
             ),
@@ -122,9 +122,7 @@ class MainShellState extends State<MainShell> {
             ),
           ),
         ],
-      )
-      
-    
+      ),
     );
   }
 }
@@ -174,11 +172,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ],
         borderRadius: BorderRadius.circular(25),
       ),
-      child: Row(
-        children: [
-          ..._buildItems(context, 0, 5),
-        ],
-      ),
+      child: Row(children: [..._buildItems(context, 0, 5)]),
     );
   }
 
@@ -216,21 +210,22 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           active ? item.activeIcon : item.icon,
                           key: ValueKey(active ? item.activeIcon : item.icon),
                           size: 24,
-                          color: active ? AppColors.white : AppColors.textSecondary,
+                          color: active
+                              ? AppColors.white
+                              : AppColors.textSecondary,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 3),
                     AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 200),
-                      style: TextStyle(
-                        fontSize: active ? 11 : 10,
-                        color: active ? AppColors.primary : AppColors.textSecondary,
-                        fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                      style: getSemiBoldStyle(
+                        fontSize: 10,
+                        fontFamily: FontConstant.cairo,
+                        color: active
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
                       ),
-                      child: Text(
-                        item.title,
-                      ),
+                      child: Text(item.title),
                     ),
                   ],
                 ),

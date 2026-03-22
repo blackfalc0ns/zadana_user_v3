@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -7,15 +8,12 @@ import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dar
 class SelectVendorBar extends StatelessWidget {
   final List<CartItemModel> items;
 
-  const SelectVendorBar({
-    super.key,
-    required this.items,
-  });
+  const SelectVendorBar({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return Container(
       key: const ValueKey('select_bottom'),
       padding: const EdgeInsets.all(8),
@@ -45,11 +43,14 @@ class SelectVendorBar extends StatelessWidget {
   Widget _buildInfoRow(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
-    
+
     return Row(
       children: [
-        Icon(Icons.shopping_cart_outlined,
-            color: color.onSurfaceVariant, size: 16),
+        Icon(
+          Icons.shopping_cart_outlined,
+          color: color.onSurfaceVariant,
+          size: 16,
+        ),
         const SizedBox(width: 5),
         Text(
           '${items.length} ${locale.product}',
@@ -75,7 +76,7 @@ class SelectVendorBar extends StatelessWidget {
   Widget _buildSelectButton(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
-    
+
     return SizedBox(
       width: double.infinity,
       height: 36,
@@ -83,16 +84,14 @@ class SelectVendorBar extends StatelessWidget {
         onPressed: null,
         style: ElevatedButton.styleFrom(
           backgroundColor: color.onSurfaceVariant,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: Text(
           locale.select_vendor_to_show_price,
           style: getMediumStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size14,
-            color: color.surface,
+            color: AppColors.shimmerHighlightDark,
           ),
         ),
       ),
