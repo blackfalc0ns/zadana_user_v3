@@ -49,11 +49,11 @@ class ProductsGrid extends StatelessWidget {
         top: Spacing.md,
         left: Spacing.md,
         right: Spacing.md,
-        bottom: 65,
+        bottom: 85,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 0.75,
+        childAspectRatio: 0.85,
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),
@@ -87,7 +87,7 @@ class ProductsGrid extends StatelessWidget {
     String sortOption,
   ) {
     final sortedProducts = List<ProductModel>.from(products);
-    
+
     switch (sortOption) {
       case 'newest':
         // For now, we'll sort by ID (assuming higher ID = newer)
@@ -115,14 +115,12 @@ class ProductsGrid extends StatelessWidget {
 
   List<ProductModel> _applyFilters(
     List<ProductModel> products,
-    List<String> filters,
-    {
+    List<String> filters, {
     required String category,
     required String? selectedProductType,
     required String? selectedPart,
     required RangeValues priceRange,
-  }
-  ) {
+  }) {
     return products.where((product) {
       if (product.price < priceRange.start || product.price > priceRange.end) {
         return false;

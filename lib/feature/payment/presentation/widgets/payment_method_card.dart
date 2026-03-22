@@ -19,7 +19,7 @@ class PaymentMethodCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return InfoCardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +29,7 @@ class PaymentMethodCard extends StatelessWidget {
             title: l10n.payment_method,
           ),
           const SizedBox(height: Spacing.md),
-          
+
           // Credit/Debit Card
           _buildPaymentOption(
             context,
@@ -38,7 +38,8 @@ class PaymentMethodCard extends StatelessWidget {
             Icons.credit_card,
             l10n.credit_card_subtitle,
           ),
-          
+          const SizedBox(height: Spacing.xs),
+
           // Apple Pay
           _buildPaymentOption(
             context,
@@ -47,7 +48,8 @@ class PaymentMethodCard extends StatelessWidget {
             Icons.apple,
             l10n.apple_pay_subtitle,
           ),
-          
+          const SizedBox(height: Spacing.xs),
+
           // Cash on Delivery
           _buildPaymentOption(
             context,
@@ -56,7 +58,8 @@ class PaymentMethodCard extends StatelessWidget {
             Icons.money,
             l10n.cash_on_delivery_subtitle,
           ),
-          
+          const SizedBox(height: Spacing.xs),
+
           // Bank Transfer
           _buildPaymentOption(
             context,
@@ -79,7 +82,7 @@ class PaymentMethodCard extends StatelessWidget {
   ) {
     final isSelected = selectedMethod == value;
     final colors = Theme.of(context).colorScheme;
-    
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -92,19 +95,25 @@ class PaymentMethodCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(Spacing.sm),
             decoration: BoxDecoration(
-              color: isSelected ? colors.primary.withValues(alpha: 0.05) : colors.surface,
+              color: isSelected
+                  ? colors.primary.withValues(alpha: 0.05)
+                  : colors.surface,
               borderRadius: BorderRadius.circular(Spacing.md),
               border: Border.all(
-                color: isSelected ? colors.primary : colors.outline.withValues(alpha: 0.5),
+                color: isSelected
+                    ? colors.primary
+                    : colors.outline.withValues(alpha: 0.18),
                 width: isSelected ? 2 : 1,
               ),
-              boxShadow: isSelected ? [
-                BoxShadow(
-                  color: colors.primary.withValues(alpha: 0.08),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ] : null,
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: colors.primary.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
             ),
             child: Row(
               children: [
@@ -113,17 +122,21 @@ class PaymentMethodCard extends StatelessWidget {
                   duration: const Duration(milliseconds: 300),
                   padding: const EdgeInsets.all(Spacing.sm),
                   decoration: BoxDecoration(
-                    color: isSelected ? colors.primary : colors.surfaceContainerHighest,
+                    color: isSelected
+                        ? colors.primary
+                        : colors.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(Spacing.sm + 2),
                   ),
                   child: Icon(
                     icon,
-                    color: isSelected ? colors.onPrimary : colors.onSurfaceVariant,
+                    color: isSelected
+                        ? colors.onPrimary
+                        : colors.onSurfaceVariant,
                     size: 20,
                   ),
                 ),
                 const SizedBox(width: Spacing.sm),
-                
+
                 // Content
                 Expanded(
                   child: Column(
@@ -134,8 +147,8 @@ class PaymentMethodCard extends StatelessWidget {
                         style: getBoldStyle(
                           fontSize: FontSize.size13,
                           fontFamily: FontConstant.cairo,
-                          color: isSelected 
-                              ? colors.primary 
+                          color: isSelected
+                              ? colors.primary
                               : colors.onSurface.withValues(alpha: 0.85),
                         ),
                       ),
@@ -151,7 +164,7 @@ class PaymentMethodCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 // Selection Indicator
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
@@ -166,12 +179,8 @@ class PaymentMethodCard extends StatelessWidget {
                     ),
                   ),
                   child: isSelected
-                    ? Icon(
-                        Icons.check,
-                        color: colors.onPrimary,
-                        size: 12,
-                      )
-                    : null,
+                      ? Icon(Icons.check, color: colors.onPrimary, size: 12)
+                      : null,
                 ),
               ],
             ),

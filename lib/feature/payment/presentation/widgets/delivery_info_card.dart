@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
@@ -15,7 +16,7 @@ class DeliveryInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    
+
     return InfoCardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +53,7 @@ class DeliveryInfoCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Spacing.md),
-          
+
           // Address
           Container(
             padding: const EdgeInsets.all(Spacing.md),
@@ -97,7 +98,9 @@ class DeliveryInfoCard extends StatelessWidget {
                           const SizedBox(width: Spacing.xs),
                           InfoBadge(
                             text: l10n.currently_selected,
-                            backgroundColor: colors.secondary.withValues(alpha: 0.1),
+                            backgroundColor: colors.secondary.withValues(
+                              alpha: 0.1,
+                            ),
                             textColor: colors.secondary,
                             fontSize: FontSize.size9,
                             padding: const EdgeInsets.symmetric(
@@ -122,9 +125,9 @@ class DeliveryInfoCard extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(height: Spacing.sm),
-          
+
           // Delivery Time
           Container(
             padding: const EdgeInsets.all(Spacing.md),
@@ -191,7 +194,7 @@ class DeliveryInfoCard extends StatelessWidget {
                 InfoBadge(
                   text: l10n.available,
                   backgroundColor: colors.secondary,
-                  textColor: colors.onSecondary,
+                  textColor: AppColors.white,
                   fontSize: FontSize.size10,
                   padding: const EdgeInsets.symmetric(
                     horizontal: Spacing.md,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -24,7 +25,8 @@ class CartItemCard extends StatefulWidget {
   State<CartItemCard> createState() => _CartItemCardState();
 }
 
-class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMixin {
+class _CartItemCardState extends State<CartItemCard>
+    with TickerProviderStateMixin {
   late AnimationController _priceAnimationController;
   late Animation<Offset> _priceSlideAnimation;
   late Animation<double> _priceFadeAnimation;
@@ -32,29 +34,28 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    
+
     // إعداد انيميشن السعر
     _priceAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    
-    _priceSlideAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0), // يبدأ من اليمين
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _priceAnimationController,
-      curve: Curves.easeOutBack,
-    ));
-    
-    _priceFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _priceAnimationController,
-      curve: Curves.easeOut,
-    ));
-    
+
+    _priceSlideAnimation =
+        Tween<Offset>(
+          begin: const Offset(1.0, 0.0), // يبدأ من اليمين
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: _priceAnimationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
+
+    _priceFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _priceAnimationController, curve: Curves.easeOut),
+    );
+
     // تشغيل الانيميشن في البداية فقط إذا كان هناك متجر مختار
     if (widget.selectedVendorId != null) {
       _priceAnimationController.forward();
@@ -64,9 +65,9 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
   @override
   void didUpdateWidget(CartItemCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // إذا تغير المتجر وأصبح غير null، شغل الانيميشن
-    if (oldWidget.selectedVendorId != widget.selectedVendorId && 
+    if (oldWidget.selectedVendorId != widget.selectedVendorId &&
         widget.selectedVendorId != null) {
       _priceAnimationController.forward(from: 0.0);
     }
@@ -80,7 +81,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
 
   double? get _currentPrice {
     if (widget.selectedVendorId == null) return null;
-    
+
     try {
       return widget.item.vendorPrices
           .firstWhere((v) => v.id == widget.selectedVendorId)
@@ -94,7 +95,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: color.surface,
@@ -104,7 +105,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
             color: color.shadow.withValues(alpha: 0.06),
             blurRadius: 6,
             offset: const Offset(0, 1),
-          )
+          ),
         ],
       ),
       padding: const EdgeInsets.all(12),
@@ -147,7 +148,9 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 12),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 6),
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: color.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(6),
@@ -190,7 +193,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
 
   Widget _buildAnimatedPrice(locale, color) {
     final price = _currentPrice;
-    
+
     if (price == null) {
       return Text(
         locale.select_vendor_to_show_price,
@@ -201,7 +204,7 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
         ),
       );
     }
-    
+
     return AnimatedBuilder(
       animation: _priceAnimationController,
       builder: (context, child) {
@@ -209,36 +212,20 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
           position: _priceSlideAnimation,
           child: FadeTransition(
             opacity: _priceFadeAnimation,
-            child: Container(
-              key: ValueKey('price_${widget.selectedVendorId}_$price'),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: color.primaryContainer,
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                  width: 1,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.local_offer, size: 12, color: AppColors.primary),
+                const SizedBox(width: 4),
+                Text(
+                  '${price.toStringAsFixed(0)} ${locale.currency}/${widget.item.unit}',
+                  style: getBoldStyle(
+                    color: AppColors.primary,
+                    fontFamily: FontConstant.cairo,
+                    fontSize: 13,
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.local_offer,
-                    color: color.onPrimaryContainer,
-                    size: 12,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${price.toStringAsFixed(0)} ${locale.currency}/${widget.item.unit}',
-                    style: getBoldStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: color.onPrimaryContainer,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
         );
@@ -253,10 +240,11 @@ class _CartItemCardState extends State<CartItemCard> with TickerProviderStateMix
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: color.primary,
+          border: Border.all(color: Colors.grey.shade300, width: 1),
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Icon(icon, size: 18, color: color.onPrimary),
+        child: Icon(icon, size: 18, color: AppColors.black),
       ),
     );
   }

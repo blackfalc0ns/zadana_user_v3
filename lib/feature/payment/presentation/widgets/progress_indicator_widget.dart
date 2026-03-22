@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
@@ -6,17 +7,17 @@ import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 class ProgressIndicatorWidget extends StatelessWidget {
   final List<ProgressStep> steps;
 
-  const ProgressIndicatorWidget({
-    super.key,
-    required this.steps,
-  });
+  const ProgressIndicatorWidget({super.key, required this.steps});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.md, horizontal: Spacing.sm),
+      padding: const EdgeInsets.symmetric(
+        vertical: Spacing.md,
+        horizontal: Spacing.sm,
+      ),
       decoration: BoxDecoration(
         color: colors.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
@@ -26,20 +27,15 @@ class ProgressIndicatorWidget extends StatelessWidget {
         ),
       ),
       child: Row(
-        children: List.generate(
-          steps.length * 2 - 1,
-          (index) {
-            if (index.isEven) {
-              final stepIndex = index ~/ 2;
-              return _ProgressStepWidget(step: steps[stepIndex]);
-            } else {
-              final lineIndex = index ~/ 2;
-              return _ProgressLineWidget(
-                isActive: steps[lineIndex].isCompleted,
-              );
-            }
-          },
-        ),
+        children: List.generate(steps.length * 2 - 1, (index) {
+          if (index.isEven) {
+            final stepIndex = index ~/ 2;
+            return _ProgressStepWidget(step: steps[stepIndex]);
+          } else {
+            final lineIndex = index ~/ 2;
+            return _ProgressLineWidget(isActive: steps[lineIndex].isCompleted);
+          }
+        }),
       ),
     );
   }
@@ -65,7 +61,7 @@ class _ProgressStepWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Expanded(
       child: Column(
         children: [
@@ -76,14 +72,17 @@ class _ProgressStepWidget extends StatelessWidget {
               color: step.isCompleted
                   ? colors.secondary
                   : step.isActive
-                      ? colors.primary
-                      : colors.surfaceContainerHighest,
+                  ? colors.primary
+                  : colors.surfaceContainerHighest,
               shape: BoxShape.circle,
               boxShadow: step.isActive || step.isCompleted
                   ? [
                       BoxShadow(
-                        color: (step.isCompleted ? colors.secondary : colors.primary)
-                            .withValues(alpha: 0.3),
+                        color:
+                            (step.isCompleted
+                                    ? colors.secondary
+                                    : colors.primary)
+                                .withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -123,13 +122,13 @@ class _ProgressLineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Expanded(
       child: Container(
         height: 2,
         margin: const EdgeInsets.symmetric(horizontal: Spacing.sm),
         decoration: BoxDecoration(
-          color: isActive ? colors.primary : colors.surfaceContainerHighest,
+          color: isActive ? colors.primary : AppColors.disabled,
           borderRadius: BorderRadius.circular(1),
         ),
       ),

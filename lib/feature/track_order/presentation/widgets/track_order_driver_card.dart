@@ -47,9 +47,14 @@ class TrackOrderDriverCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.call_outlined, color: color.secondary),
-          const SizedBox(width: Spacing.md),
-          Icon(Icons.chat_bubble_outline_rounded, color: color.secondary),
+          Container(
+            padding: const EdgeInsets.all(Spacing.sm),
+            decoration: BoxDecoration(
+              color: color.secondary.withValues(alpha: .12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.call_outlined, color: color.secondary),
+          ),
         ],
       ),
     );

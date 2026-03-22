@@ -22,9 +22,10 @@ class InfoBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Container(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             horizontal: Spacing.md,
             vertical: Spacing.xs,
@@ -35,7 +36,7 @@ class InfoBadge extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: getMediumStyle(
+        style: getBoldStyle(
           fontSize: fontSize ?? FontSize.size11,
           fontFamily: FontConstant.cairo,
           color: textColor ?? colors.secondary,
