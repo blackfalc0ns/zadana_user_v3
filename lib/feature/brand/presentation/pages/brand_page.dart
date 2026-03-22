@@ -16,7 +16,8 @@ import 'package:zadana_user_v3/feature/brand/presentation/services/brand_filter_
 class BrandPage extends StatefulWidget {
   const BrandPage({super.key, required this.brand});
   final BrandModel brand;
-  @override State<BrandPage> createState() => _BrandPageState();
+  @override
+  State<BrandPage> createState() => _BrandPageState();
 }
 
 class _BrandPageState extends State<BrandPage> {
@@ -33,7 +34,10 @@ class _BrandPageState extends State<BrandPage> {
   @override
   void initState() {
     super.initState();
-    _allProducts = MockBrandProducts.getProducts(widget.brand.id, widget.brand.name);
+    _allProducts = MockBrandProducts.getProducts(
+      widget.brand.id,
+      widget.brand.name,
+    );
     _categories = BrandFilterLogic.extractCategories(_allProducts);
     _units = BrandFilterLogic.extractUnits(_allProducts);
     _applyFilters();
@@ -42,20 +46,24 @@ class _BrandPageState extends State<BrandPage> {
   void _applyFilters() {
     var filtered = _allProducts.where((product) {
       // Category filter
-      if (_selectedCategory != null && product.category != _selectedCategory) return false;
-      
+      if (_selectedCategory != null && product.category != _selectedCategory)
+        return false;
+
       // Subcategory filter
-      if (_selectedSubcategory != null && product.subcategory != _selectedSubcategory) return false;
-      
+      if (_selectedSubcategory != null &&
+          product.subcategory != _selectedSubcategory)
+        return false;
+
       // Price range filter
-      if (product.price < _priceRange.start || product.price > _priceRange.end) return false;
-      
+      if (product.price < _priceRange.start || product.price > _priceRange.end)
+        return false;
+
       // Unit filter
       if (_selectedUnit != null && product.unit != _selectedUnit) return false;
-      
+
       return true;
     }).toList();
-    
+
     filtered = BrandFilterLogic.sortProducts(filtered, _currentSort);
     setState(() => _filteredProducts = filtered);
   }
@@ -85,10 +93,26 @@ class _BrandPageState extends State<BrandPage> {
 
   void _showSortBottomSheet() {
     final sortOptions = [
-      {'value': 'bestSellers', 'title': 'الأكثر مبيعاً', 'subtitle': 'المنتجات الأكثر شراءً'},
-      {'value': 'priceLowToHigh', 'title': 'السعر من الأقل للأعلى', 'subtitle': 'ترتيب تصاعدي حسب السعر'},
-      {'value': 'priceHighToLow', 'title': 'السعر من الأعلى للأقل', 'subtitle': 'ترتيب تنازلي حسب السعر'},
-      {'value': 'newest', 'title': 'الأحدث', 'subtitle': 'المنتجات المضافة حديثاً'},
+      {
+        'value': 'bestSellers',
+        'title': 'الأكثر مبيعاً',
+        'subtitle': 'المنتجات الأكثر شراءً',
+      },
+      {
+        'value': 'priceLowToHigh',
+        'title': 'السعر من الأقل للأعلى',
+        'subtitle': 'ترتيب تصاعدي حسب السعر',
+      },
+      {
+        'value': 'priceHighToLow',
+        'title': 'السعر من الأعلى للأقل',
+        'subtitle': 'ترتيب تنازلي حسب السعر',
+      },
+      {
+        'value': 'newest',
+        'title': 'الأحدث',
+        'subtitle': 'المنتجات المضافة حديثاً',
+      },
     ];
 
     showModalBottomSheet(
@@ -104,10 +128,18 @@ class _BrandPageState extends State<BrandPage> {
       if (result != null) {
         setState(() {
           switch (result) {
-            case 'bestSellers': _currentSort = ProductSortOption.bestSellers; break;
-            case 'priceLowToHigh': _currentSort = ProductSortOption.priceLowToHigh; break;
-            case 'priceHighToLow': _currentSort = ProductSortOption.priceHighToLow; break;
-            case 'newest': _currentSort = ProductSortOption.newest; break;
+            case 'bestSellers':
+              _currentSort = ProductSortOption.bestSellers;
+              break;
+            case 'priceLowToHigh':
+              _currentSort = ProductSortOption.priceLowToHigh;
+              break;
+            case 'priceHighToLow':
+              _currentSort = ProductSortOption.priceHighToLow;
+              break;
+            case 'newest':
+              _currentSort = ProductSortOption.newest;
+              break;
           }
         });
         _applyFilters();
@@ -148,12 +180,13 @@ class _BrandPageState extends State<BrandPage> {
         filterLabel: 'تصنيف',
         onSortPressed: _showSortBottomSheet,
         onFilterPressed: _showFilterBottomSheet,
-        hasActiveFilters: _selectedCategory != null || 
-                         _selectedSubcategory != null ||
-                         _selectedUnit != null ||
-                         _priceRange.start != 0 || 
-                         _priceRange.end != 500 ||
-                         _currentSort != ProductSortOption.bestSellers,
+        hasActiveFilters:
+            _selectedCategory != null ||
+            _selectedSubcategory != null ||
+            _selectedUnit != null ||
+            _priceRange.start != 0 ||
+            _priceRange.end != 500 ||
+            _currentSort != ProductSortOption.bestSellers,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

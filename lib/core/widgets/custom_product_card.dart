@@ -16,6 +16,8 @@ class CustomProductCard extends StatelessWidget {
     this.onCardTap,
     this.onFavoriteTap,
     this.showFavorite = false,
+    this.heroTagPrefix = '', // إضافة prefix للـ hero tag
+    this.enableHeroAnimation = false, // تعطيل الـ Hero animation افتراضياً
   });
 
   final ProductModel product;
@@ -23,6 +25,8 @@ class CustomProductCard extends StatelessWidget {
   final VoidCallback? onCardTap;
   final VoidCallback? onFavoriteTap;
   final bool showFavorite;
+  final String heroTagPrefix;
+  final bool enableHeroAnimation;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,9 @@ class CustomProductCard extends StatelessWidget {
         : 14.0; // زيادة من 10-12 إلى 12-14
     final fontSize = isSmallScreen ? 11.0 : 12.0; // زيادة من 9-10 إلى 11-12
     final padding = isSmallScreen ? 5.0 : 7.0; // زيادة من 4-6 إلى 5-7
+
+    // إنشاء heroTag فريد باستخدام timestamp + random number للتأكد من عدم التكرار
+    final uniqueHeroTag = '${heroTagPrefix}product_${product.id}_${DateTime.now().microsecondsSinceEpoch}_${(hashCode % 999999).abs()}';
 
     return GestureDetector(
       onTap: onCardTap,
@@ -61,7 +68,7 @@ class CustomProductCard extends StatelessWidget {
                     width: double.infinity,
                     height: 75, // تقليل من 80 إلى 75
                     borderRadius: Spacing.cardRadius,
-                    heroTag: 'product_image_${product.id}',
+                    heroTag: enableHeroAnimation ? uniqueHeroTag : null,
                   ),
                 ),
 
@@ -94,9 +101,9 @@ class CustomProductCard extends StatelessWidget {
                           ),
                         ),
 
-                        SizedBox(
-                          height: isSmallScreen ? 1 : 2,
-                        ), // تقليل المساحة
+                        // SizedBox(
+                        //   height: isSmallScreen ? 1 : 2,
+                        // ), // تقليل المساحة
                         // Price and cart button
                         Flexible(
                           // إضافة Flexible للـ Row

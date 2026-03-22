@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
@@ -82,7 +81,8 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = color ?? AppColors.primary;
+    final colors = Theme.of(context).colorScheme;
+    final effectiveColor = color ?? colors.primary;
     final h = height ?? Spacing.buttonHeight;
     final r = borderRadius ?? Spacing.buttonRadius;
 
@@ -93,11 +93,11 @@ class AppButton extends StatelessWidget {
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
               color: variant == AppButtonVariant.filled
-                  ? AppColors.textOnPrimary
+                  ? (textColor ?? colors.onPrimary)
                   : effectiveColor,
             ),
           )
-        : _buildContent(effectiveColor);
+        : _buildContent(context, effectiveColor);
 
     Widget button;
     switch (variant) {
@@ -106,7 +106,7 @@ class AppButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: effectiveColor,
-            foregroundColor: textColor ?? AppColors.textOnPrimary,
+            foregroundColor: textColor ?? colors.onPrimary,
             minimumSize: Size(isExpanded ? double.infinity : 0, h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(r),
@@ -144,12 +144,13 @@ class AppButton extends StatelessWidget {
     return button;
   }
 
-  Widget _buildContent(Color effectiveColor) {
+  Widget _buildContent(BuildContext context, Color effectiveColor) {
+    final colors = Theme.of(context).colorScheme;
     final style = getBoldStyle(
       fontSize: FontSize.size16,
       fontFamily: FontConstant.cairo,
       color: variant == AppButtonVariant.filled
-          ? (textColor ?? AppColors.textOnPrimary)
+          ? (textColor ?? colors.onPrimary)
           : (textColor ?? effectiveColor),
     ).copyWith(fontWeight: fontWeight);
 

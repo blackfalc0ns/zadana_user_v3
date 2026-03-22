@@ -686,6 +686,12 @@ abstract class AppLocalizations {
   /// **'Add New Address'**
   String get add_address;
 
+  /// No description provided for @change_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change_address;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -1627,6 +1633,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to remove all products from favorites?'**
   String get clear_favorites_confirmation;
+
+  /// No description provided for @invoice_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice Details'**
+  String get invoice_details;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get processing;
+
+  /// No description provided for @order_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Placed Successfully! '**
+  String get order_success;
+
+  /// No description provided for @order_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Number'**
+  String get order_number;
+
+  /// No description provided for @payment_successful.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Successful! '**
+  String get payment_successful;
+
+  /// No description provided for @payment_success_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! Your order has been received and will be delivered soon'**
+  String get payment_success_message;
+
+  /// No description provided for @estimated_delivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Delivery Time'**
+  String get estimated_delivery;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// No description provided for @track_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Order 📍'**
+  String get track_order;
+
+  /// No description provided for @back_to_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get back_to_home;
+
+  /// No description provided for @payment_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get payment_method;
+
+  /// No description provided for @credit_debit_card.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit/Debit Card'**
+  String get credit_debit_card;
+
+  /// No description provided for @credit_card_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visa, Mastercard, Mada'**
+  String get credit_card_subtitle;
+
+  /// No description provided for @apple_pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay'**
+  String get apple_pay;
+
+  /// No description provided for @apple_pay_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast and secure payment'**
+  String get apple_pay_subtitle;
+
+  /// No description provided for @cash_on_delivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on Delivery'**
+  String get cash_on_delivery;
+
+  /// No description provided for @cash_on_delivery_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay cash when order arrives'**
+  String get cash_on_delivery_subtitle;
+
+  /// No description provided for @bank_transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Transfer'**
+  String get bank_transfer;
+
+  /// No description provided for @bank_transfer_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct transfer from bank'**
+  String get bank_transfer_subtitle;
 }
 
 class _AppLocalizationsDelegate

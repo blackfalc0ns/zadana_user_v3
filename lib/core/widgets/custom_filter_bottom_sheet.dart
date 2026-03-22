@@ -11,6 +11,7 @@ class CustomFilterBottomSheet extends StatefulWidget {
     this.clearAllLabel = 'مسح الكل',
     this.applyLabel = 'تطبيق',
     this.children = const [],
+    this.scrollController,
     this.onApply,
     this.onClearAll,
   });
@@ -20,6 +21,7 @@ class CustomFilterBottomSheet extends StatefulWidget {
   final String clearAllLabel;
   final String applyLabel;
   final List<Widget> children;
+  final ScrollController? scrollController;
   final VoidCallback? onApply;
   final VoidCallback? onClearAll;
 
@@ -76,6 +78,7 @@ class _CustomFilterBottomSheetState extends State<CustomFilterBottomSheet> {
                 // Content
                 Expanded(
                   child: ListView(
+                    controller: widget.scrollController,
                     padding: const EdgeInsets.all(Spacing.lg),
                     children: [
                       ...widget.children,

@@ -19,6 +19,8 @@ import 'package:zadana_user_v3/feature/location/presentation/pages/building_deta
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
 import 'package:zadana_user_v3/feature/category_product/presentaion/widget/category_product_model.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
+import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_order_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -29,112 +31,56 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => StartPage());
       case AppRoutes.signUp:
         final locationEntity = settings.arguments as LocationEntity?;
-        return MaterialPageRoute(
-          builder: (_) => RegisterScreen(locationEntity: locationEntity),
-        );
+        return MaterialPageRoute(builder: (_) => RegisterScreen(locationEntity: locationEntity));
       case AppRoutes.forgetPassword:
         return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case AppRoutes.verifyResetOtp:
         final identifier = settings.arguments as String;
-        return MaterialPageRoute(
-          builder: (_) => VerifyResetOtpScreen(identifier: identifier),
-        );
+        return MaterialPageRoute(builder: (_) => VerifyResetOtpScreen(identifier: identifier));
       case AppRoutes.resetPassword:
         final arguments = settings.arguments as Map<String, String>;
-        return MaterialPageRoute(
-          builder: (_) => ResetPasswordScreen(arguments: arguments),
-        );
+        return MaterialPageRoute(builder: (_) => ResetPasswordScreen(arguments: arguments));
       case AppRoutes.profileDetails:
         final profile = settings.arguments as ProfileResponseEntity;
-        return MaterialPageRoute(
-          builder: (_) => ProfileDetailsScreen(profile: profile),
-        );
+        return MaterialPageRoute(builder: (_) => ProfileDetailsScreen(profile: profile));
       case AppRoutes.editProfile:
         return MaterialPageRoute(builder: (_) => EditProfileScreen());
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => HomeScreen());
-        case AppRoutes.mainShell:
-        return MaterialPageRoute(builder: (_) => MainShell(key: mainShellKey));
-        // case AppRoutes.category:
-        // return  MaterialPageRoute(builder: (_) => CategoryScreen());
-        case AppRoutes.selectAddress:
-      return  MaterialPageRoute(builder: (_)=>SelectAddressFromMapPage() );
+      case AppRoutes.mainShell:
+        return MaterialPageRoute(settings: settings, builder: (_) => MainShell(key: mainShellKey));
+      case AppRoutes.selectAddress:
+        return MaterialPageRoute(builder: (_) => SelectAddressFromMapPage());
       case AppRoutes.startSelectLocationPage:
-      return MaterialPageRoute(builder: (_)=>StartSelectLocationPage());
+        return MaterialPageRoute(builder: (_) => StartSelectLocationPage());
       case AppRoutes.verifyOtp:
-      //  final email = settings.arguments as String;
-        return MaterialPageRoute(
-          builder: (_) => VerifyOtpScreen(
-            
-          //  identifier: email
-            ),
-        );
+        return MaterialPageRoute(builder: (_) => VerifyOtpScreen());
       case AppRoutes.manualAddressEntry:
-        return MaterialPageRoute(
-          builder: (_) => const ManualAddressEntryPage(),
-        );
+        return MaterialPageRoute(builder: (_) => const ManualAddressEntryPage());
       case AppRoutes.buildingDetails:
         final locationEntity = settings.arguments as LocationEntity?;
-        return MaterialPageRoute(
-          builder: (_) => BuildingDetailsPage(initialLocation: locationEntity),
-        );
+        return MaterialPageRoute(builder: (_) => BuildingDetailsPage(initialLocation: locationEntity));
       case AppRoutes.productDetails:
         final product = settings.arguments as CategoryProductModel;
         return PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              ProductDetailsScreen(product: product),
+          pageBuilder: (context, animation, secondaryAnimation) => ProductDetailsScreen(product: product),
           transitionDuration: const Duration(milliseconds: 350),
           reverseTransitionDuration: const Duration(milliseconds: 250),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // نفس الانيميشن المستخدم في ProductNavigationHelper
             return FadeTransition(
-              opacity: Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-                ),
-              ),
+              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.6, curve: Curves.easeOut))),
               child: ScaleTransition(
-                scale: Tween<double>(
-                  begin: 0.92,
-                  end: 1.0,
-                ).animate(
-                  CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutBack,
-                  ),
-                ),
+                scale: Tween<double>(begin: 0.92, end: 1.0).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutBack)),
                 child: child,
               ),
             );
           },
         );
-      // case AppRoutes.cart:
-      //   return PageRouteBuilder(
-      //     opaque: false,
-      //     pageBuilder: (context, animation, secondaryAnimation) => const CartScreen(),
-      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      //       const begin = Offset(0.0, 1.0);
-      //       const end = Offset.zero;
-      //       const curve = Curves.fastOutSlowIn;
-
-      //       var tween = Tween(begin: begin, end: end).chain(
-      //         CurveTween(curve: curve),
-      //       );
-
-      //       return SlideTransition(
-      //         position: animation.drive(tween),
-      //         child: child,
-      //       );
-      //     },
-      //     transitionDuration: const Duration(milliseconds: 250),
-      //     reverseTransitionDuration: const Duration(milliseconds: 200),
-      //   );
-
-
+      case AppRoutes.paymentSuccess:
+        final orderId = settings.arguments as String?;
+        return MaterialPageRoute(builder: (_) => PaymentSuccessScreen(orderId: orderId));
+      case AppRoutes.trackOrder:
+        return MaterialPageRoute(builder: (_) => const TrackOrderScreen());
       default:
         return unDefinedRoute();
     }

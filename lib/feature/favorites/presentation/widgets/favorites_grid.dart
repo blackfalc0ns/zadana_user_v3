@@ -21,7 +21,7 @@ class FavoritesGrid extends StatelessWidget {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // تغيير من 2 إلى 3 عناصر في الصف
-        childAspectRatio: 0.85, // نسبة أفضل للـ CompactProductCard
+        childAspectRatio: 0.75, // نسبة أفضل للـ CompactProductCard
         crossAxisSpacing: Spacing.sm,
         mainAxisSpacing: Spacing.sm,
       ),

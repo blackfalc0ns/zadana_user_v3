@@ -117,6 +117,7 @@
 
   "addresses": "العناوين",
   "add_address": "إضافة عنوان جديد",
+  "change_address": "تغيير",
 
   "settings": "الإعدادات",
   "language": "اللغة",
@@ -309,5 +310,26 @@
   "favorites_empty": "لا توجد منتجات مفضلة",
   "favorites_empty_message": "ابدأ بإضافة منتجاتك المفضلة لتسهيل الوصول إليها",
   "clear_favorites": "مسح جميع المفضلة",
-  "clear_favorites_confirmation": "هل أنت متأكد من حذف جميع المنتجات من المفضلة؟"
+  "clear_favorites_confirmation": "هل أنت متأكد من حذف جميع المنتجات من المفضلة؟",
+
+  "invoice_details": "تفاصيل الفاتورة",
+  "processing": "جاري المعالجة...",
+  "order_success": "تم إتمام الطلب بنجاح! ",
+  "order_number": "رقم الطلب",
+  "payment_successful": "تم الدفع بنجاح! ",
+  "payment_success_message": "شكراً لك! تم استلام طلبك وسيتم توصيله قريباً",
+  "estimated_delivery": "وقت التوصيل المتوقع",
+  "minutes": "دقيقة",
+  "track_order": "تتبع الطلب 📍",
+  "back_to_home": "العودة للرئيسية",
+  
+  "payment_method": "طريقة الدفع",
+  "credit_debit_card": "بطاقة ائتمان/خصم",
+  "credit_card_subtitle": "Visa, Mastercard, Mada",
+  "apple_pay": "Apple Pay",
+  "apple_pay_subtitle": "دفع سريع وآمن",
+  "cash_on_delivery": "الدفع عند الاستلام",
+  "cash_on_delivery_subtitle": "ادفع نقداً عند وصول الطلب",
+  "bank_transfer": "تحويل بنكي",
+  "bank_transfer_subtitle": "تحويل مباشر من البنك"
 }

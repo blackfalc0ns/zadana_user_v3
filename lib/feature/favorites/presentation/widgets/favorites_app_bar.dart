@@ -22,6 +22,7 @@ class FavoritesAppBar extends StatelessWidget implements PreferredSizeWidget {
     final color = context.colorScheme;
 
     return AppBar(
+      automaticallyImplyLeading: false,
       centerTitle: true,
       title: Column(
         children: [
@@ -58,10 +59,6 @@ class FavoritesAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Divider(height: 1, color: color.outlineVariant),
-      ),
     );
   }
 }

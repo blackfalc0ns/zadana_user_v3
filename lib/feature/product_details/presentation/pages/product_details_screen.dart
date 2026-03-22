@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
-import 'package:zadana_user_v3/core/widgets/reusable_product_details_screen.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/reusable_product_details_screen.dart';
 import 'package:zadana_user_v3/feature/category_product/presentaion/widget/category_product_model.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/product_details/data/similar_products_data.dart';
@@ -31,16 +31,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       onIncrease: () => setState(() => _quantity++),
       onDecrease: () => setState(() => _quantity--),
       descriptionTitle: l10n.product_description,
-      description: 'منتج طازج عالي الجودة، يتم اختياره بعناية فائقة لضمان أفضل مذاق وقيمة غذائية. مثالي للاستخدام اليومي في وجباتك الصحية.',
+      description:
+          'منتج طازج عالي الجودة، يتم اختياره بعناية فائقة لضمان أفضل مذاق وقيمة غذائية. مثالي للاستخدام اليومي في وجباتك الصحية.',
       basePrice: widget.product.price,
       oldPrice: widget.product.oldPrice,
       currency: l10n.egp,
       similarProducts: SimilarProductsData.getSimilarProducts(),
       onSimilarProductTap: (product) {
-        ProductNavigationHelper.navigateToProductDetails(
-          context,
-          product,
-        );
+        ProductNavigationHelper.navigateToProductDetails(context, product);
       },
       onSimilarProductAddToCart: (product) {
         CustomSnackbar.showSuccess(
@@ -50,15 +48,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       },
       onAddToCart: () => CustomSnackbar.showSuccess(
         context: context,
-        message: l10n.product_added_to_cart(
-          _quantity,
-          widget.product.name,
-        ),
+        message: l10n.product_added_to_cart(_quantity, widget.product.name),
       ),
-      onGoToCart: () => CustomSnackbar.showInfo(
-        context: context,
-        message: 'الانتقال للسلة',
-      ),
+      onGoToCart: () =>
+          CustomSnackbar.showInfo(context: context, message: 'الانتقال للسلة'),
     );
   }
 }

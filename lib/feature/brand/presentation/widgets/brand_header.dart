@@ -14,123 +14,126 @@ class BrandHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: 220,
+      expandedHeight: 230,
       floating: false,
       pinned: false,
       snap: false,
       backgroundColor: AppColors.white,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                brand.coverImage ??
-                    'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.black.withValues(alpha: 0.1),
-                  AppColors.black.withValues(alpha: 0.3),
-                ],
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            _buildCover(),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.black.withValues(alpha: 0.08),
+                    AppColors.black.withValues(alpha: 0.18),
+                    AppColors.black.withValues(alpha: 0.42),
+                  ],
+                ),
               ),
             ),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16, top: 8),
-                    child: Align(
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
                       alignment: Alignment.topRight,
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.black.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios,
-                                color: AppColors.white, size: 18),
-                            onPressed: () => Navigator.pop(context),
-                            padding: EdgeInsets.zero,
-                          ),
-                        ),
-                      ),
+                      child: _buildBackButton(context),
                     ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _buildBrandLogo(),
-                            const SizedBox(height: 12),
-                            _buildBrandInfo(),
-                          ],
-                        ),
-                      ),
+                    const Spacer(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _buildLogo(),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildInfo()),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildBrandLogo() {
+  Widget _buildCover() {
+    return Image.network(
+      brand.coverImage ??
+          'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          color: const Color(0xFFF3EEE8),
+        );
+      },
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
     return Container(
-      width: 70,
-      height: 70,
+      width: 42,
+      height: 42,
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.white.withValues(alpha: 0.5),
-          width: 2,
+        color: AppColors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: AppColors.white,
+          size: 18,
         ),
+        onPressed: () => Navigator.pop(context),
+        padding: EdgeInsets.zero,
+      ),
+    );
+  }
+
+  Widget _buildLogo() {
+    return Container(
+      width: 78,
+      height: 78,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.15),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: AppColors.black.withValues(alpha: 0.12),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(12),
           child: brand.logo.isNotEmpty
               ? Image.network(
                   brand.logo,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Center(
-                      child: Text(
-                        brand.emoji ?? '🏪',
-                        style: const TextStyle(fontSize: 28),
-                      ),
-                    );
-                  },
+                  errorBuilder: (context, error, stackTrace) => Center(
+                    child: Text(
+                      brand.emoji ?? '🏪',
+                      style: const TextStyle(fontSize: 32),
+                    ),
+                  ),
                 )
               : Center(
                   child: Text(
                     brand.emoji ?? '🏪',
-                    style: const TextStyle(fontSize: 28),
+                    style: const TextStyle(fontSize: 32),
                   ),
                 ),
         ),
@@ -138,43 +141,39 @@ class BrandHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildBrandInfo() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.black.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            brand.name,
-            style: AppTextStyles.h3.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: AppColors.black.withValues(alpha: 0.5),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+  Widget _buildInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          brand.name,
+          style: AppTextStyles.h2.copyWith(
+            color: AppColors.white,
+            fontWeight: FontWeight.w800,
           ),
-          const SizedBox(height: 4),
-          Text(
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.white.withValues(alpha: 0.16),
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(
+              color: AppColors.white.withValues(alpha: 0.22),
+            ),
+          ),
+          child: Text(
             '${brand.productCount} منتج',
-            style: AppTextStyles.labelSmall.copyWith(
-              color: AppColors.white.withValues(alpha: 0.9),
-              fontWeight: FontWeight.w500,
+            style: AppTextStyles.labelMedium.copyWith(
+              color: AppColors.white,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

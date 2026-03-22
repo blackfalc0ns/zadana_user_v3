@@ -20,6 +20,22 @@ class BrandFilterBottomSheet {
     String? tempSelectedCategory = currentSelectedCategory;
     String? tempSelectedSubcategory = currentSelectedSubcategory;
     String? tempSelectedUnit = currentSelectedUnit;
+    final sheetScrollController = ScrollController();
+
+    void scrollSheetTo(double offset) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!sheetScrollController.hasClients) return;
+        final target = (sheetScrollController.offset + offset).clamp(
+          0.0,
+          sheetScrollController.position.maxScrollExtent,
+        );
+        sheetScrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeOutCubic,
+        );
+      });
+    }
 
     return showModalBottomSheet<Map<String, dynamic>>(
       context: context,
@@ -28,42 +44,50 @@ class BrandFilterBottomSheet {
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => CustomFilterBottomSheet(
           title: 'فلتر المنتجات',
+          scrollController: sheetScrollController,
           children: [
             PriceRangeSection(
               priceRange: tempPriceRange,
               onChanged: (values) => setModalState(() => tempPriceRange = values),
             ),
-            const SizedBox(height: 24),
-
+            const SizedBox(height: 8),
             CategoryFilterSection(
               categories: categories,
               selectedCategory: tempSelectedCategory,
-              onCategoryChanged: (category) => setModalState(() {
-                tempSelectedCategory = category;
-                if (tempSelectedSubcategory != null) {
-                  final availableSubcategories = allProducts
-                      .where((p) => p.category == category)
-                      .map((p) => p.subcategory)
-                      .where((s) => s != null)
-                      .cast<String>()
-                      .toSet()
-                      .toList();
-                  if (!availableSubcategories.contains(tempSelectedSubcategory)) {
-                    tempSelectedSubcategory = null;
+              onCategoryChanged: (category) {
+                setModalState(() {
+                  tempSelectedCategory = category;
+                  if (tempSelectedSubcategory != null) {
+                    final availableSubcategories = allProducts
+                        .where((p) => p.category == category)
+                        .map((p) => p.subcategory)
+                        .where((s) => s != null)
+                        .cast<String>()
+                        .toSet()
+                        .toList();
+                    if (!availableSubcategories.contains(tempSelectedSubcategory)) {
+                      tempSelectedSubcategory = null;
+                    }
                   }
+                });
+                if (category != null) {
+                  scrollSheetTo(170);
                 }
-              }),
+              },
             ),
-            const SizedBox(height: 24),
-
+            const SizedBox(height: 8),
             SubcategoryFilterSection(
               allProducts: allProducts,
               selectedCategory: tempSelectedCategory,
               selectedSubcategory: tempSelectedSubcategory,
-              onSubcategoryChanged: (subcategory) => setModalState(() => tempSelectedSubcategory = subcategory),
+              onSubcategoryChanged: (subcategory) {
+                setModalState(() => tempSelectedSubcategory = subcategory);
+                if (subcategory != null) {
+                  scrollSheetTo(130);
+                }
+              },
             ),
-            const SizedBox(height: 24),
-
+            const SizedBox(height: 8),
             UnitFilterSection(
               units: units,
               selectedUnit: tempSelectedUnit,

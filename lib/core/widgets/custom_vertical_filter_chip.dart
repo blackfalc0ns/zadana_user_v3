@@ -32,15 +32,12 @@ class CustomVerticalFilterChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 2,
-          vertical: 1,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
               ? (selectedColor ?? AppColors.primary)
               : (backgroundColor ?? AppColors.white),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? (selectedColor ?? AppColors.primary)
@@ -52,24 +49,25 @@ class CustomVerticalFilterChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon != null) ...[
-              Text(
-                icon!,
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
             Text(
               label,
               style: textStyle ??
                   AppTextStyles.labelSmall.copyWith(
                     color: isSelected ? AppColors.white : AppColors.textPrimary,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    fontSize: 9,
+                    fontSize: 10,
                   ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
+            if (icon != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                icon!,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
           ],
         ),
       ),

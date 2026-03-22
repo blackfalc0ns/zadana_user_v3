@@ -312,6 +312,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add_address => 'Add New Address';
 
   @override
+  String get change_address => 'Change';
+
+  @override
   String get settings => 'Settings';
 
   @override
@@ -796,4 +799,62 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get clear_favorites_confirmation =>
       'Are you sure you want to remove all products from favorites?';
+
+  @override
+  String get invoice_details => 'Invoice Details';
+
+  @override
+  String get processing => 'Processing...';
+
+  @override
+  String get order_success => 'Order Placed Successfully! ';
+
+  @override
+  String get order_number => 'Order Number';
+
+  @override
+  String get payment_successful => 'Payment Successful! ';
+
+  @override
+  String get payment_success_message =>
+      'Thank you! Your order has been received and will be delivered soon';
+
+  @override
+  String get estimated_delivery => 'Estimated Delivery Time';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get track_order => 'Track Order 📍';
+
+  @override
+  String get back_to_home => 'Back to Home';
+
+  @override
+  String get payment_method => 'Payment Method';
+
+  @override
+  String get credit_debit_card => 'Credit/Debit Card';
+
+  @override
+  String get credit_card_subtitle => 'Visa, Mastercard, Mada';
+
+  @override
+  String get apple_pay => 'Apple Pay';
+
+  @override
+  String get apple_pay_subtitle => 'Fast and secure payment';
+
+  @override
+  String get cash_on_delivery => 'Cash on Delivery';
+
+  @override
+  String get cash_on_delivery_subtitle => 'Pay cash when order arrives';
+
+  @override
+  String get bank_transfer => 'Bank Transfer';
+
+  @override
+  String get bank_transfer_subtitle => 'Direct transfer from bank';
 }

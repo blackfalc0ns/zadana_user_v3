@@ -102,7 +102,10 @@ class _FilterMeatPartSectionState extends State<FilterMeatPartSection> {
                 ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? color.secondary : Colors.transparent,
+            color: isSelected
+                ? color.secondary
+                : color.outline.withValues(alpha: 0.35),
+            width: 1.2,
           ),
           boxShadow: isSelected ? [
             BoxShadow(

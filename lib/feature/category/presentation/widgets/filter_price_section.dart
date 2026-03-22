@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
+import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class FilterPriceSection extends StatelessWidget {
   const FilterPriceSection({
@@ -17,53 +14,35 @@ class FilterPriceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.localization;
-    final color = context.colorScheme;
-    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GradientSectionTitle(title: locale.price_range),
-        const SizedBox(height: Spacing.sm),
-        Column(
+        Text(
+          'نطاق السعر',
+          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: Spacing.md),
+        RangeSlider(
+          values: priceRange,
+          min: 0,
+          max: 1000,
+          divisions: 20,
+          labels: RangeLabels(
+            '${priceRange.start.round()} ج.م',
+            '${priceRange.end.round()} ج.م',
+          ),
+          onChanged: onPriceRangeChanged,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${priceRange.start.round()} ${locale.currency}',
-                  style: getSemiBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size12,
-                    color: color.primary,
-                  ),
-                ),
-                Text(
-                  locale.filter_part,
-                  style: getRegularStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size12,
-                    color: color.onSurfaceVariant,
-                  ),
-                ),
-                Text(
-                  '${priceRange.end.round()} ${locale.currency}',
-                  style: getSemiBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size12,
-                    color: color.secondary,
-                  ),
-                ),
-              ],
+            Text(
+              '${priceRange.start.round()} ج.م',
+              style: AppTextStyles.bodySmall,
             ),
-            RangeSlider(
-              values: priceRange,
-              min: 0,
-              max: 1000,
-              divisions: 20,
-              activeColor: color.primary,
-              inactiveColor: color.surfaceContainerHighest,
-              onChanged: onPriceRangeChanged,
+            Text(
+              '${priceRange.end.round()} ج.م',
+              style: AppTextStyles.bodySmall,
             ),
           ],
         ),

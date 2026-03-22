@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_item_card.dart';

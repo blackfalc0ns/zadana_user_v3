@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
-import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
 
 class FilterCategorySection extends StatefulWidget {
   const FilterCategorySection({
@@ -42,23 +38,24 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.localization;
-    final color = context.colorScheme;
     final displayedCategories = showAllCategories
         ? kCategoryList
-        : kCategoryList.take(4).toList();
+        : kCategoryList.take(8).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GradientSectionTitle(title: locale.filter_category_title),
-        const SizedBox(height: Spacing.sm),
+        Text(
+          'الفئة',
+          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: Spacing.md),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            childAspectRatio: 1.0, // زيادة من 0.75 إلى 1.0 عشان الكارد بقى أقصر
+            childAspectRatio: 0.9,
             crossAxisSpacing: Spacing.sm,
             mainAxisSpacing: Spacing.sm,
           ),
@@ -66,65 +63,30 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
           itemBuilder: (context, index) {
             final category = displayedCategories[index];
             final isSelected = localSelectedCategory == category.name;
-            return _buildCategoryChip(context, category, isSelected);
+
+            return CustomVerticalFilterChip(
+              label: category.name,
+              icon: category.emoji,
+              isSelected: isSelected,
+              onTap: () {
+                final newSelection = isSelected ? null : category.name;
+                setState(() => localSelectedCategory = newSelection);
+                widget.onCategorySelected(newSelection);
+              },
+            );
           },
         ),
-        if (kCategoryList.length > 4)
-          Padding(
-            padding: const EdgeInsets.only(top: Spacing.md),
+        if (kCategoryList.length > 8)
+          Transform.translate(
+            offset: const Offset(0, -22),
             child: Center(
               child: TextButton(
                 onPressed: () => setState(() => showAllCategories = !showAllCategories),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      showAllCategories ? locale.show_less : locale.show_more,
-                      style: getBoldStyle(
-                        fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size16,
-                        color: color.secondary,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      showAllCategories
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                      color: color.secondary,
-                      size: 18,
-                    ),
-                  ],
-                ),
+                child: Text(showAllCategories ? 'عرض أقل' : 'عرض المزيد'),
               ),
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildCategoryChip(BuildContext context, CategoryEntity category, bool isSelected) {
-    final color = context.colorScheme;
-
-    return CustomVerticalFilterChip(
-      label: category.name,
-      icon: category.emoji,
-      isSelected: isSelected,
-      onTap: () {
-        final newSelection = isSelected ? null : category.name;
-        setState(() {
-          localSelectedCategory = newSelection;
-        });
-        widget.onCategorySelected(newSelection);
-      },
-      backgroundColor: color.surface,
-      selectedColor: color.primary,
-      borderColor: color.outline.withValues(alpha: 0.2),
-      textStyle: getRegularStyle(
-        color: isSelected ? color.onPrimary : color.onSurface,
-        fontFamily: FontConstant.cairo,
-        fontSize: FontSize.size12,
-      ),
     );
   }
 }

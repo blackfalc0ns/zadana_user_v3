@@ -120,6 +120,7 @@
   "gender": "Gender",
   "addresses": "Addresses",
   "add_address": "Add New Address",
+  "change_address": "Change",
   "settings": "Settings",
   "language": "Language",
   "notifications": "Notifications",
@@ -295,5 +296,26 @@
   "favorites_empty": "No favorite products",
   "favorites_empty_message": "Start adding your favorite products for easy access",
   "clear_favorites": "Clear All Favorites",
-  "clear_favorites_confirmation": "Are you sure you want to remove all products from favorites?"
+  "clear_favorites_confirmation": "Are you sure you want to remove all products from favorites?",
+
+  "invoice_details": "Invoice Details",
+  "processing": "Processing...",
+  "order_success": "Order Placed Successfully! ",
+  "order_number": "Order Number",
+  "payment_successful": "Payment Successful! ",
+  "payment_success_message": "Thank you! Your order has been received and will be delivered soon",
+  "estimated_delivery": "Estimated Delivery Time",
+  "minutes": "minutes",
+  "track_order": "Track Order 📍",
+  "back_to_home": "Back to Home",
+  
+  "payment_method": "Payment Method",
+  "credit_debit_card": "Credit/Debit Card",
+  "credit_card_subtitle": "Visa, Mastercard, Mada",
+  "apple_pay": "Apple Pay",
+  "apple_pay_subtitle": "Fast and secure payment",
+  "cash_on_delivery": "Cash on Delivery",
+  "cash_on_delivery_subtitle": "Pay cash when order arrives",
+  "bank_transfer": "Bank Transfer",
+  "bank_transfer_subtitle": "Direct transfer from bank"
   }

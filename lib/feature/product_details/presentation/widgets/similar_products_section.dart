@@ -51,6 +51,8 @@ class SimilarProductsSection extends StatelessWidget {
                     onCardTap: () => onProductTap?.call(product),
                     onAddTap: () => onAddToCart?.call(product),
                     showFavorite: true,
+                    heroTagPrefix: 'similar_', // إضافة prefix للـ hero tag
+                    enableHeroAnimation: true, // تفعيل الـ Hero animation
                   ),
                 );
               },

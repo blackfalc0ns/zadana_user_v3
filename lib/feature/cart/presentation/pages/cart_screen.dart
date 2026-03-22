@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dar
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_comparison_sheet.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -112,7 +113,14 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       _showSnackBar(locale.select_vendor_to_show_price);
       return;
     }
-    // TODO: Implement checkout logic
+    
+    // Navigate to payment screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PaymentScreen(),
+      ),
+    );
   }
 
   void _showSnackBar(String message) {
@@ -125,6 +133,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    // حساب ارتفاع الـ navigation bar + margin
+    final bottomNavHeight = 75.0 + 12.0 + 12.0; // height + bottom margin + top margin
+    
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -136,23 +147,37 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
         ),
         body: _isEmpty
             ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
-            : CartContent(
-                items: _items,
-                selectedVendorId: _selectedVendorId,
-                onVendorSelected: _onVendorSelected,
-                onUpdateQuantity: _updateQuantity,
-                onDeleteItem: _showDeleteDialog,
-              ),
-        bottomNavigationBar: _isEmpty
-            ? null
-            : CartBottomBar(
-                selectedVendorId: _selectedVendorId,
-                items: _items,
-                totalPrice: _totalPrice,
-                selectedVendorName: _selectedVendorName(context),
-                animations: _animations,
-                onComparison: _showComparison,
-                onCheckout: _onCheckout,
+            : Stack(
+                children: [
+                  // المحتوى الرئيسي
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: bottomNavHeight + 80, // مساحة للـ navigation bar + CartBottomBar
+                    ),
+                    child: CartContent(
+                      items: _items,
+                      selectedVendorId: _selectedVendorId,
+                      onVendorSelected: _onVendorSelected,
+                      onUpdateQuantity: _updateQuantity,
+                      onDeleteItem: _showDeleteDialog,
+                    ),
+                  ),
+                  // الـ CartBottomBar فوق الـ navigation bar
+                  Positioned(
+                    bottom: 60,
+                    left: 0,
+                    right: 0,
+                    child: CartBottomBar(
+                      selectedVendorId: _selectedVendorId,
+                      items: _items,
+                      totalPrice: _totalPrice,
+                      selectedVendorName: _selectedVendorName(context),
+                      animations: _animations,
+                      onComparison: _showComparison,
+                      onCheckout: _onCheckout,
+                    ),
+                  ),
+                ],
               ),
       ),
     );

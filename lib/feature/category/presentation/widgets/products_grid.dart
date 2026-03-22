@@ -13,6 +13,9 @@ class ProductsGrid extends StatelessWidget {
     this.sortOption = '',
     this.filters = const [],
     this.selectedQuantity,
+    this.selectedProductType,
+    this.selectedPart,
+    this.priceRange = const RangeValues(0, 1000),
   });
 
   final String category;
@@ -20,6 +23,9 @@ class ProductsGrid extends StatelessWidget {
   final String sortOption;
   final List<String> filters;
   final String? selectedQuantity;
+  final String? selectedProductType;
+  final String? selectedPart;
+  final RangeValues priceRange;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +34,15 @@ class ProductsGrid extends StatelessWidget {
       subCategory,
     );
 
+    products = _applyFilters(
+      products,
+      filters,
+      category: category,
+      selectedProductType: selectedProductType,
+      selectedPart: selectedPart,
+      priceRange: priceRange,
+    );
     products = _applySorting(products, sortOption);
-    products = _applyFilters(products, filters);
 
     return GridView.builder(
       padding: const EdgeInsets.only(
@@ -40,7 +53,7 @@ class ProductsGrid extends StatelessWidget {
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 0.86,
+        childAspectRatio: 0.75,
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),
@@ -103,10 +116,40 @@ class ProductsGrid extends StatelessWidget {
   List<ProductModel> _applyFilters(
     List<ProductModel> products,
     List<String> filters,
+    {
+    required String category,
+    required String? selectedProductType,
+    required String? selectedPart,
+    required RangeValues priceRange,
+  }
   ) {
-    if (filters.isEmpty) return products;
-
     return products.where((product) {
+      if (product.price < priceRange.start || product.price > priceRange.end) {
+        return false;
+      }
+
+      if (selectedPart != null && !product.name.contains(selectedPart)) {
+        return false;
+      }
+
+      if (selectedProductType != null) {
+        final matchingParts =
+            kProductParts[category]?[selectedProductType] ?? const <String>[];
+
+        if (matchingParts.isNotEmpty) {
+          final matchesType = matchingParts.any(product.name.contains);
+          if (!matchesType) {
+            return false;
+          }
+        } else if (!product.name.contains(selectedProductType)) {
+          return false;
+        }
+      }
+
+      if (filters.isEmpty) {
+        return true;
+      }
+
       return filters.every(
         (filter) =>
             product.name.contains(filter) || product.store.contains(filter),

@@ -18,4 +18,7 @@ abstract class AppRoutes {
   static const String manualAddressEntry = '/manual-address-entry';
   static const String buildingDetails = '/building-details';
   static const String productDetails = '/product-details';
+  static const String paymentSuccess = '/payment-success';
+  static const String orders = '/orders';
+  static const String trackOrder = '/track-order';
 }

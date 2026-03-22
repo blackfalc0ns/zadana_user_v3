@@ -17,6 +17,16 @@ TextStyle _getTextStyle(
   );
 }
 
+// TextStyle getAppTextStyle({
+//   required double fontSize,
+//   required String fontFamily,
+//   FontWeight fontWeight = FontWeightManger.regular,
+//   FontStyle fontStyle = FontStyle.normal,
+//   Color? color,
+// }) {
+//   return _getTextStyle(fontSize, fontWeight, fontFamily, fontStyle, color);
+// }
+
 TextStyle getRegularStyle({
   double fontSize = FontSize.size12,
   Color? color, // اللون كمعامل اختياري

@@ -306,6 +306,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add_address => 'إضافة عنوان جديد';
 
   @override
+  String get change_address => 'تغيير';
+
+  @override
   String get settings => 'الإعدادات';
 
   @override
@@ -786,4 +789,62 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get clear_favorites_confirmation =>
       'هل أنت متأكد من حذف جميع المنتجات من المفضلة؟';
+
+  @override
+  String get invoice_details => 'تفاصيل الفاتورة';
+
+  @override
+  String get processing => 'جاري المعالجة...';
+
+  @override
+  String get order_success => 'تم إتمام الطلب بنجاح! ';
+
+  @override
+  String get order_number => 'رقم الطلب';
+
+  @override
+  String get payment_successful => 'تم الدفع بنجاح! ';
+
+  @override
+  String get payment_success_message =>
+      'شكراً لك! تم استلام طلبك وسيتم توصيله قريباً';
+
+  @override
+  String get estimated_delivery => 'وقت التوصيل المتوقع';
+
+  @override
+  String get minutes => 'دقيقة';
+
+  @override
+  String get track_order => 'تتبع الطلب 📍';
+
+  @override
+  String get back_to_home => 'العودة للرئيسية';
+
+  @override
+  String get payment_method => 'طريقة الدفع';
+
+  @override
+  String get credit_debit_card => 'بطاقة ائتمان/خصم';
+
+  @override
+  String get credit_card_subtitle => 'Visa, Mastercard, Mada';
+
+  @override
+  String get apple_pay => 'Apple Pay';
+
+  @override
+  String get apple_pay_subtitle => 'دفع سريع وآمن';
+
+  @override
+  String get cash_on_delivery => 'الدفع عند الاستلام';
+
+  @override
+  String get cash_on_delivery_subtitle => 'ادفع نقداً عند وصول الطلب';
+
+  @override
+  String get bank_transfer => 'تحويل بنكي';
+
+  @override
+  String get bank_transfer_subtitle => 'تحويل مباشر من البنك';
 }

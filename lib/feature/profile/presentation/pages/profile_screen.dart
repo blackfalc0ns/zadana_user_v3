@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -12,6 +14,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final color=context.colorScheme;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -34,8 +37,6 @@ class ProfileScreen extends StatelessWidget {
             _buildProfileCard(context),
             const SizedBox(height: Spacing.sm),
             _buildMenuList(l10n, context),
-            const SizedBox(height: Spacing.sm),
-            _buildLogoutButton(l10n),
             const SizedBox(height: Spacing.base),
           ],
         ),
@@ -44,6 +45,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildProfileCard(BuildContext context) {
+    final color=context.colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: GestureDetector(
@@ -52,17 +54,6 @@ class ProfileScreen extends StatelessWidget {
         },
         child: Container(
           padding: const EdgeInsets.all(Spacing.sm),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadow.withValues(alpha: 0.06),
-                blurRadius: 6,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
           child: Row(
             children: [
               Stack(
@@ -97,7 +88,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: Spacing.sm),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,14 +101,6 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'mohamed@example.com',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
                       '+966 50 123 4567',
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.textSecondary,
@@ -125,11 +108,6 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              const FaIcon(
-                FontAwesomeIcons.chevronLeft,
-                color: AppColors.textSecondary,
-                size: 14,
               ),
             ],
           ),
@@ -144,22 +122,22 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         children: [
           _buildMenuTile(
-            icon: FontAwesomeIcons.locationDot,
+            icon: Iconsax.location,
             title: l10n.addresses,
-            iconColor: AppColors.primary,
+            iconColor: AppColors.textPrimary,
             onTap: () {},
           ),
           _buildMenuTile(
-            icon: FontAwesomeIcons.clockRotateLeft,
+            icon: Iconsax.heart,
             title: l10n.nav_orders,
-            iconColor: AppColors.secondary,
+            iconColor: AppColors.textPrimary,  
             onTap: () {},
           ),
           const SizedBox(height: Spacing.xs),
           _buildMenuTile(
-            icon: FontAwesomeIcons.globe,
+            icon: Iconsax.global,
             title: l10n.language,
-            iconColor: AppColors.primary,
+            iconColor: AppColors.textPrimary,
             trailing: Text(
               'العربية',
               style: AppTextStyles.bodyMedium.copyWith(
@@ -169,29 +147,36 @@ class ProfileScreen extends StatelessWidget {
             onTap: () => _showLanguageBottomSheet(context),
           ),
           _buildMenuTile(
-            icon: FontAwesomeIcons.bell,
+            icon: Iconsax.notification,
             title: l10n.notifications,
-            iconColor: AppColors.secondary,
+            iconColor: AppColors.textPrimary,
             onTap: () {},
           ),
           _buildMenuTile(
-            icon: FontAwesomeIcons.lock,
+            icon: Iconsax.lock,
             title: l10n.change_password,
-            iconColor: AppColors.primary,
+            iconColor: AppColors.textPrimary,
             onTap: () {},
           ),
           _buildMenuTile(
-            icon: FontAwesomeIcons.circleQuestion,
+            icon: Iconsax.info_circle,
             title: l10n.help_support,
-            iconColor: AppColors.secondary,
+            iconColor: AppColors.textPrimary,
             onTap: () {},
           ),
           _buildMenuTile(
-            icon: FontAwesomeIcons.circleInfo,
+            icon: Iconsax.document,
             title: l10n.about_app,
-            iconColor: AppColors.primary,
+            iconColor: AppColors.textPrimary,
             onTap: () {},
           ),
+          _buildMenuTile(
+            icon: Iconsax.logout,
+            title: l10n.logout,
+            iconColor: AppColors.error,
+            onTap: () {},
+          ),
+          SizedBox(height: Spacing.lg),
         ],
       ),
     );
@@ -207,15 +192,12 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: Spacing.xs),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow.withValues(alpha: 0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.border,
+            width: 0.5,
           ),
-        ],
+        ),
       ),
       child: ListTile(
         onTap: onTap,
@@ -234,12 +216,8 @@ class ProfileScreen extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        trailing: trailing ??
-            const FaIcon(
-              FontAwesomeIcons.chevronLeft,
-              color: AppColors.textSecondary,
-              size: 12,
-            ),
+        
+        trailing: trailing ,
       ),
     );
   }
