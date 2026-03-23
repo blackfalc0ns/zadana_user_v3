@@ -8,70 +8,51 @@ class OrderCard extends StatelessWidget {
   const OrderCard({
     super.key,
     required this.order,
-    required this.isCompleted,
-    this.onReorder,
-    this.onRateOrder,
+    this.onTap,
   });
 
   final OrderUiModel order;
-  final bool isCompleted;
-  final VoidCallback? onReorder;
-  final VoidCallback? onRateOrder;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      padding: const EdgeInsets.all(Spacing.base),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(Spacing.lg),
-        border: Border.all(color: colors.primary.withOpacity(.14)),
-        boxShadow: [
-          BoxShadow(
-            color: colors.primary.withOpacity(.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: colors.secondary.withOpacity(.03),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          OrderCardHeader(order: order, l10n: l10n),
-          const SizedBox(height: Spacing.sm),
-          _OrderCardSummary(
-            itemsLabel: l10n.my_orders_items,
-            itemsValue: '${order.itemsCount} ${l10n.item}',
-            totalLabel: l10n.total,
-            totalValue: '${order.totalPrice.toStringAsFixed(2)} ${l10n.currency}',
-          ),
-          if (isCompleted) ...[
-            const SizedBox(height: Spacing.sm),
-            Divider(color: colors.outlineVariant.withOpacity(.28), height: 1),
-            const SizedBox(height: Spacing.sm),
-            Wrap(
-              spacing: Spacing.sm,
-              runSpacing: Spacing.sm,
-              children: [
-                OrderCardActionButton(
-                  label: l10n.my_orders_reorder,
-                  onPressed: onReorder,
-                ),
-                OrderCardActionButton(
-                  label: l10n.my_orders_rate_order,
-                  onPressed: onRateOrder,
-                ),
-              ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(Spacing.lg),
+      child: Container(
+        padding: const EdgeInsets.all(Spacing.base),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(Spacing.lg),
+          border: Border.all(color: colors.primary.withOpacity(.14)),
+          boxShadow: [
+            BoxShadow(
+              color: colors.primary.withOpacity(.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: colors.secondary.withOpacity(.03),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
             ),
           ],
-        ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OrderCardHeader(order: order, l10n: l10n),
+            const SizedBox(height: Spacing.sm),
+            _OrderCardSummary(
+              itemsLabel: l10n.my_orders_items,
+              itemsValue: '${order.itemsCount} ${l10n.item}',
+              totalLabel: l10n.total,
+              totalValue: '${order.totalPrice.toStringAsFixed(2)} ${l10n.currency}',
+            ),
+          ],
+        ),
       ),
     );
   }

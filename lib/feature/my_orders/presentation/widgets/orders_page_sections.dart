@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_details_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_card.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_empty_state.dart';
 
@@ -118,8 +119,16 @@ class OrdersTabContent extends StatelessWidget {
     return ListView.separated(
       itemCount: orders.length,
       separatorBuilder: (_, _) => const SizedBox(height: Spacing.md),
-      itemBuilder: (context, index) =>
-          OrderCard(order: orders[index], isCompleted: isCompleted),
+      itemBuilder: (context, index) => OrderCard(
+        order: orders[index],
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => OrderDetailsPage(order: orders[index]),
+            ),
+          );
+        },
+      ),
     );
   }
 }

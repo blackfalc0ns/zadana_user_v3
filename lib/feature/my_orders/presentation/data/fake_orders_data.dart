@@ -13,9 +13,9 @@ class FakeOrdersData {
         totalPrice: 285.0,
         status: OrderStatus.pending,
         items: const [
-          OrderItemUiModel(id: '1', name: 'Fresh Tomatoes', quantity: 2, price: 30),
-          OrderItemUiModel(id: '2', name: 'Milk', quantity: 1, price: 25),
-          OrderItemUiModel(id: '3', name: 'Bread', quantity: 3, price: 15),
+          OrderItemUiModel(id: '1', name: 'طماطم طازجة', quantity: 2, price: 30),
+          OrderItemUiModel(id: '2', name: 'حليب', quantity: 1, price: 25),
+          OrderItemUiModel(id: '3', name: 'خبز', quantity: 3, price: 15),
         ],
       ),
       OrderUiModel(
@@ -24,8 +24,8 @@ class FakeOrdersData {
         totalPrice: 199.5,
         status: OrderStatus.processing,
         items: const [
-          OrderItemUiModel(id: '4', name: 'Chicken Breast', quantity: 2, price: 75),
-          OrderItemUiModel(id: '5', name: 'Rice', quantity: 1, price: 49.5),
+          OrderItemUiModel(id: '4', name: 'صدور دجاج', quantity: 2, price: 75),
+          OrderItemUiModel(id: '5', name: 'أرز', quantity: 1, price: 49.5),
         ],
       ),
       OrderUiModel(
@@ -34,8 +34,8 @@ class FakeOrdersData {
         totalPrice: 340.75,
         status: OrderStatus.shipped,
         items: const [
-          OrderItemUiModel(id: '6', name: 'Salmon', quantity: 2, price: 130),
-          OrderItemUiModel(id: '7', name: 'Orange Juice', quantity: 3, price: 26.9),
+          OrderItemUiModel(id: '6', name: 'سلمون', quantity: 2, price: 130),
+          OrderItemUiModel(id: '7', name: 'عصير برتقال', quantity: 3, price: 26.9),
         ],
       ),
       OrderUiModel(
@@ -44,8 +44,8 @@ class FakeOrdersData {
         totalPrice: 420.0,
         status: OrderStatus.delivered,
         items: const [
-          OrderItemUiModel(id: '8', name: 'Avocado', quantity: 5, price: 24),
-          OrderItemUiModel(id: '9', name: 'Greek Yogurt', quantity: 4, price: 30),
+          OrderItemUiModel(id: '8', name: 'أفوكادو', quantity: 5, price: 24),
+          OrderItemUiModel(id: '9', name: 'زبادي يوناني', quantity: 4, price: 30),
         ],
       ),
       OrderUiModel(
@@ -54,8 +54,8 @@ class FakeOrdersData {
         totalPrice: 112.0,
         status: OrderStatus.cancelled,
         items: const [
-          OrderItemUiModel(id: '10', name: 'Eggs', quantity: 2, price: 18),
-          OrderItemUiModel(id: '11', name: 'Cheese', quantity: 2, price: 38),
+          OrderItemUiModel(id: '10', name: 'بيض', quantity: 2, price: 18),
+          OrderItemUiModel(id: '11', name: 'جبنة', quantity: 2, price: 38),
         ],
       ),
     ];
