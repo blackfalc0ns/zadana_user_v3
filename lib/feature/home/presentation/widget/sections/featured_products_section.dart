@@ -20,18 +20,16 @@ class FeaturedProductsSection extends StatelessWidget {
           actionLabel: locale.see_all,
         ),
         const SizedBox(height: Spacing.md),
-        
-        // Grid View للمنتجات المميزة (2 صف × scroll أفقي)
         SizedBox(
-          height: 290, // تقليل الارتفاع للـ CompactProductCard
+          height: 290,
           child: GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
-            scrollDirection: Axis.horizontal, // scroll أفقي
+            scrollDirection: Axis.horizontal,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 2 صف
+              crossAxisCount: 2,
               crossAxisSpacing: Spacing.sm,
               mainAxisSpacing: Spacing.sm,
-              childAspectRatio: 1.1, // نسبة أفضل للـ CompactProductCard
+              childAspectRatio: 1.1,
             ),
             itemCount: HomeData.featured.length,
             itemBuilder: (context, index) {
@@ -39,15 +37,14 @@ class FeaturedProductsSection extends StatelessWidget {
               return CustomProductCard(
                 product: product,
                 showFavorite: true,
-                onAddTap: () {
-                  // TODO: إضافة المنتج للعربة
-                },
+                onAddTap: () {},
                 onCardTap: () {
-                  ProductNavigationHelper.navigateToProductDetails(context, product);
+                  ProductNavigationHelper.navigateToProductDetails(
+                    context,
+                    product,
+                  );
                 },
-                onFavoriteTap: () {
-                  // TODO: إضافة/إزالة من المفضلة
-                },
+                onFavoriteTap: () {},
               );
             },
           ),

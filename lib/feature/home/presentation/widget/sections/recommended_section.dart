@@ -12,7 +12,7 @@ class RecommendedSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SectionHeader(title: 'موصي به لك', actionLabel: 'تحديث'),
+        const SectionHeader(title: 'موصى به لك', actionLabel: 'تحديث'),
         const SizedBox(height: Spacing.sm),
         SizedBox(
           height: 80,
@@ -26,10 +26,12 @@ class RecommendedSection extends StatelessWidget {
               return RecommendedCard(
                 product: product,
                 onTap: () {
-                  ProductNavigationHelper.navigateToProductDetails(context, product);
+                  ProductNavigationHelper.navigateToProductDetails(
+                    context,
+                    product,
+                  );
                 },
                 onFavoriteTap: () {
-                  // Handle favorite tap
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('تم إضافة ${product.name} للمفضلة')),
                   );

@@ -9,16 +9,20 @@ class CartContent extends StatelessWidget {
   final List<CartItemModel> items;
   final String? selectedVendorId;
   final Function(String) onVendorSelected;
+  final Function(CartItemModel) onItemTap;
   final Function(CartItemModel, bool) onUpdateQuantity;
   final Function(CartItemModel) onDeleteItem;
+  final String? activeHeroProductId;
 
   const CartContent({
     super.key,
     required this.items,
     required this.selectedVendorId,
     required this.onVendorSelected,
+    required this.onItemTap,
     required this.onUpdateQuantity,
     required this.onDeleteItem,
+    this.activeHeroProductId,
   });
 
   @override
@@ -55,7 +59,7 @@ class CartContent extends StatelessWidget {
 
   Widget _buildItemsList() {
     return ListView.separated(
-      key: ValueKey('items_list_${selectedVendorId ?? "no_vendor"}'),
+      key: const PageStorageKey<String>('cart_items_list'),
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       itemCount: items.length,
       separatorBuilder: (_, index) => const SizedBox(height: 3.0),
@@ -64,9 +68,11 @@ class CartContent extends StatelessWidget {
         child: CartItemCard(
           item: items[index],
           selectedVendorId: selectedVendorId,
+          onTap: () => onItemTap(items[index]),
           onIncrement: () => onUpdateQuantity(items[index], true),
           onDecrement: () => onUpdateQuantity(items[index], false),
           onDelete: () => onDeleteItem(items[index]),
+          enableHeroAnimation: activeHeroProductId == items[index].id,
         ),
       ),
     );

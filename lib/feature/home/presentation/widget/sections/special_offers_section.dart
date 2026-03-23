@@ -21,7 +21,7 @@ class SpecialOffersSection extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.md),
         SizedBox(
-          height: 140, // تقليل الارتفاع للـ CompactProductCard
+          height: 140,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,
@@ -30,19 +30,18 @@ class SpecialOffersSection extends StatelessWidget {
             itemBuilder: (_, i) {
               final product = HomeData.specialOffers[i];
               return SizedBox(
-                width: 120, // عرض أصغر للـ CompactProductCard
+                width: 120,
                 child: CustomProductCard(
                   product: product,
                   showFavorite: true,
-                  onAddTap: () {
-                    // TODO: إضافة المنتج للعربة
-                  },
+                  onAddTap: () {},
                   onCardTap: () {
-                    ProductNavigationHelper.navigateToProductDetails(context, product);
+                    ProductNavigationHelper.navigateToProductDetails(
+                      context,
+                      product,
+                    );
                   },
-                  onFavoriteTap: () {
-                    // TODO: إضافة/إزالة من المفضلة
-                  },
+                  onFavoriteTap: () {},
                 ),
               );
             },

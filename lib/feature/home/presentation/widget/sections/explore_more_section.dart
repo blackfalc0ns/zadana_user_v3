@@ -15,17 +15,14 @@ class ExploreMoreSection extends StatelessWidget {
 
     return Column(
       children: [
-        SectionHeader(
-          title: locale.section_explore,
-          actionLabel: locale.see_all,
-        ),
+        SectionHeader(title: locale.section_explore, actionLabel: locale.see_all),
         const SizedBox(height: Spacing.sm),
         ...HomeData.exploreMore.map(
-          (p) => ExploreMoreTile(
-            product: p,
+          (product) => ExploreMoreTile(
+            product: product,
             addToCartLabel: locale.add_to_cart,
             onTap: () {
-              ProductNavigationHelper.navigateToProductDetails(context, p);
+              ProductNavigationHelper.navigateToProductDetails(context, product);
             },
           ),
         ),

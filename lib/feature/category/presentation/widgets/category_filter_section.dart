@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_animal_type_section.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_brand_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_category_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_meat_part_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_price_section.dart';
@@ -12,11 +13,13 @@ class CategoryFilterSection extends StatelessWidget {
   final String? selectedProductType;
   final String? selectedPart;
   final String? selectedQuantity;
+  final String? selectedBrand;
   final RangeValues priceRange;
   final Function(String?) onCategorySelected;
   final Function(String?) onProductTypeSelected;
   final Function(String?) onPartSelected;
   final Function(String?) onQuantitySelected;
+  final Function(String?) onBrandSelected;
   final Function(RangeValues) onPriceRangeChanged;
 
   const CategoryFilterSection({
@@ -26,11 +29,13 @@ class CategoryFilterSection extends StatelessWidget {
     this.selectedProductType,
     this.selectedPart,
     this.selectedQuantity,
+    this.selectedBrand,
     required this.priceRange,
     required this.onCategorySelected,
     required this.onProductTypeSelected,
     required this.onPartSelected,
     required this.onQuantitySelected,
+    required this.onBrandSelected,
     required this.onPriceRangeChanged,
   });
 
@@ -56,6 +61,11 @@ class CategoryFilterSection extends StatelessWidget {
         selectedQuantity: selectedQuantity,
         onQuantitySelected: onQuantitySelected,
       ),
+      FilterBrandSection(
+        selectedCategory: selectedCategory,
+        selectedBrand: selectedBrand,
+        onBrandSelected: onBrandSelected,
+      ),
     ];
 
     return Column(
@@ -74,6 +84,7 @@ class CategoryFilterSection extends StatelessWidget {
               onProductTypeSelected(null);
               onPartSelected(null);
               onQuantitySelected(null);
+              onBrandSelected(null);
             },
           ),
         ],

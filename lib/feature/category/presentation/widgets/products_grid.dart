@@ -15,7 +15,10 @@ class ProductsGrid extends StatelessWidget {
     this.selectedQuantity,
     this.selectedProductType,
     this.selectedPart,
+    this.selectedBrand,
     this.priceRange = const RangeValues(0, 1000),
+    this.activeHeroProductId,
+    this.onProductTap,
   });
 
   final String category;
@@ -25,7 +28,10 @@ class ProductsGrid extends StatelessWidget {
   final String? selectedQuantity;
   final String? selectedProductType;
   final String? selectedPart;
+  final String? selectedBrand;
   final RangeValues priceRange;
+  final String? activeHeroProductId;
+  final Future<void> Function(ProductModel product)? onProductTap;
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +46,13 @@ class ProductsGrid extends StatelessWidget {
       category: category,
       selectedProductType: selectedProductType,
       selectedPart: selectedPart,
+      selectedBrand: selectedBrand,
       priceRange: priceRange,
     );
     products = _applySorting(products, sortOption);
 
     return GridView.builder(
+      key: PageStorageKey<String>('products_grid_${category}_$subCategory'),
       padding: const EdgeInsets.only(
         top: Spacing.md,
         left: Spacing.md,
@@ -65,11 +73,16 @@ class ProductsGrid extends StatelessWidget {
         return CustomProductCard(
           product: product,
           onCardTap: () {
+            if (onProductTap != null) {
+              onProductTap!(product);
+              return;
+            }
             ProductNavigationHelper.navigateToProductDetails(context, product);
           },
           onAddTap: () {},
           showFavorite: true,
           onFavoriteTap: () {},
+          enableHeroAnimation: activeHeroProductId == product.id,
         );
       },
     );
@@ -119,6 +132,7 @@ class ProductsGrid extends StatelessWidget {
     required String category,
     required String? selectedProductType,
     required String? selectedPart,
+    required String? selectedBrand,
     required RangeValues priceRange,
   }) {
     return products.where((product) {
@@ -127,6 +141,10 @@ class ProductsGrid extends StatelessWidget {
       }
 
       if (selectedPart != null && !product.name.contains(selectedPart)) {
+        return false;
+      }
+
+      if (selectedBrand != null && product.store != selectedBrand) {
         return false;
       }
 

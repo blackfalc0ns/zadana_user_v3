@@ -26,11 +26,11 @@ class PaymentSuccessScreen extends StatelessWidget {
               const Spacer(),
               Lottie.asset(
                 'assets/lottie_animation/success_payment.json',
-                width: 250,
-                height: 250,
+                width: 190,
+                height: 190,
                 repeat: false,
               ),
-              const SizedBox(height: Spacing.xl),
+              const SizedBox(height: Spacing.lg),
               Text(
                 l10n.payment_successful,
                 style: getBoldStyle(
@@ -40,18 +40,8 @@ class PaymentSuccessScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Spacing.md),
-              Text(
-                l10n.payment_success_message,
-                style: getRegularStyle(
-                  fontSize: FontSize.size14,
-                  fontFamily: FontConstant.cairo,
-                  color: colors.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
               if (orderId != null) ...[
-                const SizedBox(height: Spacing.lg),
+                const SizedBox(height: Spacing.md),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: Spacing.lg,

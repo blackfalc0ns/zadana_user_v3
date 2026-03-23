@@ -1,4 +1,4 @@
-{
+﻿{
   "login": "Login",
   "name_is_required": "Name is required!",
   "name_is_not_valid": "This name is not valid",
@@ -133,7 +133,7 @@
   "version": "Version",
   "contact_us": "Contact Us",
   "select_language": "Select Language",
-  "arabic": "العربية",
+  "arabic": "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©",
   "english": "English",
   "about_app_title": "About App",
   "app_name": "Zadana Smart Shopping App",
@@ -287,6 +287,7 @@
   "currency": "SAR",
   "filter_type": "Type",
   "filter_part": "Part",
+  "filter_brand": "Brand",
   "filter_category_title": "Category",
   "filter_apply": "Apply Filter",
   "show_more": "Show More",
@@ -306,10 +307,26 @@
   "payment_success_message": "Thank you! Your order has been received and will be delivered soon",
   "estimated_delivery": "Estimated Delivery Time",
   "minutes": "minutes",
-  "track_order": "Track Order 📍",
+  "track_order": "Track Order ðŸ“",
   "back_to_home": "Back to Home",
   
-  "payment_method": "Payment Method",
+  "my_orders_title": "My Orders",
+  "my_orders_subtitle": "Track your current and previous orders easily",
+  "active_orders_tab": "Active",
+  "completed_orders_tab": "Completed",
+  "no_active_orders": "No active orders",
+  "no_previous_orders": "No previous orders",
+  "my_orders_order_date": "Order Date",
+  "my_orders_items": "Items",
+  "my_orders_view_details": "View Details",
+  "my_orders_cancel_order": "Cancel Order",
+  "my_orders_reorder": "Reorder",
+  "my_orders_rate_order": "Rate Order",
+  "order_pending": "Pending",
+  "order_shipped": "Shipped",
+  "order_delivered": "Delivered",
+  "order_cancelled": "Cancelled",
+    "payment_method": "Payment Method",
   "credit_debit_card": "Credit/Debit Card",
   "credit_card_subtitle": "Visa, Mastercard, Mada",
   "apple_pay": "Apple Pay",
@@ -319,3 +336,4 @@
   "bank_transfer": "Bank Transfer",
   "bank_transfer_subtitle": "Direct transfer from bank"
   }
+

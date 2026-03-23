@@ -21,12 +21,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final similarProducts = SimilarProductsData.getSimilarProducts()
+        .where((product) => product.id != widget.product.id)
+        .toList();
 
     return ReusableProductDetailsScreen(
       productId: widget.product.id,
       productName: widget.product.name,
       emoji: widget.product.emoji,
-      imageUrl: '',
+      imageUrl: widget.product.imageUrl ?? '',
       quantity: _quantity,
       onIncrease: () => setState(() => _quantity++),
       onDecrease: () => setState(() => _quantity--),
@@ -36,7 +39,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       basePrice: widget.product.price,
       oldPrice: widget.product.oldPrice,
       currency: l10n.egp,
-      similarProducts: SimilarProductsData.getSimilarProducts(),
+      similarProducts: similarProducts,
       onSimilarProductTap: (product) {
         ProductNavigationHelper.navigateToProductDetails(context, product);
       },

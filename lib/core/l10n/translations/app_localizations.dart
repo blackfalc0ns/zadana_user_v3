@@ -767,7 +767,7 @@ abstract class AppLocalizations {
   /// No description provided for @arabic.
   ///
   /// In en, this message translates to:
-  /// **'العربية'**
+  /// **'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©'**
   String get arabic;
 
   /// No description provided for @english.
@@ -1580,6 +1580,12 @@ abstract class AppLocalizations {
   /// **'Part'**
   String get filter_part;
 
+  /// No description provided for @filter_brand.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand'**
+  String get filter_brand;
+
   /// No description provided for @filter_category_title.
   ///
   /// In en, this message translates to:
@@ -1685,7 +1691,7 @@ abstract class AppLocalizations {
   /// No description provided for @track_order.
   ///
   /// In en, this message translates to:
-  /// **'Track Order 📍'**
+  /// **'Track Order ðŸ“'**
   String get track_order;
 
   /// No description provided for @back_to_home.
@@ -1693,6 +1699,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to Home'**
   String get back_to_home;
+
+  /// No description provided for @my_orders_title.
+  ///
+  /// In en, this message translates to:
+  /// **'My Orders'**
+  String get my_orders_title;
+
+  /// No description provided for @my_orders_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your current and previous orders easily'**
+  String get my_orders_subtitle;
+
+  /// No description provided for @active_orders_tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active_orders_tab;
+
+  /// No description provided for @completed_orders_tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed_orders_tab;
+
+  /// No description provided for @no_active_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'No active orders'**
+  String get no_active_orders;
+
+  /// No description provided for @no_previous_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous orders'**
+  String get no_previous_orders;
+
+  /// No description provided for @my_orders_order_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Date'**
+  String get my_orders_order_date;
+
+  /// No description provided for @my_orders_items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get my_orders_items;
+
+  /// No description provided for @my_orders_view_details.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get my_orders_view_details;
+
+  /// No description provided for @my_orders_cancel_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Order'**
+  String get my_orders_cancel_order;
+
+  /// No description provided for @my_orders_reorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder'**
+  String get my_orders_reorder;
+
+  /// No description provided for @my_orders_rate_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Order'**
+  String get my_orders_rate_order;
+
+  /// No description provided for @order_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get order_pending;
+
+  /// No description provided for @order_shipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipped'**
+  String get order_shipped;
+
+  /// No description provided for @order_delivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get order_delivered;
+
+  /// No description provided for @order_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get order_cancelled;
 
   /// No description provided for @payment_method.
   ///

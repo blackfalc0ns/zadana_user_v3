@@ -108,7 +108,10 @@ class MainShellState extends State<MainShell> {
             _screens.length,
             (index) => Offstage(
               offstage: _selectedIndex != index,
-              child: _screens[index],
+              child: HeroMode(
+                enabled: _selectedIndex == index,
+                child: _screens[index],
+              ),
             ),
           ),
           Positioned(

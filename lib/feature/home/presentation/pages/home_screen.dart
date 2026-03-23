@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         location: locale.location,
       ),
       body: CustomScrollView(
+        key: const PageStorageKey<String>('home_scroll_view'),
         slivers: [
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
 

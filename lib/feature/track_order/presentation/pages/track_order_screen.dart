@@ -1,4 +1,6 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
@@ -64,15 +66,10 @@ class TrackOrderScreen extends StatelessWidget {
               const SizedBox(height: Spacing.base),
               const TrackOrderDriverCard(),
               Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(
-                      Icons.two_wheeler_rounded,
-                      size: 120,
-                      color: color.primary,
-                    ),
-                  ],
+                child: SvgPicture.asset(
+                  'assets/images/fast_delivery.svg',
+                  height: 140,
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: Spacing.md),
@@ -90,8 +87,8 @@ class TrackOrderScreen extends StatelessWidget {
                 ),
               ),
               AppButton(
-                text: 'إظهار الخريطة',
-                onPressed: () {},
+                text: 'عرض الطلبات',
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.orders),
                 color: color.primary,
                 textColor: color.onPrimary,
               ),
@@ -102,3 +99,5 @@ class TrackOrderScreen extends StatelessWidget {
     );
   }
 }
+
+

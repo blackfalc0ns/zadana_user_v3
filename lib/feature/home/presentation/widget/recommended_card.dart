@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
@@ -43,13 +44,14 @@ class RecommendedCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 8), // إضافة مساحة من اليمين
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Spacing.sm.toDouble()),
+                    borderRadius: BorderRadius.circular(Spacing.cardRadius),
                     child: ProductImage(
                       emoji: product.emoji,
                       url: product.imageUrl,
                       width: 48,
                       height: 48,
-                      borderRadius: Spacing.sm.toDouble(),
+                      borderRadius: Spacing.cardRadius,
+                      heroTag: productHeroTag(product.id),
                     ),
                   ),
                 ),

@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
+import 'package:zadana_user_v3/core/widgets/product_image.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 
 class CartItemCard extends StatefulWidget {
   final CartItemModel item;
-  final String? selectedVendorId; // جعلها nullable
+  final String? selectedVendorId;
+  final VoidCallback onTap;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
   final VoidCallback onDelete;
+  final bool enableHeroAnimation;
 
   const CartItemCard({
     super.key,
     required this.item,
     required this.selectedVendorId,
+    required this.onTap,
     required this.onIncrement,
     required this.onDecrement,
     required this.onDelete,
+    this.enableHeroAnimation = false,
   });
 
   @override
@@ -35,7 +42,6 @@ class _CartItemCardState extends State<CartItemCard>
   void initState() {
     super.initState();
 
-    // إعداد انيميشن السعر
     _priceAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -43,7 +49,7 @@ class _CartItemCardState extends State<CartItemCard>
 
     _priceSlideAnimation =
         Tween<Offset>(
-          begin: const Offset(1.0, 0.0), // يبدأ من اليمين
+          begin: const Offset(1.0, 0.0),
           end: Offset.zero,
         ).animate(
           CurvedAnimation(
@@ -56,7 +62,6 @@ class _CartItemCardState extends State<CartItemCard>
       CurvedAnimation(parent: _priceAnimationController, curve: Curves.easeOut),
     );
 
-    // تشغيل الانيميشن في البداية فقط إذا كان هناك متجر مختار
     if (widget.selectedVendorId != null) {
       _priceAnimationController.forward();
     }
@@ -66,7 +71,6 @@ class _CartItemCardState extends State<CartItemCard>
   void didUpdateWidget(CartItemCard oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // إذا تغير المتجر وأصبح غير null، شغل الانيميشن
     if (oldWidget.selectedVendorId != widget.selectedVendorId &&
         widget.selectedVendorId != null) {
       _priceAnimationController.forward(from: 0.0);
@@ -96,102 +100,101 @@ class _CartItemCardState extends State<CartItemCard>
     final locale = context.localization;
     final color = context.colorScheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: color.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: color.shadow.withValues(alpha: 0.06),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: color.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade300, width: 1),
+    return GestureDetector(
+      onTap: widget.onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color.surface,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: color.shadow.withValues(alpha: 0.06),
+              blurRadius: 6,
+              offset: const Offset(0, 1),
             ),
-            child: Center(
-              child: Text(
-                widget.item.imageUrl,
-                style: const TextStyle(fontSize: 40),
-              ),
+          ],
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            ProductImage(
+              emoji: widget.item.imageUrl,
+              url: '',
+              width: 80,
+              height: 80,
+              borderRadius: Spacing.cardRadius,
+              heroTag: widget.enableHeroAnimation
+                  ? productHeroTag(widget.item.id)
+                  : null,
             ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.item.name,
-                  style: getBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size14,
-                    color: color.onSurface,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.item.name,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                      color: color.onSurface,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                _buildAnimatedPrice(locale, color),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    _buildButton(Icons.remove, widget.onDecrement, color),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: color.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        '${widget.item.quantity}',
-                        style: getBoldStyle(
-                          fontFamily: FontConstant.cairo,
-                          fontSize: FontSize.size14,
-                          color: color.onSurface,
+                  const SizedBox(height: 4),
+                  _buildAnimatedPrice(locale, color),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildButton(Icons.remove, widget.onDecrement),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: color.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '${widget.item.quantity}',
+                          style: getBoldStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: color.onSurface,
+                          ),
                         ),
                       ),
-                    ),
-                    _buildButton(Icons.add, widget.onIncrement, color),
-                  ],
+                      _buildButton(Icons.add, widget.onIncrement),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: widget.onDelete,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(6),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: widget.onDelete,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Icon(
-                Icons.delete_outline,
-                size: 20,
-                color: Colors.red.shade400,
+                child: Icon(
+                  Icons.delete_outline,
+                  size: 20,
+                  color: Colors.red.shade400,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildAnimatedPrice(locale, color) {
+  Widget _buildAnimatedPrice(dynamic locale, ColorScheme color) {
     final price = _currentPrice;
 
     if (price == null) {
@@ -233,7 +236,7 @@ class _CartItemCardState extends State<CartItemCard>
     );
   }
 
-  Widget _buildButton(IconData icon, VoidCallback onTap, color) {
+  Widget _buildButton(IconData icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

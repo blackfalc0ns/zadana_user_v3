@@ -10,8 +10,8 @@ class ProductImage extends StatelessWidget {
     this.borderRadius = 12.0,
     this.fit = BoxFit.cover,
     this.whiteBackground = false,
-    this.emoji, // ← لو موجود يتعرض بدل الصورة
-    this.heroTag, // ← للـ Hero Animation
+    this.emoji,
+    this.heroTag,
   });
 
   final String url;
@@ -25,40 +25,36 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageWidget = ClipRRect(
+    final image = _buildImageShell();
+
+    if (heroTag == null || heroTag!.isEmpty) {
+      return image;
+    }
+
+    return Hero(
+      tag: heroTag!,
+      transitionOnUserGestures: true,
+      child: Material(color: Colors.transparent, child: image),
+    );
+  }
+
+  Widget _buildImageShell() {
+    return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: Container(
         width: width,
         height: height,
         color: whiteBackground ? AppColors.white : AppColors.background,
-        child: emoji != null && emoji!.isNotEmpty
-            ? _buildEmoji()
-            : _buildImage(),
+        child: emoji != null && emoji!.isNotEmpty ? _buildEmoji() : _buildImage(),
       ),
     );
-
-    // إذا كان فيه heroTag، لف الصورة بـ Hero
-    if (heroTag != null) {
-      return Hero(
-        tag: heroTag!,
-        child: Material(
-          color: Colors.transparent,
-          child: imageWidget,
-        ),
-      );
-    }
-
-    return imageWidget;
   }
 
   Widget _buildEmoji() {
-    return Container(
-      alignment: Alignment.center, // تغيير من bottomCenter إلى center
+    return Center(
       child: Text(
         emoji!,
-        style: TextStyle(
-          fontSize: (height * 0.55).clamp(28, 200), // زيادة النسبة والحد الأدنى
-        ),
+        style: TextStyle(fontSize: (height * 0.55).clamp(28, 200)),
         textAlign: TextAlign.center,
       ),
     );
@@ -101,11 +97,13 @@ class ProductImage extends StatelessWidget {
         : child;
   }
 
-  Widget _errorWidget() => Container(
-        color: AppColors.divider,
-        child: const Icon(
-          Icons.image_not_supported_outlined,
-          color: AppColors.textHint,
-        ),
-      );
+  Widget _errorWidget() {
+    return Container(
+      color: AppColors.divider,
+      child: const Icon(
+        Icons.image_not_supported_outlined,
+        color: AppColors.textHint,
+      ),
+    );
+  }
 }

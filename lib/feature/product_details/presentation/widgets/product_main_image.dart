@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
 class ProductMainImage extends StatelessWidget {
@@ -18,19 +19,16 @@ class ProductMainImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: height,
-      color: AppColors.surface,
-      child: Center(
-        child: ProductImage(
-          emoji: emoji,
-          url: imageUrl,
-          width: double.infinity,
-          height: height,
-          borderRadius: 0,
-          heroTag: 'product_image_$productId',
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(Spacing.md),
+      child: ProductImage(
+        emoji: emoji,
+        url: imageUrl,
+        width: double.infinity,
+        height: height,
+        borderRadius: Spacing.cardRadius,
+        whiteBackground: true,
+        heroTag: productHeroTag(productId),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class FavoritesGrid extends StatelessWidget {
@@ -19,6 +19,7 @@ class FavoritesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      key: const PageStorageKey<String>('favorites_products_grid'),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // تغيير من 2 إلى 3 عناصر في الصف
         childAspectRatio: 0.75, // نسبة أفضل للـ CompactProductCard

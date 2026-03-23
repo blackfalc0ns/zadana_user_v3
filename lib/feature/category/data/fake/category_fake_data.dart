@@ -1,6 +1,13 @@
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
+List<String> getBrandsForCategory(String category) {
+  final products = kCategoryProducts[category] ?? const <ProductModel>[];
+  final brands = products.map((product) => product.store).toSet().toList();
+  brands.sort();
+  return brands;
+}
+
 // Category fake data
 const List<CategoryEntity> kCategoryList = [
   CategoryEntity(

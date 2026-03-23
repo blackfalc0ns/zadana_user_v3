@@ -23,14 +23,15 @@ class MyApp extends StatelessWidget {
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
       builder: DevicePreview.appBuilder,
-      locale: const Locale('ar'),
+     // locale: DevicePreview.locale(context),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: const [
         Locale('ar'),
+        Locale('en'),
       ],
       theme: AppTheme.light,
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.mainShell,
+      initialRoute: AppRoutes.myOrdersPage,
     );
   }
 }

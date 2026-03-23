@@ -21,6 +21,7 @@ import 'package:zadana_user_v3/feature/product_details/presentation/pages/produc
 import 'package:zadana_user_v3/feature/category_product/presentaion/widget/category_product_model.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_order_screen.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -79,8 +80,15 @@ class RouteGenerator {
       case AppRoutes.paymentSuccess:
         final orderId = settings.arguments as String?;
         return MaterialPageRoute(builder: (_) => PaymentSuccessScreen(orderId: orderId));
+      case AppRoutes.orders:
+        return MaterialPageRoute(
+          builder: (_) => const MyOrdersPage(),
+        );
       case AppRoutes.trackOrder:
         return MaterialPageRoute(builder: (_) => const TrackOrderScreen());
+
+      case AppRoutes.myOrdersPage:
+        return MaterialPageRoute(builder: (_) => const MyOrdersPage());  
       default:
         return unDefinedRoute();
     }

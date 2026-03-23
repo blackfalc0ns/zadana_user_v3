@@ -351,7 +351,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_language => 'Select Language';
 
   @override
-  String get arabic => 'العربية';
+  String get arabic => 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©';
 
   @override
   String get english => 'English';
@@ -772,6 +772,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filter_part => 'Part';
 
   @override
+  String get filter_brand => 'Brand';
+
+  @override
   String get filter_category_title => 'Category';
 
   @override
@@ -826,10 +829,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minutes => 'minutes';
 
   @override
-  String get track_order => 'Track Order 📍';
+  String get track_order => 'Track Order ðŸ“';
 
   @override
   String get back_to_home => 'Back to Home';
+
+  @override
+  String get my_orders_title => 'My Orders';
+
+  @override
+  String get my_orders_subtitle =>
+      'Track your current and previous orders easily';
+
+  @override
+  String get active_orders_tab => 'Active';
+
+  @override
+  String get completed_orders_tab => 'Completed';
+
+  @override
+  String get no_active_orders => 'No active orders';
+
+  @override
+  String get no_previous_orders => 'No previous orders';
+
+  @override
+  String get my_orders_order_date => 'Order Date';
+
+  @override
+  String get my_orders_items => 'Items';
+
+  @override
+  String get my_orders_view_details => 'View Details';
+
+  @override
+  String get my_orders_cancel_order => 'Cancel Order';
+
+  @override
+  String get my_orders_reorder => 'Reorder';
+
+  @override
+  String get my_orders_rate_order => 'Rate Order';
+
+  @override
+  String get order_pending => 'Pending';
+
+  @override
+  String get order_shipped => 'Shipped';
+
+  @override
+  String get order_delivered => 'Delivered';
+
+  @override
+  String get order_cancelled => 'Cancelled';
 
   @override
   String get payment_method => 'Payment Method';

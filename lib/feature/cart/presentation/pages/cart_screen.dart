@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
@@ -10,6 +11,7 @@ import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dar
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_comparison_sheet.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -22,6 +24,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   late List<CartItemModel> _items;
   String? _selectedVendorId;
+  String? _activeHeroProductId;
   late CartAnimations _animations;
 
   @override
@@ -107,6 +110,35 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     _animations.playPriceAnimation();
   }
 
+  Future<void> _openProductDetails(CartItemModel item) async {
+    final vendorPrice = _selectedVendorId == null
+        ? item.cheapest
+        : item.vendorPrices.firstWhere(
+            (vendor) => vendor.id == _selectedVendorId,
+            orElse: () => item.cheapest,
+          );
+
+    final product = ProductModel(
+      id: item.id,
+      name: item.name,
+      store: vendorPrice.name,
+      price: vendorPrice.price,
+      imageUrl: '',
+      unit: item.unit,
+      emoji: item.imageUrl,
+    );
+
+    setState(() => _activeHeroProductId = item.id);
+    await WidgetsBinding.instance.endOfFrame;
+
+    if (!mounted) return;
+
+    await ProductNavigationHelper.navigateToProductDetails(context, product);
+
+    if (!mounted) return;
+    setState(() => _activeHeroProductId = null);
+  }
+
   void _onCheckout() {
     final locale = context.localization;
     if (_selectedVendorId == null) {
@@ -157,7 +189,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                     child: CartContent(
                       items: _items,
                       selectedVendorId: _selectedVendorId,
+                      activeHeroProductId: _activeHeroProductId,
                       onVendorSelected: _onVendorSelected,
+                      onItemTap: _openProductDetails,
                       onUpdateQuantity: _updateQuantity,
                       onDeleteItem: _showDeleteDialog,
                     ),

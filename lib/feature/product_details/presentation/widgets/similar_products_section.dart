@@ -31,9 +31,7 @@ class SimilarProductsSection extends StatelessWidget {
         children: [
           Text(
             'منتجات مشابهة',
-            style: AppTextStyles.h4.copyWith(
-              color: AppColors.textPrimary,
-            ),
+            style: AppTextStyles.h4.copyWith(color: AppColors.textPrimary),
           ),
           const SizedBox(height: Spacing.sm),
           SizedBox(
@@ -41,7 +39,8 @@ class SimilarProductsSection extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: similarProducts.length,
-              separatorBuilder: (context, index) => const SizedBox(width: Spacing.sm),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(width: Spacing.sm),
               itemBuilder: (context, index) {
                 final product = similarProducts[index];
                 return SizedBox(
@@ -51,8 +50,6 @@ class SimilarProductsSection extends StatelessWidget {
                     onCardTap: () => onProductTap?.call(product),
                     onAddTap: () => onAddToCart?.call(product),
                     showFavorite: true,
-                    heroTagPrefix: 'similar_', // إضافة prefix للـ hero tag
-                    enableHeroAnimation: true, // تفعيل الـ Hero animation
                   ),
                 );
               },

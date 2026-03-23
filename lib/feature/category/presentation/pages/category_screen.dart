@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/reusable_category_screen.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -17,11 +19,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
   final List<String> _selectedFilters = [];
   late CategoryNavigationService _navigationService;
   bool _isCategoryPreselectedFromOutside = false;
+  String? _activeHeroProductId;
 
   String? _filterSelectedCategory;
   String? _filterSelectedProductType;
   String? _filterSelectedPart;
   String? _filterSelectedQuantity;
+  String? _filterSelectedBrand;
   RangeValues _priceRange = const RangeValues(0, 1000);
 
   @override
@@ -50,10 +54,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _filterSelectedProductType = null;
         _filterSelectedPart = null;
         _filterSelectedQuantity = null;
+        _filterSelectedBrand = null;
         _isCategoryPreselectedFromOutside = true;
       });
       _navigationService.clearSelectedCategory();
     }
+  }
+
+  Future<void> _openProductDetails(ProductModel product) async {
+    setState(() => _activeHeroProductId = product.id);
+    await WidgetsBinding.instance.endOfFrame;
+
+    if (!mounted) return;
+
+    await ProductNavigationHelper.navigateToProductDetails(context, product);
+
+    if (!mounted) return;
+    setState(() => _activeHeroProductId = null);
   }
 
   @override
@@ -68,6 +85,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       filterSelectedProductType: _filterSelectedProductType,
       filterSelectedPart: _filterSelectedPart,
       filterSelectedQuantity: _filterSelectedQuantity,
+      filterSelectedBrand: _filterSelectedBrand,
       priceRange: _priceRange,
       showCategoryFilterSection: !_isCategoryPreselectedFromOutside,
       onCategorySelected: (category) {
@@ -79,6 +97,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           _filterSelectedProductType = null;
           _filterSelectedPart = null;
           _filterSelectedQuantity = null;
+          _filterSelectedBrand = null;
         });
       },
       onFilterApplied: (data) {
@@ -89,6 +108,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             _filterSelectedProductType = null;
             _filterSelectedPart = null;
             _filterSelectedQuantity = null;
+            _filterSelectedBrand = null;
           });
         }
       },
@@ -106,6 +126,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             _filterSelectedProductType = result['productType'];
             _filterSelectedPart = result['part'];
             _filterSelectedQuantity = result['quantity'];
+            _filterSelectedBrand = result['brand'];
             _priceRange = result['priceRange'] ?? const RangeValues(0, 1000);
 
             if (_filterSelectedCategory != null) {
@@ -122,6 +143,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _filterSelectedProductType = null;
         _filterSelectedPart = null;
         _filterSelectedQuantity = null;
+        _filterSelectedBrand = null;
         _priceRange = const RangeValues(0, 1000);
       }),
       sortOptions: kSortOptions.map((option) => option['value'] as String).toList(),
@@ -131,9 +153,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
           _filterSelectedProductType != null ||
           _filterSelectedPart != null ||
           _filterSelectedQuantity != null ||
+          _filterSelectedBrand != null ||
           _priceRange.start != 0 ||
           _priceRange.end != 1000,
       bottomNavHeight: 60,
+      activeHeroProductId: _activeHeroProductId,
+      onProductTap: _openProductDetails,
     );
   }
 }
