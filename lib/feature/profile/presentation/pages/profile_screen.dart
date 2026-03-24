@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
@@ -14,18 +14,20 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final color=context.colorScheme;
+    final color = context.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: color.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: color.background,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
-          'الحساب',
-          style: AppTextStyles.h4.copyWith(
-            fontWeight: FontWeight.bold,
+          l10n.profile_title,
+          style: getMediumStyle(
+            fontSize: FontSize.size18,
+            fontFamily: FontConstant.cairo,
+            color: color.onSurface,
           ),
         ),
         centerTitle: true,
@@ -34,9 +36,9 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: Spacing.sm),
-            _buildProfileCard(context),
+            _buildProfileCard(context, color),
             const SizedBox(height: Spacing.sm),
-            _buildMenuList(l10n, context),
+            _buildMenuList(l10n, context, color),
             const SizedBox(height: Spacing.base),
           ],
         ),
@@ -44,8 +46,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileCard(BuildContext context) {
-    final color=context.colorScheme;
+  Widget _buildProfileCard(BuildContext context, ColorScheme color) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: GestureDetector(
@@ -60,12 +61,13 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    backgroundColor: color.primaryContainer,
                     child: Text(
                       'م',
-                      style: AppTextStyles.h4.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
+                      style: getBoldStyle(
+                        fontSize: FontSize.size20,
+                        fontFamily: FontConstant.cairo,
+                        color: color.primary,
                       ),
                     ),
                   ),
@@ -75,14 +77,14 @@ class ProfileScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: color.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.surface, width: 1.5),
+                        border: Border.all(color: color.background, width: 1.5),
                       ),
                       child: const FaIcon(
                         FontAwesomeIcons.pen,
                         size: 8,
-                        color: AppColors.white,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -95,15 +97,19 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Text(
                       'محمد أحمد',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        fontWeight: FontWeight.bold,
+                      style: getBoldStyle(
+                        fontSize: FontSize.size16,
+                        fontFamily: FontConstant.cairo,
+                        color: color.onSurface,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '+966 50 123 4567',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                      style: getMediumStyle(
+                        fontSize: FontSize.size13,
+                        fontFamily: FontConstant.cairo,
+                        color: color.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -116,7 +122,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuList(AppLocalizations l10n, BuildContext context) {
+  Widget _buildMenuList(AppLocalizations l10n, BuildContext context, ColorScheme color) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: Column(
@@ -124,56 +130,62 @@ class ProfileScreen extends StatelessWidget {
           _buildMenuTile(
             icon: Iconsax.location,
             title: l10n.addresses,
-            iconColor: AppColors.textPrimary,
+            iconColor: color.onSurface,
             onTap: () {},
           ),
           _buildMenuTile(
             icon: Iconsax.heart,
             title: l10n.nav_orders,
-            iconColor: AppColors.textPrimary,  
+            iconColor: color.onSurface,
             onTap: () {},
           ),
           const SizedBox(height: Spacing.xs),
           _buildMenuTile(
             icon: Iconsax.global,
             title: l10n.language,
-            iconColor: AppColors.textPrimary,
+            iconColor: color.onSurface,
             trailing: Text(
               'العربية',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: getMediumStyle(
+                fontSize: FontSize.size14,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurfaceVariant,
               ),
             ),
-            onTap: () => _showLanguageBottomSheet(context),
+            onTap: () => _showLanguageBottomSheet(context, color, l10n),
           ),
           _buildMenuTile(
             icon: Iconsax.notification,
             title: l10n.notifications,
-            iconColor: AppColors.textPrimary,
+            iconColor: color.onSurface,
             onTap: () {},
           ),
           _buildMenuTile(
             icon: Iconsax.lock,
             title: l10n.change_password,
-            iconColor: AppColors.textPrimary,
+            iconColor: color.onSurface,
             onTap: () {},
           ),
           _buildMenuTile(
             icon: Iconsax.info_circle,
             title: l10n.help_support,
-            iconColor: AppColors.textPrimary,
-            onTap: () {},
+            iconColor: color.onSurface,
+            onTap: () {
+              Navigator.of(context).pushNamed(AppRoutes.helpSupport);
+            },
           ),
           _buildMenuTile(
             icon: Iconsax.document,
             title: l10n.about_app,
-            iconColor: AppColors.textPrimary,
-            onTap: () {},
+            iconColor: color.onSurface,
+            onTap: () {
+              Navigator.of(context).pushNamed(AppRoutes.aboutApp);
+            },
           ),
           _buildMenuTile(
             icon: Iconsax.logout,
             title: l10n.logout,
-            iconColor: AppColors.error,
+            iconColor: color.error,
             onTap: () {},
           ),
           SizedBox(height: Spacing.lg),
@@ -194,7 +206,7 @@ class ProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: AppColors.border,
+            color: iconColor.withOpacity(0.2),
             width: 0.5,
           ),
         ),
@@ -212,63 +224,28 @@ class ProfileScreen extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: AppTextStyles.bodyMedium.copyWith(
-            fontWeight: FontWeight.w500,
+          style: getMediumStyle(
+            fontSize: FontSize.size14,
+            fontFamily: FontConstant.cairo,
+            color: iconColor,
           ),
         ),
-        
-        trailing: trailing ,
+
+        trailing: trailing,
       ),
     );
   }
 
-  Widget _buildLogoutButton(AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow.withValues(alpha: 0.04),
-              blurRadius: 4,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: ListTile(
-          onTap: () {},
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: Spacing.sm,
-            vertical: 2,
-          ),
-          leading: const FaIcon(
-            FontAwesomeIcons.rightFromBracket,
-            color: AppColors.error,
-            size: 18,
-          ),
-          title: Text(
-            l10n.logout,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.error,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  void _showLanguageBottomSheet(BuildContext ctx) {
+
+  void _showLanguageBottomSheet(BuildContext ctx, ColorScheme color ,AppLocalizations l10n ) {
     showModalBottomSheet(
       context: ctx,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: color.surface,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),
@@ -281,7 +258,7 @@ class ProfileScreen extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.divider,
+                color: color.outline,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -289,9 +266,11 @@ class ProfileScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
               child: Text(
-                'اختر اللغة',
-                style: AppTextStyles.h4.copyWith(
-                  fontWeight: FontWeight.bold,
+                l10n.select_language,
+                style: getBoldStyle(
+                  fontSize: FontSize.size18,
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurface,
                 ),
               ),
             ),
@@ -305,6 +284,7 @@ class ProfileScreen extends StatelessWidget {
                 Navigator.pop(context);
                 // TODO: Change language to Arabic
               },
+              color: color,
             ),
             const Divider(height: 1),
             _buildLanguageOption(
@@ -316,6 +296,7 @@ class ProfileScreen extends StatelessWidget {
                 Navigator.pop(context);
                 // TODO: Change language to English
               },
+              color: color,
             ),
             const SizedBox(height: Spacing.base),
           ],
@@ -330,6 +311,7 @@ class ProfileScreen extends StatelessWidget {
     required String subtitle,
     required bool isSelected,
     required VoidCallback onTap,
+    required ColorScheme color,
   }) {
     return ListTile(
       onTap: onTap,
@@ -341,33 +323,36 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.sm),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.1)
-              : AppColors.background,
+              ? color.primaryContainer
+              : color.background,
           borderRadius: BorderRadius.circular(Spacing.sm),
         ),
         child: FaIcon(
           FontAwesomeIcons.globe,
-          color: isSelected ? AppColors.primary : AppColors.textSecondary,
+          color: isSelected ? color.primary : color.onSurfaceVariant,
           size: 20,
         ),
       ),
       title: Text(
         title,
-        style: AppTextStyles.bodyLarge.copyWith(
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          color: isSelected ? AppColors.primary : AppColors.textPrimary,
+        style: getBoldStyle(
+          fontSize: FontSize.size16,
+          fontFamily: FontConstant.cairo,
+          color: isSelected ? color.primary : color.onSurface,
         ),
       ),
       subtitle: Text(
         subtitle,
-        style: AppTextStyles.bodySmall.copyWith(
-          color: AppColors.textSecondary,
+        style: getMediumStyle(
+          fontSize: FontSize.size13,
+          fontFamily: FontConstant.cairo,
+          color: color.onSurfaceVariant,
         ),
       ),
       trailing: isSelected
-          ? const FaIcon(
+          ? FaIcon(
               FontAwesomeIcons.circleCheck,
-              color: AppColors.primary,
+              color: color.primary,
               size: 20,
             )
           : null,

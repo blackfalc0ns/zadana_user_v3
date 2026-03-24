@@ -22,4 +22,6 @@ abstract class AppRoutes {
   static const String orders = '/orders';
   static const String trackOrder = '/track-order';
   static const String myOrdersPage = '/my-orders';
+  static const String aboutApp = '/about-app';
+  static const String helpSupport = '/help-support';
 }

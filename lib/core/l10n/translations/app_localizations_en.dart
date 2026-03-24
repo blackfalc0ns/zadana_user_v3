@@ -370,7 +370,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_description =>
-      'A comprehensive e-commerce app that provides a distinctive and easy shopping experience.';
+      'Zadana is a multi-vendor shopping platform that redefines your shopping experience. Thousands of vendors, hundreds of thousands of products, and endless categories... all you need is just one click.\n\nWith our vast network of vendors, from local businesses to global brands, we offer our users the widest range of products, providing a seamless shopping experience through secure payment infrastructure and fast shipping options.\n\nAt Zadana, you don\'t just buy products; you discover, compare, find the best prices, and win with exclusive offers. Whether you\'re interested in fashion, electronics, home & living, Zadana is always with you.\n\nYour new shopping destination: Zadana';
 
   @override
   String get ok => 'OK';

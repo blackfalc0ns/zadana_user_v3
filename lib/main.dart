@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   runApp( DevicePreview(
-    enabled: true,
+    enabled: false,
     builder: (context) => MyApp(), 
   ),);
 }
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       ],
       theme: AppTheme.light,
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.myOrdersPage,
+      initialRoute: AppRoutes.mainShell,
     );
   }
 }

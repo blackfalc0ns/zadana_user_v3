@@ -10,7 +10,7 @@ class Assets {
   static const String _fonts = 'assets/fonts';
 
   // ── Images ── 
-  static const String logo = '$_images/logo.png';
+  static const String logo =  '$_images/logo_dark.png';
   static const String placeholder = '$_images/placeholder.png';
   static const String noInternet = '$_images/no_internet.png';
   static const String empty = '$_images/empty.png';
@@ -19,6 +19,7 @@ class Assets {
   static const String onboarding2 = '$_images/onboarding2.png';
   static const String onboarding3 = '$_images/onboarding3.png';
   static const String goole ='$_images/google_icon.png';
+  static const String blackFalcons = '$_images/black_falcons_logo.png';
 
   // ── Icons (SVG) ──
   static const String icHome = '$_icons/ic_home.svg';

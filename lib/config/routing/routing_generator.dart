@@ -13,6 +13,8 @@ import 'package:zadana_user_v3/feature/onbarding/presentation/on_boarding_page.d
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/edit_profile_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/about_app_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/help_support_screen.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/pages/verify_otp_screen.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/building_details_page.dart';
@@ -88,7 +90,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const TrackOrderScreen());
 
       case AppRoutes.myOrdersPage:
-        return MaterialPageRoute(builder: (_) => const MyOrdersPage());  
+        return MaterialPageRoute(builder: (_) => const MyOrdersPage());
+      case AppRoutes.aboutApp:
+        return MaterialPageRoute(builder: (_) => const AboutAppScreen());
+      case AppRoutes.helpSupport:
+        return MaterialPageRoute(builder: (_) => const HelpSupportScreen());
       default:
         return unDefinedRoute();
     }
