@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // 6. Explore More Section
           SliverToBoxAdapter(child: const ExploreMoreSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+          SliverToBoxAdapter(child: const SizedBox(height: 100)),
         ],
       ),
     );

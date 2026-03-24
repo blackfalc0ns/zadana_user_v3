@@ -166,7 +166,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final color = context.colorScheme;
     // حساب ارتفاع الـ navigation bar + margin
-    final bottomNavHeight = 75.0 + 12.0 + 12.0; // height + bottom margin + top margin
+    final bottomNavHeight = 90.0 ; // height + bottom margin + top margin
     
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -198,7 +198,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                   ),
                   // الـ CartBottomBar فوق الـ navigation bar
                   Positioned(
-                    bottom: 60,
+                    bottom: 90,
                     left: 0,
                     right: 0,
                     child: CartBottomBar(

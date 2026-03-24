@@ -144,7 +144,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               onProductTap: widget.onProductTap,
             ),
             Positioned(
-              bottom: widget.bottomNavHeight,
+              bottom: widget.bottomNavHeight + 20,
               left: 45,
               right: 45,
               child: CustomBottomFilterButtons(

@@ -74,7 +74,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         body: _isEmpty
             ? FavoritesEmptyState(onStartShopping: () => Navigator.pop(context))
             : Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(bottom: 90,left: 12,right: 12,),
                 child: FavoritesGrid(
                   products: _favoriteProducts,
                   onAddToCart: _addToCart,

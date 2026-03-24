@@ -18,9 +18,9 @@ class AboutAppScreen extends StatelessWidget {
     final color = context.colorScheme;
 
     return Scaffold(
-      backgroundColor: color.background,
+      backgroundColor: color.surface,
       appBar: AppBar(
-        backgroundColor: color.background,
+        backgroundColor: color.surface,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: color.onSurface),
