@@ -276,7 +276,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nav_profile => 'Profile';
 
   @override
-  String get start_page_title => 'Order Everything You Need Easily';
+  String get start_page_title => 'High quality, home delivery, easy ordering';
 
   @override
   String get start_page_subtitle => 'Fast delivery for all your daily needs';

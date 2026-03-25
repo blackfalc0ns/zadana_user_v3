@@ -617,7 +617,7 @@ abstract class AppLocalizations {
   /// No description provided for @start_page_title.
   ///
   /// In en, this message translates to:
-  /// **'Order Everything You Need Easily'**
+  /// **'High quality, home delivery, easy ordering'**
   String get start_page_title;
 
   /// No description provided for @start_page_subtitle.

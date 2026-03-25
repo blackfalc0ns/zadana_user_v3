@@ -16,7 +16,7 @@ class AppConstants {
 
   static const String logoLight = 'assets/images/logo_dark.png';
   static const String logoDark = 'assets/images/logo_light.png';
-  static const String onboarding = 'assets/images/onboarding.png';
+  static const String onboarding = 'assets/images/splash_page_background.jpg';
   static const String startPageBackground =
       'assets/images/start_page_background.png';
   static const String locationPageBackground =

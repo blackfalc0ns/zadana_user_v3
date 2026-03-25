@@ -270,7 +270,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nav_profile => 'حسابي';
 
   @override
-  String get start_page_title => 'اطلب كل اللي تحتاجه بسهولة';
+  String get start_page_title => 'جودة عالية توصيل للمنزل طلب سهل';
 
   @override
   String get start_page_subtitle => 'توصيل سريع لكل احتياجاتك';
