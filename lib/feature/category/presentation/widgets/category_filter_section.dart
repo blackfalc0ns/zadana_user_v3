@@ -88,7 +88,7 @@ class CategoryFilterSection extends StatelessWidget {
             },
           ),
         ],
-        const SizedBox(height: Spacing.sm),
+      //  const SizedBox(height: Spacing.xs),
         ..._withSpacing(detailSections),
       ],
     );
@@ -99,7 +99,9 @@ class CategoryFilterSection extends StatelessWidget {
     for (var i = 0; i < sections.length; i++) {
       widgets.add(sections[i]);
       if (i != sections.length - 1) {
-        widgets.add(const SizedBox(height: Spacing.sm));
+        widgets.add(
+          SizedBox(height: i < 3 ? Spacing.xs : Spacing.sm),
+        );
       }
     }
     return widgets;

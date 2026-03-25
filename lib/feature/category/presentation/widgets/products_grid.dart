@@ -35,6 +35,9 @@ class ProductsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final childAspectRatio = _getChildAspectRatio(screenWidth);
+
     List<ProductModel> products = _getProductsForCategory(
       category,
       subCategory,
@@ -59,9 +62,10 @@ class ProductsGrid extends StatelessWidget {
         right: Spacing.md,
         bottom: 85,
       ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 0.9,
+        childAspectRatio: 
+        childAspectRatio,
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),
@@ -93,6 +97,13 @@ class ProductsGrid extends StatelessWidget {
     String subCategory,
   ) {
     return kCategoryProducts[category] ?? [];
+  }
+
+  double _getChildAspectRatio(double screenWidth) {
+    if (screenWidth >= 500) return 0.89;
+    if (screenWidth >= 375) return 0.86;
+    if (screenWidth >= 360) return 0.80;
+    return 0.89;
   }
 
   List<ProductModel> _applySorting(

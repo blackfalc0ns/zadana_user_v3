@@ -213,9 +213,14 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                   _scrollSheetTo(sheetScrollController, 120);
                                 }
                               },
-                              onQuantitySelected: (quantity) => setSheetState(
-                                () => _tempFilterQuantity = quantity,
-                              ),
+                              onQuantitySelected: (quantity) {
+                                setSheetState(
+                                  () => _tempFilterQuantity = quantity,
+                                );
+                                if (quantity != null) {
+                                  _scrollSheetTo(sheetScrollController, 120);
+                                }
+                              },
                               onBrandSelected: (brand) => setSheetState(
                                 () => _tempFilterBrand = brand,
                               ),

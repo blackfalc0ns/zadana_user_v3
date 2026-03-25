@@ -1,6 +1,32 @@
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
 
+class MockBrandFilterItem {
+  const MockBrandFilterItem({
+    required this.id,
+    required this.name,
+    this.logo,
+  });
+
+  final String id;
+  final String name;
+  final String? logo;
+}
+
 class MockBrandProducts {
+  static List<MockBrandFilterItem> getFilterItems(List<String> brandNames) {
+    return brandNames
+        .map((brandName) {
+          final products = getProducts(brandName, brandName);
+          final logo = products.isNotEmpty ? products.first.emoji : '🏷️';
+          return MockBrandFilterItem(
+            id: brandName,
+            name: brandName,
+            logo: logo,
+          );
+        })
+        .toList();
+  }
+
   static List<BrandProductModel> getProducts(String brandId, String brandName) {
     return [
       // منتجات الألبان

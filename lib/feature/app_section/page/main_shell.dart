@@ -72,7 +72,7 @@ class MainShellState extends State<MainShell> {
       NavBarItem(
         icon: Iconsax.heart,
         activeIcon: Iconsax.heart5,
-        title: locale.nav_orders,
+        title: locale.favorites,
       ),
       NavBarItem(
         icon: Iconsax.profile_circle,

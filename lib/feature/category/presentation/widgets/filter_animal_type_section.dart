@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_grid.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
 
 class FilterAnimalTypeSection extends StatefulWidget {
@@ -56,66 +54,19 @@ class _FilterAnimalTypeSectionState extends State<FilterAnimalTypeSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GradientSectionTitle(title: locale.filter_type),
-        const SizedBox(height: Spacing.sm),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: productTypes
-              .map((type) => _buildTypeChip(context, type))
-              .toList(),
+       const SizedBox(height: Spacing.sm),
+        FilterOptionGrid(
+          options: productTypes,
+          selectedValue: localSelectedProductType,
+          onOptionTap: (type) {
+            final newSelection = localSelectedProductType == type ? null : type;
+            setState(() {
+              localSelectedProductType = newSelection;
+            });
+            widget.onProductTypeSelected(newSelection);
+          },
         ),
       ],
-    );
-  }
-
-  Widget _buildTypeChip(BuildContext context, String type) {
-    final color = context.colorScheme;
-    final isSelected = localSelectedProductType == type;
-
-    return GestureDetector(
-      onTap: () {
-        final newSelection = isSelected ? null : type;
-        setState(() {
-          localSelectedProductType = newSelection;
-        });
-        widget.onProductTypeSelected(newSelection);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? color.primary : color.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? color.primary
-                : color.outline.withValues(alpha: 0.35),
-            width: 1.2,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: color.primary.withValues(alpha: 0.3),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Text(
-          type,
-          style: isSelected
-              ? getSemiBoldStyle(
-                  fontSize: FontSize.size12,
-                  fontFamily: FontConstant.cairo,
-                  color: AppColors.white,
-                )
-              : getSemiBoldStyle(
-                  fontSize: FontSize.size12,
-                  fontFamily: FontConstant.cairo,
-                  color: AppColors.textPrimary,
-                ),
-        ),
-      ),
     );
   }
 }

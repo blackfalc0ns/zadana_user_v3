@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CustomVerticalFilterChip extends StatelessWidget {
@@ -57,14 +58,13 @@ class CustomVerticalFilterChip extends StatelessWidget {
             Text(
               label,
               style:
-                  textStyle ??
-                  AppTextStyles.labelSmall.copyWith(
-                    color: isSelected ? AppColors.white : AppColors.textPrimary,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    fontSize: 10,
-                  ),
+                getSemiBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size12,
+                  color: isSelected ? color.onPrimary : color.onSurface,
+                ),
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ],

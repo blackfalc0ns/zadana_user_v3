@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_grid.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/gradient_section_title.dart';
 
 class FilterQuantitySection extends StatefulWidget {
@@ -42,8 +41,9 @@ class _FilterQuantitySectionState extends State<FilterQuantitySection> {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    
-    if (widget.selectedCategory == null || !kQuantityOptions.containsKey(widget.selectedCategory)) {
+
+    if (widget.selectedCategory == null ||
+        !kQuantityOptions.containsKey(widget.selectedCategory)) {
       return const SizedBox.shrink();
     }
 
@@ -54,73 +54,19 @@ class _FilterQuantitySectionState extends State<FilterQuantitySection> {
       children: [
         GradientSectionTitle(title: locale.quantity),
         const SizedBox(height: Spacing.sm),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: quantities.map((quantity) => _buildQuantityChip(context, quantity)).toList(),
+        FilterOptionGrid(
+          options: quantities,
+          selectedValue: localSelectedQuantity,
+          onOptionTap: (quantity) {
+            final newSelection =
+                localSelectedQuantity == quantity ? null : quantity;
+            setState(() {
+              localSelectedQuantity = newSelection;
+            });
+            widget.onQuantitySelected(newSelection);
+          },
         ),
       ],
-    );
-  }
-
-  Widget _buildQuantityChip(BuildContext context, String quantity) {
-    final color = context.colorScheme;
-    final isSelected = localSelectedQuantity == quantity;
-    
-    return GestureDetector(
-      onTap: () {
-        final newSelection = isSelected ? null : quantity;
-        setState(() {
-          localSelectedQuantity = newSelection;
-        });
-        widget.onQuantitySelected(newSelection);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: isSelected 
-              ? LinearGradient(
-                  colors: [
-                    color.secondary.withValues(alpha: 0.8),
-                    color.secondary.withValues(alpha: 0.6),
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                )
-              : LinearGradient(
-                  colors: [
-                    color.surfaceContainerHighest,
-                    color.surfaceContainerHigh,
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? color.secondary
-                : color.outline.withValues(alpha: 0.35),
-            width: 1.2,
-          ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: color.secondary.withValues(alpha: 0.3),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
-        ),
-        child: Text(
-          quantity,
-          style: getRegularStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size12,
-            color: isSelected ? color.onSecondary : color.onSurface,
-          ).copyWith(
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          ),
-        ),
-      ),
     );
   }
 }

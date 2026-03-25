@@ -66,13 +66,13 @@ class CustomProductCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       padding,
-                      padding * 0.6,
+                      padding ,
                       padding,
-                      padding * 0.8,
+                      padding / 2,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
                           child: Text(
