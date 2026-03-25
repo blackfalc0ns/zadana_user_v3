@@ -54,14 +54,14 @@ class ProductsGrid extends StatelessWidget {
     return GridView.builder(
       key: PageStorageKey<String>('products_grid_${category}_$subCategory'),
       padding: const EdgeInsets.only(
-        top: Spacing.md,
+        top: 4,
         left: Spacing.md,
         right: Spacing.md,
         bottom: 85,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 0.85,
+        childAspectRatio: 0.9,
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),

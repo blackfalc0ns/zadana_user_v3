@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
@@ -19,7 +20,8 @@ class FilterAnimalTypeSection extends StatefulWidget {
   final Function(String?) onProductTypeSelected;
 
   @override
-  State<FilterAnimalTypeSection> createState() => _FilterAnimalTypeSectionState();
+  State<FilterAnimalTypeSection> createState() =>
+      _FilterAnimalTypeSectionState();
 }
 
 class _FilterAnimalTypeSectionState extends State<FilterAnimalTypeSection> {
@@ -43,7 +45,8 @@ class _FilterAnimalTypeSectionState extends State<FilterAnimalTypeSection> {
   Widget build(BuildContext context) {
     final locale = context.localization;
 
-    if (widget.selectedCategory == null || !kProductTypes.containsKey(widget.selectedCategory)) {
+    if (widget.selectedCategory == null ||
+        !kProductTypes.containsKey(widget.selectedCategory)) {
       return const SizedBox.shrink();
     }
 
@@ -57,7 +60,9 @@ class _FilterAnimalTypeSectionState extends State<FilterAnimalTypeSection> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: productTypes.map((type) => _buildTypeChip(context, type)).toList(),
+          children: productTypes
+              .map((type) => _buildTypeChip(context, type))
+              .toList(),
         ),
       ],
     );
@@ -78,45 +83,37 @@ class _FilterAnimalTypeSectionState extends State<FilterAnimalTypeSection> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected 
-              ? LinearGradient(
-                  colors: [
-                    color.secondary.withValues(alpha: 0.8),
-                    color.secondary.withValues(alpha: 0.6),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : LinearGradient(
-                  colors: [
-                    color.surfaceContainerHighest,
-                    color.surfaceContainerHigh,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+          color: isSelected ? color.primary : color.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? color.secondary
+                ? color.primary
                 : color.outline.withValues(alpha: 0.35),
             width: 1.2,
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: color.secondary.withValues(alpha: 0.3),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: color.primary.withValues(alpha: 0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Text(
           type,
-          style: getRegularStyle(
-            fontSize: FontSize.size12,
-            fontFamily: FontConstant.cairo,
-            color: isSelected ? color.onSecondary : color.onSurface,
-          ),
+          style: isSelected
+              ? getSemiBoldStyle(
+                  fontSize: FontSize.size12,
+                  fontFamily: FontConstant.cairo,
+                  color: AppColors.white,
+                )
+              : getSemiBoldStyle(
+                  fontSize: FontSize.size12,
+                  fontFamily: FontConstant.cairo,
+                  color: AppColors.textPrimary,
+                ),
         ),
       ),
     );

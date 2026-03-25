@@ -32,7 +32,7 @@ class SearchBarWidget extends StatelessWidget {
     final color = context.colorScheme;
 
     return Container(
-      height: 54,
+      height: 40,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
       ),
@@ -56,7 +56,7 @@ class SearchBarWidget extends StatelessWidget {
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: SvgPicture.asset(
                       Assets.searchNormal,
                       width: 16,
@@ -73,7 +73,7 @@ class SearchBarWidget extends StatelessWidget {
             ),
           ),
           Container(
-            margin: const EdgeInsets.all(6),
+            margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             width: 42,
             height: 48,
             decoration: BoxDecoration(

@@ -59,7 +59,7 @@ class OrderHeaderCard extends StatelessWidget {
                     Text(
                       'طلب #$orderId',
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -362,7 +362,10 @@ class ComplaintStatusCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
                 if (message.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
@@ -401,7 +404,9 @@ class ComplaintAttachmentsPreview extends StatelessWidget {
               decoration: BoxDecoration(
                 color: colors.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: colors.outlineVariant.withOpacity(.2)),
+                border: Border.all(
+                  color: colors.outlineVariant.withOpacity(.2),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -451,9 +456,10 @@ class OrderDetailsActions extends StatelessWidget {
               text: 'إلغاء الطلب',
               color: AppColors.error,
               textColor: AppColors.error,
-              height: 54,
+              height: 50,
               borderRadius: 18,
               onPressed: onCancel,
+              fontWeight: FontWeight.w600,
             ),
           ),
         if (canCancel) const SizedBox(width: Spacing.sm),
@@ -463,10 +469,10 @@ class OrderDetailsActions extends StatelessWidget {
             variant: hasComplaint
                 ? AppButtonVariant.outlined
                 : AppButtonVariant.filled,
-            color: colors.secondary,
-            textColor: hasComplaint ? colors.secondary : colors.onSecondary,
-            height: 54,
+            color: colors.primary,
+            height: 50,
             borderRadius: 18,
+            fontWeight: FontWeight.w600,
             onPressed: onComplaint,
           ),
         ),
@@ -581,7 +587,10 @@ class BottomSheetScaffold extends StatelessWidget {
             Center(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             const SizedBox(height: Spacing.xs),

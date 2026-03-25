@@ -55,7 +55,7 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            childAspectRatio: 0.9,
+            childAspectRatio: 1.1,
             crossAxisSpacing: Spacing.sm,
             mainAxisSpacing: Spacing.sm,
           ),
@@ -81,7 +81,8 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
             offset: const Offset(0, -22),
             child: Center(
               child: TextButton(
-                onPressed: () => setState(() => showAllCategories = !showAllCategories),
+                onPressed: () =>
+                    setState(() => showAllCategories = !showAllCategories),
                 child: Text(showAllCategories ? 'عرض أقل' : 'عرض المزيد'),
               ),
             ),

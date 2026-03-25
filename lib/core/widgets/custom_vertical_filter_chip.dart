@@ -49,9 +49,15 @@ class CustomVerticalFilterChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (icon != null) ...[
+              Text(icon!, style: const TextStyle(fontSize: 22)),
+            ],
+            const SizedBox(height: 6),
+
             Text(
               label,
-              style: textStyle ??
+              style:
+                  textStyle ??
                   AppTextStyles.labelSmall.copyWith(
                     color: isSelected ? AppColors.white : AppColors.textPrimary,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
@@ -61,13 +67,6 @@ class CustomVerticalFilterChip extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            if (icon != null) ...[
-              const SizedBox(height: 6),
-              Text(
-                icon!,
-                style: const TextStyle(fontSize: 18),
-              ),
-            ],
           ],
         ),
       ),

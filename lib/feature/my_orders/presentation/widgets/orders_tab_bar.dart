@@ -17,7 +17,9 @@ class OrdersTabBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface.withValues(alpha: .95),
         borderRadius: BorderRadius.circular(Spacing.xl),
-        border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: .35)),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: .35),
+        ),
       ),
       child: TabBar(
         dividerColor: Colors.transparent,
@@ -25,8 +27,8 @@ class OrdersTabBar extends StatelessWidget {
         indicator: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              colorScheme.primary.withValues(alpha: .18),
-              colorScheme.secondary.withValues(alpha: .10),
+              colorScheme.primary.withValues(alpha: .5),
+              colorScheme.primary.withValues(alpha: .2),
             ],
           ),
           borderRadius: BorderRadius.circular(Spacing.lg),

@@ -14,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final color=context.colorScheme;
+    final color = context.colorScheme;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -24,9 +24,7 @@ class ProfileScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Text(
           'الحساب',
-          style: AppTextStyles.h4.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -45,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildProfileCard(BuildContext context) {
-    final color=context.colorScheme;
+    final color = context.colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: GestureDetector(
@@ -77,7 +75,10 @@ class ProfileScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.surface, width: 1.5),
+                        border: Border.all(
+                          color: AppColors.surface,
+                          width: 1.5,
+                        ),
                       ),
                       child: const FaIcon(
                         FontAwesomeIcons.pen,
@@ -128,10 +129,12 @@ class ProfileScreen extends StatelessWidget {
             onTap: () {},
           ),
           _buildMenuTile(
-            icon: Iconsax.heart,
+            icon: Iconsax.shopping_cart,
             title: l10n.nav_orders,
-            iconColor: AppColors.textPrimary,  
-            onTap: () {},
+            iconColor: AppColors.textPrimary,
+            onTap: () {
+              Navigator.of(context).pushNamed(AppRoutes.myOrdersPage);
+            },
           ),
           const SizedBox(height: Spacing.xs),
           _buildMenuTile(
@@ -192,12 +195,7 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: Spacing.xs),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.border,
-            width: 0.5,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: ListTile(
         onTap: onTap,
@@ -205,19 +203,13 @@ class ProfileScreen extends StatelessWidget {
           horizontal: Spacing.sm,
           vertical: 2,
         ),
-        leading: FaIcon(
-          icon,
-          color: iconColor,
-          size: 18,
-        ),
+        leading: FaIcon(icon, color: iconColor, size: 18),
         title: Text(
           title,
-          style: AppTextStyles.bodyMedium.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
+          style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
         ),
-        
-        trailing: trailing ,
+
+        trailing: trailing,
       ),
     );
   }
@@ -290,9 +282,7 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
               child: Text(
                 'اختر اللغة',
-                style: AppTextStyles.h4.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: Spacing.base),
@@ -360,9 +350,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       subtitle: Text(
         subtitle,
-        style: AppTextStyles.bodySmall.copyWith(
-          color: AppColors.textSecondary,
-        ),
+        style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
       ),
       trailing: isSelected
           ? const FaIcon(

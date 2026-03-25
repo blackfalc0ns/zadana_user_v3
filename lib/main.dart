@@ -9,10 +9,7 @@ import 'package:device_preview/device_preview.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
-  runApp( DevicePreview(
-    enabled: true,
-    builder: (context) => MyApp(), 
-  ),);
+  runApp(DevicePreview(enabled: true, builder: (context) => MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,18 +17,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       builder: DevicePreview.appBuilder,
-     // locale: DevicePreview.locale(context),
+      // locale: DevicePreview.locale(context),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: const [
-        Locale('ar'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('ar'), Locale('en')],
       theme: AppTheme.light,
+      locale: const Locale('ar'),
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.myOrdersPage,
+      initialRoute: AppRoutes.mainShell,
     );
   }
 }

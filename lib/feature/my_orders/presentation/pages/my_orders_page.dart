@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/data/fake_orders_data.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_loading_widget.dart';
@@ -20,16 +21,7 @@ class MyOrdersPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         backgroundColor: colors.surfaceContainerLowest,
-        appBar: AppBar(
-          title: Text(
-            l10n.my_orders_title,
-            style: getSemiBoldStyle(
-              fontSize: FontSize.size22,
-              fontFamily: FontConstant.cairo,
-              color: colors.onSurface,
-            ),
-          ),
-        ),
+        appBar: CustomAppBar(title: l10n.my_orders_title),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(
             Spacing.base,

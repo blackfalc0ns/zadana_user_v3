@@ -35,7 +35,7 @@ class CategoryContent extends StatelessWidget {
     required this.priceRange,
     required this.onCategorySelected,
     required this.onFilterApplied,
-    this.bottomPadding = 140,
+    this.bottomPadding = 120,
     this.activeHeroProductId,
     this.onProductTap,
   });
@@ -55,12 +55,9 @@ class CategoryContent extends StatelessWidget {
             onFilterApplied: onFilterApplied,
           ),
         ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
-          child: CategoryChips(
-            selectedCategory: selectedCategory,
-            onCategorySelected: onCategorySelected,
-          ),
+        CategoryChips(
+          selectedCategory: selectedCategory,
+          onCategorySelected: onCategorySelected,
         ),
         const SizedBox(height: Spacing.sm),
         Expanded(
