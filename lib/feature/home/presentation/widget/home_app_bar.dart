@@ -10,11 +10,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.deliverToLabel,
     required this.location,
+    this.onMenuTap,
     this.onLocationTap,
   });
 
   final String deliverToLabel;
   final String location;
+  final VoidCallback? onMenuTap;
   final VoidCallback? onLocationTap;
 
   @override
@@ -37,7 +39,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 // Drawer Button
                 IconButton(
-                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  onPressed: onMenuTap,
                   icon: const Icon(
                     Icons.menu_rounded,
                     color: AppColors.textPrimary,

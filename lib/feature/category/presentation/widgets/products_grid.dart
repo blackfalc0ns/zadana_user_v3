@@ -64,8 +64,8 @@ class ProductsGrid extends StatelessWidget {
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 
-        childAspectRatio,
+        childAspectRatio: .9,
+      //  childAspectRatio,
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),
@@ -114,22 +114,34 @@ class ProductsGrid extends StatelessWidget {
 
     switch (sortOption) {
       case 'newest':
-        // For now, we'll sort by ID (assuming higher ID = newer)
-        return sortedProducts..sort((a, b) => b.id.compareTo(a.id));
+        return sortedProducts..sort((a, b) {
+          final aId = int.tryParse(a.id) ?? 0;
+          final bId = int.tryParse(b.id) ?? 0;
+          return bId.compareTo(aId);
+        });
       case 'price_low_high':
         return sortedProducts..sort((a, b) => a.price.compareTo(b.price));
       case 'price_high_low':
         return sortedProducts..sort((a, b) => b.price.compareTo(a.price));
       case 'best_selling':
-        // For now, we'll sort by favorites (assuming favorites = popular)
         return sortedProducts..sort((a, b) {
           if (a.isFavorite && !b.isFavorite) return -1;
           if (!a.isFavorite && b.isFavorite) return 1;
+          final aHasDiscount = (a.discount?.isNotEmpty ?? false) || a.oldPrice != null;
+          final bHasDiscount = (b.discount?.isNotEmpty ?? false) || b.oldPrice != null;
+          if (aHasDiscount && !bHasDiscount) return -1;
+          if (!aHasDiscount && bHasDiscount) return 1;
+          final aRating = a.rating ?? 0;
+          final bRating = b.rating ?? 0;
+          if (aRating != bRating) return bRating.compareTo(aRating);
           return 0;
         });
       case 'highest_rated':
-        // For now, we'll sort by price (assuming higher price = better quality)
-        return sortedProducts..sort((a, b) => b.price.compareTo(a.price));
+        return sortedProducts..sort((a, b) {
+          final ratingCompare = (b.rating ?? 0).compareTo(a.rating ?? 0);
+          if (ratingCompare != 0) return ratingCompare;
+          return (b.reviewCount ?? 0).compareTo(a.reviewCount ?? 0);
+        });
       case 'alphabetical':
         return sortedProducts..sort((a, b) => a.name.compareTo(b.name));
       default:

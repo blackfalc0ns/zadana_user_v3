@@ -16,27 +16,6 @@ class LoginFormWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.localization;
 
-    return BlocProvider(
-      create: (_) => getIt<LoginViewModel>(),
-      child: BlocListener<LoginViewModel, LoginState>(
-        listener: (context, state) {
-          if (state.isSuccess) {
-            context.pushNamed(AppRoutes.mainShell);
-            CustomSnackbar.showSuccess(
-              context: context,
-              message: locale.login_success,
-            );
-          }
-
-          if (state.errorMessage != null) {
-            CustomSnackbar.showError(
-              context: context,
-              message: state.errorMessage.toString(),
-            );
-          }
-        },
-        child: const LoginForm(),
-      ),
-    );
+    return const LoginForm();
   }
 }

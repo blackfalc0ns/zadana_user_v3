@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_sheets.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_widgets.dart';
@@ -35,7 +36,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         '${widget.order.totalPrice.toStringAsFixed(2)} ${l10n.currency}';
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-      appBar: AppBar(title: const Text('تفاصيل الطلب')),
+      appBar: const CustomAppBar(
+        title: 'تفاصيل الطلب',
+        showShadow: false,
+      ),
       body: ListView(
         padding: const EdgeInsets.all(Spacing.base),
         children: [
@@ -139,10 +143,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   void _followComplaint() => setState(
-    () => _complaint = _complaint == OrderComplaintState.submitted
-        ? OrderComplaintState.inReview
-        : OrderComplaintState.resolved,
-  );
+        () => _complaint = _complaint == OrderComplaintState.submitted
+            ? OrderComplaintState.inReview
+            : OrderComplaintState.resolved,
+      );
 
   String _date(DateTime value) =>
       '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';

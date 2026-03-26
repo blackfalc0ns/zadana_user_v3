@@ -51,18 +51,20 @@ class CartBottomBar extends StatelessWidget {
     
     return Container(
       key: ValueKey('selected_bottom_$selectedVendorId'),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       decoration: BoxDecoration(
         color: color.surface,
-        boxShadow: [
-          BoxShadow(
-            color: color.shadow.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: color.shadow.withValues(alpha: 0.1),
+        //     blurRadius: 8,
+        //     offset: const Offset(0, -2),
+        //   ),
+        // ],
       ),
       child: SafeArea(
+        top: false,
+        bottom: false,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -78,7 +80,7 @@ class CartBottomBar extends StatelessWidget {
                   totalPrice: totalPrice,
                   animations: animations,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.45,
                   child: CartActionButtons(
@@ -101,17 +103,17 @@ class CartBottomBar extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: color.primaryContainer,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
             vendor.emoji,
-            style: const TextStyle(fontSize: 24),
+            style: const TextStyle(fontSize: 20),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +123,7 @@ class CartBottomBar extends StatelessWidget {
                 selectedVendorName,
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size16,
+                  fontSize: FontSize.size14,
                   color: color.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -130,7 +132,7 @@ class CartBottomBar extends StatelessWidget {
                 '${items.length} ${locale.product}',
                 style: getMediumStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size14,
+                  fontSize: FontSize.size12,
                   color: color.onSurfaceVariant,
                 ),
               ),

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_grid.dart';
 
 class UnitFilterSection extends StatefulWidget {
   const UnitFilterSection({
@@ -38,37 +36,13 @@ class _UnitFilterSectionState extends State<UnitFilterSection> {
     }
   }
 
-  String _getUnitIcon(String unit) {
-    switch (unit.toLowerCase()) {
-      case 'لتر':
-      case 'ل':
-        return '🥛';
-      case 'مل':
-      case 'ملليلتر':
-        return '🧃';
-      case 'كيلو':
-      case 'كجم':
-      case 'كيلوجرام':
-        return '⚖️';
-      case 'جرام':
-      case 'جم':
-        return '📏';
-      case 'قطعة':
-      case 'حبة':
-        return '🔢';
-      case 'علبة':
-      case 'كرتونة':
-        return '📦';
-      case 'كيس':
-        return '🛍️';
-      default:
-        return '📏';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (widget.units.isEmpty) return const SizedBox.shrink();
+    if (widget.units.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final sortedUnits = List<String>.from(widget.units)..sort();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,78 +52,16 @@ class _UnitFilterSectionState extends State<UnitFilterSection> {
           style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: Spacing.md),
-        Wrap(
-          spacing: Spacing.sm,
-          runSpacing: Spacing.sm,
-          children: widget.units.map((unit) => _buildChip(context, unit)).toList(),
+        FilterOptionGrid(
+          options: sortedUnits,
+          selectedValue: localSelectedUnit,
+          onOptionTap: (unit) {
+            final newSelection = localSelectedUnit == unit ? null : unit;
+            setState(() => localSelectedUnit = newSelection);
+            widget.onUnitChanged(newSelection);
+          },
         ),
       ],
-    );
-  }
-
-  Widget _buildChip(BuildContext context, String unit) {
-    final color = context.colorScheme;
-    final isSelected = localSelectedUnit == unit;
-
-    return GestureDetector(
-      onTap: () {
-        final newSelection = isSelected ? null : unit;
-        setState(() => localSelectedUnit = newSelection);
-        widget.onUnitChanged(newSelection);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [
-                    color.secondary.withValues(alpha: 0.8),
-                    color.secondary.withValues(alpha: 0.6),
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                )
-              : LinearGradient(
-                  colors: [
-                    color.surfaceContainerHighest,
-                    color.surfaceContainerHigh,
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? color.secondary
-                : color.outline.withValues(alpha: 0.35),
-            width: 1.2,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: color.secondary.withValues(alpha: 0.3),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              unit,
-              style: getRegularStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size12,
-                color: isSelected ? color.onSecondary : color.onSurface,
-              ).copyWith(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -8,6 +8,8 @@ class DrawerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -30,8 +32,8 @@ class DrawerHeader extends StatelessWidget {
             children: [
               // Profile Image
               Container(
-                width: 70, // تقليل من 90 إلى 70
-                height: 70, // تقليل من 90 إلى 70
+                width: 50, // تقليل من 90 إلى 70
+                height: 50, // تقليل من 90 إلى 70
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.white, width: 3), // تقليل من 4 إلى 3
@@ -80,11 +82,17 @@ class DrawerHeader extends StatelessWidget {
               const SizedBox(height: Spacing.xs), // تقليل من sm إلى xs
               
               // Email
-              Text(
-                'mohamedAli123@gmail.com',
-                style: AppTextStyles.labelMedium.copyWith( // تغيير من bodyMedium إلى labelMedium
-                  color: AppColors.white.withValues(alpha: 0.95),
-                  fontWeight: FontWeight.w500,
+              Directionality(
+                textDirection:
+                    isArabic ? TextDirection.ltr : TextDirection.rtl,
+                child: Text(
+                  'mohamedAli123@gmail.com',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.labelMedium.copyWith( // تغيير من bodyMedium إلى labelMedium
+                    color: AppColors.white.withValues(alpha: 0.95),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],

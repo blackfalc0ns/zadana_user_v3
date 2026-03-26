@@ -36,16 +36,17 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onSubmit(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
+  //  if (_formKey.currentState!.validate()) {
       final requestEntity = LoginRequestEntity(
         identifier: _phoneControllerOrEmail.text,
         password: _passwordController.text,
       );
+      context.pushNamedAndRemoveUntil(AppRoutes.mainShell, predicate: (Route<dynamic> route) => false);
 
-      context.read<LoginViewModel>().doIntent(
-            LoginSubmitEvent(requestEntity: requestEntity),
-          );
-    }
+      // context.read<LoginViewModel>().doIntent(
+      //       LoginSubmitEvent(requestEntity: requestEntity),
+      //     );
+  //  }
   }
 
   @override
@@ -53,9 +54,7 @@ class _LoginFormState extends State<LoginForm> {
     final locale = context.localization;
     final color = context.colorScheme;
 
-    return BlocBuilder<LoginViewModel, LoginState>(
-      builder: (context, state) {
-        return Form(
+    return Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,12 +91,11 @@ class _LoginFormState extends State<LoginForm> {
               AppButtonSwitch(
                 label: locale.btn_login,
                 onPressed: () => _onSubmit(context),
-                isLoading: state.isLoading,
+                
+                // state.isLoading,
               ),
             ],
           ),
         );
-      },
-    );
   }
 }

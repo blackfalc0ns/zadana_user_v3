@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
@@ -7,26 +9,32 @@ import 'package:zadana_user_v3/core/widgets/drawer/drawer_dialogs.dart';
 class DrawerActions {
   static void handleNotifications(BuildContext context) {
     Navigator.pop(context);
-    // TODO: Navigate to notifications screen
-    print('Navigate to notifications');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.notifications);
+    });
   }
 
   static void handleFavorites(BuildContext context) {
-    Navigator.pop(context);
-    // TODO: Navigate to favorites screen
-    print('Navigate to favorites');
+    _navigateToMainTab(context, 3);
   }
 
   static void handleCategories(BuildContext context) {
-    Navigator.pop(context);
-    // TODO: Navigate to categories screen
-    print('Navigate to categories');
+    _navigateToMainTab(context, 1);
+  }
+
+  static void handleCart(BuildContext context) {
+    _navigateToMainTab(context, 2);
+  }
+
+  static void handleProfile(BuildContext context) {
+    _navigateToMainTab(context, 4);
   }
 
   static void handleMyOrders(BuildContext context) {
     Navigator.pop(context);
-    // TODO: Navigate to my orders screen
-    print('Navigate to my orders');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.myOrdersPage);
+    });
   }
 
   static void handleLanguage(BuildContext context) {
@@ -36,13 +44,30 @@ class DrawerActions {
 
   static void handlePrivacyPolicy(BuildContext context) {
     Navigator.pop(context);
-    // TODO: Navigate to privacy policy screen
-    print('Navigate to privacy policy');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.privacyPolicy);
+    });
+  }
+
+  static void handleTermsConditions(BuildContext context) {
+    Navigator.pop(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.termsConditions);
+    });
+  }
+
+  static void handleFaq(BuildContext context) {
+    Navigator.pop(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.faq);
+    });
   }
 
   static void handleAboutApp(BuildContext context) {
     Navigator.pop(context);
-    DrawerDialogs.showAboutDialog(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.aboutApp);
+    });
   }
 
   static void handleDeveloper(BuildContext context) {
@@ -58,13 +83,31 @@ class DrawerActions {
 
   static void handleSupport(BuildContext context) {
     Navigator.pop(context);
-    // TODO: Navigate to support screen
-    print('Navigate to support');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.helpSupport);
+    });
   }
 
   static void handleLogout(BuildContext context) {
     Navigator.pop(context);
     _showLogoutDialog(context);
+  }
+
+  static void _navigateToMainTab(BuildContext context, int tabIndex) {
+    Navigator.pop(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final shellState = mainShellKey.currentState;
+      if (shellState != null) {
+        shellState.jumpToTab(tabIndex);
+        return;
+      }
+
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.mainShell,
+        (route) => false,
+        arguments: tabIndex,
+      );
+    });
   }
 
   static void _showDeveloperDialog(BuildContext context) {

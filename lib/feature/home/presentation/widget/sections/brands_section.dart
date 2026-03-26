@@ -148,9 +148,10 @@ class BrandsSection extends StatelessWidget {
       child: Column(
         children: [
           // Header
-          SectionHeader(
+          SectionHeader(actionColor: Colors.white,
             title: 'تصفح حسب العلامة التجارية',
             actionLabel: 'عرض الكل',
+            isActionBold: true,
             titleColor: AppColors.white,
             horizontalPadding: 16,
             onActionTap: () {

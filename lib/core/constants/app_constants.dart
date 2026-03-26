@@ -8,6 +8,12 @@ class AppConstants {
   static const String appName = 'Zadana';
   static const String appNameAr = 'زادنا';
   static const String packageName = 'com.zadana.customer';
+  static const String appVersion = '1.0.0';
+  static const String developerEmail = 'blackFalcons@gmail.com';
+  static const String developerWhatsapp = '966500000000';
+  static const String developerPhone = '966500000000';
+
+
   static const String logoLight = 'assets/images/logo_dark.png';
   static const String logoDark = 'assets/images/logo_light.png';
   static const String onboarding = 'assets/images/onboarding.png';

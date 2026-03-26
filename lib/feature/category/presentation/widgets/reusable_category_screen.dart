@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_content.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_filter_section.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/category_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class ReusableCategoryScreen extends StatefulWidget {
@@ -25,11 +26,12 @@ class ReusableCategoryScreen extends StatefulWidget {
   final Function(String?) onSortChanged;
   final Function(Map<String, dynamic>?) onFilterChanged;
   final Function() onClearAllFilters;
-  final List<String> sortOptions;
+  final List<Map<String, dynamic>> sortOptions;
   final bool hasActiveFilters;
   final double bottomNavHeight;
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
+  final bool isLoading;
 
   const ReusableCategoryScreen({
     super.key,
@@ -55,6 +57,7 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.bottomNavHeight = 95.0,
     this.activeHeroProductId,
     this.onProductTap,
+    this.isLoading = false,
   });
 
   @override
@@ -127,43 +130,44 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            CategoryContent(
-              selectedCategory: widget.selectedCategory,
-              selectedSubCategory: widget.selectedSubCategory,
-              selectedSortOption: widget.selectedSortOption,
-              selectedFilters: widget.selectedFilters,
-              selectedQuantity: widget.selectedQuantity,
-              selectedProductType: widget.filterSelectedProductType,
-              selectedPart: widget.filterSelectedPart,
-              selectedBrand: widget.filterSelectedBrand,
-              priceRange: widget.priceRange,
-              onCategorySelected: widget.onCategorySelected,
-              onFilterApplied: widget.onFilterApplied,
-              bottomPadding: 30,
-              activeHeroProductId: widget.activeHeroProductId,
-              onProductTap: widget.onProductTap,
-            ),
-            Positioned(
-              bottom: widget.bottomNavHeight,
-              left: 45,
-              right: 45,
-              child: CustomBottomFilterButtons(
-                sortLabel: locale.sort_button,
-                filterLabel: locale.filter_button,
-                onSortPressed: () => _showBottomSheet(
+            widget.isLoading
+                ? const CategoryLoadingSkeleton()
+                : CategoryContent(
+                    selectedCategory: widget.selectedCategory,
+                    selectedSubCategory: widget.selectedSubCategory,
+                    selectedSortOption: widget.selectedSortOption,
+                    selectedFilters: widget.selectedFilters,
+                    selectedQuantity: widget.selectedQuantity,
+                    selectedProductType: widget.filterSelectedProductType,
+                    selectedPart: widget.filterSelectedPart,
+                    selectedBrand: widget.filterSelectedBrand,
+                    priceRange: widget.priceRange,
+                    onCategorySelected: widget.onCategorySelected,
+                    onFilterApplied: widget.onFilterApplied,
+                    bottomPadding: 30,
+                    activeHeroProductId: widget.activeHeroProductId,
+                    onProductTap: widget.onProductTap,
+                  ),
+            if (!widget.isLoading)
+              Positioned(
+                bottom: widget.bottomNavHeight + 20,
+                left: 45,
+                right: 45,
+                child: CustomBottomFilterButtons(
+                  sortLabel: locale.sort_button,
+                  filterLabel: locale.filter_button,
+                  onSortPressed: () => _showBottomSheet(
                   context,
                   (_) => CustomSortBottomSheet(
                     selectedSortOption: widget.selectedSortOption,
-                    sortOptions: widget.sortOptions
-                        .map((option) => {'value': option, 'label': option})
-                        .toList(),
+                    sortOptions: widget.sortOptions,
                     title: locale.sort_title,
                     cancelLabel: locale.cancel,
                     applyLabel: locale.apply,
                   ),
                   (result) => widget.onSortChanged(result),
                 ),
-                onFilterPressed: () {
+                  onFilterPressed: () {
                   _resetTempFilters();
                   final sheetScrollController = ScrollController();
                   _showBottomSheet(
@@ -171,7 +175,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     (sheetContext) => StatefulBuilder(
                       builder: (sheetContext, setSheetState) {
                         return CustomFilterBottomSheet(
-                          title: 'فلتر المنتجات',
+                          title: ' تصنيف المنتجات',
                           cancelLabel: locale.cancel,
                           clearAllLabel: 'مسح الكل',
                           applyLabel: locale.apply,
@@ -256,10 +260,10 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     ),
                     (result) => widget.onFilterChanged(result),
                   );
-                },
-                hasActiveFilters: widget.hasActiveFilters,
+                  },
+                  hasActiveFilters: widget.hasActiveFilters,
+                ),
               ),
-            ),
           ],
         ),
       ),

@@ -7,4 +7,5 @@ abstract class AppAssets {
       'assets/images/app_logo-dark_removebg-preview 1.png';
   static const String google = 'assets/images/google.png';
   static const String facebook = 'assets/images/facebook.png';
+  static const String blackFalconsLogo = 'assets/images/black_falcons_logo.png';
 }

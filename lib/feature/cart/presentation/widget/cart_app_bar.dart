@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 
 class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int itemCount;
   final int totalQuantity;
   final VoidCallback? onClearAll;
-  final VoidCallback? onBack;
   const CartAppBar({
     super.key,
     required this.itemCount,
     required this.totalQuantity,
     this.onClearAll,
-    this.onBack,
   });
 
   @override
@@ -24,29 +23,12 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
     final locale = context.localization;
     final color = context.colorScheme;
 
-    return AppBar(
-      automaticallyImplyLeading: false,
-      centerTitle: true,
-      title: Column(
-        children: [
-          Text(
-            locale.cart,
-            style: getRegularStyle(
-              fontFamily: FontConstant.cairo,
-              fontSize: FontSize.size13,
-              color: color.onSurface,
-            ),
-          ),
-          if (itemCount > 0)
-            Text(
-              '$totalQuantity ${locale.product}',
-              style: getRegularStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size11,
-                color: color.onSurfaceVariant,
-              ),
-            ),
-        ],
+    return CustomAppBar(
+      showBackButton: false,
+      backgroundColor: color.surface,
+      titleWidget: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [Text(locale.cart)],
       ),
       actions: [
         if (onClearAll != null)

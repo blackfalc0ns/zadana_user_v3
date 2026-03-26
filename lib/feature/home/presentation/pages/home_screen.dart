@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_app_bar.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_search_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/promo_banner.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/best_selling_section.dart';
@@ -15,73 +16,107 @@ import 'package:zadana_user_v3/feature/home/presentation/widget/sections/special
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/brands_section.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.onMenuTap});
+
+  final VoidCallback? onMenuTap;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isInitialLoading = true;
+  Timer? _loadingTimer;
+
+  void _startFakeLoading() {
+    _loadingTimer?.cancel();
+    setState(() => _isInitialLoading = true);
+    _loadingTimer = Timer(const Duration(seconds: 10), () {
+      if (!mounted) return;
+      setState(() => _isInitialLoading = false);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _startFakeLoading();
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    _startFakeLoading();
+  }
+
+  @override
+  void dispose() {
+    _loadingTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawer: const AppDrawer(),
       appBar: HomeAppBar(
         deliverToLabel: locale.deliver_to,
         location: locale.location,
+        onMenuTap: widget.onMenuTap,
       ),
-      body: CustomScrollView(
-        key: const PageStorageKey<String>('home_scroll_view'),
-        slivers: [
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
+      body: _isInitialLoading
+          ? const HomeLoadingSkeleton()
+          : CustomScrollView(
+              key: const PageStorageKey<String>('home_scroll_view'),
+              slivers: [
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
 
-          // Search Bar
-          SliverToBoxAdapter(child: HomeSearchBar()),
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
+                // Search Bar
+                SliverToBoxAdapter(child: HomeSearchBar()),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
 
-          // Promo Banner
-          SliverToBoxAdapter(child: const PromoBanner()),
+                // Promo Banner
+                SliverToBoxAdapter(child: const PromoBanner()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          // 1. Categories Section
-          SliverToBoxAdapter(child: const CategoriesSection()),
+                // 1. Categories Section
+                SliverToBoxAdapter(child: const CategoriesSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          // 3. Recommended For You Section
+                // 3. Recommended For You Section
 
-          // 3. Special Offers Section
-          SliverToBoxAdapter(child: const SpecialOffersSection()),
+                // 3. Special Offers Section
+                SliverToBoxAdapter(child: const SpecialOffersSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-          SliverToBoxAdapter(child: const RecommendedSection()),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                SliverToBoxAdapter(child: const RecommendedSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          // 4. Best Selling Section
-          SliverToBoxAdapter(child: const BestSellingSection()),
-          // 2. Brands Section
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                // 4. Best Selling Section
+                SliverToBoxAdapter(child: const BestSellingSection()),
+                // 2. Brands Section
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          SliverToBoxAdapter(child: const BrandsSection()),
+                SliverToBoxAdapter(child: const BrandsSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          // 5. Featured Products Section
-          SliverToBoxAdapter(child: const FeaturedProductsSection()),
+                // 5. Featured Products Section
+                SliverToBoxAdapter(child: const FeaturedProductsSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
 
-          // 6. Explore More Section
-          SliverToBoxAdapter(child: const ExploreMoreSection()),
+                // 6. Explore More Section
+                SliverToBoxAdapter(child: const ExploreMoreSection()),
 
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-        ],
-      ),
+                SliverToBoxAdapter(child: const SizedBox(height: 100)),
+              ],
+            ),
     );
   }
 }

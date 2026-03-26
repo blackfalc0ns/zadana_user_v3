@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/clear_all_dialog.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_app_bar.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_empty_state.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_grid.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/widgets/clear_all_dialog.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_data.dart';
 
@@ -16,12 +19,33 @@ class FavoritesScreen extends StatefulWidget {
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
   late List<ProductModel> _favoriteProducts;
+  bool _isLoading = true;
+  Timer? _loadingTimer;
 
   @override
   void initState() {
     super.initState();
-    // تصفية المنتجات المفضلة من البيانات الوهمية
     _favoriteProducts = HomeData.featured.where((p) => p.isFavorite).toList();
+    FavoritesNavigationService().addListener(_startFakeLoading);
+    _startFakeLoading();
+  }
+
+  @override
+  void dispose() {
+    _loadingTimer?.cancel();
+    FavoritesNavigationService().removeListener(_startFakeLoading);
+    super.dispose();
+  }
+
+  void _startFakeLoading() {
+    _loadingTimer?.cancel();
+    if (mounted) {
+      setState(() => _isLoading = true);
+    }
+    _loadingTimer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    });
   }
 
   bool get _isEmpty => _favoriteProducts.isEmpty;
@@ -68,19 +92,26 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       child: Scaffold(
         backgroundColor: color.surface,
         appBar: FavoritesAppBar(
-          itemCount: _favoriteProducts.length,
           onClearAll: _isEmpty ? null : _showClearDialog,
         ),
-        body: _isEmpty
-            ? FavoritesEmptyState(onStartShopping: () => Navigator.pop(context))
-            : Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: FavoritesGrid(
-                  products: _favoriteProducts,
-                  onAddToCart: _addToCart,
-                  onToggleFavorite: _toggleFavorite,
-                ),
-              ),
+        body: _isLoading
+            ? const FavoritesLoadingSkeleton()
+            : _isEmpty
+                ? FavoritesEmptyState(
+                    onStartShopping: () => Navigator.pop(context),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 90,
+                      left: 12,
+                      right: 12,
+                    ),
+                    child: FavoritesGrid(
+                      products: _favoriteProducts,
+                      onAddToCart: _addToCart,
+                      onToggleFavorite: _toggleFavorite,
+                    ),
+                  ),
       ),
     );
   }

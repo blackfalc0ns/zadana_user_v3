@@ -31,7 +31,7 @@ class CustomSortOptionItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? color.secondary : color.outline,
-            width: 1,
+            width: .5,
           ),
         ),
         child: Row(

@@ -1,15 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_app_bar.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_empty_state.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_content.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_bottom_bar.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_comparison_sheet.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_app_bar.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_bottom_bar.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_content.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_empty_state.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_loading_skeleton.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_comparison_sheet.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
@@ -26,6 +30,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   String? _selectedVendorId;
   String? _activeHeroProductId;
   late CartAnimations _animations;
+  bool _isLoading = true;
+  Timer? _loadingTimer;
 
   @override
   void initState() {
@@ -33,15 +39,29 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     _items = List.from(dummyCartItems);
     _selectedVendorId = null;
     _animations = CartAnimations(this);
+    CartNavigationService().addListener(_startFakeLoading);
+    _startFakeLoading();
   }
 
   @override
   void dispose() {
+    _loadingTimer?.cancel();
+    CartNavigationService().removeListener(_startFakeLoading);
     _animations.dispose();
     super.dispose();
   }
 
-  // Getters
+  void _startFakeLoading() {
+    _loadingTimer?.cancel();
+    if (mounted) {
+      setState(() => _isLoading = true);
+    }
+    _loadingTimer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    });
+  }
+
   int get _totalQuantity => _items.fold(0, (sum, i) => sum + i.quantity);
   bool get _isEmpty => _items.isEmpty;
 
@@ -65,7 +85,6 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
         : dummyVendors.firstWhere((v) => v.id == _selectedVendorId).name;
   }
 
-  // Actions
   void _updateQuantity(CartItemModel item, bool increment) {
     setState(() {
       if (increment) {
@@ -79,15 +98,15 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   }
 
   void _showDeleteDialog(CartItemModel item) => showDeleteItemDialog(
-    context: context,
-    itemName: item.name,
-    onConfirm: () => setState(() => _items.remove(item)),
-  );
+        context: context,
+        itemName: item.name,
+        onConfirm: () => setState(() => _items.remove(item)),
+      );
 
   void _showClearDialog() => showClearCartDialog(
-    context: context,
-    onConfirm: () => setState(() => _items.clear()),
-  );
+        context: context,
+        onConfirm: () => setState(() => _items.clear()),
+      );
 
   void _showComparison() {
     final locale = context.localization;
@@ -145,8 +164,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       _showSnackBar(locale.select_vendor_to_show_price);
       return;
     }
-    
-    // Navigate to payment screen
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -165,9 +183,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    // حساب ارتفاع الـ navigation bar + margin
-    final bottomNavHeight = 75.0 + 12.0 + 12.0; // height + bottom margin + top margin
-    
+    final bottomNavHeight = 90.0;
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -177,42 +194,40 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
           totalQuantity: _totalQuantity,
           onClearAll: _isEmpty ? null : _showClearDialog,
         ),
-        body: _isEmpty
-            ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
-            : Stack(
-                children: [
-                  // المحتوى الرئيسي
-                  Padding(
-                    padding: EdgeInsets.only(
-                      bottom: bottomNavHeight + 80, // مساحة للـ navigation bar + CartBottomBar
-                    ),
-                    child: CartContent(
-                      items: _items,
-                      selectedVendorId: _selectedVendorId,
-                      activeHeroProductId: _activeHeroProductId,
-                      onVendorSelected: _onVendorSelected,
-                      onItemTap: _openProductDetails,
-                      onUpdateQuantity: _updateQuantity,
-                      onDeleteItem: _showDeleteDialog,
-                    ),
+        body: _isLoading
+            ? const CartLoadingSkeleton()
+            : _isEmpty
+                ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
+                : Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: bottomNavHeight + 80),
+                        child: CartContent(
+                          items: _items,
+                          selectedVendorId: _selectedVendorId,
+                          activeHeroProductId: _activeHeroProductId,
+                          onVendorSelected: _onVendorSelected,
+                          onItemTap: _openProductDetails,
+                          onUpdateQuantity: _updateQuantity,
+                          onDeleteItem: _showDeleteDialog,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 90,
+                        left: 0,
+                        right: 0,
+                        child: CartBottomBar(
+                          selectedVendorId: _selectedVendorId,
+                          items: _items,
+                          totalPrice: _totalPrice,
+                          selectedVendorName: _selectedVendorName(context),
+                          animations: _animations,
+                          onComparison: _showComparison,
+                          onCheckout: _onCheckout,
+                        ),
+                      ),
+                    ],
                   ),
-                  // الـ CartBottomBar فوق الـ navigation bar
-                  Positioned(
-                    bottom: 60,
-                    left: 0,
-                    right: 0,
-                    child: CartBottomBar(
-                      selectedVendorId: _selectedVendorId,
-                      items: _items,
-                      totalPrice: _totalPrice,
-                      selectedVendorName: _selectedVendorName(context),
-                      animations: _animations,
-                      onComparison: _showComparison,
-                      onCheckout: _onCheckout,
-                    ),
-                  ),
-                ],
-              ),
       ),
     );
   }

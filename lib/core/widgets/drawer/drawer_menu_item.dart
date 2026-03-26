@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -11,7 +12,7 @@ class DrawerMenuItem extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.textColor,
-    this.iconColor,
+    this.trailing,
     required this.onTap,
   });
 
@@ -19,7 +20,7 @@ class DrawerMenuItem extends StatelessWidget {
   final String title;
   final String? subtitle;
   final Color? textColor;
-  final Color? iconColor;
+  final Widget? trailing;
   final VoidCallback onTap;
 
   @override
@@ -27,38 +28,84 @@ class DrawerMenuItem extends StatelessWidget {
     final color = context.colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.all(2),
-      child: ListTile(
-        minTileHeight: 10,
-        leading: FaIcon(
-          icon,
-          color: iconColor ?? textColor ?? color.onSurface,
-          size: 18,
-        ),
-        title: Text(
-          title,
-          style: getMediumStyle(
-            fontSize: FontSize.size14,
-            fontFamily: FontConstant.cairo,
-            color: textColor ?? color.onSurface,
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.sm,
+        vertical: 3,
+      ),
+      child: Material(
+        color: color.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: ListTile(
+            minTileHeight: 10,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: Spacing.md,
+              vertical: 4,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: color.outline.withValues(alpha: 0.08),
+              ),
+            ),
+            leading: Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: color.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: FaIcon(
+                  icon,
+                  color: color.primary,
+                  size: 16,
+                ),
+              ),
+            ),
+            title: Text(
+              title,
+              style: getMediumStyle(
+                fontSize: FontSize.size14,
+                fontFamily: FontConstant.cairo,
+                color: textColor ?? color.onSurface,
+              ),
+            ),
+            subtitle: subtitle != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      subtitle!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: getRegularStyle(
+                        fontSize: FontSize.size12,
+                        fontFamily: FontConstant.cairo,
+                        color: color.onSurface.withValues(alpha: 0.62),
+                      ),
+                    ),
+                  )
+                : null,
+            trailing: trailing ??
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: color.primary.withValues(alpha: 0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: FaIcon(
+                      FontAwesomeIcons.chevronLeft,
+                      color: color.primary,
+                      size: 10,
+                    ),
+                  ),
+                ),
           ),
         ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: getRegularStyle(
-                  fontSize: FontSize.size14,
-                  fontFamily: FontConstant.cairo,
-                  color: color.onSurface.withValues(alpha: 0.6),
-                ),
-              )
-            : null,
-        trailing: FaIcon(
-          FontAwesomeIcons.chevronLeft,
-          color: color.onSurface.withValues(alpha: 0.6),
-          size: 12,
-        ),
-        onTap: onTap,
       ),
     );
   }

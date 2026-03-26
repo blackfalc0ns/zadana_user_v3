@@ -14,6 +14,7 @@ class SectionHeader extends StatelessWidget {
     this.titleColor,
     this.actionColor,
     this.horizontalPadding,
+    this.isActionBold = false,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class SectionHeader extends StatelessWidget {
   final Color? titleColor;
   final Color? actionColor;
   final double? horizontalPadding;
+  final bool isActionBold;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +47,17 @@ class SectionHeader extends StatelessWidget {
             onTap: onActionTap,
             child: Text(
               actionLabel,
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size12,
-                color: actionColor ?? AppColors.secondary,
-              ),
+              style: isActionBold
+                  ? getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size12,
+                      color: actionColor ?? AppColors.secondary,
+                    )
+                  : getMediumStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size12,
+                      color: actionColor ?? AppColors.secondary,
+                    ),
             ),
           ),
         ],

@@ -24,7 +24,9 @@ class BrandFilterBottomSheet {
 
     void scrollSheetTo(double offset) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!sheetScrollController.hasClients) return;
+        if (!sheetScrollController.hasClients) {
+          return;
+        }
         final target = (sheetScrollController.offset + offset).clamp(
           0.0,
           sheetScrollController.position.maxScrollExtent,
@@ -43,12 +45,13 @@ class BrandFilterBottomSheet {
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => CustomFilterBottomSheet(
-          title: 'فلتر المنتجات',
+          title: 'تصنيف المنتجات',
           scrollController: sheetScrollController,
           children: [
             PriceRangeSection(
               priceRange: tempPriceRange,
-              onChanged: (values) => setModalState(() => tempPriceRange = values),
+              onChanged: (values) =>
+                  setModalState(() => tempPriceRange = values),
             ),
             const SizedBox(height: 8),
             CategoryFilterSection(
@@ -65,7 +68,9 @@ class BrandFilterBottomSheet {
                         .cast<String>()
                         .toSet()
                         .toList();
-                    if (!availableSubcategories.contains(tempSelectedSubcategory)) {
+                    if (!availableSubcategories.contains(
+                      tempSelectedSubcategory,
+                    )) {
                       tempSelectedSubcategory = null;
                     }
                   }
@@ -91,7 +96,8 @@ class BrandFilterBottomSheet {
             UnitFilterSection(
               units: units,
               selectedUnit: tempSelectedUnit,
-              onUnitChanged: (unit) => setModalState(() => tempSelectedUnit = unit),
+              onUnitChanged: (unit) =>
+                  setModalState(() => tempSelectedUnit = unit),
             ),
           ],
           onApply: () => Navigator.pop(context, {

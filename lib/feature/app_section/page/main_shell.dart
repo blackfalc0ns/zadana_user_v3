@@ -4,7 +4,10 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
+import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
+import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
@@ -24,14 +27,7 @@ class MainShell extends StatefulWidget {
 
 class MainShellState extends State<MainShell> {
   late int _selectedIndex;
-
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const CategoryScreen(),
-    const CartScreen(),
-    const FavoritesScreen(),
-    const ProfileScreen(),
-  ];
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<NavBarItem> _navItems = [];
   bool _isInitialized = false;
@@ -83,34 +79,50 @@ class MainShellState extends State<MainShell> {
   }
 
   void _onItemTapped(int index) {
+    if (index == 1 && _selectedIndex != 1) {
+      CategoryNavigationService().notifyTabChanged();
+    }
+    if (index == 2 && _selectedIndex != 2) {
+      CartNavigationService().notifyTabChanged();
+    }
+    if (index == 3 && _selectedIndex != 3) {
+      FavoritesNavigationService().notifyTabChanged();
+    }
+
     setState(() {
       _selectedIndex = index;
     });
-
-    // لما ننتقل لتاب التسوق (index 1)، نتحقق من القسم المختار
-    if (index == 1) {
-      Future.delayed(const Duration(milliseconds: 50), () {
-        CategoryNavigationService().notifyTabChanged();
-      });
-    }
   }
 
   void jumpToTab(int index) {
     _onItemTapped(index);
   }
 
+  void openDrawer() => _scaffoldKey.currentState?.openDrawer();
+
   @override
   Widget build(BuildContext context) {
+    final screens = [
+      HomeScreen(onMenuTap: openDrawer),
+      const CategoryScreen(),
+      const CartScreen(),
+      const FavoritesScreen(),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const AppDrawer(),
+      drawerEdgeDragWidth: 20,
       body: Stack(
         children: [
           ...List.generate(
-            _screens.length,
+            screens.length,
             (index) => Offstage(
               offstage: _selectedIndex != index,
               child: HeroMode(
                 enabled: _selectedIndex == index,
-                child: _screens[index],
+                child: screens[index],
               ),
             ),
           ),
@@ -163,7 +175,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Widget build(BuildContext context) {
     return Container(
       height: 75,
-      margin: EdgeInsets.only(top: 5),
+      margin: const EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
         color: AppColors.card,
         boxShadow: [
@@ -202,7 +214,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
-                      padding: EdgeInsets.all(7),
+                      padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: active ? AppColors.primary : AppColors.surface,
                         shape: BoxShape.circle,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
@@ -20,6 +21,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   late CategoryNavigationService _navigationService;
   bool _isCategoryPreselectedFromOutside = false;
   String? _activeHeroProductId;
+  bool _isLoading = true;
+  Timer? _loadingTimer;
 
   String? _filterSelectedCategory;
   String? _filterSelectedProductType;
@@ -33,13 +36,28 @@ class _CategoryScreenState extends State<CategoryScreen> {
     super.initState();
     _navigationService = CategoryNavigationService()
       ..addListener(_checkSelectedCategory);
+    _startFakeLoading();
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkSelectedCategory());
   }
 
   @override
   void dispose() {
+    _loadingTimer?.cancel();
     _navigationService.removeListener(_checkSelectedCategory);
     super.dispose();
+  }
+
+  void _startFakeLoading() {
+    _loadingTimer?.cancel();
+    if (mounted) {
+      setState(() => _isLoading = true);
+    } else {
+      _isLoading = true;
+    }
+    _loadingTimer = Timer(const Duration(seconds: 5), () {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    });
   }
 
   void _checkSelectedCategory() {
@@ -57,7 +75,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _filterSelectedBrand = null;
         _isCategoryPreselectedFromOutside = true;
       });
+      _startFakeLoading();
       _navigationService.clearSelectedCategory();
+      return;
+    }
+
+    if (mounted && !_isLoading) {
+      _startFakeLoading();
     }
   }
 
@@ -88,7 +112,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
       filterSelectedBrand: _filterSelectedBrand,
       priceRange: _priceRange,
       showCategoryFilterSection: !_isCategoryPreselectedFromOutside,
+      isLoading: _isLoading,
       onCategorySelected: (category) {
+        if (category == _selectedCategory) return;
         setState(() {
           _isCategoryPreselectedFromOutside = false;
           _selectedCategory = category;
@@ -98,7 +124,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           _filterSelectedPart = null;
           _filterSelectedQuantity = null;
           _filterSelectedBrand = null;
+          _isLoading = true;
         });
+        _startFakeLoading();
       },
       onFilterApplied: (data) {
         if (data['category'] != null) {
@@ -146,7 +174,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _filterSelectedBrand = null;
         _priceRange = const RangeValues(0, 1000);
       }),
-      sortOptions: kSortOptions.map((option) => option['value'] as String).toList(),
+      sortOptions: kSortOptions,
       hasActiveFilters: _selectedFilters.isNotEmpty ||
           _selectedSortOption.isNotEmpty ||
           _filterSelectedCategory != null ||

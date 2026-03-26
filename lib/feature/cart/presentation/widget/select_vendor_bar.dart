@@ -16,7 +16,7 @@ class SelectVendorBar extends StatelessWidget {
 
     return Container(
       key: const ValueKey('select_bottom'),
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
       decoration: BoxDecoration(
         color: color.surface,
         boxShadow: [
@@ -28,6 +28,8 @@ class SelectVendorBar extends StatelessWidget {
         ],
       ),
       child: SafeArea(
+        top: false,
+        bottom: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
