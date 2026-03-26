@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/core/utils/page_transition_helper.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/presentation/pages/forget_password_screen.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/pages/register_screen.dart';
+import 'package:zadana_user_v3/feature/auth/register/presentation/pages/sign_up_screen.dart';
+import 'package:zadana_user_v3/feature/auth/sign_in/presentation/pages/sign_in_screen.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/reset_password_screen.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/verify_reset_otp_screen.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
@@ -9,7 +11,6 @@ import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
 import 'package:zadana_user_v3/feature/onbarding/presentation/splash_page.dart';
-import 'package:zadana_user_v3/feature/onbarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/edit_profile_screen.dart';
@@ -30,16 +31,28 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => SplashPage());
-      case AppRoutes.startPage:
-        return MaterialPageRoute(builder: (_) => StartPage());
       case AppRoutes.signUp:
         final locationEntity = settings.arguments as LocationEntity?;
-        return MaterialPageRoute(builder: (_) => RegisterScreen(locationEntity: locationEntity));
+        return PageTransitionHelper.createSlideTransition(
+          page: SignUpScreen(locationEntity: locationEntity),
+          direction: SlideDirection.left,
+        );
+      case AppRoutes.signIn:
+        return PageTransitionHelper.createSlideTransition(
+          page: const SignInScreen(),
+          direction: SlideDirection.left,
+        );
       case AppRoutes.forgetPassword:
-        return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
+        return PageTransitionHelper.createSlideTransition(
+          page: ForgetPasswordScreen(),
+          direction: SlideDirection.left,
+        );
       case AppRoutes.verifyResetOtp:
         final identifier = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => VerifyResetOtpScreen(identifier: identifier));
+        return PageTransitionHelper.createSlideTransition(
+          page: VerifyResetOtpScreen(identifier: identifier),
+          direction: SlideDirection.left,
+        );
       case AppRoutes.resetPassword:
         final arguments = settings.arguments as Map<String, String>;
         return MaterialPageRoute(builder: (_) => ResetPasswordScreen(arguments: arguments));

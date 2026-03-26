@@ -20,6 +20,13 @@ class Assets {
   static const String onboarding3 = '$_images/onboarding3.png';
   static const String goole ='$_images/google_icon.png';
   static const String blackFalcons = '$_images/black_falcons_logo.png';
+  static const String  authGrocery = '$_images/auth_grocery_icon.png';
+  static const String  splashPageBackground = '$_images/splash_page_background.gif';
+  static const String  onBoardingPageBackground = '$_images/start_page_background.jpg';
+  
+
+
+
 
   // ── Icons (SVG) ──
   static const String icHome = '$_icons/ic_home.svg';

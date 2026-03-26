@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 /// ─────────────────────────────────────────────────────────────
@@ -28,6 +31,10 @@ class AppTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final EdgeInsetsGeometry? contentPadding;
   final bool autofocus;
+  final bool isFilled;
+  final Color filledColor;
+  final Color? hintColor;
+  final bool showBorder;
 
   const AppTextField({
     super.key,
@@ -52,6 +59,10 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.contentPadding,
     this.autofocus = false,
+    this.isFilled = false,
+    this.filledColor = Colors.transparent,
+    this.hintColor,
+    this.showBorder = false,
   });
 
   @override
@@ -76,9 +87,31 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        hintStyle: getMediumStyle(
+          fontFamily: FontConstant.cairo,
+          color: hintColor ?? AppColors.dividerDark,
+        ),
         errorText: errorText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
+        filled: isFilled,
+        fillColor: filledColor,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: showBorder ? AppColors.dividerDark : Colors.transparent,
+          ),
+          borderRadius: BorderRadius.circular(Spacing.inputRadius),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: showBorder ? AppColors.primary : Colors.transparent,
+          ),
+          borderRadius: BorderRadius.circular(Spacing.inputRadius),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(Spacing.inputRadius),
+        ),
         contentPadding:
             contentPadding ??
             const EdgeInsets.symmetric(

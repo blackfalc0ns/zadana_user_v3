@@ -12,6 +12,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل دخول';
 
   @override
+  String get continueAsGuest => 'استمرار كضيف';
+
+  @override
+  String get signUp => 'إنشاء حساب';
+
+  @override
   String get name_is_required => 'الاسم مطلوب!';
 
   @override

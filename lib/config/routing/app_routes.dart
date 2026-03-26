@@ -3,6 +3,7 @@ abstract class AppRoutes {
   static const String home = '/home';
   static const String splash = '/splash';
   static const String signUp = '/signup';
+  static const String signIn = '/signin';
   static const String mainShell = '/mainshell';
   static const String category = '/category';
   static const String cart = '/cart';

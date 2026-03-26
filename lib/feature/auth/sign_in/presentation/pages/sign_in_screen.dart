@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/helpers/validators.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_password_field.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_phone_field.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_state.dart';
+import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_view_model.dart';
+import 'package:zadana_user_v3/feature/auth/sign_in/presentation/widgets/sign_in_header.dart';
+import 'package:zadana_user_v3/feature/auth/sign_in/presentation/widgets/sign_in_form.dart';
+import 'package:zadana_user_v3/feature/auth/sign_in/presentation/widgets/sign_in_footer.dart';
 
-
+/// Sign in screen
+/// Handles user login only
+///
+/// Location: features/auth/sign_in/presentation/pages/
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -17,67 +24,53 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _formKeyy = GlobalKey<FormState>();
-
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    var locale = context.localization;
-    return Form(
-      key: _formKeyy,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Phone ──────────────────────────────────────────────
-          FieldLabel(locale.label_phone),
-          AppPhoneField(
-            controller: _phoneController,
-            validator: (value) =>
-                Validations.validatePhoneNumber(context, value),
-          ),
+    final color = context.colorScheme;
 
-          const SizedBox(height: Spacing.base),
+    return BlocProvider(
+      create: (_) => getIt<LoginViewModel>(),
+      child: BlocListener<LoginViewModel, LoginState>(
+        listener: (context, state) {
+          if (state.isSuccess) {
+            context.pushNamed(AppRoutes.mainShell);
+            CustomSnackbar.showSuccess(
+              context: context,
+              message: context.localization.login_success,
+            );
+          }
 
-          // ── Password ───────────────────────────────────────────
-          FieldLabel(locale.label_password),
-          AppPasswordField(
-            controller: _passwordController,
-            validator: (value) => Validations.validatePassword(context, value),
-          ),
-
-          // ── Forgot Password ────────────────────────────────────
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: Spacing.sm,
-                  horizontal: Spacing.xs,
-                ),
+          if (state.errorMessage != null) {
+            CustomSnackbar.showError(
+              context: context,
+              message: state.errorMessage.toString(),
+            );
+          }
+        },
+        child: Scaffold(
+          backgroundColor: color.surface,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                // horizontal: Spacing.screenH,
+                vertical: Spacing.screenV,
               ),
-              child: Text(
-                locale.btn_forgot_password,
-                style: AppTextStyles.labelMedium.copyWith(
-                  color: AppColors.primary,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Sign in header
+                  const SignInHeader(),
+                  
+                  // Sign in form
+                  const SignInForm(),
+
+                  // Footer with toggle text
+                  const SignInFooter(),
+                ],
               ),
             ),
           ),
-
-          const SizedBox(height: Spacing.md),
-
-        ],
-
+        ),
       ),
     );
   }

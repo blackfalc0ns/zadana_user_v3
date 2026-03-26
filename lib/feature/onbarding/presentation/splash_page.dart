@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart';
+
+import 'package:zadana_user_v3/core/constants/assets.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -44,9 +44,9 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Future<void> _navigateToNext() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 5));
     if (mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.startPage);
+      Navigator.pushReplacementNamed(context, AppRoutes.signIn);
     }
   }
 
@@ -59,25 +59,11 @@ class _SplashPageState extends State<SplashPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.error,
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Image.asset(
-              AppConstants.logoLight,
-              width: 220,
-              height: 220,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.storefront_rounded,
-                size: 100,
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        ),
+      // backgroundColor: AppColors.error,
+      body: Image.asset(
+        Assets.splashPageBackground,
+        fit: BoxFit.cover,
+        height: MediaQuery.of(context).size.height,
       ),
     );
   }

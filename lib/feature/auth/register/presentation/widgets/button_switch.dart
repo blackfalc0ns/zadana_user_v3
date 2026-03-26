@@ -19,6 +19,7 @@ class AppButtonSwitch extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
+      
       child: isLoading
           ? SizedBox(
               width: 22,

@@ -104,6 +104,18 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
+  /// No description provided for @continueAsGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'continue As Guest'**
+  String get continueAsGuest;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account'**
+  String get signUp;
+
   /// No description provided for @name_is_required.
   ///
   /// In en, this message translates to:

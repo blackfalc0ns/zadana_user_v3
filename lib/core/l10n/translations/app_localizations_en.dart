@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
+  String get continueAsGuest => 'continue As Guest';
+
+  @override
+  String get signUp => 'Create an account';
+
+  @override
   String get name_is_required => 'Name is required!';
 
   @override

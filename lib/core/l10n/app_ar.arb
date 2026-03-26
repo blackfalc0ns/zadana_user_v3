@@ -1,5 +1,7 @@
 ﻿{
   "login": "تسجيل دخول",
+  "signUp": "إنشاء حساب",
+  "continueAsGuest" : "استمرار كضيف",
   "name_is_required": "الاسم مطلوب!",
   "name_is_not_valid": "الاسم مو صحيح",
   "email_is_required": "الإيميل مطلوب!",

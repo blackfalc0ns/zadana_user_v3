@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
@@ -32,25 +33,27 @@ class _AppPasswordFieldState extends State<AppPasswordField> {
     return AppTextField(
       controller: widget.controller,
       hint: widget.hint ?? locale.hint_password,
+      hintColor: color.primary,
       obscureText: _obscure,
       keyboardType: TextInputType.visiblePassword,
       textInputAction: widget.textInputAction,
       validator: widget.validator,
       prefixIcon: Icon(
-        Icons.lock_outline_rounded,
-        color: color.onSurfaceVariant,
+        Iconsax.lock,
+        color: color.primary,
         size: Spacing.iconSm,
       ),
       suffixIcon: IconButton(
         onPressed: () => setState(() => _obscure = !_obscure),
         icon: Icon(
-          _obscure
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+          _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
           color: color.onSurfaceVariant,
           size: Spacing.iconSm,
         ),
       ),
+
+      filledColor: color.primary.withValues(alpha: 0.1),
+      isFilled: true,
     );
   }
 }
