@@ -131,7 +131,7 @@ class CustomProductCard extends StatelessWidget {
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: AppColors.white.withValues(alpha: 0.8),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
