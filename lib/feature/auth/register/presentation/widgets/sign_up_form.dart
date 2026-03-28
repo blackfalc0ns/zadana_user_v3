@@ -136,6 +136,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 onPressed: () => _onSubmit(context),
                 isLoading: state.isLoading,
               ),
+              const SizedBox(height: Spacing.base),
             ],
           ),
         );
