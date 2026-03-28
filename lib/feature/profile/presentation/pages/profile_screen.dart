@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/feature/profile/presentation/widgets/profile_content_widget.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/widgets/profile_dashboard_content.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -50,25 +48,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final color = context.colorScheme;
 
     return Scaffold(
-      backgroundColor: color.surface,
-      appBar: AppBar(
-        backgroundColor: color.surface,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text(
-          l10n.profile_title,
-          style: getBoldStyle(
-            fontSize: FontSize.size18,
-            fontFamily: FontConstant.cairo,
-            color: color.onSurface,
-          ),
-        ),
-      ),
-      body: ProfileContent(
+      backgroundColor: AppColors.background,
+      body: ProfileDashboardContent(
         l10n: l10n,
         notificationsEnabled: _notificationsEnabled,
         onNotificationsChanged: (value) {
