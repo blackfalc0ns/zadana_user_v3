@@ -1,4 +1,5 @@
 abstract class AppRoutes {
+  static const String login = '/login';
   static const String startPage = '/startpage';
   static const String home = '/home';
   static const String splash = '/splash';

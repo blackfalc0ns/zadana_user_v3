@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -24,12 +23,12 @@ class AuthToggle extends StatelessWidget {
           loginLabel: locale.toggle_login,
           signUpLabel: locale.toggle_signup,
           colorScheme: color,
-          onSignUp: () => context
-            .read<RegisterViewModel>()
-            .doIntent(const SwitchToSignUpEvent()),
-          onLogIn: () => context
-            .read<RegisterViewModel>()
-            .doIntent(const SwitchToLoginEvent()),
+          onSignUp: () => context.read<RegisterViewModel>().doIntent(
+            const SwitchToSignUpEvent(),
+          ),
+          onLogIn: () => context.read<RegisterViewModel>().doIntent(
+            const SwitchToLoginEvent(),
+          ),
         );
       },
     );
@@ -54,57 +53,57 @@ class _AuthToggleContent extends StatelessWidget {
   final VoidCallback onLogIn;
 
   Alignment _pillAlignment(BuildContext context) {
-    final isRtl = 
-      Directionality.of(context) == TextDirection.rtl;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
     if (isRtl) {
-      return isSignUp 
-        ? Alignment.centerLeft 
-        : Alignment.centerRight;
+      return isSignUp ? Alignment.centerLeft : Alignment.centerRight;
     } else {
-      return isSignUp 
-        ? Alignment.centerRight 
-        : Alignment.centerLeft;
+      return isSignUp ? Alignment.centerRight : Alignment.centerLeft;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppConstants.toggleHeight,
+      height: 58,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: 
-          BorderRadius.circular(Spacing.buttonRadius),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colorScheme.surface,
+            colorScheme.surfaceContainerHighest.withValues(alpha: 0.55),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.08)),
       ),
-      padding: const EdgeInsets.all(AppConstants.togglePadding),
+      padding: const EdgeInsets.all(4),
       child: Stack(
         children: [
           AnimatedAlign(
-            duration: 
-              AppConstants.pillAnimationDuration,
+            duration: AppConstants.pillAnimationDuration,
             curve: Curves.easeInOut,
             alignment: _pillAlignment(context),
             child: FractionallySizedBox(
               widthFactor: 0.5,
               child: Container(
                 decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  borderRadius: BorderRadius.circular(
-                    Spacing.buttonRadius - 2
+                  gradient: LinearGradient(
+                    colors: [colorScheme.primary, colorScheme.secondary],
                   ),
+                  borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: colorScheme.primary
-                        .withValues(alpha: 0.30),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
+                      color: colorScheme.primary.withValues(alpha: 0.22),
+                      blurRadius: 18,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          
+
           Row(
             children: [
               _TabLabel(
@@ -148,15 +147,14 @@ class _TabLabel extends StatelessWidget {
         onTap: onTap,
         child: Center(
           child: AnimatedDefaultTextStyle(
-            duration: 
-              AppConstants.pillAnimationDuration,
+            duration: AppConstants.pillAnimationDuration,
             curve: Curves.easeInOut,
             style: getMediumStyle(
-              fontSize: FontSize.size14,
+              fontSize: FontSize.size15,
               fontFamily: FontConstant.cairo,
-              color: active 
-                ? colorScheme.onPrimary 
-                : colorScheme.onSurfaceVariant,
+              color: active
+                  ? colorScheme.onPrimary
+                  : colorScheme.onSurfaceVariant,
             ),
             child: Text(label),
           ),

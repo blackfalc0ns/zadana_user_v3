@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+
 class AppTheme {
   AppTheme._();
 
@@ -13,7 +14,7 @@ class AppTheme {
       brightness: Brightness.light,
       fontFamily: 'Cairo',
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: const Color(0xFFF7F9FC),
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         onPrimary: AppColors.textOnPrimary,

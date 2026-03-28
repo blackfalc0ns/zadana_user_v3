@@ -43,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (shouldLogout == true && context.mounted) {
       Navigator.of(
         context,
-      ).pushNamedAndRemoveUntil(AppRoutes.signUp, (route) => false);
+      ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
     }
   }
 

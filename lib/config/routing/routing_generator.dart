@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/presentation/pages/forget_password_screen.dart';
+import 'package:zadana_user_v3/feature/auth/login/presentation/pages/login_screen.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/pages/register_screen.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/reset_password_screen.dart';
@@ -35,6 +36,8 @@ import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifica
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutes.login:
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => SplashPage());
       case AppRoutes.startPage:
@@ -51,13 +54,19 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case AppRoutes.verifyResetOtp:
         final identifier = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => VerifyResetOtpScreen(identifier: identifier));
+        return MaterialPageRoute(
+          builder: (_) => VerifyResetOtpScreen(identifier: identifier),
+        );
       case AppRoutes.resetPassword:
         final arguments = settings.arguments as Map<String, String>;
-        return MaterialPageRoute(builder: (_) => ResetPasswordScreen(arguments: arguments));
+        return MaterialPageRoute(
+          builder: (_) => ResetPasswordScreen(arguments: arguments),
+        );
       case AppRoutes.profileDetails:
         final profile = settings.arguments as ProfileResponseEntity;
-        return MaterialPageRoute(builder: (_) => ProfileDetailsScreen(profile: profile));
+        return MaterialPageRoute(
+          builder: (_) => ProfileDetailsScreen(profile: profile),
+        );
       case AppRoutes.editProfile:
         return MaterialPageRoute(builder: (_) => EditProfileScreen());
       case AppRoutes.home:
@@ -66,10 +75,8 @@ class RouteGenerator {
         final initialIndex = settings.arguments as int? ?? 0;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => MainShell(
-            key: mainShellKey,
-            initialIndex: initialIndex,
-          ),
+          builder: (_) =>
+              MainShell(key: mainShellKey, initialIndex: initialIndex),
         );
       case AppRoutes.selectAddress:
         return MaterialPageRoute(builder: (_) => SelectAddressFromMapPage());
@@ -78,21 +85,33 @@ class RouteGenerator {
       case AppRoutes.verifyOtp:
         return MaterialPageRoute(builder: (_) => VerifyOtpScreen());
       case AppRoutes.manualAddressEntry:
-        return MaterialPageRoute(builder: (_) => const ManualAddressEntryPage());
+        return MaterialPageRoute(
+          builder: (_) => const ManualAddressEntryPage(),
+        );
       case AppRoutes.buildingDetails:
         final locationEntity = settings.arguments as LocationEntity?;
-        return MaterialPageRoute(builder: (_) => BuildingDetailsPage(initialLocation: locationEntity));
+        return MaterialPageRoute(
+          builder: (_) => BuildingDetailsPage(initialLocation: locationEntity),
+        );
       case AppRoutes.productDetails:
         final product = settings.arguments as CategoryProductModel;
         return PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => ProductDetailsScreen(product: product),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              ProductDetailsScreen(product: product),
           transitionDuration: const Duration(milliseconds: 350),
           reverseTransitionDuration: const Duration(milliseconds: 250),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
-              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.6, curve: Curves.easeOut))),
+              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+                ),
+              ),
               child: ScaleTransition(
-                scale: Tween<double>(begin: 0.92, end: 1.0).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutBack)),
+                scale: Tween<double>(begin: 0.92, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+                ),
                 child: child,
               ),
             );
@@ -100,11 +119,11 @@ class RouteGenerator {
         );
       case AppRoutes.paymentSuccess:
         final orderId = settings.arguments as String?;
-        return MaterialPageRoute(builder: (_) => PaymentSuccessScreen(orderId: orderId));
-      case AppRoutes.orders:
         return MaterialPageRoute(
-          builder: (_) => const MyOrdersPage(),
+          builder: (_) => PaymentSuccessScreen(orderId: orderId),
         );
+      case AppRoutes.orders:
+        return MaterialPageRoute(builder: (_) => const MyOrdersPage());
       case AppRoutes.trackOrder:
         return MaterialPageRoute(builder: (_) => const TrackOrderScreen());
 

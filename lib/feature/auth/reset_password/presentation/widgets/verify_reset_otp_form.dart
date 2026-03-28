@@ -23,7 +23,10 @@ class VerifyResetOtpForm extends StatefulWidget {
 }
 
 class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
-  final List<TextEditingController> controllers = List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
   bool _isLoading = false;
 
@@ -75,7 +78,8 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
   void _handleFocusChange(int index) {
     if (focusNodes[index].hasFocus && controllers[index].text.isEmpty) {
       focusNodes[index].onKeyEvent = (node, event) {
-        if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.backspace) {
           if (index > 0 && controllers[index].text.isEmpty) {
             focusNodes[index - 1].requestFocus();
             return KeyEventResult.handled;
@@ -157,6 +161,7 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
           onPressed: isOtpComplete ? () => _submitOtp(context) : () {},
           isLoading: _isLoading,
         ),
+        const SizedBox(height: Spacing.base),
       ],
     );
   }

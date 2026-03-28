@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
+import 'package:zadana_user_v3/core/widgets/custom_text_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/domain/entities/register_request_entity.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_event.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_state.dart';
@@ -18,11 +19,7 @@ class SignUpForm extends StatefulWidget {
   final LocationEntity? locationEntity;
   final Function(String)? onEmailChanged;
 
-  const SignUpForm({
-    super.key,
-    this.locationEntity,
-    this.onEmailChanged,
-  });
+  const SignUpForm({super.key, this.locationEntity, this.onEmailChanged});
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -48,7 +45,7 @@ class _SignUpFormState extends State<SignUpForm> {
   void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       widget.onEmailChanged?.call(_emailController.text);
-      
+
       final location = widget.locationEntity;
 
       final registerRequestEntity = RegisterRequestEntity(
@@ -86,12 +83,12 @@ class _SignUpFormState extends State<SignUpForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FieldLabel(locale.label_full_name),
-              AppTextField(
+              CustomTextField(
                 controller: _fullNameController,
                 hint: locale.hint_full_name,
                 keyboardType: TextInputType.name,
                 validator: (v) => Validations.validateName(context, v),
-                prefixIcon: Icon(
+                prefix: Icon(
                   Icons.person_outline_rounded,
                   color: color.onSurfaceVariant,
                 ),
@@ -99,12 +96,12 @@ class _SignUpFormState extends State<SignUpForm> {
               const SizedBox(height: Spacing.base),
 
               FieldLabel(locale.label_email),
-              AppTextField(
+              CustomTextField(
                 controller: _emailController,
                 hint: locale.hint_email,
                 keyboardType: TextInputType.emailAddress,
                 validator: (v) => Validations.validateEmail(context, v),
-                prefixIcon: Icon(
+                prefix: Icon(
                   Icons.email_outlined,
                   color: color.onSurfaceVariant,
                 ),
@@ -112,21 +109,28 @@ class _SignUpFormState extends State<SignUpForm> {
               const SizedBox(height: Spacing.base),
 
               FieldLabel(locale.label_phone),
-              AppPhoneField(
+              CustomTextField(
                 controller: _phoneController,
                 hint: locale.hint_phone,
                 validator: (v) => Validations.validatePhoneNumber(context, v),
+                prefix: Icon(
+                  Icons.phone_outlined,
+                  color: color.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: Spacing.base),
 
               FieldLabel(locale.label_password),
-              AppPasswordField(
+              CustomTextField(
                 controller: _passwordController,
                 hint: locale.hint_password,
                 validator: (v) => Validations.validatePassword(context, v),
+                prefix: Icon(
+                  Icons.lock_outline_rounded,
+                  color: color.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: Spacing.xxl),
-
               AppButtonSwitch(
                 label: locale.btn_signup,
                 onPressed: () => _onSubmit(context),
