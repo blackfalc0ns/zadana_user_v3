@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -36,7 +37,23 @@ class BrandProductsGrid extends StatelessWidget {
               unit: brandProduct.unit,
             ),
             showFavorite: true,
-            onCardTap: () {},
+            onCardTap: () {
+              ProductNavigationHelper.navigateToProductDetails(
+                context,
+                ProductModel(
+                  id: brandProduct.id,
+                  name: brandProduct.name,
+                  store: brandProduct.brandName,
+                  price: brandProduct.price,
+                  oldPrice: brandProduct.oldPrice,
+                  imageUrl: brandProduct.imageUrl,
+                  emoji: brandProduct.emoji,
+                  discount: brandProduct.discount,
+                  isFavorite: brandProduct.isFavorite,
+                  unit: brandProduct.unit,
+                ),
+              );
+            },
             onAddTap: brandProduct.isInStock ? () {} : null,
             onFavoriteTap: () {},
           );

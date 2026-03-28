@@ -86,7 +86,7 @@ class ProductsGrid extends StatelessWidget {
           onAddTap: () {},
           showFavorite: true,
           onFavoriteTap: () {},
-          enableHeroAnimation: activeHeroProductId == product.id,
+          enableHeroAnimation: true,
         );
       },
     );
