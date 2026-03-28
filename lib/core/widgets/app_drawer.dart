@@ -27,15 +27,8 @@ class AppDrawer extends StatelessWidget {
                 slivers: [
                   SliverList(
                     delegate: SliverChildListDelegate([
-                      _buildPersonalInfoSection(context),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.base,
-                        ),
-                        child: Divider(
-                          color: color.onSurface.withValues(alpha: 0.12),
-                        ),
-                      ),
+                      const SizedBox(height: Spacing.sm),
+
                       _buildMainMenuItems(context),
                       Padding(
                         padding: const EdgeInsets.symmetric(

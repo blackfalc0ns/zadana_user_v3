@@ -12,21 +12,15 @@ class DrawerHeader extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
-      ),
+      decoration: BoxDecoration(color: AppColors.primary),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             Spacing.lg, // تقليل من xl إلى lg
-            Spacing.sm, // تقليل من base إلى sm
+            Spacing.xs, // تقليل من base إلى sm
             Spacing.lg, // تقليل من xl إلى lg
-            Spacing.lg, // تقليل من xl إلى lg
+            Spacing.md, // تقليل من xl إلى lg
           ),
           child: Column(
             children: [
@@ -36,7 +30,10 @@ class DrawerHeader extends StatelessWidget {
                 height: 50, // تقليل من 90 إلى 70
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.white, width: 3), // تقليل من 4 إلى 3
+                  border: Border.all(
+                    color: AppColors.white,
+                    width: 3,
+                  ), // تقليل من 4 إلى 3
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.black.withValues(alpha: 0.3),
@@ -66,30 +63,29 @@ class DrawerHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: Spacing.md), // تقليل من lg إلى md
-              
               // Name
               Text(
                 'mohamed',
-                style: AppTextStyles.labelLarge.copyWith( // تغيير من h4 إلى labelLarge
+                style: AppTextStyles.labelLarge.copyWith(
+                  // تغيير من h4 إلى labelLarge
                   color: AppColors.white,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.5,
                 ),
               ),
-              
+
               const SizedBox(height: Spacing.xs), // تقليل من sm إلى xs
-              
               // Email
               Directionality(
-                textDirection:
-                    isArabic ? TextDirection.ltr : TextDirection.rtl,
+                textDirection: isArabic ? TextDirection.ltr : TextDirection.rtl,
                 child: Text(
                   'mohamedAli123@gmail.com',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.labelMedium.copyWith( // تغيير من bodyMedium إلى labelMedium
+                  style: AppTextStyles.labelMedium.copyWith(
+                    // تغيير من bodyMedium إلى labelMedium
                     color: AppColors.white.withValues(alpha: 0.95),
                     fontWeight: FontWeight.w500,
                   ),

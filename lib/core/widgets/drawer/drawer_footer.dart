@@ -33,9 +33,7 @@ class DrawerFooter extends StatelessWidget {
             onPressed: () => showLogoutDialog(context),
           ),
           const SizedBox(height: Spacing.xss),
-          FooterInfoTile(
-            onTap: () => showDeveloperDialog(context),
-          ),
+          FooterInfoTile(onTap: () => showDeveloperDialog(context)),
           const SizedBox(height: Spacing.xss),
         ],
       ),

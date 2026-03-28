@@ -1,19 +1,11 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class HomeSearchBar extends StatelessWidget {
-  final TextEditingController? controller;
-  final VoidCallback? onFilterTap;
-  final ValueChanged<String>? onChanged;
-  final VoidCallback? onTap;
-  final bool readOnly;
-  final bool autofocus;
-
   const HomeSearchBar({
     super.key,
     this.controller,
@@ -22,30 +14,34 @@ class HomeSearchBar extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.autofocus = false,
+    this.padding = const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+    this.backgroundColor,
   });
+
+  final TextEditingController? controller;
+  final VoidCallback? onFilterTap;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onTap;
+  final bool readOnly;
+  final bool autofocus;
+  final EdgeInsetsGeometry padding;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+      padding: padding,
       child: Container(
-        height: 48,
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
-            // ── Search icon + field ──────────────────────────
             Expanded(
               child: TextFormField(
                 controller: controller,
@@ -60,44 +56,42 @@ class HomeSearchBar extends StatelessWidget {
                   hintStyle: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textHint,
                   ),
-                  prefixIcon: const Icon(
-                    Icons.search_rounded,
-                    color: AppColors.textHint,
-                    size: 20,
-                  ),
+                  isDense: true,
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 8,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 10),
+                    child: SvgPicture.asset(
+                      'assets/images/search-normal.svg',
+                      width: 20,
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.textHint,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-
-            // ── Divider ──────────────────────────────────────
-            Container(
-              width: 1,
-              height: 24,
-              color: AppColors.border,
-            ),
-
-            // ── Filter icon — على اليسار في RTL ─────────────
-            GestureDetector(
-              onTap: onFilterTap,
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Icon(
+            if (onFilterTap != null) ...[
+              const SizedBox(width: 10),
+              InkWell(
+                onTap: onFilterTap,
+                borderRadius: BorderRadius.circular(14),
+                child: const Icon(
                   Icons.tune_rounded,
-                  color: onFilterTap != null
-                      ? AppColors.primary
-                      : AppColors.textHint,
                   size: 20,
+                  color: AppColors.textHint,
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),

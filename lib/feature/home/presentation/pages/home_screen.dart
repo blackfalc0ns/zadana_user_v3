@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/home_search_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/promo_banner.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/best_selling_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/categories_section.dart';
@@ -70,10 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: [
           SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
 
-          // Static Search Bar (No loading)
-          SliverToBoxAdapter(child: HomeSearchBar()),
-          SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
-
           if (_isInitialLoading) ...[
             // Banner Skeleton
             const SliverToBoxAdapter(
@@ -121,7 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(child: const BestSellingSection()),
 
             SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
             // 5. Brands Section
             SliverToBoxAdapter(child: const BrandsSection()),
 
