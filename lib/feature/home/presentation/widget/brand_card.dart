@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class BrandCard extends StatelessWidget {
@@ -38,19 +40,19 @@ class BrandCard extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 24),
-                ),
+                child: Text(emoji, style: const TextStyle(fontSize: 24)),
               ),
             ),
-            
+
             const SizedBox(height: 4),
-            
+
             // Brand Name
             Text(
               name,
-              style: AppTextStyles.labelMedium.copyWith(fontSize: 10),
+              style: getSemiBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size12,
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

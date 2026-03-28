@@ -58,8 +58,13 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: customAppBar as PreferredSizeWidget? ??
+      appBar:
+          customAppBar as PreferredSizeWidget? ??
           AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () => Navigator.pop(context),
+            ),
             backgroundColor: AppColors.surface,
             elevation: 0,
             title: Text(productName, style: AppTextStyles.h4),

@@ -25,27 +25,27 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = _buildImageShell();
-
-    if (heroTag == null || heroTag!.isEmpty) {
-      return image;
-    }
-
-    return Hero(
-      tag: heroTag!,
-      transitionOnUserGestures: true,
-      child: Material(color: Colors.transparent, child: image),
-    );
+    return _buildImageShell();
   }
 
   Widget _buildImageShell() {
+    final childContent = emoji != null && emoji!.isNotEmpty ? _buildEmoji() : _buildImage();
+    
+    final heroChild = (heroTag == null || heroTag!.isEmpty)
+        ? childContent
+        : Hero(
+            tag: heroTag!,
+            transitionOnUserGestures: true,
+            child: Material(color: Colors.transparent, child: childContent),
+          );
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: Container(
         width: width,
         height: height,
         color: whiteBackground ? AppColors.white : AppColors.background,
-        child: emoji != null && emoji!.isNotEmpty ? _buildEmoji() : _buildImage(),
+        child: heroChild,
       ),
     );
   }
