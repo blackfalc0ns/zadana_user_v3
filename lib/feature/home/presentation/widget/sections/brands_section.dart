@@ -12,8 +12,10 @@ final List<Map<String, dynamic>> brandsData = [
     'id': 'juhayna',
     'name': 'جهينة',
     'emoji': '🥛',
-    'logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Juhayna_Food_Industries_logo.svg/1200px-Juhayna_Food_Industries_logo.svg.png',
-    'coverImage': 'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    'logo':
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Juhayna_Food_Industries_logo.svg/1200px-Juhayna_Food_Industries_logo.svg.png',
+    'coverImage':
+        'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
     'productCount': 45,
     'description': 'منتجات الألبان والعصائر الطبيعية',
   },
@@ -120,7 +122,10 @@ final List<Map<String, dynamic>> brandsData = [
 class BrandsSection extends StatelessWidget {
   const BrandsSection({super.key});
 
-  void _navigateToBrandPage(BuildContext context, Map<String, dynamic> brandData) {
+  void _navigateToBrandPage(
+    BuildContext context,
+    Map<String, dynamic> brandData,
+  ) {
     final brand = BrandModel(
       id: brandData['id'],
       name: brandData['name'],
@@ -133,9 +138,7 @@ class BrandsSection extends StatelessWidget {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => BrandPage(brand: brand),
-      ),
+      MaterialPageRoute(builder: (context) => BrandPage(brand: brand)),
     );
   }
 
@@ -148,7 +151,8 @@ class BrandsSection extends StatelessWidget {
       child: Column(
         children: [
           // Header
-          SectionHeader(actionColor: Colors.white,
+          SectionHeader(
+            actionColor: Colors.white,
             title: 'تصفح حسب العلامة التجارية',
             actionLabel: 'عرض الكل',
             isActionBold: true,

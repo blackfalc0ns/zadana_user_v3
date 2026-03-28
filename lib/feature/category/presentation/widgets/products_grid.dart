@@ -65,7 +65,7 @@ class ProductsGrid extends StatelessWidget {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: .9,
-      //  childAspectRatio,
+        //  childAspectRatio,
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),
@@ -127,8 +127,10 @@ class ProductsGrid extends StatelessWidget {
         return sortedProducts..sort((a, b) {
           if (a.isFavorite && !b.isFavorite) return -1;
           if (!a.isFavorite && b.isFavorite) return 1;
-          final aHasDiscount = (a.discount?.isNotEmpty ?? false) || a.oldPrice != null;
-          final bHasDiscount = (b.discount?.isNotEmpty ?? false) || b.oldPrice != null;
+          final aHasDiscount =
+              (a.discount?.isNotEmpty ?? false) || a.oldPrice != null;
+          final bHasDiscount =
+              (b.discount?.isNotEmpty ?? false) || b.oldPrice != null;
           if (aHasDiscount && !bHasDiscount) return -1;
           if (!aHasDiscount && bHasDiscount) return 1;
           final aRating = a.rating ?? 0;

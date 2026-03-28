@@ -37,7 +37,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _navigationService = CategoryNavigationService()
       ..addListener(_checkSelectedCategory);
     _startFakeLoading();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkSelectedCategory());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _checkSelectedCategory(),
+    );
   }
 
   @override
@@ -54,7 +56,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     } else {
       _isLoading = true;
     }
-    _loadingTimer = Timer(const Duration(seconds: 5), () {
+    _loadingTimer = Timer(const Duration(milliseconds: 1500), () {
       if (!mounted) return;
       setState(() => _isLoading = false);
     });
@@ -175,7 +177,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _priceRange = const RangeValues(0, 1000);
       }),
       sortOptions: kSortOptions,
-      hasActiveFilters: _selectedFilters.isNotEmpty ||
+      hasActiveFilters:
+          _selectedFilters.isNotEmpty ||
           _selectedSortOption.isNotEmpty ||
           _filterSelectedCategory != null ||
           _filterSelectedProductType != null ||

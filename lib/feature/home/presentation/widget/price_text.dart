@@ -31,17 +31,16 @@ class PriceText extends StatelessWidget {
           children: [
             Text(
               PriceFormatter.formatPrice(price),
-              style:
-                  style ??
-                  AppTextStyles.labelLarge.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size15,
+                color: AppColors.primary,
+              ),
             ),
             const SizedBox(width: 2),
             Text(
               'ريال',
-              style: getMediumStyle(
+              style: getSemiBoldStyle(
                 fontFamily: FontConstant.cairo,
                 fontSize: FontSize.size10,
                 color: AppColors.primary,

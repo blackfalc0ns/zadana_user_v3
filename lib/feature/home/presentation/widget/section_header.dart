@@ -53,7 +53,7 @@ class SectionHeader extends StatelessWidget {
                       fontSize: FontSize.size12,
                       color: actionColor ?? AppColors.secondary,
                     )
-                  : getMediumStyle(
+                  : getBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: FontSize.size12,
                       color: actionColor ?? AppColors.secondary,

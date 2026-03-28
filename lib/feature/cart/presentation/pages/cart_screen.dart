@@ -56,7 +56,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     if (mounted) {
       setState(() => _isLoading = true);
     }
-    _loadingTimer = Timer(const Duration(seconds: 3), () {
+    _loadingTimer = Timer(const Duration(milliseconds: 1500), () {
       if (!mounted) return;
       setState(() => _isLoading = false);
     });

@@ -48,10 +48,7 @@ class _CartItemCardState extends State<CartItemCard>
     );
 
     _priceSlideAnimation =
-        Tween<Offset>(
-          begin: const Offset(1.0, 0.0),
-          end: Offset.zero,
-        ).animate(
+        Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _priceAnimationController,
             curve: Curves.easeOutBack,
@@ -105,6 +102,7 @@ class _CartItemCardState extends State<CartItemCard>
       behavior: HitTestBehavior.opaque,
       child: Container(
         decoration: BoxDecoration(
+          border: Border.all(color: color.outline.withValues(alpha: 0.12)),
           color: color.surface,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [

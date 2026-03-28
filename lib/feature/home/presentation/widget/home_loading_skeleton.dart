@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 
-class HomeLoadingSkeleton extends StatefulWidget {
-  const HomeLoadingSkeleton({super.key});
+class ShimmerEffect extends StatefulWidget {
+  const ShimmerEffect({super.key, required this.child});
+
+  final Widget child;
 
   @override
-  State<HomeLoadingSkeleton> createState() => _HomeLoadingSkeletonState();
+  State<ShimmerEffect> createState() => _ShimmerEffectState();
 }
 
-class _HomeLoadingSkeletonState extends State<HomeLoadingSkeleton>
+class _ShimmerEffectState extends State<ShimmerEffect>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -18,7 +20,7 @@ class _HomeLoadingSkeletonState extends State<HomeLoadingSkeleton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 2000),
     )..repeat();
   }
 
@@ -32,47 +34,56 @@ class _HomeLoadingSkeletonState extends State<HomeLoadingSkeleton>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (context, _) {
+      builder: (context, child) {
         return ShaderMask(
+          blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
             return LinearGradient(
-              begin: Alignment(-1.2 + (_controller.value * 2), 0),
-              end: Alignment(-0.2 + (_controller.value * 2), 0),
-              colors: const [
+              begin: Alignment(-2.0 + (_controller.value * 4), -0.5),
+              end: Alignment(0.0 + (_controller.value * 4), 0.5),
+              colors: [
                 AppColors.shimmerBase,
-                AppColors.shimmerHighlight,
+                AppColors.shimmerHighlight.withOpacity(0.5),
                 AppColors.shimmerBase,
               ],
-              stops: const [0.1, 0.3, 0.4],
+              stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
           },
-          blendMode: BlendMode.srcATop,
-          child: CustomScrollView(
-            key: const PageStorageKey<String>('home_loading_scroll_view'),
-            slivers: const [
-              SliverToBoxAdapter(child: SizedBox(height: Spacing.sm)),
-              SliverToBoxAdapter(child: _SearchBarSkeleton()),
-              SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
-              SliverToBoxAdapter(child: _BannerSkeleton()),
-              SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
-              SliverToBoxAdapter(child: _CategoriesSectionSkeleton()),
-              SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
-              SliverToBoxAdapter(child: _SectionSkeleton(cardCount: 3)),
-              SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
-              SliverToBoxAdapter(child: _SectionSkeleton(cardCount: 3)),
-              SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
-              SliverToBoxAdapter(child: _SectionSkeleton(cardCount: 3)),
-              SliverToBoxAdapter(child: SizedBox(height: 100)),
-            ],
-          ),
+          child: child,
         );
       },
+      child: widget.child,
     );
   }
 }
 
-class _SectionSkeleton extends StatelessWidget {
-  const _SectionSkeleton({required this.cardCount});
+class HomeLoadingSkeleton extends StatelessWidget {
+  const HomeLoadingSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShimmerEffect(
+      child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: const [
+          BannerSkeleton(),
+          SizedBox(height: Spacing.lg),
+          CategoriesSectionSkeleton(),
+          SizedBox(height: Spacing.lg),
+          SectionSkeleton(cardCount: 3),
+          SizedBox(height: Spacing.lg),
+          SectionSkeleton(cardCount: 3),
+          SizedBox(height: Spacing.lg),
+          SectionSkeleton(cardCount: 3),
+        ],
+      ),
+    );
+  }
+}
+
+class SectionSkeleton extends StatelessWidget {
+  const SectionSkeleton({super.key, required this.cardCount});
 
   final int cardCount;
 
@@ -85,9 +96,9 @@ class _SectionSkeleton extends StatelessWidget {
         children: [
           const Row(
             children: [
-              _Bone(width: 120, height: 18, radius: 999),
+              Bone(width: 120, height: 18, radius: 999),
               Spacer(),
-              _Bone(width: 52, height: 14, radius: 999),
+              Bone(width: 52, height: 14, radius: 999),
             ],
           ),
           const SizedBox(height: Spacing.base),
@@ -98,7 +109,7 @@ class _SectionSkeleton extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: cardCount,
               separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-              itemBuilder: (_, _) => const _ProductCardSkeleton(),
+              itemBuilder: (_, _) => const ProductCardSkeleton(),
             ),
           ),
         ],
@@ -107,32 +118,32 @@ class _SectionSkeleton extends StatelessWidget {
   }
 }
 
-class _SearchBarSkeleton extends StatelessWidget {
-  const _SearchBarSkeleton();
+class SearchBarSkeleton extends StatelessWidget {
+  const SearchBarSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.base),
-      child: _Bone(height: 48, radius: 16),
+      child: Bone(height: 48, radius: 16),
     );
   }
 }
 
-class _BannerSkeleton extends StatelessWidget {
-  const _BannerSkeleton();
+class BannerSkeleton extends StatelessWidget {
+  const BannerSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.base),
-      child: _Bone(height: 150, radius: 20),
+      child: Bone(height: 150, radius: 20),
     );
   }
 }
 
-class _ProductCardSkeleton extends StatelessWidget {
-  const _ProductCardSkeleton();
+class ProductCardSkeleton extends StatelessWidget {
+  const ProductCardSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -143,19 +154,19 @@ class _ProductCardSkeleton extends StatelessWidget {
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
         border: Border.all(color: AppColors.border),
       ),
-      child: Stack(
-        children: const [
+      child: const Stack(
+        children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Bone(height: 75, radius: Spacing.cardRadius),
+              Bone(height: 75, radius: Spacing.cardRadius),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(7, 7, 7, 3.5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _Bone(width: 76, height: 12, radius: 999),
+                      Bone(width: 76, height: 12, radius: 999),
                       Spacer(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -165,14 +176,14 @@ class _ProductCardSkeleton extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _Bone(width: 44, height: 10, radius: 999),
+                                Bone(width: 44, height: 10, radius: 999),
                                 SizedBox(height: 4),
-                                _Bone(width: 34, height: 10, radius: 999),
+                                Bone(width: 34, height: 10, radius: 999),
                               ],
                             ),
                           ),
                           SizedBox(width: 4),
-                          _Bone(width: 30, height: 30, radius: 999),
+                          Bone(width: 30, height: 30, radius: 999),
                         ],
                       ),
                     ],
@@ -184,7 +195,7 @@ class _ProductCardSkeleton extends StatelessWidget {
           Positioned(
             top: 4,
             right: 4,
-            child: _Bone(width: 30, height: 30, radius: 999),
+            child: Bone(width: 30, height: 30, radius: 999),
           ),
         ],
       ),
@@ -192,8 +203,8 @@ class _ProductCardSkeleton extends StatelessWidget {
   }
 }
 
-class _CategoriesSectionSkeleton extends StatelessWidget {
-  const _CategoriesSectionSkeleton();
+class CategoriesSectionSkeleton extends StatelessWidget {
+  const CategoriesSectionSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +215,9 @@ class _CategoriesSectionSkeleton extends StatelessWidget {
         children: [
           const Row(
             children: [
-              _Bone(width: 132, height: 18, radius: 999),
+              Bone(width: 132, height: 18, radius: 999),
               Spacer(),
-              _Bone(width: 52, height: 14, radius: 999),
+              Bone(width: 52, height: 14, radius: 999),
             ],
           ),
           const SizedBox(height: Spacing.md),
@@ -217,7 +228,7 @@ class _CategoriesSectionSkeleton extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 6,
               separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-              itemBuilder: (_, _) => const _CategoryChipSkeleton(),
+              itemBuilder: (_, _) => const CategoryChipSkeleton(),
             ),
           ),
         ],
@@ -226,8 +237,8 @@ class _CategoriesSectionSkeleton extends StatelessWidget {
   }
 }
 
-class _CategoryChipSkeleton extends StatelessWidget {
-  const _CategoryChipSkeleton();
+class CategoryChipSkeleton extends StatelessWidget {
+  const CategoryChipSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -244,21 +255,17 @@ class _CategoryChipSkeleton extends StatelessWidget {
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _Bone(width: 36, height: 36, radius: 999),
+          Bone(width: 36, height: 36, radius: 999),
           SizedBox(height: Spacing.xs),
-          _Bone(width: 44, height: 10, radius: 999),
+          Bone(width: 44, height: 10, radius: 999),
         ],
       ),
     );
   }
 }
 
-class _Bone extends StatelessWidget {
-  const _Bone({
-    this.width,
-    required this.height,
-    required this.radius,
-  });
+class Bone extends StatelessWidget {
+  const Bone({super.key, this.width, required this.height, required this.radius});
 
   final double? width;
   final double height;

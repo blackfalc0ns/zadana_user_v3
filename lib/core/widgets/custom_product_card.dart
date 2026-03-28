@@ -66,7 +66,7 @@ class CustomProductCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       padding,
-                      padding ,
+                      padding,
                       padding,
                       padding / 2,
                     ),
@@ -79,33 +79,36 @@ class CustomProductCard extends StatelessWidget {
                             style: getSemiBoldStyle(
                               fontFamily: FontConstant.cairo,
                               fontSize: fontSize,
-                              color: AppColors.textPrimary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(height: 4),
                         Flexible(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(child: PriceText(price: product.price)),
-                              SizedBox(width: isSmallScreen ? 2 : 4),
                               GestureDetector(
                                 onTap: onAddTap,
                                 child: Container(
+                                  padding: const EdgeInsets.all(4),
                                   width: cartSize,
                                   height: cartSize,
-                                  alignment: Alignment.center,
                                   decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(6),
+                                    ),
                                     color: AppColors.primary,
-                                    shape: BoxShape.circle,
                                   ),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.cartPlus,
-                                    color: AppColors.white,
-                                    size: cartIconSize,
+                                  child: Center(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.cartPlus,
+                                      color: AppColors.white,
+                                      size: cartIconSize,
+                                    ),
                                   ),
                                 ),
                               ),

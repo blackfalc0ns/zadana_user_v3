@@ -19,7 +19,7 @@ class _FavoritesLoadingSkeletonState extends State<FavoritesLoadingSkeleton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 2000),
     )..repeat();
   }
 
@@ -31,36 +31,60 @@ class _FavoritesLoadingSkeletonState extends State<FavoritesLoadingSkeleton>
 
   @override
   Widget build(BuildContext context) {
+    return _ShimmerWrapper(
+      controller: _controller,
+      child: GridView.builder(
+        padding: const EdgeInsets.only(bottom: 90, left: 12, right: 12),
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 15,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.86,
+          crossAxisSpacing: Spacing.xss,
+          mainAxisSpacing: Spacing.xss,
+        ),
+        itemBuilder: (_, index) => _FavoriteCardSkeleton(index: index),
+      ),
+    );
+  }
+}
+
+class _ShimmerWrapper extends StatelessWidget {
+  const _ShimmerWrapper({required this.controller, required this.child});
+
+  final AnimationController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return GridView.builder(
-          padding: const EdgeInsets.only(bottom: 90, left: 12, right: 12),
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 15,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 0.86,
-            crossAxisSpacing: Spacing.xss,
-            mainAxisSpacing: Spacing.xss,
-          ),
-          itemBuilder: (_, index) => _FavoriteCardSkeleton(
-            shimmerValue: _controller.value,
-            index: index,
-          ),
+      animation: controller,
+      builder: (context, child) {
+        return ShaderMask(
+          blendMode: BlendMode.srcATop,
+          shaderCallback: (bounds) {
+            return LinearGradient(
+              begin: Alignment(-2.0 + (controller.value * 4), -0.5),
+              end: Alignment(0.0 + (controller.value * 4), 0.5),
+              colors: [
+                AppColors.shimmerBase,
+                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerBase,
+              ],
+              stops: const [0.35, 0.5, 0.65],
+            ).createShader(bounds);
+          },
+          child: child,
         );
       },
+      child: child,
     );
   }
 }
 
 class _FavoriteCardSkeleton extends StatelessWidget {
-  const _FavoriteCardSkeleton({
-    required this.shimmerValue,
-    required this.index,
-  });
+  const _FavoriteCardSkeleton({required this.index});
 
-  final double shimmerValue;
   final int index;
 
   @override
@@ -76,10 +100,9 @@ class _FavoriteCardSkeleton extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Bone(
+              const _Bone(
                 height: 75,
                 radius: Spacing.cardRadius,
-                shimmerValue: shimmerValue,
               ),
               Expanded(
                 child: Padding(
@@ -96,12 +119,11 @@ class _FavoriteCardSkeleton extends StatelessWidget {
                         },
                         height: 12,
                         radius: 999,
-                        shimmerValue: shimmerValue,
                       ),
                       const Spacer(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
+                        children: const [
                           Expanded(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -111,24 +133,21 @@ class _FavoriteCardSkeleton extends StatelessWidget {
                                   width: 42,
                                   height: 10,
                                   radius: 999,
-                                  shimmerValue: shimmerValue,
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4),
                                 _Bone(
                                   width: 34,
                                   height: 10,
                                   radius: 999,
-                                  shimmerValue: shimmerValue,
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4),
                           _Bone(
                             width: 30,
                             height: 30,
                             radius: 999,
-                            shimmerValue: shimmerValue,
                           ),
                         ],
                       ),
@@ -138,14 +157,13 @@ class _FavoriteCardSkeleton extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             top: 4,
             right: 4,
             child: _Bone(
               width: 30,
               height: 30,
               radius: 999,
-              shimmerValue: shimmerValue,
             ),
           ),
         ],
@@ -159,37 +177,20 @@ class _Bone extends StatelessWidget {
     this.width,
     required this.height,
     required this.radius,
-    required this.shimmerValue,
   });
 
   final double? width;
   final double height;
   final double radius;
-  final double shimmerValue;
 
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) {
-        return LinearGradient(
-          begin: Alignment(-1.2 + (shimmerValue * 2), 0),
-          end: Alignment(-0.2 + (shimmerValue * 2), 0),
-          colors: [
-            AppColors.shimmerBase.withValues(alpha: 0.72),
-            AppColors.shimmerHighlight.withValues(alpha: 0.48),
-            AppColors.shimmerBase.withValues(alpha: 0.72),
-          ],
-          stops: const [0.1, 0.3, 0.4],
-        ).createShader(bounds);
-      },
-      blendMode: BlendMode.srcATop,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: AppColors.shimmerBase.withValues(alpha: 0.58),
-          borderRadius: BorderRadius.circular(radius),
-        ),
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppColors.shimmerBase,
+        borderRadius: BorderRadius.circular(radius),
       ),
     );
   }

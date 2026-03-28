@@ -19,7 +19,7 @@ class _CategoryLoadingSkeletonState extends State<CategoryLoadingSkeleton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 2000),
     )..repeat();
   }
 
@@ -31,49 +31,76 @@ class _CategoryLoadingSkeletonState extends State<CategoryLoadingSkeleton>
 
   @override
   Widget build(BuildContext context) {
+    return _ShimmerWrapper(
+      controller: _controller,
+      child: Column(
+        children: const [
+          _SearchSkeleton(),
+          SizedBox(height: Spacing.md),
+          _ChipsSkeleton(),
+          SizedBox(height: Spacing.sm),
+          Expanded(
+            child: _ProductsSkeleton(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShimmerWrapper extends StatelessWidget {
+  const _ShimmerWrapper({required this.controller, required this.child});
+
+  final AnimationController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return Column(
-          children: [
-            _SearchSkeleton(shimmerValue: _controller.value),
-            const SizedBox(height: Spacing.md),
-            _ChipsSkeleton(shimmerValue: _controller.value),
-            const SizedBox(height: Spacing.sm),
-            Expanded(
-              child: _ProductsSkeleton(shimmerValue: _controller.value),
-            ),
-          ],
+      animation: controller,
+      builder: (context, child) {
+        return ShaderMask(
+          blendMode: BlendMode.srcATop,
+          shaderCallback: (bounds) {
+            return LinearGradient(
+              begin: Alignment(-2.0 + (controller.value * 4), -0.5),
+              end: Alignment(0.0 + (controller.value * 4), 0.5),
+              colors: [
+                AppColors.shimmerBase,
+                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerBase,
+              ],
+              stops: const [0.35, 0.5, 0.65],
+            ).createShader(bounds);
+          },
+          child: child,
         );
       },
+      child: child,
     );
   }
 }
 
 class _SearchSkeleton extends StatelessWidget {
-  const _SearchSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _SearchSkeleton();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(Spacing.md),
       child: Row(
-        children: [
+        children: const [
           Expanded(
             child: _Bone(
               height: 40,
               radius: Spacing.cardRadius,
-              shimmerValue: shimmerValue,
             ),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: 6),
           _Bone(
             width: 42,
             height: 40,
             radius: 8,
-            shimmerValue: shimmerValue,
           ),
         ],
       ),
@@ -82,9 +109,7 @@ class _SearchSkeleton extends StatelessWidget {
 }
 
 class _ChipsSkeleton extends StatelessWidget {
-  const _ChipsSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _ChipsSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +124,6 @@ class _ChipsSkeleton extends StatelessWidget {
           width: index == 0 ? 88 : 78,
           height: 36,
           radius: 999,
-          shimmerValue: shimmerValue,
         ),
       ),
     );
@@ -107,9 +131,7 @@ class _ChipsSkeleton extends StatelessWidget {
 }
 
 class _ProductsSkeleton extends StatelessWidget {
-  const _ProductsSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _ProductsSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -128,21 +150,14 @@ class _ProductsSkeleton extends StatelessWidget {
         crossAxisSpacing: Spacing.xss,
         mainAxisSpacing: Spacing.xss,
       ),
-      itemBuilder: (_, index) => _ProductCardSkeleton(
-        shimmerValue: shimmerValue,
-        index: index,
-      ),
+      itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
     );
   }
 }
 
 class _ProductCardSkeleton extends StatelessWidget {
-  const _ProductCardSkeleton({
-    required this.shimmerValue,
-    required this.index,
-  });
+  const _ProductCardSkeleton({required this.index});
 
-  final double shimmerValue;
   final int index;
 
   @override
@@ -158,10 +173,9 @@ class _ProductCardSkeleton extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Bone(
+              const _Bone(
                 height: 75,
                 radius: Spacing.cardRadius,
-                shimmerValue: shimmerValue,
               ),
               Expanded(
                 child: Padding(
@@ -178,12 +192,11 @@ class _ProductCardSkeleton extends StatelessWidget {
                         },
                         height: 12,
                         radius: 999,
-                        shimmerValue: shimmerValue,
                       ),
                       const Spacer(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
+                        children: const [
                           Expanded(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -193,24 +206,21 @@ class _ProductCardSkeleton extends StatelessWidget {
                                   width: 40,
                                   height: 10,
                                   radius: 999,
-                                  shimmerValue: shimmerValue,
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4),
                                 _Bone(
                                   width: 32,
                                   height: 10,
                                   radius: 999,
-                                  shimmerValue: shimmerValue,
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4),
                           _Bone(
                             width: 28,
                             height: 28,
                             radius: 999,
-                            shimmerValue: shimmerValue,
                           ),
                         ],
                       ),
@@ -220,14 +230,13 @@ class _ProductCardSkeleton extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             top: 4,
             right: 4,
             child: _Bone(
               width: 28,
               height: 28,
               radius: 999,
-              shimmerValue: shimmerValue,
             ),
           ),
         ],
@@ -241,37 +250,20 @@ class _Bone extends StatelessWidget {
     this.width,
     required this.height,
     required this.radius,
-    required this.shimmerValue,
   });
 
   final double? width;
   final double height;
   final double radius;
-  final double shimmerValue;
 
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) {
-        return LinearGradient(
-          begin: Alignment(-1.2 + (shimmerValue * 2), 0),
-          end: Alignment(-0.2 + (shimmerValue * 2), 0),
-          colors: [
-            AppColors.shimmerBase.withValues(alpha: 0.72),
-            AppColors.shimmerHighlight.withValues(alpha: 0.48),
-            AppColors.shimmerBase.withValues(alpha: 0.72),
-          ],
-          stops: const [0.1, 0.3, 0.4],
-        ).createShader(bounds);
-      },
-      blendMode: BlendMode.srcATop,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: AppColors.shimmerBase.withValues(alpha: 0.58),
-          borderRadius: BorderRadius.circular(radius),
-        ),
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppColors.shimmerBase,
+        borderRadius: BorderRadius.circular(radius),
       ),
     );
   }

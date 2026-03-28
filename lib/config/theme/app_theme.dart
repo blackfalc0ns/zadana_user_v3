@@ -14,7 +14,7 @@ class AppTheme {
       brightness: Brightness.light,
       fontFamily: 'Cairo',
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: const Color(0xFFF7F9FC),
+      scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         onPrimary: AppColors.textOnPrimary,

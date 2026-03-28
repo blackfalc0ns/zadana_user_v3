@@ -18,7 +18,7 @@ class _CartLoadingSkeletonState extends State<CartLoadingSkeleton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 2000),
     )..repeat();
   }
 
@@ -30,58 +30,81 @@ class _CartLoadingSkeletonState extends State<CartLoadingSkeleton>
 
   @override
   Widget build(BuildContext context) {
+    return _ShimmerWrapper(
+      controller: _controller,
+      child: Stack(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(bottom: 170),
+            child: _CartContentSkeleton(),
+          ),
+          const Positioned(
+            bottom: 90,
+            left: 0,
+            right: 0,
+            child: _SelectVendorBottomSkeleton(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShimmerWrapper extends StatelessWidget {
+  const _ShimmerWrapper({required this.controller, required this.child});
+
+  final AnimationController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 170),
-              child: _CartContentSkeleton(shimmerValue: _controller.value),
-            ),
-            Positioned(
-              bottom: 90,
-              left: 0,
-              right: 0,
-              child: _SelectVendorBottomSkeleton(
-                shimmerValue: _controller.value,
-              ),
-            ),
-          ],
+      animation: controller,
+      builder: (context, child) {
+        return ShaderMask(
+          blendMode: BlendMode.srcATop,
+          shaderCallback: (bounds) {
+            return LinearGradient(
+              begin: Alignment(-2.0 + (controller.value * 4), -0.5),
+              end: Alignment(0.0 + (controller.value * 4), 0.5),
+              colors: [
+                AppColors.shimmerBase,
+                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerBase,
+              ],
+              stops: const [0.35, 0.5, 0.65],
+            ).createShader(bounds);
+          },
+          child: child,
         );
       },
+      child: child,
     );
   }
 }
 
 class _CartContentSkeleton extends StatelessWidget {
-  const _CartContentSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _CartContentSkeleton();
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        _VendorSelectorSkeleton(shimmerValue: shimmerValue),
+      children: const [
+        _VendorSelectorSkeleton(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: _VendorPromptSkeleton(shimmerValue: shimmerValue),
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: _VendorPromptSkeleton(),
         ),
-        const SizedBox(height: 4),
-        const Divider(height: 4, color: AppColors.border),
-        Expanded(
-          child: _CartItemsSkeleton(shimmerValue: shimmerValue),
-        ),
+        SizedBox(height: 4),
+        Divider(height: 4, color: AppColors.border),
+        Expanded(child: _CartItemsSkeleton()),
       ],
     );
   }
 }
 
 class _VendorSelectorSkeleton extends StatelessWidget {
-  const _VendorSelectorSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _VendorSelectorSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +114,7 @@ class _VendorSelectorSkeleton extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.05),
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 6,
             offset: const Offset(0, 1),
           ),
@@ -102,7 +125,7 @@ class _VendorSelectorSkeleton extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 2,
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: AppColors.primary.withOpacity(0.2),
           ),
           Expanded(
             child: ListView.separated(
@@ -110,10 +133,7 @@ class _VendorSelectorSkeleton extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               itemCount: 7,
               separatorBuilder: (_, _) => const SizedBox(width: 6),
-              itemBuilder: (_, index) => _VendorChipSkeleton(
-                index: index,
-                shimmerValue: shimmerValue,
-              ),
+              itemBuilder: (_, index) => _VendorChipSkeleton(index: index),
             ),
           ),
         ],
@@ -123,13 +143,9 @@ class _VendorSelectorSkeleton extends StatelessWidget {
 }
 
 class _VendorChipSkeleton extends StatelessWidget {
-  const _VendorChipSkeleton({
-    required this.index,
-    required this.shimmerValue,
-  });
+  const _VendorChipSkeleton({required this.index});
 
   final int index;
-  final double shimmerValue;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +157,7 @@ class _VendorChipSkeleton extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.05),
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),
@@ -150,7 +166,7 @@ class _VendorChipSkeleton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _Bone(width: 20, height: 20, radius: 999, shimmerValue: shimmerValue),
+          const _Bone(width: 20, height: 20, radius: 999),
           const SizedBox(width: 8),
           _Bone(
             width: switch (index) {
@@ -164,7 +180,6 @@ class _VendorChipSkeleton extends StatelessWidget {
             },
             height: 14,
             radius: 999,
-            shimmerValue: shimmerValue,
           ),
         ],
       ),
@@ -173,9 +188,7 @@ class _VendorChipSkeleton extends StatelessWidget {
 }
 
 class _VendorPromptSkeleton extends StatelessWidget {
-  const _VendorPromptSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _VendorPromptSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -183,30 +196,20 @@ class _VendorPromptSkeleton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          _Bone(width: 36, height: 36, radius: 8, shimmerValue: shimmerValue),
+          const _Bone(width: 36, height: 36, radius: 8),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Bone(
-                  width: 190,
-                  height: 16,
-                  radius: 999,
-                  shimmerValue: shimmerValue,
-                ),
-                const SizedBox(height: 6),
-                _Bone(
-                  width: 150,
-                  height: 12,
-                  radius: 999,
-                  shimmerValue: shimmerValue,
-                ),
+              children: const [
+                _Bone(width: 190, height: 16, radius: 999),
+                SizedBox(height: 6),
+                _Bone(width: 150, height: 12, radius: 999),
               ],
             ),
           ),
           const SizedBox(width: 10),
-          _Bone(width: 24, height: 24, radius: 999, shimmerValue: shimmerValue),
+          const _Bone(width: 24, height: 24, radius: 999),
         ],
       ),
     );
@@ -214,9 +217,7 @@ class _VendorPromptSkeleton extends StatelessWidget {
 }
 
 class _CartItemsSkeleton extends StatelessWidget {
-  const _CartItemsSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _CartItemsSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +232,7 @@ class _CartItemsSkeleton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow.withValues(alpha: 0.06),
+              color: AppColors.shadow.withOpacity(0.06),
               blurRadius: 6,
               offset: const Offset(0, 1),
             ),
@@ -239,12 +240,7 @@ class _CartItemsSkeleton extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _Bone(
-              width: 80,
-              height: 80,
-              radius: Spacing.cardRadius,
-              shimmerValue: shimmerValue,
-            ),
+            const _Bone(width: 80, height: 80, radius: Spacing.cardRadius),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -260,52 +256,26 @@ class _CartItemsSkeleton extends StatelessWidget {
                     },
                     height: 14,
                     radius: 999,
-                    shimmerValue: shimmerValue,
                   ),
                   const SizedBox(height: 4),
-                  _Bone(
-                    width: 132,
-                    height: 11,
-                    radius: 999,
-                    shimmerValue: shimmerValue,
-                  ),
+                  const _Bone(width: 132, height: 11, radius: 999),
                   const SizedBox(height: 8),
                   Row(
-                    children: [
-                      _Bone(
-                        width: 32,
-                        height: 32,
-                        radius: 6,
-                        shimmerValue: shimmerValue,
-                      ),
-                      const SizedBox(width: 12),
-                      _Bone(
-                        width: 48,
-                        height: 32,
-                        radius: 6,
-                        shimmerValue: shimmerValue,
-                      ),
-                      const SizedBox(width: 12),
-                      _Bone(
-                        width: 32,
-                        height: 32,
-                        radius: 6,
-                        shimmerValue: shimmerValue,
-                      ),
+                    children: const [
+                      _Bone(width: 32, height: 32, radius: 6),
+                      SizedBox(width: 12),
+                      _Bone(width: 48, height: 32, radius: 6),
+                      SizedBox(width: 12),
+                      _Bone(width: 32, height: 32, radius: 6),
                     ],
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
-            Align(
+            const Align(
               alignment: Alignment.topCenter,
-              child: _Bone(
-                width: 36,
-                height: 36,
-                radius: 6,
-                shimmerValue: shimmerValue,
-              ),
+              child: _Bone(width: 36, height: 36, radius: 6),
             ),
           ],
         ),
@@ -315,9 +285,7 @@ class _CartItemsSkeleton extends StatelessWidget {
 }
 
 class _SelectVendorBottomSkeleton extends StatelessWidget {
-  const _SelectVendorBottomSkeleton({required this.shimmerValue});
-
-  final double shimmerValue;
+  const _SelectVendorBottomSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -327,7 +295,7 @@ class _SelectVendorBottomSkeleton extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withValues(alpha: 0.1),
+            color: AppColors.shadow.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -337,31 +305,16 @@ class _SelectVendorBottomSkeleton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            children: [
-              _Bone(
-                width: 16,
-                height: 16,
-                radius: 999,
-                shimmerValue: shimmerValue,
-              ),
-              const SizedBox(width: 5),
-              _Bone(
-                width: 52,
-                height: 12,
-                radius: 999,
-                shimmerValue: shimmerValue,
-              ),
-              const Spacer(),
-              _Bone(
-                width: 138,
-                height: 12,
-                radius: 999,
-                shimmerValue: shimmerValue,
-              ),
+            children: const [
+              _Bone(width: 16, height: 16, radius: 999),
+              SizedBox(width: 5),
+              _Bone(width: 52, height: 12, radius: 999),
+              Spacer(),
+              _Bone(width: 138, height: 12, radius: 999),
             ],
           ),
           const SizedBox(height: 8),
-          _Bone(height: 36, radius: 8, shimmerValue: shimmerValue),
+          const _Bone(height: 36, radius: 8),
         ],
       ),
     );
@@ -369,41 +322,20 @@ class _SelectVendorBottomSkeleton extends StatelessWidget {
 }
 
 class _Bone extends StatelessWidget {
-  const _Bone({
-    this.width,
-    required this.height,
-    required this.radius,
-    required this.shimmerValue,
-  });
+  const _Bone({this.width, required this.height, required this.radius});
 
   final double? width;
   final double height;
   final double radius;
-  final double shimmerValue;
 
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) {
-        return LinearGradient(
-          begin: Alignment(-1.2 + (shimmerValue * 2), 0),
-          end: Alignment(-0.2 + (shimmerValue * 2), 0),
-          colors: [
-            AppColors.shimmerBase.withValues(alpha: 0.72),
-            AppColors.shimmerHighlight.withValues(alpha: 0.48),
-            AppColors.shimmerBase.withValues(alpha: 0.72),
-          ],
-          stops: const [0.1, 0.3, 0.4],
-        ).createShader(bounds);
-      },
-      blendMode: BlendMode.srcATop,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: AppColors.shimmerBase.withValues(alpha: 0.58),
-          borderRadius: BorderRadius.circular(radius),
-        ),
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppColors.shimmerBase,
+        borderRadius: BorderRadius.circular(radius),
       ),
     );
   }

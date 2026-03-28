@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _startFakeLoading() {
     _loadingTimer?.cancel();
     setState(() => _isInitialLoading = true);
-    _loadingTimer = Timer(const Duration(seconds: 10), () {
+    _loadingTimer = Timer(const Duration(seconds: 2), () {
       if (!mounted) return;
       setState(() => _isInitialLoading = false);
     });
@@ -60,63 +60,85 @@ class _HomeScreenState extends State<HomeScreen> {
     final locale = context.localization;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: HomeAppBar(
         deliverToLabel: locale.deliver_to,
         location: locale.location,
         onMenuTap: widget.onMenuTap,
       ),
-      body: _isInitialLoading
-          ? const HomeLoadingSkeleton()
-          : CustomScrollView(
-              key: const PageStorageKey<String>('home_scroll_view'),
-              slivers: [
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
+      body: CustomScrollView(
+        key: const PageStorageKey<String>('home_scroll_view'),
+        slivers: [
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
 
-                // Search Bar
-                SliverToBoxAdapter(child: HomeSearchBar()),
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
+          // Static Search Bar (No loading)
+          SliverToBoxAdapter(child: HomeSearchBar()),
+          SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
 
-                // Promo Banner
-                SliverToBoxAdapter(child: const PromoBanner()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-                // 1. Categories Section
-                SliverToBoxAdapter(child: const CategoriesSection()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-                // 3. Recommended For You Section
-
-                // 3. Special Offers Section
-                SliverToBoxAdapter(child: const SpecialOffersSection()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-                SliverToBoxAdapter(child: const RecommendedSection()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-                // 4. Best Selling Section
-                SliverToBoxAdapter(child: const BestSellingSection()),
-                // 2. Brands Section
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-                SliverToBoxAdapter(child: const BrandsSection()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-                // 5. Featured Products Section
-                SliverToBoxAdapter(child: const FeaturedProductsSection()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-                // 6. Explore More Section
-                SliverToBoxAdapter(child: const ExploreMoreSection()),
-
-                SliverToBoxAdapter(child: const SizedBox(height: 100)),
-              ],
+          if (_isInitialLoading) ...[
+            // Banner Skeleton
+            const SliverToBoxAdapter(
+              child: ShimmerEffect(child: BannerSkeleton()),
             ),
+            const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+
+            // Categories Skeleton
+            const SliverToBoxAdapter(
+              child: ShimmerEffect(child: CategoriesSectionSkeleton()),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+
+            // Product Sections Skeletons
+            const SliverToBoxAdapter(
+              child: ShimmerEffect(child: SectionSkeleton(cardCount: 3)),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+            const SliverToBoxAdapter(
+              child: ShimmerEffect(child: SectionSkeleton(cardCount: 3)),
+            ),
+          ] else ...[
+            // Actual Content
+            // Promo Banner
+            SliverToBoxAdapter(child: const PromoBanner()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 1. Categories Section
+            SliverToBoxAdapter(child: const CategoriesSection()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 2. Special Offers Section
+            SliverToBoxAdapter(child: const SpecialOffersSection()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 3. Recommended Section
+            SliverToBoxAdapter(child: const RecommendedSection()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 4. Best Selling Section
+            SliverToBoxAdapter(child: const BestSellingSection()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 5. Brands Section
+            SliverToBoxAdapter(child: const BrandsSection()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 6. Featured Products Section
+            SliverToBoxAdapter(child: const FeaturedProductsSection()),
+
+            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
+
+            // 7. Explore More Section
+            SliverToBoxAdapter(child: const ExploreMoreSection()),
+          ],
+
+          SliverToBoxAdapter(child: const SizedBox(height: 100)),
+        ],
+      ),
     );
   }
 }

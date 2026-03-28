@@ -5,10 +5,7 @@ import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class BrandProductsGrid extends StatelessWidget {
-  const BrandProductsGrid({
-    super.key,
-    required this.products,
-  });
+  const BrandProductsGrid({super.key, required this.products});
 
   final List<BrandProductModel> products;
 
@@ -19,34 +16,31 @@ class BrandProductsGrid extends StatelessWidget {
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          childAspectRatio: 0.85,
+          childAspectRatio: 0.9,
           crossAxisSpacing: Spacing.xs,
           mainAxisSpacing: Spacing.xs,
         ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final brandProduct = products[index];
-            return CustomProductCard(
-              product: ProductModel(
-                id: brandProduct.id,
-                name: brandProduct.name,
-                store: brandProduct.brandName,
-                price: brandProduct.price,
-                oldPrice: brandProduct.oldPrice,
-                imageUrl: brandProduct.imageUrl,
-                emoji: brandProduct.emoji,
-                discount: brandProduct.discount,
-                isFavorite: brandProduct.isFavorite,
-                unit: brandProduct.unit,
-              ),
-              showFavorite: true,
-              onCardTap: () {},
-              onAddTap: brandProduct.isInStock ? () {} : null,
-              onFavoriteTap: () {},
-            );
-          },
-          childCount: products.length,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final brandProduct = products[index];
+          return CustomProductCard(
+            product: ProductModel(
+              id: brandProduct.id,
+              name: brandProduct.name,
+              store: brandProduct.brandName,
+              price: brandProduct.price,
+              oldPrice: brandProduct.oldPrice,
+              imageUrl: brandProduct.imageUrl,
+              emoji: brandProduct.emoji,
+              discount: brandProduct.discount,
+              isFavorite: brandProduct.isFavorite,
+              unit: brandProduct.unit,
+            ),
+            showFavorite: true,
+            onCardTap: () {},
+            onAddTap: brandProduct.isInStock ? () {} : null,
+            onFavoriteTap: () {},
+          );
+        }, childCount: products.length),
       ),
     );
   }

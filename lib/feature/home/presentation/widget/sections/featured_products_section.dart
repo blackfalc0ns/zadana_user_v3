@@ -21,7 +21,7 @@ class FeaturedProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.md),
         SizedBox(
-          height: 290,
+          height: 285,
           child: GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,
