@@ -12,90 +12,94 @@ class SelectVendorBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = context.colorScheme;
+    final locale = context.localization;
 
     return Container(
       key: const ValueKey('select_bottom'),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.surface,
-        boxShadow: [
-          BoxShadow(
-            color: color.shadow.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.shopping_cart_outlined,
+                color: AppColors.textSecondary,
+                size: 18,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '${items.length} ${locale.product}',
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.warning.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: AppColors.warning,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      locale.select_vendor_to_show_price,
+                      style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size12,
+                        color: AppColors.warning,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: ElevatedButton(
+              onPressed: null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.disabled,
+                disabledBackgroundColor: AppColors.disabled.withValues(
+                  alpha: 0.3,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: Text(
+                locale.checkout,
+                style: getSemiBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size14,
+                  color: AppColors.textHint,
+                ),
+              ),
+            ),
           ),
         ],
-      ),
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildInfoRow(context),
-            const SizedBox(height: 8),
-            _buildSelectButton(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return Row(
-      children: [
-        Icon(
-          Icons.shopping_cart_outlined,
-          color: color.onSurfaceVariant,
-          size: 16,
-        ),
-        const SizedBox(width: 5),
-        Text(
-          '${items.length} ${locale.product}',
-          style: getRegularStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size14,
-            color: color.onSurfaceVariant,
-          ),
-        ),
-        const Spacer(),
-        Text(
-          locale.select_vendor_to_show_price,
-          style: getMediumStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size14,
-            color: color.primary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSelectButton(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return SizedBox(
-      width: double.infinity,
-      height: 36,
-      child: ElevatedButton(
-        onPressed: null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color.onSurfaceVariant,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: Text(
-          locale.select_vendor_to_show_price,
-          style: getMediumStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size14,
-            color: AppColors.shimmerHighlightDark,
-          ),
-        ),
       ),
     );
   }

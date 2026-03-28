@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -98,15 +99,15 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   }
 
   void _showDeleteDialog(CartItemModel item) => showDeleteItemDialog(
-        context: context,
-        itemName: item.name,
-        onConfirm: () => setState(() => _items.remove(item)),
-      );
+    context: context,
+    itemName: item.name,
+    onConfirm: () => setState(() => _items.remove(item)),
+  );
 
   void _showClearDialog() => showClearCartDialog(
-        context: context,
-        onConfirm: () => setState(() => _items.clear()),
-      );
+    context: context,
+    onConfirm: () => setState(() => _items.clear()),
+  );
 
   void _showComparison() {
     final locale = context.localization;
@@ -167,28 +168,30 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const PaymentScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const PaymentScreen()),
     );
   }
 
   void _showSnackBar(String message) {
-    final color = context.colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color.error),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final bottomNavHeight = 90.0;
+    const bottomNavHeight = 90.0;
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: color.surface,
+        backgroundColor: AppColors.background,
         appBar: CartAppBar(
           itemCount: _items.length,
           totalQuantity: _totalQuantity,
@@ -197,37 +200,34 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
         body: _isLoading
             ? const CartLoadingSkeleton()
             : _isEmpty
-                ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
-                : Stack(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: bottomNavHeight + 80),
-                        child: CartContent(
-                          items: _items,
-                          selectedVendorId: _selectedVendorId,
-                          activeHeroProductId: _activeHeroProductId,
-                          onVendorSelected: _onVendorSelected,
-                          onItemTap: _openProductDetails,
-                          onUpdateQuantity: _updateQuantity,
-                          onDeleteItem: _showDeleteDialog,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 90,
-                        left: 0,
-                        right: 0,
-                        child: CartBottomBar(
-                          selectedVendorId: _selectedVendorId,
-                          items: _items,
-                          totalPrice: _totalPrice,
-                          selectedVendorName: _selectedVendorName(context),
-                          animations: _animations,
-                          onComparison: _showComparison,
-                          onCheckout: _onCheckout,
-                        ),
-                      ),
-                    ],
+            ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
+            : Column(
+                children: [
+                  // ── Cart content (scrollable) ──
+                  Expanded(
+                    child: CartContent(
+                      items: _items,
+                      selectedVendorId: _selectedVendorId,
+                      activeHeroProductId: _activeHeroProductId,
+                      onVendorSelected: _onVendorSelected,
+                      onItemTap: _openProductDetails,
+                      onUpdateQuantity: _updateQuantity,
+                      onDeleteItem: _showDeleteDialog,
+                    ),
                   ),
+                  // ── Bottom bar ──
+                  CartBottomBar(
+                    selectedVendorId: _selectedVendorId,
+                    items: _items,
+                    totalPrice: _totalPrice,
+                    selectedVendorName: _selectedVendorName(context),
+                    animations: _animations,
+                    onComparison: _showComparison,
+                    onCheckout: _onCheckout,
+                  ),
+                  SizedBox(height: bottomNavHeight),
+                ],
+              ),
       ),
     );
   }
