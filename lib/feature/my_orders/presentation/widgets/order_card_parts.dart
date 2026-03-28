@@ -82,10 +82,11 @@ class OrderCardActionButton extends StatelessWidget {
         backgroundColor:
             backgroundColor ??
             (isPrimary
-                ? AppColors.primary.withOpacity(.10)
-                : colors.surfaceContainerHighest.withOpacity(.45)),
+                ? AppColors.primary.withValues(alpha: .10)
+                : colors.surfaceContainerHighest.withValues(alpha: .45)),
         foregroundColor:
-            foregroundColor ?? (isPrimary ? AppColors.primary : colors.onSurface),
+            foregroundColor ??
+            (isPrimary ? AppColors.primary : colors.onSurface),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Spacing.buttonSmallRadius),
         ),

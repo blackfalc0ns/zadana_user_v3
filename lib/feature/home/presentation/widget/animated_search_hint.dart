@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'home_search_bar_hints.dart';
 
 class AnimatedSearchHint extends StatefulWidget {
@@ -56,7 +57,8 @@ class _AnimatedSearchHintState extends State<AnimatedSearchHint> {
           key: ValueKey<int>(_currentIndex),
           textDirection: TextDirection.rtl,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.bodyMedium.copyWith(
+          style: getSemiBoldStyle(
+            fontFamily: FontConstant.cairo,
             color: AppColors.white,
             fontSize: 13,
           ),

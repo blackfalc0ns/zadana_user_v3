@@ -9,11 +9,7 @@ class ProfileAvatar extends StatelessWidget {
   final String userName;
   final VoidCallback onTap;
 
-  const ProfileAvatar({
-    super.key,
-    required this.userName,
-    required this.onTap,
-  });
+  const ProfileAvatar({super.key, required this.userName, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +19,17 @@ class ProfileAvatar extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 24,
-          backgroundColor: color.primaryContainer.withOpacity(0.1),
+          backgroundColor: color.primaryContainer.withValues(alpha: 0.1),
           child: Center(
             child: Text(
-            userName.isNotEmpty ? userName[0] : 'م',
-            style: getBoldStyle(
-              fontSize: FontSize.size20,
-              fontFamily: FontConstant.cairo,
-              color: color.primary,
+              userName.isNotEmpty ? userName[0] : 'م',
+              style: getBoldStyle(
+                fontSize: FontSize.size20,
+                fontFamily: FontConstant.cairo,
+                color: color.primary,
+              ),
             ),
           ),
-        ),
         ),
 
         Positioned(
@@ -46,10 +42,7 @@ class ProfileAvatar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color.primary,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: color.surface,
-                  width: 1.5,
-                ),
+                border: Border.all(color: color.surface, width: 1.5),
               ),
               child: const FaIcon(
                 FontAwesomeIcons.pen,

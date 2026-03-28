@@ -9,11 +9,7 @@ class FAQItem extends StatelessWidget {
   final String question;
   final String answer;
 
-  const FAQItem({
-    super.key,
-    required this.question,
-    required this.answer,
-  });
+  const FAQItem({super.key, required this.question, required this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +21,7 @@ class FAQItem extends StatelessWidget {
         color: color.surface,
         borderRadius: BorderRadius.circular(Spacing.md),
         border: Border.all(
-          color: color.outline.withOpacity(0.3),
+          color: color.outline.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -34,11 +30,7 @@ class FAQItem extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.help_outline,
-                size: 18,
-                color: color.primary,
-              ),
+              Icon(Icons.help_outline, size: 18, color: color.primary),
               const SizedBox(width: Spacing.sm),
               Expanded(
                 child: Text(

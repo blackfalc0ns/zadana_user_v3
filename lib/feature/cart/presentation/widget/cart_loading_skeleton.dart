@@ -69,7 +69,7 @@ class _ShimmerWrapper extends StatelessWidget {
               end: Alignment(0.0 + (controller.value * 4), 0.5),
               colors: [
                 AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerHighlight.withValues(alpha: 0.5),
                 AppColors.shimmerBase,
               ],
               stops: const [0.35, 0.5, 0.65],
@@ -114,7 +114,7 @@ class _VendorSelectorSkeleton extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.05),
+            color: AppColors.primary.withValues(alpha: 0.05),
             blurRadius: 6,
             offset: const Offset(0, 1),
           ),
@@ -125,7 +125,7 @@ class _VendorSelectorSkeleton extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 2,
-            color: AppColors.primary.withOpacity(0.2),
+            color: AppColors.primary.withValues(alpha: 0.2),
           ),
           Expanded(
             child: ListView.separated(
@@ -157,7 +157,7 @@ class _VendorChipSkeleton extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.05),
+            color: AppColors.primary.withValues(alpha: 0.05),
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),
@@ -232,7 +232,7 @@ class _CartItemsSkeleton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow.withOpacity(0.06),
+              color: AppColors.shadow.withValues(alpha: 0.06),
               blurRadius: 6,
               offset: const Offset(0, 1),
             ),
@@ -295,7 +295,7 @@ class _SelectVendorBottomSkeleton extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withOpacity(0.1),
+            color: AppColors.shadow.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),

@@ -36,7 +36,7 @@ class ProfileMenuTile extends StatelessWidget {
         border: showBorder
             ? Border(
                 bottom: BorderSide(
-                  color: color.outline.withOpacity(0.2),
+                  color: color.outline.withValues(alpha: 0.2),
                   width: 0.5,
                 ),
               )
@@ -48,11 +48,7 @@ class ProfileMenuTile extends StatelessWidget {
           horizontal: Spacing.sm,
           vertical: 2,
         ),
-        leading: FaIcon(
-          icon,
-          color: iconColor,
-          size: 18,
-        ),
+        leading: FaIcon(icon, color: iconColor, size: 18),
         title: Text(
           title,
           style: getMediumStyle(
@@ -62,7 +58,6 @@ class ProfileMenuTile extends StatelessWidget {
           ),
         ),
         trailing: trailing,
-           
       ),
     );
   }

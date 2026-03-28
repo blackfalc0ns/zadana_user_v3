@@ -8,10 +8,7 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_mo
 class OrderStatusBadge extends StatelessWidget {
   final OrderStatus status;
 
-  const OrderStatusBadge({
-    super.key,
-    required this.status,
-  });
+  const OrderStatusBadge({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +37,22 @@ class OrderStatusBadge extends StatelessWidget {
       case OrderStatus.delivered:
         return (const Color(0xFFE7F8EE), const Color(0xFF157347));
       case OrderStatus.processing:
-        return (AppColors.secondary.withOpacity(.14), AppColors.secondary);
+        return (
+          AppColors.secondary.withValues(alpha: .14),
+          AppColors.secondary,
+        );
       case OrderStatus.cancelled:
         return (const Color(0xFFFDECEC), const Color(0xFFC62828));
       case OrderStatus.shipped:
-        return (AppColors.secondary.withOpacity(.14), AppColors.secondary);
+        return (
+          AppColors.secondary.withValues(alpha: .14),
+          AppColors.secondary,
+        );
       case OrderStatus.pending:
-        return (AppColors.secondary.withOpacity(.14), AppColors.secondary);
+        return (
+          AppColors.secondary.withValues(alpha: .14),
+          AppColors.secondary,
+        );
     }
   }
 

@@ -53,10 +53,7 @@ class ProfileAddressCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.labelMedium,
-                      ),
+                      Text(title, style: AppTextStyles.labelMedium),
                       if (isDefault) ...[
                         const SizedBox(width: Spacing.sm),
                         Container(
@@ -65,7 +62,7 @@ class ProfileAddressCard extends StatelessWidget {
                             vertical: Spacing.xs,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(
                               Spacing.buttonSmallRadius,
                             ),
@@ -107,15 +104,9 @@ class ProfileAddressCard extends StatelessWidget {
                 },
                 itemBuilder: (context) => [
                   if (onEdit != null)
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Text('Edit'),
-                    ),
+                    const PopupMenuItem(value: 'edit', child: Text('Edit')),
                   if (onDelete != null)
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Text('Delete'),
-                    ),
+                    const PopupMenuItem(value: 'delete', child: Text('Delete')),
                 ],
               ),
             ],

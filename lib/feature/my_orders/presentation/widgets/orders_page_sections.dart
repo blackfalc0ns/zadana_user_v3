@@ -23,15 +23,15 @@ class OrdersHeroHeader extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            colors.primary.withOpacity(.06),
-            colors.secondary.withOpacity(.03),
+            colors.primary.withValues(alpha: .06),
+            colors.secondary.withValues(alpha: .03),
             colors.surface,
           ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
         borderRadius: BorderRadius.circular(Spacing.xl),
-        border: Border.all(color: colors.outlineVariant.withOpacity(.28)),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: .28)),
       ),
       child: Row(
         children: [
@@ -49,10 +49,14 @@ class OrdersHeroHeader extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: colors.surface.withOpacity(.95),
+              color: colors.surface.withValues(alpha: .95),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(Icons.inventory_2_rounded, color: colors.primary, size: 24),
+            child: Icon(
+              Icons.inventory_2_rounded,
+              color: colors.primary,
+              size: 24,
+            ),
           ),
         ],
       ),
@@ -176,7 +180,7 @@ class _OrdersOverviewChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(Spacing.lg),
-        border: Border.all(color: accentColor.withOpacity(.12)),
+        border: Border.all(color: accentColor.withValues(alpha: .12)),
       ),
       child: Row(
         children: [
@@ -184,7 +188,7 @@ class _OrdersOverviewChip extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: accentColor.withOpacity(.10),
+              color: accentColor.withValues(alpha: .10),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: accentColor, size: 22),

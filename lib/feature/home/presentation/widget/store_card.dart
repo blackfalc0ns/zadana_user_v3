@@ -34,19 +34,16 @@ class StoreCard extends StatelessWidget {
               width: 45,
               height: 45,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 24),
-                ),
+                child: Text(emoji, style: const TextStyle(fontSize: 24)),
               ),
             ),
-            
+
             const SizedBox(height: 4),
-            
+
             // Store Name
             Text(
               name,

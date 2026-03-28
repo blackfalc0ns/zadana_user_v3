@@ -43,7 +43,7 @@ class _ShimmerEffectState extends State<ShimmerEffect>
               end: Alignment(0.0 + (_controller.value * 4), 0.5),
               colors: [
                 AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerHighlight.withValues(alpha: 0.5),
                 AppColors.shimmerBase,
               ],
               stops: const [0.35, 0.5, 0.65],
@@ -265,7 +265,12 @@ class CategoryChipSkeleton extends StatelessWidget {
 }
 
 class Bone extends StatelessWidget {
-  const Bone({super.key, this.width, required this.height, required this.radius});
+  const Bone({
+    super.key,
+    this.width,
+    required this.height,
+    required this.radius,
+  });
 
   final double? width;
   final double height;

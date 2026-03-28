@@ -39,9 +39,7 @@ class _CategoryLoadingSkeletonState extends State<CategoryLoadingSkeleton>
           SizedBox(height: Spacing.md),
           _ChipsSkeleton(),
           SizedBox(height: Spacing.sm),
-          Expanded(
-            child: _ProductsSkeleton(),
-          ),
+          Expanded(child: _ProductsSkeleton()),
         ],
       ),
     );
@@ -67,7 +65,7 @@ class _ShimmerWrapper extends StatelessWidget {
               end: Alignment(0.0 + (controller.value * 4), 0.5),
               colors: [
                 AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerHighlight.withValues(alpha: 0.5),
                 AppColors.shimmerBase,
               ],
               stops: const [0.35, 0.5, 0.65],
@@ -90,18 +88,9 @@ class _SearchSkeleton extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.md),
       child: Row(
         children: const [
-          Expanded(
-            child: _Bone(
-              height: 40,
-              radius: Spacing.cardRadius,
-            ),
-          ),
+          Expanded(child: _Bone(height: 40, radius: Spacing.cardRadius)),
           SizedBox(width: 6),
-          _Bone(
-            width: 42,
-            height: 40,
-            radius: 8,
-          ),
+          _Bone(width: 42, height: 40, radius: 8),
         ],
       ),
     );
@@ -120,11 +109,8 @@ class _ChipsSkeleton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
         itemCount: 4,
         separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-        itemBuilder: (_, index) => _Bone(
-          width: index == 0 ? 88 : 78,
-          height: 36,
-          radius: 999,
-        ),
+        itemBuilder: (_, index) =>
+            _Bone(width: index == 0 ? 88 : 78, height: 36, radius: 999),
       ),
     );
   }
@@ -173,10 +159,7 @@ class _ProductCardSkeleton extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _Bone(
-                height: 75,
-                radius: Spacing.cardRadius,
-              ),
+              const _Bone(height: 75, radius: Spacing.cardRadius),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(7, 7, 7, 3.5),
@@ -202,26 +185,14 @@ class _ProductCardSkeleton extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _Bone(
-                                  width: 40,
-                                  height: 10,
-                                  radius: 999,
-                                ),
+                                _Bone(width: 40, height: 10, radius: 999),
                                 SizedBox(height: 4),
-                                _Bone(
-                                  width: 32,
-                                  height: 10,
-                                  radius: 999,
-                                ),
+                                _Bone(width: 32, height: 10, radius: 999),
                               ],
                             ),
                           ),
                           SizedBox(width: 4),
-                          _Bone(
-                            width: 28,
-                            height: 28,
-                            radius: 999,
-                          ),
+                          _Bone(width: 28, height: 28, radius: 999),
                         ],
                       ),
                     ],
@@ -233,11 +204,7 @@ class _ProductCardSkeleton extends StatelessWidget {
           const Positioned(
             top: 4,
             right: 4,
-            child: _Bone(
-              width: 28,
-              height: 28,
-              radius: 999,
-            ),
+            child: _Bone(width: 28, height: 28, radius: 999),
           ),
         ],
       ),
@@ -246,11 +213,7 @@ class _ProductCardSkeleton extends StatelessWidget {
 }
 
 class _Bone extends StatelessWidget {
-  const _Bone({
-    this.width,
-    required this.height,
-    required this.radius,
-  });
+  const _Bone({this.width, required this.height, required this.radius});
 
   final double? width;
   final double height;

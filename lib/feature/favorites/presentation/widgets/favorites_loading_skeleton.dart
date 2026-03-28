@@ -68,7 +68,7 @@ class _ShimmerWrapper extends StatelessWidget {
               end: Alignment(0.0 + (controller.value * 4), 0.5),
               colors: [
                 AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withOpacity(0.5),
+                AppColors.shimmerHighlight.withValues(alpha: 0.5),
                 AppColors.shimmerBase,
               ],
               stops: const [0.35, 0.5, 0.65],
@@ -100,10 +100,7 @@ class _FavoriteCardSkeleton extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _Bone(
-                height: 75,
-                radius: Spacing.cardRadius,
-              ),
+              const _Bone(height: 75, radius: Spacing.cardRadius),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(7, 7, 7, 3.5),
@@ -129,26 +126,14 @@ class _FavoriteCardSkeleton extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _Bone(
-                                  width: 42,
-                                  height: 10,
-                                  radius: 999,
-                                ),
+                                _Bone(width: 42, height: 10, radius: 999),
                                 SizedBox(height: 4),
-                                _Bone(
-                                  width: 34,
-                                  height: 10,
-                                  radius: 999,
-                                ),
+                                _Bone(width: 34, height: 10, radius: 999),
                               ],
                             ),
                           ),
                           SizedBox(width: 4),
-                          _Bone(
-                            width: 30,
-                            height: 30,
-                            radius: 999,
-                          ),
+                          _Bone(width: 30, height: 30, radius: 999),
                         ],
                       ),
                     ],
@@ -160,11 +145,7 @@ class _FavoriteCardSkeleton extends StatelessWidget {
           const Positioned(
             top: 4,
             right: 4,
-            child: _Bone(
-              width: 30,
-              height: 30,
-              radius: 999,
-            ),
+            child: _Bone(width: 30, height: 30, radius: 999),
           ),
         ],
       ),
@@ -173,11 +154,7 @@ class _FavoriteCardSkeleton extends StatelessWidget {
 }
 
 class _Bone extends StatelessWidget {
-  const _Bone({
-    this.width,
-    required this.height,
-    required this.radius,
-  });
+  const _Bone({this.width, required this.height, required this.radius});
 
   final double? width;
   final double height;

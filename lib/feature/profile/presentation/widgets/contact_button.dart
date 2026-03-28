@@ -34,7 +34,7 @@ class ContactButton extends StatelessWidget {
           color: color.surface,
           borderRadius: BorderRadius.circular(Spacing.md),
           border: Border.all(
-            color: color.outline.withOpacity(0.3),
+            color: color.outline.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -43,14 +43,10 @@ class ContactButton extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(Spacing.sm),
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
+                color: iconColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Spacing.sm),
               ),
-              child: FaIcon(
-                icon,
-                size: 20,
-                color: iconColor,
-              ),
+              child: FaIcon(icon, size: 20, color: iconColor),
             ),
             const SizedBox(width: Spacing.md),
             Expanded(
@@ -79,11 +75,7 @@ class ContactButton extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_left,
-              size: 20,
-              color: color.onSurfaceVariant,
-            ),
+            Icon(Icons.chevron_left, size: 20, color: color.onSurfaceVariant),
           ],
         ),
       ),

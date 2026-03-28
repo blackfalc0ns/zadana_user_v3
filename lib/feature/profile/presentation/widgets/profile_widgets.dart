@@ -32,10 +32,7 @@ class ProfileCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.surface,
             borderRadius: BorderRadius.circular(Spacing.sm),
-            border: Border.all(
-              color: color.outline,
-              width: 1,
-            ),
+            border: Border.all(color: color.outline, width: 1),
           ),
           child: Row(
             children: [
@@ -61,10 +58,7 @@ class ProfileCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: color.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: color.surface,
-                          width: 1.5,
-                        ),
+                        border: Border.all(color: color.surface, width: 1.5),
                       ),
                       child: const FaIcon(
                         FontAwesomeIcons.pen,
@@ -137,7 +131,9 @@ class ProfileMenuTile extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: showBorder ? color.outline.withOpacity(0.3) : Colors.transparent,
+            color: showBorder
+                ? color.outline.withValues(alpha: 0.3)
+                : Colors.transparent,
             width: 0.5,
           ),
         ),
@@ -148,11 +144,7 @@ class ProfileMenuTile extends StatelessWidget {
           horizontal: Spacing.sm,
           vertical: 2,
         ),
-        leading: FaIcon(
-          icon,
-          color: iconColor,
-          size: 18,
-        ),
+        leading: FaIcon(icon, color: iconColor, size: 18),
         title: Text(
           title,
           style: getMediumStyle(
@@ -161,7 +153,8 @@ class ProfileMenuTile extends StatelessWidget {
             color: color.onSurface,
           ),
         ),
-        trailing: trailing ??
+        trailing:
+            trailing ??
             (showChevron
                 ? FaIcon(
                     FontAwesomeIcons.chevronLeft,
@@ -197,12 +190,9 @@ class ProfileLogoutButton extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(Spacing.md),
           decoration: BoxDecoration(
-            color: color.errorContainer.withOpacity(0.3),
+            color: color.errorContainer.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(Spacing.sm),
-            border: Border.all(
-              color: color.errorContainer,
-              width: 1,
-            ),
+            border: Border.all(color: color.errorContainer, width: 1),
           ),
           child: Row(
             children: [
@@ -282,11 +272,7 @@ class LanguageOptionTile extends StatelessWidget {
         ),
       ),
       trailing: isSelected
-          ? FaIcon(
-              FontAwesomeIcons.circleCheck,
-              color: color.primary,
-              size: 20,
-            )
+          ? FaIcon(FontAwesomeIcons.circleCheck, color: color.primary, size: 20)
           : null,
     );
   }

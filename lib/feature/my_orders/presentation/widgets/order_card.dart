@@ -5,11 +5,7 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_mo
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_card_parts.dart';
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({
-    super.key,
-    required this.order,
-    this.onTap,
-  });
+  const OrderCard({super.key, required this.order, this.onTap});
 
   final OrderUiModel order;
   final VoidCallback? onTap;
@@ -26,15 +22,15 @@ class OrderCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.surface,
           borderRadius: BorderRadius.circular(Spacing.lg),
-          border: Border.all(color: colors.primary.withOpacity(.14)),
+          border: Border.all(color: colors.primary.withValues(alpha: .14)),
           boxShadow: [
             BoxShadow(
-              color: colors.primary.withOpacity(.06),
+              color: colors.primary.withValues(alpha: .06),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: colors.secondary.withOpacity(.03),
+              color: colors.secondary.withValues(alpha: .03),
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
@@ -49,7 +45,8 @@ class OrderCard extends StatelessWidget {
               itemsLabel: l10n.my_orders_items,
               itemsValue: '${order.itemsCount} ${l10n.item}',
               totalLabel: l10n.total,
-              totalValue: '${order.totalPrice.toStringAsFixed(2)} ${l10n.currency}',
+              totalValue:
+                  '${order.totalPrice.toStringAsFixed(2)} ${l10n.currency}',
             ),
           ],
         ),
@@ -80,16 +77,18 @@ class _OrderCardSummary extends StatelessWidget {
         vertical: Spacing.sm,
       ),
       decoration: BoxDecoration(
-        color: colors.secondary.withOpacity(.07),
+        color: colors.secondary.withValues(alpha: .07),
         borderRadius: BorderRadius.circular(Spacing.md),
       ),
       child: Row(
         children: [
-          Expanded(child: _SummaryInfo(label: itemsLabel, value: itemsValue)),
+          Expanded(
+            child: _SummaryInfo(label: itemsLabel, value: itemsValue),
+          ),
           Container(
             width: 1,
             height: 28,
-            color: colors.primary.withOpacity(.14),
+            color: colors.primary.withValues(alpha: .14),
           ),
           Expanded(
             child: _SummaryInfo(
@@ -119,8 +118,9 @@ class _SummaryInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Column(
-      crossAxisAlignment:
-          alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: alignEnd
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
           label,

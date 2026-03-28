@@ -45,7 +45,7 @@ class OrderHeaderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colors.outlineVariant.withOpacity(.16)),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: .16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,8 +122,8 @@ class _MetaPill extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
         color: highlighted
-            ? colors.primary.withOpacity(.08)
-            : colors.secondary.withOpacity(.08),
+            ? colors.primary.withValues(alpha: .08)
+            : colors.secondary.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -132,7 +132,7 @@ class _MetaPill extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: colors.surface.withOpacity(.92),
+              color: colors.surface.withValues(alpha: .92),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, size: 18, color: tone),
@@ -171,7 +171,7 @@ class DetailSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.outlineVariant.withOpacity(.16)),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: .16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +276,7 @@ class OrderItemTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest.withOpacity(.12),
+        color: colors.surfaceContainerHighest.withValues(alpha: .12),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -286,7 +286,7 @@ class OrderItemTile extends StatelessWidget {
             height: 44,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: colors.primary.withOpacity(.08),
+              color: colors.primary.withValues(alpha: .08),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Text(
@@ -342,7 +342,7 @@ class ComplaintStatusCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.base),
       decoration: BoxDecoration(
-        color: colors.secondary.withOpacity(.08),
+        color: colors.secondary.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -405,7 +405,7 @@ class ComplaintAttachmentsPreview extends StatelessWidget {
                 color: colors.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: colors.outlineVariant.withOpacity(.2),
+                  color: colors.outlineVariant.withValues(alpha: .2),
                 ),
               ),
               child: Row(
@@ -499,7 +499,7 @@ class OrderMiniCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest.withOpacity(.18),
+        color: colors.surfaceContainerHighest.withValues(alpha: .18),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -578,7 +578,7 @@ class BottomSheetScaffold extends StatelessWidget {
                 width: 46,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: colors.outlineVariant.withOpacity(.5),
+                  color: colors.outlineVariant.withValues(alpha: .5),
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
@@ -659,7 +659,7 @@ class SheetTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
-        fillColor: colors.surfaceContainerHighest.withOpacity(.22),
+        fillColor: colors.surfaceContainerHighest.withValues(alpha: .22),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -696,7 +696,7 @@ class CancelReasonTile extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? colors.primary
-                : colors.outlineVariant.withOpacity(.25),
+                : colors.outlineVariant.withValues(alpha: .25),
           ),
         ),
         child: Row(
