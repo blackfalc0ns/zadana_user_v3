@@ -9,10 +9,15 @@ class AppColors {
 
   // ── Primary ──
   static const Color primary = Color(0XFF007A92);
-  static const Color primaryLight = Color(0XFF007A92);
-  static const Color primaryDark = Color(0XFF007A92);
-  static const Color primarySurface = Color(0XFF007A92);
+  static const Color primaryLight = Color.fromARGB(255, 1, 139, 167);
+  static const Color primaryDark = Color.fromARGB(255, 0, 101, 121);
+  static const Color primarySurface = Color.fromARGB(255, 1, 139, 167);
 
+  static final LinearGradient primarygradient = LinearGradient(
+    colors: [primaryLight, primarySurface, primary],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
   // ── Secondary / Accent ──
   // static const Color secondary = Color(0xFFFFC107);
   static const Color secondary = Color(0xffe48215);

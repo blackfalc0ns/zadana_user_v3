@@ -3,7 +3,6 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart';
 
 class AuthExperienceShell extends StatelessWidget {
   const AuthExperienceShell({

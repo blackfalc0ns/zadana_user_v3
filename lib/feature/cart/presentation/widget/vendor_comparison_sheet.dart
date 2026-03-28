@@ -43,7 +43,7 @@ class _VendorComparisonSheet extends StatefulWidget {
 
 class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
   bool _showResults = false;
-  Set<String> _selectedIds = {};
+  final Set<String> _selectedIds = {};
 
   @override
   void initState() {
@@ -225,7 +225,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
           child: ListView.separated(
             padding: const EdgeInsets.all(20),
             itemCount: widget.vendors.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (_, index) {
               final vendor = widget.vendors[index];
               final isSelected = _selectedIds.contains(vendor.id);
@@ -456,7 +456,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
           child: ListView.separated(
             padding: const EdgeInsets.all(20),
             itemCount: results.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (_, index) {
               final result = results[index];
               final vendor = result.key;
@@ -666,7 +666,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                       ],
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),

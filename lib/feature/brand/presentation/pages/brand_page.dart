@@ -46,17 +46,20 @@ class _BrandPageState extends State<BrandPage> {
   void _applyFilters() {
     var filtered = _allProducts.where((product) {
       // Category filter
-      if (_selectedCategory != null && product.category != _selectedCategory)
+      if (_selectedCategory != null && product.category != _selectedCategory) {
         return false;
+      }
 
       // Subcategory filter
       if (_selectedSubcategory != null &&
-          product.subcategory != _selectedSubcategory)
+          product.subcategory != _selectedSubcategory) {
         return false;
+      }
 
       // Price range filter
-      if (product.price < _priceRange.start || product.price > _priceRange.end)
+      if (product.price < _priceRange.start || product.price > _priceRange.end) {
         return false;
+      }
 
       // Unit filter
       if (_selectedUnit != null && product.unit != _selectedUnit) return false;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
@@ -19,7 +22,10 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       color: AppColors.white,
       padding: const EdgeInsets.only(top: 16),
@@ -38,13 +44,20 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'ابحث في منتجات $brandName',
-                      hintStyle: AppTextStyles.bodyMedium.copyWith(
+                      hintStyle: getRegularStyle(
+                        fontFamily: FontConstant.cairo,
                         color: AppColors.textSecondary,
+                        fontSize: 12,
                       ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: AppColors.textSecondary,
-                        size: 20,
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SvgPicture.asset(
+                          'assets/images/search-normal.svg',
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.textSecondary,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -53,7 +66,9 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                       filled: true,
                       fillColor: AppColors.white,
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.textPrimary,
@@ -63,7 +78,6 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     },
                   ),
                 ),
-                const SizedBox(width: 12),
                 Container(
                   width: 44,
                   height: 44,
@@ -73,11 +87,7 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    icon: Icon(
-                      Icons.tune,
-                      color: AppColors.white,
-                      size: 20,
-                    ),
+                    icon: Icon(Icons.tune, color: AppColors.white, size: 20),
                     onPressed: onFilterPressed,
                     padding: EdgeInsets.zero,
                   ),

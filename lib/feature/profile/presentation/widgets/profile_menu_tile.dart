@@ -61,7 +61,7 @@ class ProfileMenuTile extends StatelessWidget {
             color: color.onSurface,
           ),
         ),
-        trailing: trailing ?? null,
+        trailing: trailing,
            
       ),
     );

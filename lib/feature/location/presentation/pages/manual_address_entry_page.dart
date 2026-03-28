@@ -53,9 +53,10 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView> with A
 
   @override
   void dispose() {
-    [_addressController, _cityController, _areaController, 
-     _buildingController, _floorController, _apartmentController]
-        .forEach((controller) => controller.dispose());
+    for (var controller in [_addressController, _cityController, _areaController, 
+     _buildingController, _floorController, _apartmentController]) {
+      controller.dispose();
+    }
     super.dispose();
   }
 

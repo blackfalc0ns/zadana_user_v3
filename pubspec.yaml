@@ -48,6 +48,7 @@ dependencies:
   iconsax: ^0.0.8
   lottie: ^3.3.2
 
+  intl: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

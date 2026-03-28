@@ -78,14 +78,14 @@ class ProductImage extends StatelessWidget {
             width: width,
             height: height,
             fit: resolvedFit,
-            errorBuilder: (_, __, ___) => _errorWidget(),
+            errorBuilder: (_, _, _) => _errorWidget(),
           )
         : Image.network(
             url,
             width: width,
             height: height,
             fit: resolvedFit,
-            errorBuilder: (_, __, ___) => _errorWidget(),
+            errorBuilder: (_, _, _) => _errorWidget(),
             loadingBuilder: (_, child, progress) {
               if (progress == null) return child;
               return Container(color: AppColors.shimmerBase);

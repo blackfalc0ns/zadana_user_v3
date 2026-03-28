@@ -9,8 +9,6 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
 import 'package:zadana_user_v3/core/widgets/custom_text_field.dart';
 import 'package:zadana_user_v3/feature/auth/login/domain/entities/login_request_entity.dart';
-import 'package:zadana_user_v3/feature/auth/login/presentation/widget/email_phone_input_field.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_password_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
 

@@ -26,7 +26,7 @@ class BestSellingSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,
             itemCount: HomeData.bestSelling.length,
-            separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
+            separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
             itemBuilder: (_, i) {
               final product = HomeData.bestSelling[i];
               return SizedBox(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 
 class AddressFormWidgets {
   static Widget buildFieldLabel(String label) {

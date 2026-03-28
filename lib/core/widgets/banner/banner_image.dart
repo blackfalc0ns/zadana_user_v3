@@ -20,7 +20,7 @@ class BannerImage extends StatelessWidget {
     return Image.network(
       imageUrl,
       fit: fit,
-      errorBuilder: (_, __, ___) => _BannerImageFallback(
+      errorBuilder: (_, _, _) => _BannerImageFallback(
         icon: fallbackIcon,
         iconSize: fallbackIconSize,
       ),

@@ -68,7 +68,7 @@ class VendorSelector extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               itemCount: vendors.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 6),
+              separatorBuilder: (_, _) => const SizedBox(width: 6),
               itemBuilder: (_, i) => _VendorChip(
                 vendor: vendors[i],
                 isSelected: vendors[i].id == selectedVendorId,

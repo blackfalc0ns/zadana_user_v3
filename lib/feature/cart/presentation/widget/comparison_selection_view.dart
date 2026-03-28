@@ -38,7 +38,7 @@ class ComparisonSelectionView extends StatelessWidget {
           child: ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: vendors.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (_, i) => VendorSelectionCard(
               vendor: vendors[i],
               total: totalFor(vendors[i].id),

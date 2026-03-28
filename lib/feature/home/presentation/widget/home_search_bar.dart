@@ -37,6 +37,7 @@ class HomeSearchBar extends StatelessWidget {
         height: 50,
         padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.border),
         ),
@@ -54,8 +55,9 @@ class HomeSearchBar extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: l10n.search_hint,
                   hintStyle: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textHint,
+                    color: AppColors.white,
                   ),
+                  filled: false,
                   isDense: true,
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
@@ -72,7 +74,7 @@ class HomeSearchBar extends StatelessWidget {
                       width: 20,
                       height: 20,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.textHint,
+                        AppColors.white,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -88,7 +90,7 @@ class HomeSearchBar extends StatelessWidget {
                 child: const Icon(
                   Icons.tune_rounded,
                   size: 20,
-                  color: AppColors.textHint,
+                  color: AppColors.white,
                 ),
               ),
             ],

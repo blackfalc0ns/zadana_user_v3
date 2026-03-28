@@ -49,7 +49,7 @@ class _SubcategoryFilterSectionState extends State<SubcategoryFilterSection> {
     final availableSubcategories = widget.allProducts
         .where((p) => p.category == widget.selectedCategory)
         .map((p) => p.subcategory)
-        .where((s) => s != null && s!.isNotEmpty)
+        .where((s) => s != null && s.isNotEmpty)
         .cast<String>()
         .toSet()
         .toList()
