@@ -37,6 +37,7 @@ class LocationDataSourceImpl implements LocationDataSource {
 
     final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
+      timeLimit: const Duration(seconds: 15),
     );
 
     return CurrentLocationDto(

@@ -16,7 +16,7 @@ class StartPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.primary,
+      backgroundColor: AppColors.primary,
       body: Stack(
         children: [
           SafeArea(
@@ -29,7 +29,7 @@ class StartPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: Spacing.sm),
-                  
+
                   // Logo at top
                   Image.asset(
                     AppConstants.logoDark,
@@ -65,12 +65,12 @@ class StartPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: Spacing.xs),
-                  
+
                   Text(
                     AppLocalizations.of(context)!.start_page_subtitle,
-                  //  textAlign: TextAlign.,
+                    //  textAlign: TextAlign.,
                     style: AppTextStyles.bodyLarge.copyWith(
                       color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
                       fontSize: 18,
@@ -82,18 +82,19 @@ class StartPage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Button at the very bottom
           Positioned(
             left: Spacing.screenH,
             right: Spacing.screenH,
-            bottom: MediaQuery.of(context).padding.bottom ,
+            bottom: MediaQuery.of(context).padding.bottom,
             child: AppButton.filled(
               text: AppLocalizations.of(context)!.start_page_button,
               color: theme.colorScheme.onPrimary,
               textColor: theme.colorScheme.primary,
               fontWeight: FontWeight.w700,
-              onPressed: () => context.pushNamed(AppRoutes.startSelectLocationPage),
+              onPressed: () =>
+                  context.pushNamed(AppRoutes.startSelectLocationPage),
             ),
           ),
         ],

@@ -177,6 +177,8 @@ class LocationViewModel extends Cubit<LocationState> {
 
     final result = await _searchLocationsUseCase.call(query);
 
+    if (isClosed) return;
+
     switch (result) {
       case ApiSuccessResult():
         emit(
@@ -239,6 +241,8 @@ class LocationViewModel extends Cubit<LocationState> {
     );
 
     final result = await _getCurrentLocationWithAddressUseCase.call();
+
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
@@ -317,6 +321,8 @@ class LocationViewModel extends Cubit<LocationState> {
     event.latitude,
     event.longitude,
   );
+
+  if (isClosed) return;
 
   switch (result) {
     case ApiSuccessResult():

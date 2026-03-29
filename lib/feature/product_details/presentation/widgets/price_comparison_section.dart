@@ -38,7 +38,7 @@ class PriceComparisonSection extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'مقارنة الأسعار',
+                'اسعار المنتج فى المتاجر',
                 style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
