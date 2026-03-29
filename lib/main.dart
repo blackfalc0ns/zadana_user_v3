@@ -9,7 +9,7 @@ import 'package:device_preview/device_preview.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
-  runApp(DevicePreview(enabled: true, builder: (context) => MyApp()));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      builder: DevicePreview.appBuilder,
+      // builder: DevicePreview.appBuilder,
       // locale: DevicePreview.locale(context),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: const [Locale('ar'), Locale('en')],

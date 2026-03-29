@@ -36,7 +36,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        padding: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.only(top: 32),
         decoration: BoxDecoration(
           gradient: AppColors.primarygradient,
           borderRadius: BorderRadius.only(
