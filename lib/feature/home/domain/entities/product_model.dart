@@ -11,6 +11,7 @@ class ProductModel {
   final bool isFavorite;
   final String? unit;
   final String? emoji; // ← fallback لو الصورة مش شغالة
+  final bool  isDiscounted ;
 
   const ProductModel({
     required this.id,
@@ -25,6 +26,7 @@ class ProductModel {
     this.isFavorite = false,
     this.unit,
     this.emoji,
+   required this.isDiscounted,
   });
 
   ProductModel copyWith({
@@ -40,6 +42,7 @@ class ProductModel {
     bool? isFavorite,
     String? unit,
     String? emoji,
+    bool ? isDiscounted,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -54,6 +57,7 @@ class ProductModel {
       isFavorite: isFavorite ?? this.isFavorite,
       unit: unit ?? this.unit,
       emoji: emoji ?? this.emoji,
+     isDiscounted: isDiscounted ?? this.isDiscounted,
     );
   }
 }

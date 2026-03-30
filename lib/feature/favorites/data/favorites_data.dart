@@ -11,7 +11,7 @@ class FavoritesData {
       emoji: '🍅',
       imageUrl: '',
       isFavorite: true,
-      store: 'كارفور',
+      store: 'كارفور', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav2',
@@ -22,7 +22,7 @@ class FavoritesData {
       emoji: '🥒',
       imageUrl: '',
       isFavorite: true,
-      store: 'سبينس',
+      store: 'سبينس', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav3',
@@ -33,7 +33,7 @@ class FavoritesData {
       emoji: '🥕',
       imageUrl: '',
       isFavorite: true,
-      store: 'هايبر وان',
+      store: 'هايبر وان', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav4',
@@ -44,7 +44,7 @@ class FavoritesData {
       emoji: '🧅',
       imageUrl: '',
       isFavorite: true,
-      store: 'بشاير',
+      store: 'بشاير', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav5',
@@ -55,7 +55,7 @@ class FavoritesData {
       emoji: '🫑',
       imageUrl: '',
       isFavorite: true,
-      store: 'أونستوب',
+      store: 'أونستوب', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav6',
@@ -66,7 +66,7 @@ class FavoritesData {
       emoji: '🍆',
       imageUrl: '',
       isFavorite: true,
-      store: 'فاتورة',
+      store: 'فاتورة', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav7',
@@ -77,7 +77,7 @@ class FavoritesData {
       emoji: '🥒',
       imageUrl: '',
       isFavorite: true,
-      store: 'كارفور',
+      store: 'كارفور', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav8',
@@ -88,7 +88,7 @@ class FavoritesData {
       emoji: '🥔',
       imageUrl: '',
       isFavorite: true,
-      store: 'سبينس',
+      store: 'سبينس', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav9',
@@ -99,7 +99,7 @@ class FavoritesData {
       emoji: '🌶️',
       imageUrl: '',
       isFavorite: true,
-      store: 'هايبر وان',
+      store: 'هايبر وان', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav10',
@@ -110,7 +110,7 @@ class FavoritesData {
       emoji: '🧄',
       imageUrl: '',
       isFavorite: true,
-      store: 'بشاير',
+      store: 'بشاير', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav11',
@@ -121,7 +121,7 @@ class FavoritesData {
       emoji: '🌿',
       imageUrl: '',
       isFavorite: true,
-      store: 'أونستوب',
+      store: 'أونستوب', isDiscounted: false,
     ),
     ProductModel(
       id: 'fav12',
@@ -132,7 +132,7 @@ class FavoritesData {
       emoji: '🥬',
       imageUrl: '',
       isFavorite: true,
-      store: 'فاتورة',
+      store: 'فاتورة', isDiscounted: false,
     ),
   ];
 }

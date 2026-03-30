@@ -19,6 +19,7 @@ class ProductDetailsContent extends StatelessWidget {
   final List<ProductModel> similarProducts;
   final Function(ProductModel)? onSimilarProductTap;
   final Function(ProductModel)? onSimilarProductAddToCart;
+  final String? activeProductId;
 
   const ProductDetailsContent({
     super.key,
@@ -34,6 +35,7 @@ class ProductDetailsContent extends StatelessWidget {
     required this.similarProducts,
     this.onSimilarProductTap,
     this.onSimilarProductAddToCart,
+    this.activeProductId,
   });
 
   @override
@@ -62,6 +64,7 @@ class ProductDetailsContent extends StatelessWidget {
           similarProducts: similarProducts,
           onProductTap: onSimilarProductTap,
           onAddToCart: onSimilarProductAddToCart,
+          activeProductId: activeProductId,
         ),
         const SizedBox(height: 100),
       ],

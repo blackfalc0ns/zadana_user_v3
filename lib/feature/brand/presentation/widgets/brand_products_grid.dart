@@ -24,6 +24,8 @@ class BrandProductsGrid extends StatelessWidget {
         delegate: SliverChildBuilderDelegate((context, index) {
           final brandProduct = products[index];
           return CustomProductCard(
+            discountPercentage: index * 12,
+            isDiscounted: index % 2 == 0,
             product: ProductModel(
               id: brandProduct.id,
               name: brandProduct.name,
@@ -35,6 +37,7 @@ class BrandProductsGrid extends StatelessWidget {
               discount: brandProduct.discount,
               isFavorite: brandProduct.isFavorite,
               unit: brandProduct.unit,
+              isDiscounted: false
             ),
             showFavorite: true,
             onCardTap: () {
@@ -51,6 +54,7 @@ class BrandProductsGrid extends StatelessWidget {
                   discount: brandProduct.discount,
                   isFavorite: brandProduct.isFavorite,
                   unit: brandProduct.unit,
+                  isDiscounted: false
                 ),
               );
             },

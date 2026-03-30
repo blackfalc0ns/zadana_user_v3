@@ -848,10 +848,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get completed_orders_tab => 'Completed';
 
   @override
+  String get returned_orders_tab => 'Returns';
+
+  @override
+  String get order_returning => 'In Return';
+
+  @override
   String get no_active_orders => 'No active orders';
 
   @override
   String get no_previous_orders => 'No previous orders';
+
+  @override
+  String get no_returning_orders => 'No orders in return process';
 
   @override
   String get my_orders_order_date => 'Order Date';
@@ -870,6 +879,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get my_orders_rate_order => 'Rate Order';
+
+  @override
+  String get my_orders_reorder_button => 'Reorder';
 
   @override
   String get order_pending => 'Pending';

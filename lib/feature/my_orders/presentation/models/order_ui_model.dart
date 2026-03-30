@@ -3,6 +3,7 @@ enum OrderStatus {
   processing,
   shipped,
   delivered,
+  returning,
   cancelled;
 
   bool get isActive =>
@@ -12,6 +13,12 @@ enum OrderStatus {
 
   bool get isCompleted =>
       this == OrderStatus.delivered;
+
+  bool get isReturning =>
+      this == OrderStatus.returning;
+
+  bool get isCancelled =>
+      this == OrderStatus.cancelled;
 
   bool get canCancel =>
       this == OrderStatus.pending || this == OrderStatus.processing;

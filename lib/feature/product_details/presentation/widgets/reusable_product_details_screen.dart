@@ -28,6 +28,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   final String? goToCartText;
   final double imageHeight;
   final Widget? customAppBar;
+  final String? activeProductId;
 
   const ReusableProductDetailsScreen({
     super.key,
@@ -52,6 +53,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
     this.goToCartText,
     this.imageHeight = 250,
     this.customAppBar,
+    this.activeProductId,
   });
 
   @override
@@ -77,6 +79,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
               imageUrl: imageUrl,
               productId: productId,
               height: imageHeight,
+              activeProductId: activeProductId,
             ),
             ProductDetailsContent(
               productName: productName,
@@ -91,6 +94,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
               similarProducts: similarProducts,
               onSimilarProductTap: onSimilarProductTap,
               onSimilarProductAddToCart: onSimilarProductAddToCart,
+              activeProductId: activeProductId,
             ),
           ],
         ),

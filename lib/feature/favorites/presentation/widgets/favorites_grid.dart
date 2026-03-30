@@ -30,6 +30,8 @@ class FavoritesGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         final product = products[index];
         return CustomProductCard(
+          discountPercentage: index * 12,
+          isDiscounted: index % 2 == 0,
           product: product,
           showFavorite: true,
           onCardTap: () {

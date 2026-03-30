@@ -34,12 +34,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     final l10n = AppLocalizations.of(context)!;
     final total =
         '${widget.order.totalPrice.toStringAsFixed(2)} ${l10n.currency}';
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-      appBar: const CustomAppBar(
-        title: 'تفاصيل الطلب',
-        showShadow: false,
-      ),
+      backgroundColor: colors.surfaceContainerLowest,
+      appBar: const CustomAppBar(title: 'تفاصيل الطلب', showShadow: false),
       body: ListView(
         padding: const EdgeInsets.all(Spacing.base),
         children: [
@@ -92,13 +90,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           ],
           const SizedBox(height: Spacing.lg),
           OrderDetailsActions(
-            canCancel: _status.canCancel,
+            canCancel: true,
             hasComplaint: _complaint != OrderComplaintState.none,
             onCancel: () => _cancel(context, total),
             onComplaint: () => _complaint == OrderComplaintState.none
                 ? _submitComplaint(context, total)
                 : _followComplaint(),
           ),
+
           const SizedBox(height: Spacing.base),
         ],
       ),
@@ -143,10 +142,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   void _followComplaint() => setState(
-        () => _complaint = _complaint == OrderComplaintState.submitted
-            ? OrderComplaintState.inReview
-            : OrderComplaintState.resolved,
-      );
+    () => _complaint = _complaint == OrderComplaintState.submitted
+        ? OrderComplaintState.inReview
+        : OrderComplaintState.resolved,
+  );
 
   String _date(DateTime value) =>
       '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';

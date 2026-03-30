@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -30,9 +29,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   late List<CartItemModel> _items;
   String? _selectedVendorId;
   String? _activeHeroProductId;
+  String? _animatingPriceItemId;
   late CartAnimations _animations;
   bool _isLoading = true;
   Timer? _loadingTimer;
+  Timer? _animationTimer;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _loadingTimer?.cancel();
+    _animationTimer?.cancel();
     CartNavigationService().removeListener(_startFakeLoading);
     _animations.dispose();
     super.dispose();
@@ -146,17 +148,38 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       imageUrl: '',
       unit: item.unit,
       emoji: item.imageUrl,
+      isDiscounted: false,
     );
 
-    setState(() => _activeHeroProductId = item.id);
+    // Start price animation for this specific item
+    setState(() {
+      _activeHeroProductId = item.id;
+      _animatingPriceItemId = item.id;
+    });
+
+    // Reset animation flag after animation completes
+    _animationTimer?.cancel();
+    _animationTimer = Timer(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() => _animatingPriceItemId = null);
+      }
+    });
+
     await WidgetsBinding.instance.endOfFrame;
 
     if (!mounted) return;
 
-    await ProductNavigationHelper.navigateToProductDetails(context, product);
+    await ProductNavigationHelper.navigateToProductDetails(
+      context,
+      product,
+      activeProductId: item.id,
+    );
 
     if (!mounted) return;
-    setState(() => _activeHeroProductId = null);
+    setState(() {
+      _activeHeroProductId = null;
+      _animatingPriceItemId = null;
+    });
   }
 
   void _onCheckout() {
@@ -173,10 +196,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   }
 
   void _showSnackBar(String message) {
+    final color = context.colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.error,
+        backgroundColor: color.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 100),
@@ -186,12 +210,13 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     const bottomNavHeight = 90.0;
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: color.surface,
         appBar: CartAppBar(
           itemCount: _items.length,
           totalQuantity: _totalQuantity,
@@ -209,6 +234,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                       items: _items,
                       selectedVendorId: _selectedVendorId,
                       activeHeroProductId: _activeHeroProductId,
+                      animatingPriceItemId: _animatingPriceItemId,
                       onVendorSelected: _onVendorSelected,
                       onItemTap: _openProductDetails,
                       onUpdateQuantity: _updateQuantity,

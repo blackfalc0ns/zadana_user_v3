@@ -24,26 +24,17 @@ class ProductNavigationHelper {
 
   static Future<void> navigateToProductDetails(
     BuildContext context,
-    ProductModel product,
-  ) {
+    ProductModel product, {
+    String? activeProductId,
+  }) {
     final navigationModel = convertToNavigationModel(product);
 
     return Navigator.of(context).push(
-      PageRouteBuilder<void>(
-        transitionDuration: const Duration(milliseconds: 450),
-        reverseTransitionDuration: const Duration(milliseconds: 450),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ProductDetailsScreen(product: navigationModel),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOutCubic,
-              reverseCurve: Curves.easeInOutCubic,
-            ),
-            child: child,
-          );
-        },
+      MaterialPageRoute<void>(
+        builder: (context) => ProductDetailsScreen(
+          product: navigationModel,
+          activeProductId: activeProductId,
+        ),
       ),
     );
   }

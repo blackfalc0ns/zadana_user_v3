@@ -16,7 +16,7 @@ class MyOrdersPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: colors.surfaceContainerLowest,
         appBar: CustomAppBar(title: l10n.my_orders_title),
@@ -41,6 +41,7 @@ class MyOrdersPage extends StatelessWidget {
                         children: [
                           OrdersLoadingWidget(),
                           OrdersLoadingWidget(),
+                          OrdersLoadingWidget(),
                         ],
                       );
                     }
@@ -54,11 +55,15 @@ class MyOrdersPage extends StatelessWidget {
                     final completedOrders = orders
                         .where((order) => order.status.isCompleted)
                         .toList();
+                    final returningOrders = orders
+                        .where((order) => order.status.isReturning)
+                        .toList();
                     return Column(
                       children: [
                         OrdersOverviewRow(
                           activeCount: activeOrders.length,
                           completedCount: completedOrders.length,
+                          returningCount: returningOrders.length,
                         ),
                         const SizedBox(height: Spacing.base),
                         Expanded(
@@ -75,6 +80,12 @@ class MyOrdersPage extends StatelessWidget {
                                 emptyTitle: l10n.no_previous_orders,
                                 emptyIcon: Icons.receipt_long_outlined,
                                 isCompleted: true,
+                              ),
+                              OrdersTabContent(
+                                orders: returningOrders,
+                                emptyTitle: l10n.no_returning_orders,
+                                emptyIcon: Icons.restore_outlined,
+                                isCompleted: false,
                               ),
                             ],
                           ),

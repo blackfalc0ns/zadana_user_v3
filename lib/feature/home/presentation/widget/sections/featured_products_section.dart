@@ -35,6 +35,8 @@ class FeaturedProductsSection extends StatelessWidget {
             itemBuilder: (context, index) {
               final product = HomeData.featured[index];
               return CustomProductCard(
+                discountPercentage: index * 15,
+                isDiscounted: index % 2 == 0,
                 product: product,
                 showFavorite: true,
                 onAddTap: () {},

@@ -8,8 +8,13 @@ import 'package:zadana_user_v3/feature/product_details/data/similar_products_dat
 
 class ProductDetailsScreen extends StatefulWidget {
   final CategoryProductModel product;
+  final String? activeProductId;
 
-  const ProductDetailsScreen({super.key, required this.product});
+  const ProductDetailsScreen({
+    super.key,
+    required this.product,
+    this.activeProductId,
+  });
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -17,6 +22,21 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int _quantity = 1;
+  String? _activeProductId;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeProductId = widget.activeProductId;
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductDetailsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.activeProductId != oldWidget.activeProductId) {
+      _activeProductId = widget.activeProductId;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +60,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       oldPrice: widget.product.oldPrice,
       currency: l10n.egp,
       similarProducts: similarProducts,
-      onSimilarProductTap: (product) {
-        ProductNavigationHelper.navigateToProductDetails(context, product);
+      onSimilarProductTap: (product) async {
+        // First update state to enable hero for this product only
+        setState(() => _activeProductId = product.id);
+        
+        // Wait for frame to rebuild with new hero tag
+        await WidgetsBinding.instance.endOfFrame;
+        
+        // Then navigate
+        if (mounted) {
+          ProductNavigationHelper.navigateToProductDetails(
+            context,
+            product,
+            activeProductId: product.id,
+          );
+        }
       },
       onSimilarProductAddToCart: (product) {
         CustomSnackbar.showSuccess(
@@ -55,6 +88,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
       onGoToCart: () =>
           CustomSnackbar.showInfo(context: context, message: 'الانتقال للسلة'),
+      activeProductId: _activeProductId,
     );
   }
 }

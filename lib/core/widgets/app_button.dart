@@ -149,6 +149,7 @@ class AppButton extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, Color effectiveColor) {
     final colors = Theme.of(context).colorScheme;
+    
     final style = getBoldStyle(
       fontSize: FontSize.size16,
       fontFamily: FontConstant.cairo,

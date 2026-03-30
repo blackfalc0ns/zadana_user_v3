@@ -9,12 +9,14 @@ class SimilarProductsSection extends StatelessWidget {
   final List<ProductModel> similarProducts;
   final Function(ProductModel)? onProductTap;
   final Function(ProductModel)? onAddToCart;
+  final String? activeProductId;
 
   const SimilarProductsSection({
     super.key,
     required this.similarProducts,
     this.onProductTap,
     this.onAddToCart,
+    this.activeProductId,
   });
 
   @override
@@ -46,10 +48,13 @@ class SimilarProductsSection extends StatelessWidget {
                 return SizedBox(
                   width: 130,
                   child: CustomProductCard(
+                    discountPercentage: index * 12,
+                    isDiscounted: index % 2 == 0,
                     product: product,
                     onCardTap: () => onProductTap?.call(product),
                     onAddTap: () => onAddToCart?.call(product),
                     showFavorite: true,
+                    enableHeroAnimation: activeProductId == product.id,
                   ),
                 );
               },

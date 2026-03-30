@@ -21,6 +21,7 @@ class CategoryContent extends StatelessWidget {
   final double bottomPadding;
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
+  final bool isLoading;
 
   const CategoryContent({
     super.key,
@@ -38,6 +39,7 @@ class CategoryContent extends StatelessWidget {
     this.bottomPadding = 120,
     this.activeHeroProductId,
     this.onProductTap,
+    this.isLoading = false,
   });
 
   @override
@@ -58,6 +60,7 @@ class CategoryContent extends StatelessWidget {
         CategoryChips(
           selectedCategory: selectedCategory,
           onCategorySelected: onCategorySelected,
+          isLoading: isLoading,
         ),
         const SizedBox(height: Spacing.sm),
         Expanded(
@@ -75,6 +78,7 @@ class CategoryContent extends StatelessWidget {
               priceRange: priceRange,
               activeHeroProductId: activeHeroProductId,
               onProductTap: onProductTap,
+              isLoading: isLoading,
             ),
           ),
         ),

@@ -2,11 +2,15 @@ class VendorPrice {
   final String id;
   final String name;
   final double price;
+  final double? oldPrice;
+  final bool isDiscounted;
 
   const VendorPrice({
     required this.id,
     required this.name,
     required this.price,
+    this.oldPrice,
+    this.isDiscounted = false,
   });
 }
 

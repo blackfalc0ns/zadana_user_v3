@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
       heroBadge: 'مرحبا بعودتك',
       heroTitle: 'تسجيل الدخول',
       heroSubtitle:
-          'سجل الدخول للمتابعة واستعراض المنتجات والعروض وإكمال طلباتك بشكل أسرع وأسهل.',
+          'سجل الدخول للمتابعة واستعراض المنتجات',
       sectionBadge: 'Member',
       sectionTitle: 'تسجيل دخول',
       sectionDescription:

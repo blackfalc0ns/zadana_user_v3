@@ -832,10 +832,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completed_orders_tab => 'السابقة';
 
   @override
+  String get returned_orders_tab => 'المرتجعات';
+
+  @override
+  String get order_returning => 'قيد الإرجاع';
+
+  @override
   String get no_active_orders => 'ما عندك طلبات حالية';
 
   @override
   String get no_previous_orders => 'ما عندك طلبات سابقة';
+
+  @override
+  String get no_returning_orders => 'ما عندك طلبات قيد الإرجاع';
 
   @override
   String get my_orders_order_date => 'تاريخ الطلب';
@@ -854,6 +863,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_rate_order => 'قيّم الطلب';
+
+  @override
+  String get my_orders_reorder_button => 'إعادة الطلب';
 
   @override
   String get order_pending => 'قيد التنفيذ';

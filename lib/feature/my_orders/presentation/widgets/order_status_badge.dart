@@ -53,6 +53,12 @@ class OrderStatusBadge extends StatelessWidget {
           AppColors.secondary.withValues(alpha: .14),
           AppColors.secondary,
         );
+
+      case OrderStatus.returning:
+        return (
+          AppColors.secondary.withValues(alpha: .14),
+          AppColors.secondary,
+        );
     }
   }
 
@@ -68,6 +74,8 @@ class OrderStatusBadge extends StatelessWidget {
         return l10n.order_delivered;
       case OrderStatus.cancelled:
         return l10n.order_cancelled;
+      case OrderStatus.returning:
+        return l10n.order_returning;
     }
   }
 }

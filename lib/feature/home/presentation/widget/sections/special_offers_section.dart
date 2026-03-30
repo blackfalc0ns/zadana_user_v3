@@ -34,6 +34,8 @@ class SpecialOffersSection extends StatelessWidget {
                 child: CustomProductCard(
                   product: product,
                   showFavorite: true,
+                  discountPercentage: i*15,
+                  isDiscounted: i % 2 == 0,
                   onAddTap: () {},
                   onCardTap: () {
                     ProductNavigationHelper.navigateToProductDetails(

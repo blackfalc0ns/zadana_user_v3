@@ -221,14 +221,16 @@
   "my_orders_subtitle": "تابع طلباتك بسهولة",
   "active_orders_tab": "الحالية",
   "completed_orders_tab": "السابقة",
-
+  "returned_orders_tab" : "المرتجعات",
   "no_active_orders": "ما عندك طلبات حالية",
   "no_previous_orders": "ما عندك طلبات سابقة",
+  "no_returning_orders": "ما عندك طلبات قيد الإرجاع",
 
   "order_pending": "قيد التنفيذ",
   "order_shipped": "انشحن",
   "order_delivered": "تم التوصيل",
   "order_cancelled": "ملغي",
+  "order_returning" : "قيد الإرجاع",
 
   "payment_method": "طريقة الدفع",
   "credit_debit_card": "بطاقة",
@@ -302,6 +304,7 @@
   "my_orders_rate_order": "قيّم الطلب",
   "my_orders_reorder": "إعادة الطلب",
   "my_orders_view_details": "عرض التفاصيل",
+  "my_orders_reorder_button": "إعادة الطلب",
   "natural_100": "طبيعي 100%",
   "no": "لا",
   "not_available": "غير متوفر",

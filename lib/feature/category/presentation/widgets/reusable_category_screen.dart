@@ -5,7 +5,6 @@ import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_content.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_filter_section.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/category_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class ReusableCategoryScreen extends StatefulWidget {
@@ -130,24 +129,23 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            widget.isLoading
-                ? const CategoryLoadingSkeleton()
-                : CategoryContent(
-                    selectedCategory: widget.selectedCategory,
-                    selectedSubCategory: widget.selectedSubCategory,
-                    selectedSortOption: widget.selectedSortOption,
-                    selectedFilters: widget.selectedFilters,
-                    selectedQuantity: widget.selectedQuantity,
-                    selectedProductType: widget.filterSelectedProductType,
-                    selectedPart: widget.filterSelectedPart,
-                    selectedBrand: widget.filterSelectedBrand,
-                    priceRange: widget.priceRange,
-                    onCategorySelected: widget.onCategorySelected,
-                    onFilterApplied: widget.onFilterApplied,
-                    bottomPadding: 30,
-                    activeHeroProductId: widget.activeHeroProductId,
-                    onProductTap: widget.onProductTap,
-                  ),
+            CategoryContent(
+              selectedCategory: widget.selectedCategory,
+              selectedSubCategory: widget.selectedSubCategory,
+              selectedSortOption: widget.selectedSortOption,
+              selectedFilters: widget.selectedFilters,
+              selectedQuantity: widget.selectedQuantity,
+              selectedProductType: widget.filterSelectedProductType,
+              selectedPart: widget.filterSelectedPart,
+              selectedBrand: widget.filterSelectedBrand,
+              priceRange: widget.priceRange,
+              onCategorySelected: widget.onCategorySelected,
+              onFilterApplied: widget.onFilterApplied,
+              bottomPadding: 30,
+              activeHeroProductId: widget.activeHeroProductId,
+              onProductTap: widget.onProductTap,
+              isLoading: widget.isLoading,
+            ),
             if (!widget.isLoading)
               Positioned(
                 bottom: widget.bottomNavHeight + 20,

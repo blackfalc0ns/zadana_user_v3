@@ -453,7 +453,7 @@ class OrderDetailsActions extends StatelessWidget {
         if (canCancel)
           Expanded(
             child: AppButton.outlined(
-              text: 'إلغاء الطلب',
+              text: 'طلب إرجاع',
               color: AppColors.error,
               textColor: AppColors.error,
               height: 50,

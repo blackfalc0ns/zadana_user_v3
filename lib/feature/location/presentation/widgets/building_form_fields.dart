@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
@@ -20,19 +21,21 @@ class BuildingFormFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildBuildingField(context),
+        _buildBuildingField(context, color.outline.withValues(alpha: 0.3)),
         const SizedBox(height: Spacing.lg),
-        _buildFloorField(context),
+        _buildFloorField(context, color.outline.withValues(alpha: 0.3)),
         const SizedBox(height: Spacing.lg),
-        _buildApartmentField(context),
+        _buildApartmentField(context, color.outline.withValues(alpha: 0.3)),
       ],
     );
   }
 
-  Widget _buildBuildingField(BuildContext context) {
+  Widget _buildBuildingField(BuildContext context, Color color) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,14 +43,19 @@ class BuildingFormFields extends StatelessWidget {
         AppTextField(
           controller: buildingController,
           hint: 'مثال: 15',
-          validator: (value) => value?.trim().isEmpty == true ? 'رقم المبنى مطلوب' : null,
-          onChanged: (value) => context.read<LocationViewModel>().doIntent(UpdateBuildingNoEvent(value)),
+          prefixIcon: Icon(Iconsax.building, color: color),
+          validator: (value) =>
+              value?.trim().isEmpty == true ? 'رقم المبنى مطلوب' : null,
+          onChanged: (value) => context.read<LocationViewModel>().doIntent(
+            UpdateBuildingNoEvent(value),
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildFloorField(BuildContext context) {
+  Widget _buildFloorField(BuildContext context, Color color ) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,14 +63,17 @@ class BuildingFormFields extends StatelessWidget {
         AppTextField(
           controller: floorController,
           hint: 'مثال: 3',
+          prefixIcon: Icon(Iconsax.buildings, color: color),
           keyboardType: TextInputType.number,
-          onChanged: (value) => context.read<LocationViewModel>().doIntent(UpdateFloorNoEvent(value)),
+          onChanged: (value) => context.read<LocationViewModel>().doIntent(
+            UpdateFloorNoEvent(value),
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildApartmentField(BuildContext context) {
+  Widget _buildApartmentField(BuildContext context, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -70,8 +81,11 @@ class BuildingFormFields extends StatelessWidget {
         AppTextField(
           controller: apartmentController,
           hint: 'مثال: 5',
+          prefixIcon: Icon(Iconsax.home, color: color),
           keyboardType: TextInputType.number,
-          onChanged: (value) => context.read<LocationViewModel>().doIntent(UpdateApartmentNoEvent(value)),
+          onChanged: (value) => context.read<LocationViewModel>().doIntent(
+            UpdateApartmentNoEvent(value),
+          ),
         ),
       ],
     );

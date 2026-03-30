@@ -16,6 +16,7 @@ class CartContent extends StatelessWidget {
   final Function(CartItemModel, bool) onUpdateQuantity;
   final Function(CartItemModel) onDeleteItem;
   final String? activeHeroProductId;
+  final String? animatingPriceItemId;
 
   const CartContent({
     super.key,
@@ -26,6 +27,7 @@ class CartContent extends StatelessWidget {
     required this.onUpdateQuantity,
     required this.onDeleteItem,
     this.activeHeroProductId,
+    this.animatingPriceItemId,
   });
 
   @override
@@ -132,9 +134,7 @@ class CartContent extends StatelessWidget {
             end: Alignment.bottomLeft,
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.12),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
         ),
         child: Row(
           children: [
@@ -144,7 +144,11 @@ class CartContent extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(Icons.store_rounded, color: AppColors.primary, size: 22),
+              child: Icon(
+                Icons.store_rounded,
+                color: AppColors.primary,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -189,6 +193,7 @@ class CartContent extends StatelessWidget {
       itemCount: items.length,
       separatorBuilder: (_, _) => const SizedBox(height: 6),
       itemBuilder: (_, index) => CartItemCard(
+        isDiscounted: index % 2 == 0,
         item: items[index],
         selectedVendorId: selectedVendorId,
         onTap: () => onItemTap(items[index]),
@@ -196,6 +201,7 @@ class CartContent extends StatelessWidget {
         onDecrement: () => onUpdateQuantity(items[index], false),
         onDelete: () => onDeleteItem(items[index]),
         enableHeroAnimation: activeHeroProductId == items[index].id,
+        animatePrice: selectedVendorId != null && items[index].id == animatingPriceItemId,
       ),
     );
   }

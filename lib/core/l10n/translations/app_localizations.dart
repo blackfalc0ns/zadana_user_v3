@@ -1724,6 +1724,18 @@ abstract class AppLocalizations {
   /// **'Completed'**
   String get completed_orders_tab;
 
+  /// No description provided for @returned_orders_tab.
+  ///
+  /// In en, this message translates to:
+  /// **'Returns'**
+  String get returned_orders_tab;
+
+  /// No description provided for @order_returning.
+  ///
+  /// In en, this message translates to:
+  /// **'In Return'**
+  String get order_returning;
+
   /// No description provided for @no_active_orders.
   ///
   /// In en, this message translates to:
@@ -1735,6 +1747,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No previous orders'**
   String get no_previous_orders;
+
+  /// No description provided for @no_returning_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders in return process'**
+  String get no_returning_orders;
 
   /// No description provided for @my_orders_order_date.
   ///
@@ -1771,6 +1789,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rate Order'**
   String get my_orders_rate_order;
+
+  /// No description provided for @my_orders_reorder_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder'**
+  String get my_orders_reorder_button;
 
   /// No description provided for @order_pending.
   ///

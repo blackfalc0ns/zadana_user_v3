@@ -13,6 +13,8 @@ class SimilarProductsData {
         emoji: '🍅',
         rating: 4.5,
         reviewCount: 120,
+        isDiscounted: true,
+        discount: '20',
       ),
       const ProductModel(
         id: '2',
@@ -23,6 +25,8 @@ class SimilarProductsData {
         emoji: '🥒',
         rating: 4.2,
         reviewCount: 85,
+        isDiscounted: true ,
+        discount: '35'
       ),
       const ProductModel(
         id: '3',
@@ -34,6 +38,7 @@ class SimilarProductsData {
         emoji: '🥕',
         rating: 4.7,
         reviewCount: 95,
+        isDiscounted: false,
       ),
       const ProductModel(
         id: '4',
@@ -43,6 +48,7 @@ class SimilarProductsData {
         imageUrl: '',
         emoji: '🌶️',
         rating: 4.3,
+        isDiscounted: false,
         reviewCount: 67,
       ),
       const ProductModel(
@@ -53,6 +59,7 @@ class SimilarProductsData {
         imageUrl: '',
         emoji: '🧅',
         rating: 4.1,
+        isDiscounted: false,
         reviewCount: 78,
       ),
       const ProductModel(
@@ -64,6 +71,7 @@ class SimilarProductsData {
         imageUrl: '',
         emoji: '🍆',
         rating: 4.4,
+        isDiscounted: false,
         reviewCount: 92,
       ),
     ];

@@ -69,17 +69,21 @@ class OrdersOverviewRow extends StatelessWidget {
     super.key,
     required this.activeCount,
     required this.completedCount,
+    required this.returningCount,
   });
 
   final int activeCount;
   final int completedCount;
+  final int returningCount;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Row(
+      spacing: Spacing.md,
+      // runSpacing: Spacing.md,
       children: [
-        Expanded(
+        Flexible(
           child: _OrdersOverviewChip(
             label: l10n.active_orders_tab,
             count: activeCount,
@@ -87,13 +91,20 @@ class OrdersOverviewRow extends StatelessWidget {
             accentColor: AppColors.primary,
           ),
         ),
-        const SizedBox(width: Spacing.md),
-        Expanded(
+        Flexible(
           child: _OrdersOverviewChip(
             label: l10n.completed_orders_tab,
             count: completedCount,
             icon: Icons.verified_rounded,
             accentColor: AppColors.secondary,
+          ),
+        ),
+        Flexible(
+          child: _OrdersOverviewChip(
+            label: l10n.returned_orders_tab,
+            count: returningCount,
+            icon: Icons.restore_outlined,
+            accentColor: AppColors.error,
           ),
         ),
       ],
@@ -176,26 +187,25 @@ class _OrdersOverviewChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(Spacing.md),
+      padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(Spacing.lg),
         border: Border.all(color: accentColor.withValues(alpha: .12)),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
-            width: 42,
-            height: 42,
+            padding: EdgeInsets.all(3),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: .10),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: accentColor, size: 22),
           ),
-          const SizedBox(width: Spacing.md),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 '$count',

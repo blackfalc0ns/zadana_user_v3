@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/shimmer_wrapper.dart';
 
 class ProductsGrid extends StatelessWidget {
   const ProductsGrid({
@@ -19,6 +21,7 @@ class ProductsGrid extends StatelessWidget {
     this.priceRange = const RangeValues(0, 1000),
     this.activeHeroProductId,
     this.onProductTap,
+    this.isLoading = false,
   });
 
   final String category;
@@ -32,12 +35,10 @@ class ProductsGrid extends StatelessWidget {
   final RangeValues priceRange;
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final childAspectRatio = _getChildAspectRatio(screenWidth);
-
     List<ProductModel> products = _getProductsForCategory(
       category,
       subCategory,
@@ -53,6 +54,29 @@ class ProductsGrid extends StatelessWidget {
       priceRange: priceRange,
     );
     products = _applySorting(products, sortOption);
+
+    if (isLoading) {
+      return ShimmerWrapper(
+        isLoading: true,
+        child: GridView.builder(
+          padding: const EdgeInsets.only(
+            top: 4,
+            left: Spacing.md,
+            right: Spacing.md,
+            bottom: 85,
+          ),
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: .9,
+            crossAxisSpacing: Spacing.xss,
+            mainAxisSpacing: Spacing.xss,
+          ),
+          itemCount: 15,
+          itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
+        ),
+      );
+    }
 
     return GridView.builder(
       key: PageStorageKey<String>('products_grid_${category}_$subCategory'),
@@ -75,6 +99,8 @@ class ProductsGrid extends StatelessWidget {
             ? products[index]
             : products[index].copyWith(unit: selectedQuantity);
         return CustomProductCard(
+          discountPercentage: index * 12,
+          isDiscounted: index % 2 == 0,
           product: product,
           onCardTap: () {
             if (onProductTap != null) {
@@ -97,13 +123,6 @@ class ProductsGrid extends StatelessWidget {
     String subCategory,
   ) {
     return kCategoryProducts[category] ?? [];
-  }
-
-  double _getChildAspectRatio(double screenWidth) {
-    if (screenWidth >= 500) return 0.89;
-    if (screenWidth >= 375) return 0.86;
-    if (screenWidth >= 360) return 0.80;
-    return 0.89;
   }
 
   List<ProductModel> _applySorting(
@@ -196,5 +215,96 @@ class ProductsGrid extends StatelessWidget {
             product.name.contains(filter) || product.store.contains(filter),
       );
     }).toList();
+  }
+}
+
+class _ProductCardSkeleton extends StatelessWidget {
+  const _ProductCardSkeleton({required this.index});
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(Spacing.cardRadius),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _Bone(height: 75, radius: Spacing.cardRadius),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(7, 7, 7, 3.5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _Bone(
+                        width: switch (index % 4) {
+                          0 => 72,
+                          1 => 64,
+                          2 => 78,
+                          _ => 68,
+                        },
+                        height: 12,
+                        radius: 999,
+                      ),
+                      const Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: const [
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _Bone(width: 40, height: 10, radius: 999),
+                                SizedBox(height: 4),
+                                _Bone(width: 32, height: 10, radius: 999),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          _Bone(width: 28, height: 28, radius: 999),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Positioned(
+            top: 4,
+            right: 4,
+            child: _Bone(width: 28, height: 28, radius: 999),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Bone extends StatelessWidget {
+  const _Bone({this.width, required this.height, required this.radius});
+
+  final double? width;
+  final double height;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppColors.shimmerBase,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
   }
 }

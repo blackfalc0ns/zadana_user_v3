@@ -52,7 +52,7 @@ class FakeOrdersData {
         id: '#ZD-2009',
         createdAt: DateTime(2026, 3, 13),
         totalPrice: 112.0,
-        status: OrderStatus.cancelled,
+        status: OrderStatus.returning,
         items: const [
           OrderItemUiModel(id: '10', name: 'بيض', quantity: 2, price: 18),
           OrderItemUiModel(id: '11', name: 'جبنة', quantity: 2, price: 38),

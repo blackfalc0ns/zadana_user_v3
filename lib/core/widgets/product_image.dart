@@ -31,12 +31,16 @@ class ProductImage extends StatelessWidget {
   Widget _buildImageShell() {
     final childContent = emoji != null && emoji!.isNotEmpty ? _buildEmoji() : _buildImage();
     
-    final heroChild = (heroTag == null || heroTag!.isEmpty)
+    // Hero only wraps the content (emoji/image), not the container
+    final heroContent = (heroTag == null || heroTag!.isEmpty)
         ? childContent
         : Hero(
             tag: heroTag!,
             transitionOnUserGestures: true,
-            child: Material(color: Colors.transparent, child: childContent),
+            child: Material(
+              color: Colors.transparent,
+              child: childContent,
+            ),
           );
 
     return ClipRRect(
@@ -45,7 +49,7 @@ class ProductImage extends StatelessWidget {
         width: width,
         height: height,
         color: whiteBackground ? AppColors.white : AppColors.background,
-        child: heroChild,
+        child: heroContent,
       ),
     );
   }
