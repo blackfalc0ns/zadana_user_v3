@@ -924,4 +924,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shopping => 'shopping';
+
+  @override
+  String get delivery_otp_title => 'Delivery Verification';
+
+  @override
+  String get delivery_otp_subtitle =>
+      'Enter the verification code sent to you for delivery confirmation';
+
+  @override
+  String get delivery_otp_sent_to => 'Code sent to';
+
+  @override
+  String get delivery_otp_verify_button => 'Verify Delivery';
+
+  @override
+  String get delivery_otp_resend => 'Resend Code';
+
+  @override
+  String get delivery_otp_resend_success =>
+      'Verification code resent successfully';
+
+  @override
+  String get delivery_otp_verified => 'Delivery verified successfully';
+
+  @override
+  String get delivery_otp_invalid_code => 'Invalid verification code';
+
+  @override
+  String get delivery_otp_required => 'Please enter verification code';
+
+  @override
+  String get delivery_otp_expired => 'Verification code has expired';
+
+  @override
+  String get delivery_otp_attempts_exceeded =>
+      'Maximum verification attempts exceeded';
+
+  @override
+  String get delivery_otp_remaining_attempts => 'Remaining attempts';
+
+  @override
+  String get delivery_otp_timer_prefix => 'Resend code in';
+
+  @override
+  String get delivery_otp_seconds => 'seconds';
+
+  @override
+  String get delivery_rating_delivered_to => 'Delivered to';
+
+  @override
+  String get delivery_rating_your_feeling =>
+      'How do you feel about the courier?';
+
+  @override
+  String get delivery_rating_your_rating => 'Your Rating';
+
+  @override
+  String get delivery_rating_write_comment =>
+      'Write about the courier (optional)';
+
+  @override
+  String get delivery_rating_comment_hint =>
+      'Example: Very fast and friendly, thank you...';
+
+  @override
+  String get delivery_rating_cancel => 'Cancel';
+
+  @override
+  String get delivery_rating_submit => 'Submit';
+
+  @override
+  String get delivery_code_title => 'Your Delivery Verification Code';
+
+  @override
+  String get delivery_code_share_instruction =>
+      'Please share this code with your delivery courier';
+
+  @override
+  String get delivery_code_share_label => 'Share This Code';
+
+  @override
+  String get delivery_code_shared_button => 'Code Shared';
+
+  @override
+  String get delivery_code_generate_new => 'Generate New Code';
 }

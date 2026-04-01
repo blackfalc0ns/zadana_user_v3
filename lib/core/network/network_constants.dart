@@ -13,4 +13,7 @@ abstract class EndPoints {
   static const String getProfile = '/customers/auth/me';
   static const String getAddress = '/location/address';
   static const String searchLocations = '/location/search';
+  static const String sendDeliveryOtp = '/delivery/otp/send';
+  static const String verifyDeliveryOtp = '/delivery/otp/verify';
+  static const String resendDeliveryOtp = '/delivery/otp/resend';
 }

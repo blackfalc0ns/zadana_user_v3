@@ -29,4 +29,5 @@ abstract class AppRoutes {
   static const String faq = '/faq';
   static const String privacyPolicy = '/privacy-policy';
   static const String termsConditions = '/terms-conditions';
+  static const String deliveryOtp = '/delivery-otp';
 }

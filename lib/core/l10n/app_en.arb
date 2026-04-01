@@ -340,6 +340,33 @@
   "cash_on_delivery_subtitle": "Pay cash when order arrives",
   "bank_transfer": "Bank Transfer",
   "bank_transfer_subtitle": "Direct transfer from bank",
-  "shopping":"shopping"
-  }
+  "shopping":"shopping",
+
+  "delivery_otp_title": "Delivery Verification",
+  "delivery_otp_subtitle": "Enter the verification code sent to you for delivery confirmation",
+  "delivery_otp_sent_to": "Code sent to",
+  "delivery_otp_verify_button": "Verify Delivery",
+  "delivery_otp_resend": "Resend Code",
+  "delivery_otp_resend_success": "Verification code resent successfully",
+  "delivery_otp_verified": "Delivery verified successfully",
+  "delivery_otp_invalid_code": "Invalid verification code",
+  "delivery_otp_required": "Please enter verification code",
+  "delivery_otp_expired": "Verification code has expired",
+  "delivery_otp_attempts_exceeded": "Maximum verification attempts exceeded",
+  "delivery_otp_remaining_attempts": "Remaining attempts",
+  "delivery_otp_timer_prefix": "Resend code in",
+  "delivery_otp_seconds": "seconds",
+  "delivery_rating_delivered_to": "Delivered to",
+  "delivery_rating_your_feeling": "How do you feel about the courier?",
+  "delivery_rating_your_rating": "Your Rating",
+  "delivery_rating_write_comment": "Write about the courier (optional)",
+  "delivery_rating_comment_hint": "Example: Very fast and friendly, thank you...",
+  "delivery_rating_cancel": "Cancel",
+  "delivery_rating_submit": "Submit",
+  "delivery_code_title": "Your Delivery Verification Code",
+  "delivery_code_share_instruction": "Please share this code with your delivery courier",
+  "delivery_code_share_label": "Share This Code",
+  "delivery_code_shared_button": "Code Shared",
+  "delivery_code_generate_new": "Generate New Code"
+}
 

@@ -32,6 +32,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_succes
 import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_order_screen.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/delivery_otp_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -141,6 +142,15 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen());
       case AppRoutes.termsConditions:
         return MaterialPageRoute(builder: (_) => const TermsConditionsScreen());
+      case AppRoutes.deliveryOtp:
+        final orderId = settings.arguments as String? ?? '';
+        final phoneNumber = (settings.arguments as Map<String, String>?)?['phoneNumber'] ?? '';
+        return MaterialPageRoute(
+          builder: (_) => DeliveryOtpScreen(
+            orderId: orderId,
+            phoneNumber: phoneNumber,
+          ),
+        );
       default:
         return unDefinedRoute();
     }

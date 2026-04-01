@@ -1879,6 +1879,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'shopping'**
   String get shopping;
+
+  /// No description provided for @delivery_otp_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Verification'**
+  String get delivery_otp_title;
+
+  /// No description provided for @delivery_otp_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to you for delivery confirmation'**
+  String get delivery_otp_subtitle;
+
+  /// No description provided for @delivery_otp_sent_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Code sent to'**
+  String get delivery_otp_sent_to;
+
+  /// No description provided for @delivery_otp_verify_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Delivery'**
+  String get delivery_otp_verify_button;
+
+  /// No description provided for @delivery_otp_resend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Code'**
+  String get delivery_otp_resend;
+
+  /// No description provided for @delivery_otp_resend_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code resent successfully'**
+  String get delivery_otp_resend_success;
+
+  /// No description provided for @delivery_otp_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery verified successfully'**
+  String get delivery_otp_verified;
+
+  /// No description provided for @delivery_otp_invalid_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid verification code'**
+  String get delivery_otp_invalid_code;
+
+  /// No description provided for @delivery_otp_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter verification code'**
+  String get delivery_otp_required;
+
+  /// No description provided for @delivery_otp_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code has expired'**
+  String get delivery_otp_expired;
+
+  /// No description provided for @delivery_otp_attempts_exceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum verification attempts exceeded'**
+  String get delivery_otp_attempts_exceeded;
+
+  /// No description provided for @delivery_otp_remaining_attempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining attempts'**
+  String get delivery_otp_remaining_attempts;
+
+  /// No description provided for @delivery_otp_timer_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in'**
+  String get delivery_otp_timer_prefix;
+
+  /// No description provided for @delivery_otp_seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get delivery_otp_seconds;
+
+  /// No description provided for @delivery_rating_delivered_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered to'**
+  String get delivery_rating_delivered_to;
+
+  /// No description provided for @delivery_rating_your_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you feel about the courier?'**
+  String get delivery_rating_your_feeling;
+
+  /// No description provided for @delivery_rating_your_rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rating'**
+  String get delivery_rating_your_rating;
+
+  /// No description provided for @delivery_rating_write_comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Write about the courier (optional)'**
+  String get delivery_rating_write_comment;
+
+  /// No description provided for @delivery_rating_comment_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Very fast and friendly, thank you...'**
+  String get delivery_rating_comment_hint;
+
+  /// No description provided for @delivery_rating_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get delivery_rating_cancel;
+
+  /// No description provided for @delivery_rating_submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get delivery_rating_submit;
+
+  /// No description provided for @delivery_code_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Delivery Verification Code'**
+  String get delivery_code_title;
+
+  /// No description provided for @delivery_code_share_instruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Please share this code with your delivery courier'**
+  String get delivery_code_share_instruction;
+
+  /// No description provided for @delivery_code_share_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Share This Code'**
+  String get delivery_code_share_label;
+
+  /// No description provided for @delivery_code_shared_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Code Shared'**
+  String get delivery_code_shared_button;
+
+  /// No description provided for @delivery_code_generate_new.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate New Code'**
+  String get delivery_code_generate_new;
 }
 
 class _AppLocalizationsDelegate

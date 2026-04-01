@@ -71,6 +71,22 @@ import '../../feature/auth/verify_otp/domain/usecase/verify_otp_usecase.dart'
     as _i851;
 import '../../feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart'
     as _i718;
+import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
+    as _i691;
+import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source_impl.dart'
+    as _i19;
+import '../../feature/delivery_verification/data/repo/delivery_verification_repo_impl.dart'
+    as _i1023;
+import '../../feature/delivery_verification/domain/repo/delivery_verification_repo.dart'
+    as _i891;
+import '../../feature/delivery_verification/domain/usecase/resend_delivery_otp_usecase.dart'
+    as _i882;
+import '../../feature/delivery_verification/domain/usecase/send_delivery_otp_usecase.dart'
+    as _i475;
+import '../../feature/delivery_verification/domain/usecase/verify_delivery_otp_usecase.dart'
+    as _i8;
+import '../../feature/delivery_verification/presentation/manager/delivery_otp_view_model.dart'
+    as _i796;
 import '../../feature/location/data/datasources/location_data_source.dart'
     as _i408;
 import '../../feature/location/data/datasources/location_data_source_imp.dart'
@@ -183,6 +199,11 @@ extension GetItInjectableX on _i174.GetIt {
         apiServices: gh<_i804.ApiServices>(),
       ),
     );
+    gh.factory<_i691.DeliveryVerificationRemoteDataSource>(
+      () => _i19.DeliveryVerificationRemoteDataSourceImpl(
+        gh<_i804.ApiServices>(),
+      ),
+    );
     gh.factory<_i698.VerifyOtpRemoteDataSource>(
       () => _i285.VerifyOtpRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
@@ -232,6 +253,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i851.VerifyOtpUseCase>(
       () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
+    gh.factory<_i891.DeliveryVerificationRepo>(
+      () => _i1023.DeliveryVerificationRepoImpl(
+        gh<_i691.DeliveryVerificationRemoteDataSource>(),
+      ),
+    );
     gh.factory<_i1006.ProfileRepository>(
       () => _i771.ProfileRepositoryImpl(gh<_i371.ProfileRemoteDataSource>()),
     );
@@ -242,6 +268,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i766.ProfileUseCase>(
       () => _i766.ProfileUseCase(gh<_i1006.ProfileRepository>()),
+    );
+    gh.factory<_i882.ResendDeliveryOtpUseCase>(
+      () =>
+          _i882.ResendDeliveryOtpUseCase(gh<_i891.DeliveryVerificationRepo>()),
+    );
+    gh.factory<_i475.SendDeliveryOtpUseCase>(
+      () => _i475.SendDeliveryOtpUseCase(gh<_i891.DeliveryVerificationRepo>()),
+    );
+    gh.factory<_i8.VerifyDeliveryOtpUseCase>(
+      () => _i8.VerifyDeliveryOtpUseCase(gh<_i891.DeliveryVerificationRepo>()),
     );
     gh.factory<_i491.ResetPasswordRepository>(
       () => _i670.ResetPasswordRepositoryImpl(
@@ -262,6 +298,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i166.RegisterUseCase>(
       () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
+    );
+    gh.factory<_i796.DeliveryOtpViewModel>(
+      () => _i796.DeliveryOtpViewModel(
+        gh<_i475.SendDeliveryOtpUseCase>(),
+        gh<_i8.VerifyDeliveryOtpUseCase>(),
+        gh<_i882.ResendDeliveryOtpUseCase>(),
+      ),
     );
     gh.factory<_i996.ResetPasswordUseCase>(
       () => _i996.ResetPasswordUseCase(

@@ -14,6 +14,8 @@ import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_re
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_request_model.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_response_model.dart';
 part 'api_services.g.dart';
 
 @RestApi()
@@ -53,5 +55,20 @@ abstract class ApiServices {
   @GET(EndPoints.searchLocations)
   Future<List<LocationSearchDto>> searchLocations(
     @Query('query') String query,
+  );
+
+  @POST(EndPoints.sendDeliveryOtp)
+  Future<void> sendDeliveryOtp(
+    @Body() DeliveryOtpRequestModel request,
+  );
+
+  @POST(EndPoints.verifyDeliveryOtp)
+  Future<DeliveryOtpResponseModel> verifyDeliveryOtp(
+    @Body() DeliveryOtpRequestModel request,
+  );
+
+  @POST(EndPoints.resendDeliveryOtp)
+  Future<void> resendDeliveryOtp(
+    @Body() DeliveryOtpRequestModel request,
   );
 }

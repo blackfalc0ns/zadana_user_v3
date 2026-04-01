@@ -908,4 +908,86 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shopping => 'تسوق';
+
+  @override
+  String get delivery_otp_title => 'تأكيد التوصيل';
+
+  @override
+  String get delivery_otp_subtitle =>
+      'أدخل رمز التحقق المرسل إليك لتأكيد التوصيل';
+
+  @override
+  String get delivery_otp_sent_to => 'تم إرسال الرمز إلى';
+
+  @override
+  String get delivery_otp_verify_button => 'تأكيد التوصيل';
+
+  @override
+  String get delivery_otp_resend => 'إعادة إرسال الرمز';
+
+  @override
+  String get delivery_otp_resend_success => 'تم إعادة إرسال رمز التحقق';
+
+  @override
+  String get delivery_otp_verified => 'تم تأكيد التوصيل';
+
+  @override
+  String get delivery_otp_invalid_code => 'رمز التحقق غير صحيح';
+
+  @override
+  String get delivery_otp_required => 'الرجاء إدخال رمز التحقق';
+
+  @override
+  String get delivery_otp_expired => 'انتهت صلاحية رمز التحقق';
+
+  @override
+  String get delivery_otp_attempts_exceeded =>
+      'تم تجاوز الحد الأقصى لمحاولات التحقق';
+
+  @override
+  String get delivery_otp_remaining_attempts => 'المحاولات المتبقية';
+
+  @override
+  String get delivery_otp_timer_prefix => 'إعادة الإرسال خلال';
+
+  @override
+  String get delivery_otp_seconds => 'ثانية';
+
+  @override
+  String get delivery_rating_delivered_to => 'تم التوصيل إلى';
+
+  @override
+  String get delivery_rating_your_feeling => 'كيف شعورك تجاه المندوب؟';
+
+  @override
+  String get delivery_rating_your_rating => 'تقييمك';
+
+  @override
+  String get delivery_rating_write_comment => 'اكتب عن المندوب (اختياري)';
+
+  @override
+  String get delivery_rating_comment_hint =>
+      'مثال: سريع جداً وابتسامته جميلة، شكراً...';
+
+  @override
+  String get delivery_rating_cancel => 'إلغاء';
+
+  @override
+  String get delivery_rating_submit => 'إرسال';
+
+  @override
+  String get delivery_code_title => 'رمز التحقق من التوصيل الخاص بك';
+
+  @override
+  String get delivery_code_share_instruction =>
+      'يرجى مشاركة هذا الرمز مع مندوب التوصيل الخاص بك';
+
+  @override
+  String get delivery_code_share_label => 'شارك هذا الرمز';
+
+  @override
+  String get delivery_code_shared_button => 'تم مشاركة الرمز';
+
+  @override
+  String get delivery_code_generate_new => 'إنشاء رمز جديد';
 }
