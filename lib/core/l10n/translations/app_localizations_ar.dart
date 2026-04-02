@@ -990,4 +990,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get delivery_code_generate_new => 'إنشاء رمز جديد';
+
+  @override
+  String get order_success_title => 'تم نجاح الطلب';
+
+  @override
+  String get order_success_subtitle => 'شكراً لطلبك! سيتم توصيل طلبك قريباً';
+
+  @override
+  String get courier_name => 'اسم المندوب';
+
+  @override
+  String get continue_shopping => 'متابعة التسوق';
+
+  @override
+  String get view_order_details => 'عرض تفاصيل الطلب';
 }

@@ -367,6 +367,12 @@
   "delivery_code_share_instruction": "Please share this code with your delivery courier",
   "delivery_code_share_label": "Share This Code",
   "delivery_code_shared_button": "Code Shared",
-  "delivery_code_generate_new": "Generate New Code"
+  "delivery_code_generate_new": "Generate New Code",
+  "order_success_title": "Order Successful",
+  "order_success_subtitle": "Thank you for your order! Your order will be delivered soon",
+  "order_number": "Order Number",
+  "courier_name": "Courier Name",
+  "continue_shopping": "Continue Shopping",
+  "view_order_details": "View Order Details"
 }
 

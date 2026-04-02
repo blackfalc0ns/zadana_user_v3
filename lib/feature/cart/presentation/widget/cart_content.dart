@@ -33,6 +33,9 @@ class CartContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
+    final unavailableCount = selectedVendorId == null
+        ? 0
+        : items.where((item) => !item.isAvailableAt(selectedVendorId!)).length;
 
     return Column(
       children: [
@@ -45,6 +48,10 @@ class CartContent extends StatelessWidget {
 
         // ── Vendor prompt (when no vendor selected) ──
         if (selectedVendorId == null) _buildSelectVendorPrompt(context),
+
+        // ── Unavailable items warning ──
+        if (selectedVendorId != null && unavailableCount > 0)
+          _buildUnavailableWarning(context, unavailableCount),
 
         // ── Subtle divider ──
         Container(
@@ -74,16 +81,22 @@ class CartContent extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha: 0.1),
+                    color: unavailableCount > 0
+                        ? AppColors.warning.withValues(alpha: 0.1)
+                        : AppColors.success.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.check_circle_outline,
+                        unavailableCount > 0
+                            ? Icons.warning_amber_rounded
+                            : Icons.check_circle_outline,
                         size: 14,
-                        color: AppColors.success,
+                        color: unavailableCount > 0
+                            ? AppColors.warning
+                            : AppColors.success,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -93,7 +106,9 @@ class CartContent extends StatelessWidget {
                         style: getMediumStyle(
                           fontFamily: FontConstant.cairo,
                           fontSize: FontSize.size11,
-                          color: AppColors.success,
+                          color: unavailableCount > 0
+                              ? AppColors.warning
+                              : AppColors.success,
                         ),
                       ),
                     ],
@@ -106,6 +121,55 @@ class CartContent extends StatelessWidget {
         // ── Items list ──
         Expanded(child: _buildItemsList()),
       ],
+    );
+  }
+
+  Widget _buildUnavailableWarning(BuildContext context, int count) {
+    final locale = context.localization;
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.warning.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: AppColors.warning,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'منتجات غير متوفرة',
+                  style: getBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size13,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  '$count من المنتجات غير متوفرة في هذا المتجر',
+                  style: getRegularStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size11,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

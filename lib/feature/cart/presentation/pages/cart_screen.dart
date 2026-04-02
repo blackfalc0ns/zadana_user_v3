@@ -68,18 +68,31 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   int get _totalQuantity => _items.fold(0, (sum, i) => sum + i.quantity);
   bool get _isEmpty => _items.isEmpty;
 
-  double get _totalPrice => _selectedVendorId == null
-      ? 0.0
-      : _items.fold(0.0, (sum, item) {
-          try {
-            final vp = item.vendorPrices.firstWhere(
-              (v) => v.id == _selectedVendorId,
-            );
-            return sum + (vp.price * item.quantity);
-          } catch (_) {
-            return sum;
-          }
-        });
+  /// Get available items for selected vendor
+  List<CartItemModel> _getAvailableItems() {
+    if (_selectedVendorId == null) return [];
+    return _items.where((item) => item.isAvailableAt(_selectedVendorId!)).toList();
+  }
+
+  /// Get unavailable items count
+  int get _unavailableCount {
+    if (_selectedVendorId == null) return 0;
+    return _items.where((item) => !item.isAvailableAt(_selectedVendorId!)).length;
+  }
+
+  double get _totalPrice {
+    if (_selectedVendorId == null) return 0.0;
+    
+    // Only calculate total for available items
+    final availableItems = _getAvailableItems();
+    return availableItems.fold(0.0, (sum, item) {
+      final vp = item.getPriceForVendor(_selectedVendorId!);
+      if (vp != null) {
+        return sum + (vp.price * item.quantity);
+      }
+      return sum;
+    });
+  }
 
   String _selectedVendorName(BuildContext context) {
     final locale = context.localization;

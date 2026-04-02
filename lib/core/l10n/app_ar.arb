@@ -367,5 +367,11 @@
   "delivery_code_share_instruction": "يرجى مشاركة هذا الرمز مع مندوب التوصيل الخاص بك",
   "delivery_code_share_label": "شارك هذا الرمز",
   "delivery_code_shared_button": "تم مشاركة الرمز",
-  "delivery_code_generate_new": "إنشاء رمز جديد"
+  "delivery_code_generate_new": "إنشاء رمز جديد",
+  "order_success_title": "تم نجاح الطلب",
+  "order_success_subtitle": "شكراً لطلبك! سيتم توصيل طلبك قريباً",
+  "order_number": "رقم الطلب",
+  "courier_name": "اسم المندوب",
+  "continue_shopping": "متابعة التسوق",
+  "view_order_details": "عرض تفاصيل الطلب"
 }

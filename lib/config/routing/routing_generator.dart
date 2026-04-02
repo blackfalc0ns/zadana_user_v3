@@ -33,6 +33,7 @@ import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_orde
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/delivery_otp_screen.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/success_order_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -143,12 +144,23 @@ class RouteGenerator {
       case AppRoutes.termsConditions:
         return MaterialPageRoute(builder: (_) => const TermsConditionsScreen());
       case AppRoutes.deliveryOtp:
-        final orderId = settings.arguments as String? ?? '';
-        final phoneNumber = (settings.arguments as Map<String, String>?)?['phoneNumber'] ?? '';
+        final arguments = settings.arguments as Map<String, String?>?;
+        final orderId = arguments?['orderId'] ?? '';
+        final phoneNumber = arguments?['phoneNumber'] ?? '';
+        final courierName = arguments?['courierName'];
         return MaterialPageRoute(
           builder: (_) => DeliveryOtpScreen(
             orderId: orderId,
             phoneNumber: phoneNumber,
+            courierName: courierName,
+          ),
+        );
+      case AppRoutes.successOrder:
+        final arguments = settings.arguments as Map<String, String?>?;
+        return MaterialPageRoute(
+          builder: (_) => SuccessOrderScreen(
+            orderId: arguments?['orderId'],
+            courierName: arguments?['courierName'],
           ),
         );
       default:

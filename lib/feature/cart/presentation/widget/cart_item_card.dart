@@ -144,13 +144,26 @@ class CartItemCard extends StatelessWidget {
   }
 
   Widget _buildPrice(dynamic locale, ColorScheme color) {
-    final vendorPrice = selectedVendorId == null
-        ? null
-        : item.vendorPrices.firstWhere(
-            (v) => v.id == selectedVendorId,
-            orElse: () => item.cheapest,
-          );
+    // Check if vendor is selected
+    if (selectedVendorId == null) {
+      return Text(
+        locale.select_vendor_to_show_price,
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: FontSize.size11,
+          color: color.onSurfaceVariant,
+        ),
+      );
+    }
 
+    // Check if item is available at selected vendor
+    final isAvailable = item.isAvailableAt(selectedVendorId!);
+    
+    if (!isAvailable) {
+      return _buildUnavailableBadge(locale, color);
+    }
+
+    final vendorPrice = item.getPriceForVendor(selectedVendorId!);
     final price = vendorPrice?.price;
     final oldPrice = vendorPrice?.oldPrice;
     final isDiscounted = vendorPrice?.isDiscounted ?? false;
@@ -174,6 +187,39 @@ class CartItemCard extends StatelessWidget {
     return hasDiscount
         ? _buildDiscountedPrice(locale, color, oldPrice!, price)
         : _buildRegularPrice(locale, color, price);
+  }
+
+  /// Widget for displaying unavailable item badge
+  Widget _buildUnavailableBadge(dynamic locale, ColorScheme color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.error.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: AppColors.error.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.info_outline,
+            size: 14,
+            color: AppColors.error,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            'غير متوفر',
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size12,
+              color: AppColors.error,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildAnimatedPrice(

@@ -54,12 +54,22 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
   double _totalFor(String vendorId) {
     double total = 0;
     for (final item in widget.items) {
-      try {
-        final vp = item.vendorPrices.firstWhere((v) => v.id == vendorId);
+      final vp = item.getPriceForVendor(vendorId);
+      if (vp != null && vp.price > 0) {
         total += vp.price * item.quantity;
-      } catch (_) {}
+      }
     }
     return total;
+  }
+
+  /// Get count of available items for a vendor
+  int _availableCountFor(String vendorId) {
+    return widget.items.where((item) => item.isAvailableAt(vendorId)).length;
+  }
+
+  /// Get count of unavailable items for a vendor
+  int _unavailableCountFor(String vendorId) {
+    return widget.items.where((item) => !item.isAvailableAt(vendorId)).length;
   }
 
   List<MapEntry<VendorModel, double>> get _sortedResults {
@@ -296,20 +306,46 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              vendor.name,
-                              style: AppTextStyles.labelLarge.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: canSelect 
-                                  ? AppColors.textPrimary 
-                                  : AppColors.textSecondary,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  vendor.name,
+                                  style: AppTextStyles.labelLarge.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: canSelect
+                                      ? AppColors.textPrimary
+                                      : AppColors.textSecondary,
+                                  ),
+                                ),
+                                if (_unavailableCountFor(vendor.id) > 0) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.warning.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      '${_unavailableCountFor(vendor.id)} غير متوفر',
+                                      style: AppTextStyles.labelSmall.copyWith(
+                                        color: AppColors.warning,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
+                            const SizedBox(height: 2),
                             Text(
                               'إجمالي: ${_totalFor(vendor.id).toStringAsFixed(2)} ريال',
                               style: AppTextStyles.labelMedium.copyWith(
-                                color: isSelected 
-                                  ? AppColors.primary 
+                                color: isSelected
+                                  ? AppColors.primary
                                   : AppColors.textSecondary,
                                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                               ),
@@ -603,15 +639,16 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                 ...widget.items.asMap().entries.map((entry) {
                   final index = entry.key;
                   final item = entry.value;
-                  final price = item.vendorPrices
-                      .firstWhere((v) => v.id == vendor.id, orElse: () => const VendorPrice(id: '', name: '', price: 0))
-                      .price;
-                  
+                  final isAvailable = item.isAvailableAt(vendor.id);
+                  final price = isAvailable 
+                      ? item.getPriceForVendor(vendor.id)?.price ?? 0
+                      : 0;
+
                   return Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: index.isEven 
-                        ? Colors.transparent 
+                      color: index.isEven
+                        ? Colors.transparent
                         : AppColors.background.withValues(alpha: 0.3),
                     ),
                     child: Row(
@@ -632,7 +669,9 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                                     Text(
                                       item.name,
                                       style: AppTextStyles.labelSmall.copyWith(
-                                        color: AppColors.textPrimary,
+                                        color: isAvailable
+                                            ? AppColors.textPrimary
+                                            : AppColors.textSecondary,
                                         fontWeight: FontWeight.w600,
                                       ),
                                       maxLines: 1,
@@ -654,15 +693,35 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(
-                            '${price.toStringAsFixed(0)} ريال',
-                            style: AppTextStyles.labelSmall.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                          child: isAvailable
+                              ? Text(
+                                  '${price.toStringAsFixed(0)} ريال',
+                                  style: AppTextStyles.labelSmall.copyWith(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              : Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.error.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    'غير متوفر',
+                                    style: AppTextStyles.labelSmall.copyWith(
+                                      color: AppColors.error,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
                         ),
+                        
                       ],
                     ),
                   );

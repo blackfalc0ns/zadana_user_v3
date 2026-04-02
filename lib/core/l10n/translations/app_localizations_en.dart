@@ -1009,4 +1009,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delivery_code_generate_new => 'Generate New Code';
+
+  @override
+  String get order_success_title => 'Order Successful';
+
+  @override
+  String get order_success_subtitle =>
+      'Thank you for your order! Your order will be delivered soon';
+
+  @override
+  String get courier_name => 'Courier Name';
+
+  @override
+  String get continue_shopping => 'Continue Shopping';
+
+  @override
+  String get view_order_details => 'View Order Details';
 }

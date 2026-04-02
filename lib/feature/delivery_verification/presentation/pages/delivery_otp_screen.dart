@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
@@ -14,18 +12,56 @@ import 'package:zadana_user_v3/feature/delivery_verification/presentation/manage
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/manager/delivery_otp_view_model.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_rating_dialog.dart'
     as delivery_dialog;
+import 'dart:async';
 
-class DeliveryOtpScreen extends StatelessWidget {
-  const DeliveryOtpScreen({super.key, this.orderId, this.phoneNumber});
+class DeliveryOtpScreen extends StatefulWidget {
+  const DeliveryOtpScreen({
+    super.key,
+    this.orderId,
+    this.phoneNumber,
+    this.courierName,
+  });
 
   final String? orderId;
   final String? phoneNumber;
+  final String? courierName;
+
+  @override
+  State<DeliveryOtpScreen> createState() => _DeliveryOtpScreenState();
+}
+
+class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
+  Timer? _navigateTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Navigate to success page after 5 seconds
+    _navigateTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.successOrder,
+          arguments: {
+            'orderId': widget.orderId,
+            'courierName': 'Ayşe Demirci',
+          },
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _navigateTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
     final color = Theme.of(context).colorScheme;
-    
+
     return Scaffold(
       backgroundColor: color.surface,
       appBar:CustomAppBar(title: locale.delivery_otp_title),
@@ -39,7 +75,7 @@ class DeliveryOtpScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: Spacing.xl),
-                
+
                 // Delivery Icon
                 Container(
                   width: 100,
@@ -55,7 +91,7 @@ class DeliveryOtpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.lg),
-                
+
                 // Title
                 Text(
                   locale.delivery_code_title,
@@ -66,8 +102,8 @@ class DeliveryOtpScreen extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: Spacing.sm),    
-                
+                const SizedBox(height: Spacing.sm),
+
                 // Phone Number Info
                 Container(
                   width: double.infinity,
@@ -92,7 +128,7 @@ class DeliveryOtpScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: Spacing.xs),
                       Text(
-                        phoneNumber ?? '0345667892',
+                    '0345667892',
                         style: getBoldStyle(
                           fontSize: FontSize.size18,
                           fontFamily: FontConstant.cairo,
@@ -103,7 +139,7 @@ class DeliveryOtpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.xl),
-                
+
                 // OTP Code Display
                 Container(
                   width: double.infinity,
@@ -146,21 +182,20 @@ class DeliveryOtpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.xl),
-                
+
                 // Action Button
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
                     text: locale.delivery_code_shared_button,
                     onPressed: () {
-                      // Show rating dialog directly
-                      delivery_dialog.showDeliveryRatingDialog(
+                      // Navigate to success page immediately
+                      Navigator.pushReplacementNamed(
                         context,
-                        courierName: 'Ayşe Demirci',
-                        courierImage:
-                            'https://tse4.mm.bing.net/th/id/OIP.3L8yQPQsRHKjSg1FtHzVMQHaE8?w=508&h=339&rs=1&pid=ImgDetMain&o=7&rm=3',
-                        onSubmit: (rating, comment) {
-                          context.pushReplacementNamed(AppRoutes.mainShell);
+                        AppRoutes.successOrder,
+                        arguments: {
+                          'orderId': widget.orderId,
+                          'courierName': widget.courierName ?? 'محمد أمين',
                         },
                       );
                     },
@@ -171,7 +206,7 @@ class DeliveryOtpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.md),
-                
+
                 // Resend Option
                 TextButton(
                   onPressed: () {},
@@ -193,20 +228,26 @@ class DeliveryOtpScreen extends StatelessWidget {
   }
 
   void _handleStateChanges(BuildContext context, DeliveryOtpState state) {
-    // Debug: Always show dialog for testing
+    // Show rating dialog on success
     if (state.isSuccess || state.showSuccessDialog) {
       Future.microtask(() {
         delivery_dialog.showDeliveryRatingDialog(
           context,
-          courierName: 'Ayşe Demirci',
+          courierName: widget.courierName ?? 'Ayşe Demirci',
           courierImage:
               'https://tse4.mm.bing.net/th/id/OIP.3L8yQPQsRHKjSg1FtHzVMQHaE8?w=508&h=339&rs=1&pid=ImgDetMain&o=7&rm=3',
           onSubmit: (rating, comment) {
             // Handle rating submission (can be sent to API later)
             print('Rating: $rating, Comment: $comment');
-            context.pushReplacementNamed(
-              AppRoutes.mainShell,
-            ); // Navigate to main
+            // Navigate to success order page after rating
+            Navigator.pushReplacementNamed(
+              context,
+              AppRoutes.successOrder,
+              arguments: {
+                'orderId': widget.orderId,
+                'courierName': widget.courierName ?? 'Ayşe Demirci',
+              },
+            );
           },
         );
       });

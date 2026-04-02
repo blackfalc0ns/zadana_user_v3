@@ -33,4 +33,21 @@ class CartItemModel {
 
   VendorPrice get cheapest =>
       vendorPrices.reduce((a, b) => a.price < b.price ? a : b);
+
+  /// Check if this item is available at a specific vendor
+  bool isAvailableAt(String vendorId) {
+    return vendorPrices.any((v) => v.id == vendorId && v.price > 0);
+  }
+
+  /// Get vendor price for a specific vendor, returns null if not available
+  VendorPrice? getPriceForVendor(String vendorId) {
+    try {
+      final vp = vendorPrices.firstWhere(
+        (v) => v.id == vendorId,
+      );
+      return vp.price > 0 ? vp : null;
+    } catch (_) {
+      return null;
+    }
+  }
 }

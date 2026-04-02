@@ -2035,6 +2035,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generate New Code'**
   String get delivery_code_generate_new;
+
+  /// No description provided for @order_success_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Successful'**
+  String get order_success_title;
+
+  /// No description provided for @order_success_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your order! Your order will be delivered soon'**
+  String get order_success_subtitle;
+
+  /// No description provided for @courier_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Courier Name'**
+  String get courier_name;
+
+  /// No description provided for @continue_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Shopping'**
+  String get continue_shopping;
+
+  /// No description provided for @view_order_details.
+  ///
+  /// In en, this message translates to:
+  /// **'View Order Details'**
+  String get view_order_details;
 }
 
 class _AppLocalizationsDelegate

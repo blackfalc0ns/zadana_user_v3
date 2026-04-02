@@ -683,3 +683,4 @@ class SliderTrackPainter extends CustomPainter {
         oldDelegate.activeColor != activeColor;
   }
 }
+ 
