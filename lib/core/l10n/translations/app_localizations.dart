@@ -2054,6 +2054,12 @@ abstract class AppLocalizations {
   /// **'Courier Name'**
   String get courier_name;
 
+  /// No description provided for @delegate_values.
+  ///
+  /// In en, this message translates to:
+  /// **'Delegate Values'**
+  String get delegate_values;
+
   /// No description provided for @continue_shopping.
   ///
   /// In en, this message translates to:

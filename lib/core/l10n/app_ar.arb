@@ -372,6 +372,7 @@
   "order_success_subtitle": "شكراً لطلبك! سيتم توصيل طلبك قريباً",
   "order_number": "رقم الطلب",
   "courier_name": "اسم المندوب",
-  "continue_shopping": "متابعة التسوق",
+  "delegate_values": "قيم المندوب",
+  "continue_shopping": "مواصلة التسوق",
   "view_order_details": "عرض تفاصيل الطلب"
 }

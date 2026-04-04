@@ -1001,7 +1001,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get courier_name => 'اسم المندوب';
 
   @override
-  String get continue_shopping => 'متابعة التسوق';
+  String get delegate_values => 'قيم المندوب';
+
+  @override
+  String get continue_shopping => 'مواصلة التسوق';
 
   @override
   String get view_order_details => 'عرض تفاصيل الطلب';

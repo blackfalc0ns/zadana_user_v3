@@ -372,6 +372,7 @@
   "order_success_subtitle": "Thank you for your order! Your order will be delivered soon",
   "order_number": "Order Number",
   "courier_name": "Courier Name",
+  "delegate_values": "Delegate Values",
   "continue_shopping": "Continue Shopping",
   "view_order_details": "View Order Details"
 }

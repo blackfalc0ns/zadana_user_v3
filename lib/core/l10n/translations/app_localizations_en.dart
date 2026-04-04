@@ -1021,6 +1021,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courier_name => 'Courier Name';
 
   @override
+  String get delegate_values => 'Delegate Values';
+
+  @override
   String get continue_shopping => 'Continue Shopping';
 
   @override

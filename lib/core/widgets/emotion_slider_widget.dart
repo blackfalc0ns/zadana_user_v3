@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 
 /// ═══════════════════════════════════════════════════════════════
 /// DUYGU DEĞERLENDİRME WIDGET'I
@@ -22,10 +23,10 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
     with TickerProviderStateMixin {
   // Duygu durumu (0-4)
   // 0 = ممتاز (en iyi), 4 = سيئ جداً (en kötü)
-  int _emotion = 0;
+  int _emotion = 4;
 
   // Slider pozisyonu (0.0 - 1.0)
-  // 0.0 = sağ uç (ممتاز), 1.0 = sol uç (سيئ جداً)
+  // LTR: 0.0 = sol uç (سيئ جداً), 1.0 = sağ uç (ممتاز)
   double _sliderValue = 0.0;
 
   // Animasyon controller'ları
@@ -137,9 +138,9 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
   void _updateEmotion(double value) {
     setState(() {
       _sliderValue = value.clamp(0.0, 1.0);
-      // 5 duygu durumu için hesaplama (RTL: sağdan sola)
-      // Slider 0.0 (sağ) = ممتاز (index 0), 1.0 (sol) = سيئ جداً (index 4)
-      final newIndex = (_sliderValue * 4).round().clamp(0, 4);
+      // 5 duygu durumu için hesaplama (LTR: soldan sağa)
+      // Slider 0.0 (sol) = سيئ جداً (index 4), 1.0 (sağ) = ممتاز (index 0)
+      final newIndex = (4 - (_sliderValue * 4).round()).clamp(0, 4);
 
       if (newIndex != _emotion) {
         // Duygu değiştiğinde bounce animasyonu tetikle
@@ -199,10 +200,9 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
           },
           child: Text(
             _emotionLabels[_emotion],
-            style: GoogleFonts.notoKufiArabic(
+            style: getBoldStyle(
               fontSize: 20,
-              fontWeight: FontWeight.w900,
-              color: _emotionColors[_emotion],
+              color: _emotionColors[_emotion], fontFamily: FontConstant.cairo,
             ),
             textAlign: TextAlign.center,
           ),
@@ -246,8 +246,8 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
                   final localPosition = renderBox.globalToLocal(
                     details.globalPosition,
                   );
-                  // RTL: sağdan (0) sola (1.0) doğru artar
-                  final newValue = 1.0 - (localPosition.dx / sliderWidth);
+                  // LTR: soldan (0) sağa (1.0) doğru artar
+                  final newValue = localPosition.dx / sliderWidth;
                   _updateEmotion(newValue.clamp(0.0, 1.0));
                 },
                 onHorizontalDragEnd: (_) {
@@ -258,8 +258,8 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
                   final localPosition = renderBox.globalToLocal(
                     details.globalPosition,
                   );
-                  // RTL: sağdan (0) sola (1.0) doğru artar
-                  final newValue = 1.0 - (localPosition.dx / sliderWidth);
+                  // LTR: soldan (0) sağa (1.0) doğru artar
+                  final newValue = localPosition.dx / sliderWidth;
                   _updateEmotion(newValue.clamp(0.0, 1.0));
                   _snapToNearest();
                 },
@@ -276,22 +276,23 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
               ),
               const SizedBox(height: 16),
 
-              // Etiketler (RTL: sağdan sola)
+              // Etiketler (LTR: soldan sağa - en kötüden en iyiye)
               Row(
-                textDirection: TextDirection.rtl,
+                textDirection: TextDirection.ltr,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(5, (index) {
-                  final isActive = index == _emotion;
+                  final emotionIndex = 4 - index; // Ters çevir: 4,3,2,1,0
+                  final isActive = emotionIndex == _emotion;
                   return AnimatedScale(
                     scale: isActive ? 1.15 : 1.0,
                     duration: const Duration(milliseconds: 200),
                     child: Text(
-                      _emotionLabels[index],
-                      style: GoogleFonts.notoKufiArabic(
+                      _emotionLabels[emotionIndex],
+                      style: getBoldStyle(
+                        fontFamily: FontConstant.cairo,
                         fontSize: 12,
-                        fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
                         color: isActive
-                            ? _emotionColors[index]
+                            ? _emotionColors[emotionIndex]
                             : const Color(0xFFBBBBBB),
                       ),
                     ),
@@ -592,9 +593,9 @@ class SliderTrackPainter extends CustomPainter {
     final trackHeight = 6.0;
     final stationRadius = 6.0;
     final thumbRadius = 14.0;
-    // sliderValue 0.0 = sağ (ممتاز), 1.0 = sol (سيئ جداً)
-    // Thumb sağdan sola hareket eder
-    final thumbX = size.width * (1.0 - sliderValue);
+    // sliderValue 0.0 = sol (سيئ جداً), 1.0 = sağ (ممتاز)
+    // Thumb soldan sağa hareket eder
+    final thumbX = size.width * sliderValue;
 
     // Track arka plan (#eee)
     final trackPaint = Paint()
@@ -607,7 +608,7 @@ class SliderTrackPainter extends CustomPainter {
     );
     canvas.drawRRect(trackRect, trackPaint);
 
-    // Track dolgu - sağdan sola doğru dolar
+    // Track dolgu - soldan sağa doğru dolar
     final fillWidth = size.width * sliderValue;
     final fillPaint = Paint()
       ..color = activeColor
@@ -615,7 +616,7 @@ class SliderTrackPainter extends CustomPainter {
 
     final fillRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(
-        size.width - fillWidth,
+        0,
         size.height / 2 - trackHeight / 2,
         fillWidth,
         trackHeight,
@@ -624,16 +625,18 @@ class SliderTrackPainter extends CustomPainter {
     );
     canvas.drawRRect(fillRect, fillPaint);
 
-    // İstasyon noktaları (5 adet, eşit aralıklı, sağdan sola)
+    // İstasyon noktaları (5 adet, eşit aralıklı, soldan sağa)
     final stationPositions = [0.0, 0.25, 0.50, 0.75, 1.0];
     for (int i = 0; i < stationPositions.length; i++) {
-      // Sağdan sola doğru pozisyonlar
-      final x = size.width * (1.0 - stationPositions[i]);
+      // Soldan sağa doğru pozisyonlar
+      final x = size.width * stationPositions[i];
       final center = Offset(x, size.height / 2);
 
-      // Aktif istasyon
-      final currentStation = (sliderValue * 4 + 0.5).round().clamp(0, 4);
-      final isActive = i == currentStation;
+      // Aktif istasyon (LTR: soldaki istasyon = index 4, sağdaki = index 0)
+      final currentStation = (4 - (sliderValue * 4 + 0.5).round()).clamp(0, 4);
+      // i (0-4 soldan sağa) -> stationIndex (4-0) dönüşümü
+      final stationIndex = 4 - i;
+      final isActive = stationIndex == currentStation;
 
       final stationPaint = Paint()
         ..color = isActive ? activeColor : const Color(0xFFDDDDDD)
@@ -648,7 +651,7 @@ class SliderTrackPainter extends CustomPainter {
       canvas.restore();
     }
 
-    // Thumb - sağdan sola hareket eder
+    // Thumb - soldan sağa hareket eder
     final thumbCenter = Offset(thumbX, size.height / 2);
 
     // Gölge efekti

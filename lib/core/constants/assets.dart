@@ -21,6 +21,7 @@ class Assets {
   static const String goole ='$_images/google_icon.png';
   static const String blackFalcons = '$_images/black_falcons_logo.png';
   static const String splashPageBackground = '$_images/splash_page_background.gif';
+  static const String successOrderAnimation = '$_images/success_order_animation.gif';
 
 
   // ── Icons (SVG) ──

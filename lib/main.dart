@@ -4,7 +4,6 @@ import 'package:zadana_user_v3/config/routing/routing_generator.dart';
 import 'package:zadana_user_v3/config/theme/app_theme.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
