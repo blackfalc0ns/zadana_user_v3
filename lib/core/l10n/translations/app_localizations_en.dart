@@ -1028,4 +1028,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get view_order_details => 'View Order Details';
+
+  @override
+  String get delivery_get_otp => 'verification code';
+
+  @override
+  String get delivery_datetime_title => 'Delivery Date & Time';
+
+  @override
+  String get select_date_time => 'Select date and time';
+
+  @override
+  String get select_delivery_time => 'Select delivery time';
+
+  @override
+  String get delivery_time_selected => 'Selected delivery time';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String get delivery_time_note =>
+      'Delivery time may vary based on availability';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get delivery_code_section_title => 'Delivery Code';
+
+  @override
+  String get otp_verification_code => 'OTP Verification Code';
+
+  @override
+  String get otp_show_instruction =>
+      'Press to view verification code upon order receipt';
+
+  @override
+  String get view_otp_code => 'View OTP Code';
 }

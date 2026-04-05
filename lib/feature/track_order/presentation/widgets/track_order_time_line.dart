@@ -1,6 +1,11 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class TrackOrderTimelineTile extends StatelessWidget {
   const TrackOrderTimelineTile({
@@ -9,12 +14,14 @@ class TrackOrderTimelineTile extends StatelessWidget {
     required this.time,
     required this.active,
     required this.last,
+    required this.showButton,
   });
 
   final String title;
   final String time;
   final bool active;
   final bool last;
+  final bool showButton;
 
   @override
   Widget build(BuildContext context) {
@@ -42,31 +49,55 @@ class TrackOrderTimelineTile extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 14),
-        Padding(
-          padding: const EdgeInsets.only(top: 1),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: getMediumStyle(
-                  fontSize: 18,
-                  fontFamily: FontConstant.cairo,
-                  color: active ? color.primary : color.secondary,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: getMediumStyle(
+                          fontSize: 18,
+                          fontFamily: FontConstant.cairo,
+                          color: active ? color.primary : color.secondary,
+                        ),
+                      ),
+                    ),
+                    if (showButton)
+                      SizedBox(
+                        width: 120,
+                        height: 40,
+                        child: AppButton(
+                          padding: const EdgeInsets.all(0),
+                          text: AppLocalizations.of(context)!.delivery_get_otp,
+                          variant: AppButtonVariant.outlined,
+                          color: AppColors.primary,
+                          onPressed: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.deliveryOtp,
+                          ), 
+                        ),
+                      ),
+                  ],
                 ),
-              ),
-              if (active) ...[
-                const SizedBox(height: 4),
-                Text(
-                  time,
-                  style: getRegularStyle(
-                    fontSize: 14,
-                    fontFamily: FontConstant.cairo,
-                    color: color.onSurfaceVariant,
+                if (active) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    time,
+                    style: getRegularStyle(
+                      fontSize: 14,
+                      fontFamily: FontConstant.cairo,
+                      color: color.onSurfaceVariant,
+                    ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ],

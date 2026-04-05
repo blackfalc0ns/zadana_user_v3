@@ -13,6 +13,9 @@ class CartBottomBar extends StatelessWidget {
   final String? selectedVendorId;
   final List<CartItemModel> items;
   final double totalPrice;
+  final double totalOldPrice;
+  final double totalSavings;
+  final bool hasDiscounts;
   final String selectedVendorName;
   final CartAnimations animations;
   final VoidCallback onComparison;
@@ -23,6 +26,9 @@ class CartBottomBar extends StatelessWidget {
     required this.selectedVendorId,
     required this.items,
     required this.totalPrice,
+    required this.totalOldPrice,
+    required this.totalSavings,
+    required this.hasDiscounts,
     required this.selectedVendorName,
     required this.animations,
     required this.onComparison,
@@ -46,6 +52,9 @@ class CartBottomBar extends StatelessWidget {
               selectedVendorId: selectedVendorId!,
               items: items,
               totalPrice: totalPrice,
+              totalOldPrice: totalOldPrice,
+              totalSavings: totalSavings,
+              hasDiscounts: hasDiscounts,
               selectedVendorName: selectedVendorName,
               animations: animations,
               onComparison: onComparison,
@@ -61,6 +70,9 @@ class _SelectedVendorBar extends StatelessWidget {
     required this.selectedVendorId,
     required this.items,
     required this.totalPrice,
+    required this.totalOldPrice,
+    required this.totalSavings,
+    required this.hasDiscounts,
     required this.selectedVendorName,
     required this.animations,
     required this.onComparison,
@@ -70,6 +82,9 @@ class _SelectedVendorBar extends StatelessWidget {
   final String selectedVendorId;
   final List<CartItemModel> items;
   final double totalPrice;
+  final double totalOldPrice;
+  final double totalSavings;
+  final bool hasDiscounts;
   final String selectedVendorName;
   final CartAnimations animations;
   final VoidCallback onComparison;
@@ -149,27 +164,7 @@ class _SelectedVendorBar extends StatelessWidget {
                     position: animations.priceSlideAnimation,
                     child: FadeTransition(
                       opacity: animations.priceFadeAnimation,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.15),
-                          ),
-                        ),
-                        child: Text(
-                          '${PriceFormatter.formatPrice(totalPrice)} ${locale.currency}',
-                          style: getBoldStyle(
-                            fontFamily: FontConstant.cairo,
-                            color: AppColors.primary,
-                            fontSize: FontSize.size14,
-                          ),
-                        ),
-                      ),
+                      child: _buildPriceSection(context),
                     ),
                   );
                 },
@@ -180,8 +175,6 @@ class _SelectedVendorBar extends StatelessWidget {
           // ── Action buttons row ──
           Row(
             children: [
-              // Compare button
-
               // Checkout button
               Expanded(
                 flex: 3,
@@ -191,6 +184,153 @@ class _SelectedVendorBar extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceSection(BuildContext context) {
+    final locale = context.localization;
+
+    // If there are discounts, show old price and savings
+    if (hasDiscounts) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Prices column
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Old price (strikethrough)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    PriceFormatter.formatPrice(totalOldPrice),
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size11,
+                      color: AppColors.textSecondary,
+                    ).copyWith(
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: AppColors.textSecondary.withValues(alpha: 0.5),
+                      decorationThickness: 2,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Text(
+                    locale.currency,
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size9,
+                      color: AppColors.textSecondary.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
+              // New price (bold)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    PriceFormatter.formatPrice(totalPrice),
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: AppColors.success,
+                      fontSize: FontSize.size16,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Text(
+                    locale.currency,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: AppColors.success.withValues(alpha: 0.8),
+                      fontSize: FontSize.size11,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+          // Savings badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFF6B6B), Color(0xFFFF8E53)],
+              ),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.trending_down_rounded, size: 12, color: AppColors.white),
+                const SizedBox(width: 3),
+                Text(
+                  PriceFormatter.formatPrice(totalSavings),
+                  style: getBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size11,
+                    color: AppColors.white,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  locale.currency,
+                  style: getMediumStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size8,
+                    color: AppColors.white.withValues(alpha: 0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // No discounts - show regular price
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withValues(alpha: 0.1),
+            AppColors.primaryLight.withValues(alpha: 0.06),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Text(
+            PriceFormatter.formatPrice(totalPrice),
+            style: getBoldStyle(
+              fontFamily: FontConstant.cairo,
+              color: AppColors.primary,
+              fontSize: FontSize.size16,
+            ),
+          ),
+          const SizedBox(width: 3),
+          Text(
+            locale.currency,
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              color: AppColors.primary.withValues(alpha: 0.8),
+              fontSize: FontSize.size11,
+            ),
           ),
         ],
       ),

@@ -17,7 +17,6 @@ class CartItemCard extends StatelessWidget {
   final VoidCallback onDecrement;
   final VoidCallback onDelete;
   final bool enableHeroAnimation;
-  final bool isDiscounted;
   final bool animatePrice;
 
   const CartItemCard({
@@ -29,7 +28,6 @@ class CartItemCard extends StatelessWidget {
     required this.onDecrement,
     required this.onDelete,
     this.enableHeroAnimation = false,
-    required this.isDiscounted,
     this.animatePrice = false,
   });
 
@@ -37,6 +35,16 @@ class CartItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
+
+    // Calculate discount based on selected vendor
+    String? discountText;
+    if (selectedVendorId != null) {
+      final vendorPrice = item.getPriceForVendor(selectedVendorId!);
+      if (vendorPrice != null && vendorPrice.isDiscounted && vendorPrice.oldPrice != null && vendorPrice.oldPrice! > vendorPrice.price) {
+        final discountPercent = ((vendorPrice.oldPrice! - vendorPrice.price) / vendorPrice.oldPrice! * 100).round();
+        discountText = '$discountPercent%';
+      }
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -129,13 +137,12 @@ class CartItemCard extends StatelessWidget {
               ],
             ),
           ),
-          if (isDiscounted)
+          if (discountText != null)
             Positioned(
               left: 0,
               child: DiscountBadge(
-                discountText: '50%',
+                discountText: discountText,
                 shadowColor: color.shadow,
-
               ),
             ),
         ],

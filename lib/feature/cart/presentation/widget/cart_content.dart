@@ -257,7 +257,6 @@ class CartContent extends StatelessWidget {
       itemCount: items.length,
       separatorBuilder: (_, _) => const SizedBox(height: 6),
       itemBuilder: (_, index) => CartItemCard(
-        isDiscounted: index % 2 == 0,
         item: items[index],
         selectedVendorId: selectedVendorId,
         onTap: () => onItemTap(items[index]),

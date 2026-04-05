@@ -374,6 +374,20 @@
   "courier_name": "Courier Name",
   "delegate_values": "Delegate Values",
   "continue_shopping": "Continue Shopping",
-  "view_order_details": "View Order Details"
+  "view_order_details": "View Order Details",
+  "delivery_get_otp": "verification code",
+
+  "delivery_datetime_title": "Delivery Date & Time",
+  "select_date_time": "Select date and time",
+  "select_delivery_time": "Select delivery time",
+  "delivery_time_selected": "Selected delivery time",
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "delivery_time_note": "Delivery time may vary based on availability",
+  "reset": "Reset",
+  "delivery_code_section_title": "Delivery Code",
+  "otp_verification_code": "OTP Verification Code",
+  "otp_show_instruction": "Press to view verification code upon order receipt",
+  "view_otp_code": "View OTP Code"
 }
 
