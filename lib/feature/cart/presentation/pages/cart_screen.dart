@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
@@ -26,6 +27,9 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
+  static const double _cartBottomBarGap = 8.0;
+  static const double _cartBottomBarReservedHeight = 96.0;
+
   late List<CartItemModel> _items;
   String? _selectedVendorId;
   String? _activeHeroProductId;
@@ -68,22 +72,16 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   int get _totalQuantity => _items.fold(0, (sum, i) => sum + i.quantity);
   bool get _isEmpty => _items.isEmpty;
 
-  /// Get available items for selected vendor
   List<CartItemModel> _getAvailableItems() {
     if (_selectedVendorId == null) return [];
-    return _items.where((item) => item.isAvailableAt(_selectedVendorId!)).toList();
-  }
-
-  /// Get unavailable items count
-  int get _unavailableCount {
-    if (_selectedVendorId == null) return 0;
-    return _items.where((item) => !item.isAvailableAt(_selectedVendorId!)).length;
+    return _items
+        .where((item) => item.isAvailableAt(_selectedVendorId!))
+        .toList();
   }
 
   double get _totalPrice {
     if (_selectedVendorId == null) return 0.0;
-    
-    // Only calculate total for available items
+
     final availableItems = _getAvailableItems();
     return availableItems.fold(0.0, (sum, item) {
       final vp = item.getPriceForVendor(_selectedVendorId!);
@@ -164,13 +162,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       isDiscounted: false,
     );
 
-    // Start price animation for this specific item
     setState(() {
       _activeHeroProductId = item.id;
       _animatingPriceItemId = item.id;
     });
 
-    // Reset animation flag after animation completes
     _animationTimer?.cancel();
     _animationTimer = Timer(const Duration(milliseconds: 600), () {
       if (mounted) {
@@ -224,7 +220,10 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    const bottomNavHeight = 90.0;
+    final bottomNavReservedSpace = mainShellBottomNavReservedSpace(context);
+    final cartBottomOffset = bottomNavReservedSpace + _cartBottomBarGap;
+    final contentBottomPadding =
+        cartBottomOffset + _cartBottomBarReservedHeight;
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -239,32 +238,37 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             ? const CartLoadingSkeleton()
             : _isEmpty
             ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
-            : Column(
+            : Stack(
                 children: [
-                  // ── Cart content (scrollable) ──
-                  Expanded(
-                    child: CartContent(
-                      items: _items,
-                      selectedVendorId: _selectedVendorId,
-                      activeHeroProductId: _activeHeroProductId,
-                      animatingPriceItemId: _animatingPriceItemId,
-                      onVendorSelected: _onVendorSelected,
-                      onItemTap: _openProductDetails,
-                      onUpdateQuantity: _updateQuantity,
-                      onDeleteItem: _showDeleteDialog,
+                  Positioned.fill(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: contentBottomPadding),
+                      child: CartContent(
+                        items: _items,
+                        selectedVendorId: _selectedVendorId,
+                        activeHeroProductId: _activeHeroProductId,
+                        animatingPriceItemId: _animatingPriceItemId,
+                        onVendorSelected: _onVendorSelected,
+                        onItemTap: _openProductDetails,
+                        onUpdateQuantity: _updateQuantity,
+                        onDeleteItem: _showDeleteDialog,
+                      ),
                     ),
                   ),
-                  // ── Bottom bar ──
-                  CartBottomBar(
-                    selectedVendorId: _selectedVendorId,
-                    items: _items,
-                    totalPrice: _totalPrice,
-                    selectedVendorName: _selectedVendorName(context),
-                    animations: _animations,
-                    onComparison: _showComparison,
-                    onCheckout: _onCheckout,
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: cartBottomOffset,
+                    child: CartBottomBar(
+                      selectedVendorId: _selectedVendorId,
+                      items: _items,
+                      totalPrice: _totalPrice,
+                      selectedVendorName: _selectedVendorName(context),
+                      animations: _animations,
+                      onComparison: _showComparison,
+                      onCheckout: _onCheckout,
+                    ),
                   ),
-                  SizedBox(height: bottomNavHeight),
                 ],
               ),
       ),

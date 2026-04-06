@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:zadana_user_v3/config/theme/colors.dart';
 class DiscountBadge extends StatelessWidget {
   final String discountText;
   final Color color;

@@ -50,35 +50,42 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
           style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: Spacing.md),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            childAspectRatio: 1.1,
-            crossAxisSpacing: Spacing.sm,
-            mainAxisSpacing: Spacing.sm,
-          ),
-          itemCount: displayedCategories.length,
-          itemBuilder: (context, index) {
-            final category = displayedCategories[index];
-            final isSelected = localSelectedCategory == category.name;
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final childAspectRatio = width < 360 ? 0.92 : 1.08;
 
-            return CustomVerticalFilterChip(
-              label: category.name,
-              icon: category.emoji,
-              isSelected: isSelected,
-              onTap: () {
-                final newSelection = isSelected ? null : category.name;
-                setState(() => localSelectedCategory = newSelection);
-                widget.onCategorySelected(newSelection);
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: childAspectRatio,
+                crossAxisSpacing: Spacing.sm,
+                mainAxisSpacing: Spacing.sm,
+              ),
+              itemCount: displayedCategories.length,
+              itemBuilder: (context, index) {
+                final category = displayedCategories[index];
+                final isSelected = localSelectedCategory == category.name;
+
+                return CustomVerticalFilterChip(
+                  label: category.name,
+                  icon: category.emoji,
+                  isSelected: isSelected,
+                  onTap: () {
+                    final newSelection = isSelected ? null : category.name;
+                    setState(() => localSelectedCategory = newSelection);
+                    widget.onCategorySelected(newSelection);
+                  },
+                );
               },
             );
           },
         ),
         if (kCategoryList.length > 8)
-          Transform.translate(
-            offset: const Offset(0, -22),
+          Padding(
+            padding: const EdgeInsets.only(top: Spacing.xs),
             child: Center(
               child: TextButton(
                 onPressed: () =>

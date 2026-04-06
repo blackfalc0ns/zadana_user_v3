@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 
 class ProductImage extends StatelessWidget {
   const ProductImage({
@@ -29,18 +30,17 @@ class ProductImage extends StatelessWidget {
   }
 
   Widget _buildImageShell() {
-    final childContent = emoji != null && emoji!.isNotEmpty ? _buildEmoji() : _buildImage();
-    
+    final childContent = emoji != null && emoji!.isNotEmpty
+        ? _buildEmoji()
+        : _buildImage();
+
     // Hero only wraps the content (emoji/image), not the container
     final heroContent = (heroTag == null || heroTag!.isEmpty)
         ? childContent
         : Hero(
             tag: heroTag!,
             transitionOnUserGestures: true,
-            child: Material(
-              color: Colors.transparent,
-              child: childContent,
-            ),
+            child: Material(color: Colors.transparent, child: childContent),
           );
 
     return ClipRRect(
@@ -58,7 +58,11 @@ class ProductImage extends StatelessWidget {
     return Center(
       child: Text(
         emoji!,
-        style: TextStyle(fontSize: (height * 0.55).clamp(28, 200)),
+        style: TextStyle(
+          fontSize: (height * 0.42)
+              .clamp(FontSize.size24, FontSize.size30)
+              .toDouble(),
+        ),
         textAlign: TextAlign.center,
       ),
     );

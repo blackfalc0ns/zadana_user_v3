@@ -15,7 +15,7 @@ class RecommendedSection extends StatelessWidget {
         const SectionHeader(title: 'موصى به لك', actionLabel: 'تحديث'),
         const SizedBox(height: Spacing.sm),
         SizedBox(
-          height: 80,
+          height: 66,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,

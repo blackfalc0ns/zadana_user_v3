@@ -49,47 +49,49 @@ class CartItemCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: color.shadow.withValues(alpha: 0.06),
-                  blurRadius: 6,
+                  color: color.shadow.withValues(alpha: 0.05),
+                  blurRadius: 4,
                   offset: const Offset(0, 1),
                 ),
               ],
             ),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 ProductImage(
                   emoji: item.imageUrl,
                   url: '',
-                  width: 80,
-                  height: 80,
+                  width: 68,
+                  height: 68,
                   borderRadius: Spacing.cardRadius,
                   heroTag: productHeroTag(item.id),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         item.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: getBoldStyle(
                           fontFamily: FontConstant.cairo,
-                          fontSize: FontSize.size14,
+                          fontSize: FontSize.size13,
                           color: color.onSurface,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       _buildPrice(locale, color),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Row(
                         children: [
                           _buildButton(Icons.remove, onDecrement),
                           Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 12),
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 6,
+                              horizontal: 12,
+                              vertical: 5,
                             ),
                             decoration: BoxDecoration(
                               color: color.surfaceContainerHighest,
@@ -99,7 +101,7 @@ class CartItemCard extends StatelessWidget {
                               '${item.quantity}',
                               style: getBoldStyle(
                                 fontFamily: FontConstant.cairo,
-                                fontSize: FontSize.size14,
+                                fontSize: FontSize.size13,
                                 color: color.onSurface,
                               ),
                             ),
@@ -110,18 +112,18 @@ class CartItemCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 GestureDetector(
                   onTap: onDelete,
                   child: Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Icon(
                       Icons.delete_outline,
-                      size: 20,
+                      size: 18,
                       color: Colors.red.shade400,
                     ),
                   ),
@@ -135,7 +137,8 @@ class CartItemCard extends StatelessWidget {
               child: DiscountBadge(
                 discountText: '50%',
                 shadowColor: color.shadow,
-
+                trianglesize: 38,
+                fontSize: 11,
               ),
             ),
         ],
@@ -144,76 +147,67 @@ class CartItemCard extends StatelessWidget {
   }
 
   Widget _buildPrice(dynamic locale, ColorScheme color) {
-    // Check if vendor is selected
     if (selectedVendorId == null) {
       return Text(
         locale.select_vendor_to_show_price,
         style: getRegularStyle(
           fontFamily: FontConstant.cairo,
-          fontSize: FontSize.size11,
+          fontSize: FontSize.size10,
           color: color.onSurfaceVariant,
         ),
       );
     }
 
-    // Check if item is available at selected vendor
     final isAvailable = item.isAvailableAt(selectedVendorId!);
-    
     if (!isAvailable) {
-      return _buildUnavailableBadge(locale, color);
+      return _buildUnavailableBadge(color);
     }
 
     final vendorPrice = item.getPriceForVendor(selectedVendorId!);
     final price = vendorPrice?.price;
     final oldPrice = vendorPrice?.oldPrice;
     final isDiscounted = vendorPrice?.isDiscounted ?? false;
-    final hasDiscount = isDiscounted && oldPrice != null && oldPrice > price!;
 
     if (price == null) {
       return Text(
         locale.select_vendor_to_show_price,
         style: getRegularStyle(
           fontFamily: FontConstant.cairo,
-          fontSize: FontSize.size11,
+          fontSize: FontSize.size10,
           color: color.onSurfaceVariant,
         ),
       );
     }
+
+    final hasDiscount = isDiscounted && oldPrice != null && oldPrice > price;
 
     if (animatePrice) {
       return _buildAnimatedPrice(locale, color, oldPrice, price, hasDiscount);
     }
 
     return hasDiscount
-        ? _buildDiscountedPrice(locale, color, oldPrice!, price)
-        : _buildRegularPrice(locale, color, price);
+        ? _buildDiscountedPrice(locale, color, oldPrice, price)
+        : _buildRegularPrice(locale, price);
   }
 
-  /// Widget for displaying unavailable item badge
-  Widget _buildUnavailableBadge(dynamic locale, ColorScheme color) {
+  Widget _buildUnavailableBadge(ColorScheme color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: AppColors.error.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.info_outline,
-            size: 14,
-            color: AppColors.error,
-          ),
-          const SizedBox(width: 6),
+          Icon(Icons.info_outline, size: 12, color: AppColors.error),
+          const SizedBox(width: 4),
           Text(
             'غير متوفر',
             style: getMediumStyle(
               fontFamily: FontConstant.cairo,
-              fontSize: FontSize.size12,
+              fontSize: FontSize.size11,
               color: AppColors.error,
             ),
           ),
@@ -241,7 +235,7 @@ class CartItemCard extends StatelessWidget {
       },
       child: hasDiscount && oldPrice != null
           ? _buildDiscountedPrice(locale, color, oldPrice, newPrice)
-          : _buildRegularPrice(locale, color, newPrice),
+          : _buildRegularPrice(locale, newPrice),
     );
   }
 
@@ -252,7 +246,7 @@ class CartItemCard extends StatelessWidget {
     double newPrice,
   ) {
     return Row(
-      spacing: 5,
+      spacing: 4,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -260,39 +254,41 @@ class CartItemCard extends StatelessWidget {
           style:
               getRegularStyle(
                 fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size13,
+                fontSize: FontSize.size12,
                 color: color.onSurfaceVariant,
               ).copyWith(
                 decoration: TextDecoration.lineThrough,
                 decorationColor: color.onSurfaceVariant.withValues(alpha: 0.6),
-                decorationThickness: 1.5,
+                decorationThickness: 1.2,
               ),
         ),
-        const SizedBox(height: 2),
         Text(
           '${newPrice.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
           style: getBoldStyle(
             color: AppColors.primary,
             fontFamily: FontConstant.cairo,
-            fontSize: 16,
+            fontSize: FontSize.size13,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildRegularPrice(dynamic locale, ColorScheme color, double price) {
+  Widget _buildRegularPrice(dynamic locale, double price) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.local_offer, size: 12, color: AppColors.primary),
-        const SizedBox(width: 4),
-        Text(
-          '${price.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
-          style: getBoldStyle(
-            color: AppColors.primary,
-            fontFamily: FontConstant.cairo,
-            fontSize: 13,
+        Icon(Icons.local_offer, size: 11, color: AppColors.primary),
+        const SizedBox(width: 3),
+        Flexible(
+          child: Text(
+            '${price.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
+            overflow: TextOverflow.ellipsis,
+            style: getBoldStyle(
+              color: AppColors.primary,
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size12,
+            ),
           ),
         ),
       ],
@@ -303,14 +299,14 @@ class CartItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 32,
-        height: 32,
+        width: 28,
+        height: 28,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade300, width: 1),
           color: AppColors.white,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Icon(icon, size: 18, color: AppColors.black),
+        child: Icon(icon, size: 15, color: AppColors.black),
       ),
     );
   }

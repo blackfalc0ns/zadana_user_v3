@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 
 class CategoryLoadingSkeleton extends StatefulWidget {
   const CategoryLoadingSkeleton({super.key});
@@ -121,22 +122,28 @@ class _ProductsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.only(
-        top: 4,
-        left: Spacing.md,
-        right: Spacing.md,
-        bottom: 85,
-      ),
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 15,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 0.86,
-        crossAxisSpacing: Spacing.xss,
-        mainAxisSpacing: Spacing.xss,
-      ),
-      itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final layout = ProductGridLayout.resolve(constraints.maxWidth);
+
+        return GridView.builder(
+          padding: const EdgeInsets.only(
+            top: 4,
+            left: Spacing.md,
+            right: Spacing.md,
+            bottom: 85,
+          ),
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 15,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: layout.crossAxisCount,
+            childAspectRatio: layout.childAspectRatio,
+            crossAxisSpacing: Spacing.xss,
+            mainAxisSpacing: Spacing.xss,
+          ),
+          itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
+        );
+      },
     );
   }
 }

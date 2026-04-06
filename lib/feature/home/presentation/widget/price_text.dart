@@ -12,72 +12,79 @@ class PriceText extends StatelessWidget {
     this.oldPrice,
     this.unit,
     this.style,
+    this.compact = false,
+    this.fontScale = 1,
   });
 
   final double price;
   final double? oldPrice;
   final String? unit;
   final TextStyle? style;
+  final bool compact;
+  final double fontScale;
 
   @override
   Widget build(BuildContext context) {
+    final priceStyle =
+        style ??
+        getBoldStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: (compact ? FontSize.size13 : FontSize.size15) * fontScale,
+          color: AppColors.primary,
+        );
+    final currencyStyle = getSemiBoldStyle(
+      fontFamily: FontConstant.cairo,
+      fontSize: (compact ? FontSize.size9 : FontSize.size10) * fontScale,
+      color: AppColors.primary,
+    );
+    final oldPriceStyle = AppTextStyles.bodySmall.copyWith(
+      decoration: TextDecoration.lineThrough,
+      color: AppColors.textHint,
+      fontSize: (compact ? 9.5 : 11) * fontScale,
+    );
+    final unitStyle = AppTextStyles.bodySmall.copyWith(
+      color: AppColors.textHint,
+      fontSize: (compact ? 9 : 10) * fontScale,
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              PriceFormatter.formatPrice(price),
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size15,
-                color: AppColors.primary,
-              ),
-            ),
-            const SizedBox(width: 2),
-            Text(
-              'ريال',
-              style: getSemiBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size10,
-                color: AppColors.primary,
-              ),
-            ),
-            if (oldPrice != null) ...[
-              const SizedBox(width: 4),
-              Text(
-                PriceFormatter.formatPrice(oldPrice!),
-                style: AppTextStyles.bodySmall.copyWith(
-                  decoration: TextDecoration.lineThrough,
-                  color: AppColors.textHint,
-                  fontSize: 11,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: AlignmentDirectional.centerStart,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(PriceFormatter.formatPrice(price), style: priceStyle),
+              SizedBox(width: compact ? 1 : 2),
+              Text('ريال', style: currencyStyle),
+              if (oldPrice != null) ...[
+                SizedBox(width: compact ? 2 : 4),
+                Text(
+                  PriceFormatter.formatPrice(oldPrice!),
+                  style: oldPriceStyle,
                 ),
-              ),
-              const SizedBox(width: 2),
-              Text(
-                'ريال',
-                style: AppTextStyles.bodySmall.copyWith(
-                  decoration: TextDecoration.lineThrough,
-                  color: AppColors.textHint,
-                  fontSize: 9,
+                SizedBox(width: compact ? 1 : 2),
+                Text(
+                  'ريال',
+                  style: oldPriceStyle.copyWith(
+                    fontSize: (compact ? 8.5 : 9) * fontScale,
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
         if (unit != null && unit!.isNotEmpty) ...[
-          const SizedBox(height: 2),
+          SizedBox(height: compact ? 1 : 2),
           Text(
             unit!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textHint,
-              fontSize: 10,
-            ),
+            style: unitStyle,
           ),
         ],
       ],

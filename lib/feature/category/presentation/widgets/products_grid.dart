@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
@@ -55,64 +56,72 @@ class ProductsGrid extends StatelessWidget {
     );
     products = _applySorting(products, sortOption);
 
-    if (isLoading) {
-      return ShimmerWrapper(
-        isLoading: true,
-        child: GridView.builder(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final layout = ProductGridLayout.resolve(constraints.maxWidth);
+
+        if (isLoading) {
+          return ShimmerWrapper(
+            isLoading: true,
+            child: GridView.builder(
+              padding: const EdgeInsets.only(
+                top: 4,
+                left: Spacing.md,
+                right: Spacing.md,
+                bottom: 85,
+              ),
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: layout.crossAxisCount,
+                childAspectRatio: layout.childAspectRatio,
+                crossAxisSpacing: Spacing.xss,
+                mainAxisSpacing: Spacing.xss,
+              ),
+              itemCount: 15,
+              itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
+            ),
+          );
+        }
+
+        return GridView.builder(
+          key: PageStorageKey<String>('products_grid_${category}_$subCategory'),
           padding: const EdgeInsets.only(
             top: 4,
             left: Spacing.md,
             right: Spacing.md,
             bottom: 85,
           ),
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: .9,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: layout.crossAxisCount,
+            childAspectRatio: layout.childAspectRatio,
             crossAxisSpacing: Spacing.xss,
             mainAxisSpacing: Spacing.xss,
           ),
-          itemCount: 15,
-          itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
-        ),
-      );
-    }
-
-    return GridView.builder(
-      key: PageStorageKey<String>('products_grid_${category}_$subCategory'),
-      padding: const EdgeInsets.only(
-        top: 4,
-        left: Spacing.md,
-        right: Spacing.md,
-        bottom: 85,
-      ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: .9,
-        //  childAspectRatio,
-        crossAxisSpacing: Spacing.xss,
-        mainAxisSpacing: Spacing.xss,
-      ),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = selectedQuantity == null
-            ? products[index]
-            : products[index].copyWith(unit: selectedQuantity);
-        return CustomProductCard(
-          discountPercentage: index * 12,
-          isDiscounted: index % 2 == 0,
-          product: product,
-          onCardTap: () {
-            if (onProductTap != null) {
-              onProductTap!(product);
-              return;
-            }
-            ProductNavigationHelper.navigateToProductDetails(context, product);
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            final product = selectedQuantity == null
+                ? products[index]
+                : products[index].copyWith(unit: selectedQuantity);
+            return CustomProductCard(
+              discountPercentage: index * 12,
+              isDiscounted: index % 2 == 0,
+              product: product,
+              onCardTap: () {
+                if (onProductTap != null) {
+                  onProductTap!(product);
+                  return;
+                }
+                ProductNavigationHelper.navigateToProductDetails(
+                  context,
+                  product,
+                );
+              },
+              onAddTap: () {},
+              showFavorite: true,
+              onFavoriteTap: () {},
+              enableHeroAnimation: true,
+            );
           },
-          onAddTap: () {},
-          showFavorite: true,
-          onFavoriteTap: () {},
-          enableHeroAnimation: true,
         );
       },
     );

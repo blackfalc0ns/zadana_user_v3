@@ -81,17 +81,17 @@ class _SelectedVendorBar extends StatelessWidget {
     final vendor = dummyVendors.firstWhere((v) => v.id == selectedVendorId);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
+            blurRadius: 14,
+            offset: const Offset(0, -3),
           ),
         ],
       ),
@@ -102,8 +102,8 @@ class _SelectedVendorBar extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -111,12 +111,12 @@ class _SelectedVendorBar extends StatelessWidget {
                       AppColors.primaryLight.withValues(alpha: 0.08),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.center,
-                child: Text(vendor.emoji, style: const TextStyle(fontSize: 20)),
+                child: Text(vendor.emoji, style: const TextStyle(fontSize: 17)),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +125,7 @@ class _SelectedVendorBar extends StatelessWidget {
                       selectedVendorName,
                       style: getBoldStyle(
                         fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size14,
+                        fontSize: FontSize.size13,
                         color: AppColors.textPrimary,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -134,7 +134,7 @@ class _SelectedVendorBar extends StatelessWidget {
                       '${items.length} ${locale.product}',
                       style: getMediumStyle(
                         fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size12,
+                        fontSize: FontSize.size10,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -151,12 +151,12 @@ class _SelectedVendorBar extends StatelessWidget {
                       opacity: animations.priceFadeAnimation,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                          horizontal: 10,
+                          vertical: 5,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: AppColors.primary.withValues(alpha: 0.15),
                           ),
@@ -166,7 +166,7 @@ class _SelectedVendorBar extends StatelessWidget {
                           style: getBoldStyle(
                             fontFamily: FontConstant.cairo,
                             color: AppColors.primary,
-                            fontSize: FontSize.size14,
+                            fontSize: FontSize.size12,
                           ),
                         ),
                       ),
@@ -176,7 +176,7 @@ class _SelectedVendorBar extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           // ── Action buttons row ──
           Row(
             children: [
@@ -198,54 +198,6 @@ class _SelectedVendorBar extends StatelessWidget {
   }
 }
 
-class _CartOutlinedButton extends StatelessWidget {
-  const _CartOutlinedButton({
-    required this.onTap,
-    required this.icon,
-    required this.label,
-  });
-
-  final VoidCallback onTap;
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Ink(
-          height: 44,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 18, color: AppColors.primary),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  label,
-                  style: getSemiBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size12,
-                    color: AppColors.primary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _CartCheckoutButton extends StatelessWidget {
   const _CartCheckoutButton({required this.onTap, required this.label});
 
@@ -260,7 +212,7 @@ class _CartCheckoutButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Ink(
-          height: 40,
+          height: 36,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [AppColors.primary, AppColors.primaryLight],
@@ -269,8 +221,8 @@ class _CartCheckoutButton extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withValues(alpha: 0.25),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -279,15 +231,15 @@ class _CartCheckoutButton extends StatelessWidget {
             children: [
               const Icon(
                 Icons.shopping_bag_outlined,
-                size: 18,
+                size: 16,
                 color: AppColors.white,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 5),
               Text(
                 label,
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size14,
+                  fontSize: FontSize.size12,
                   color: AppColors.white,
                 ),
               ),

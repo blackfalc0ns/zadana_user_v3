@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
@@ -12,38 +13,29 @@ class BrandProductsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.all(Spacing.md),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 0.9,
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final layout = ProductGridLayout.resolve(
+          constraints.crossAxisExtent,
+          horizontalPadding: Spacing.md * 2,
           crossAxisSpacing: Spacing.xs,
-          mainAxisSpacing: Spacing.xs,
-        ),
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final brandProduct = products[index];
-          return CustomProductCard(
-            discountPercentage: index * 12,
-            isDiscounted: index % 2 == 0,
-            product: ProductModel(
-              id: brandProduct.id,
-              name: brandProduct.name,
-              store: brandProduct.brandName,
-              price: brandProduct.price,
-              oldPrice: brandProduct.oldPrice,
-              imageUrl: brandProduct.imageUrl,
-              emoji: brandProduct.emoji,
-              discount: brandProduct.discount,
-              isFavorite: brandProduct.isFavorite,
-              unit: brandProduct.unit,
-              isDiscounted: false
+        );
+
+        return SliverPadding(
+          padding: const EdgeInsets.all(Spacing.md),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: layout.crossAxisCount,
+              childAspectRatio: layout.childAspectRatio,
+              crossAxisSpacing: Spacing.xs,
+              mainAxisSpacing: Spacing.xs,
             ),
-            showFavorite: true,
-            onCardTap: () {
-              ProductNavigationHelper.navigateToProductDetails(
-                context,
-                ProductModel(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final brandProduct = products[index];
+              return CustomProductCard(
+                discountPercentage: index * 12,
+                isDiscounted: index % 2 == 0,
+                product: ProductModel(
                   id: brandProduct.id,
                   name: brandProduct.name,
                   store: brandProduct.brandName,
@@ -54,15 +46,34 @@ class BrandProductsGrid extends StatelessWidget {
                   discount: brandProduct.discount,
                   isFavorite: brandProduct.isFavorite,
                   unit: brandProduct.unit,
-                  isDiscounted: false
+                  isDiscounted: false,
                 ),
+                showFavorite: true,
+                onCardTap: () {
+                  ProductNavigationHelper.navigateToProductDetails(
+                    context,
+                    ProductModel(
+                      id: brandProduct.id,
+                      name: brandProduct.name,
+                      store: brandProduct.brandName,
+                      price: brandProduct.price,
+                      oldPrice: brandProduct.oldPrice,
+                      imageUrl: brandProduct.imageUrl,
+                      emoji: brandProduct.emoji,
+                      discount: brandProduct.discount,
+                      isFavorite: brandProduct.isFavorite,
+                      unit: brandProduct.unit,
+                      isDiscounted: false,
+                    ),
+                  );
+                },
+                onAddTap: brandProduct.isInStock ? () {} : null,
+                onFavoriteTap: () {},
               );
-            },
-            onAddTap: brandProduct.isInStock ? () {} : null,
-            onFavoriteTap: () {},
-          );
-        }, childCount: products.length),
-      ),
+            }, childCount: products.length),
+          ),
+        );
+      },
     );
   }
 }

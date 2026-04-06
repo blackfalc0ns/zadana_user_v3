@@ -15,6 +15,15 @@ import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart'
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
 final GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
+const double kMainShellBottomNavHeight = 75.0;
+const double kMainShellBottomNavBottomOffset = 12.0;
+const double kMainShellBottomNavTopMargin = 5.0;
+
+double mainShellBottomNavReservedSpace(BuildContext context) {
+  return kMainShellBottomNavHeight +
+      kMainShellBottomNavBottomOffset +
+      kMainShellBottomNavTopMargin;
+}
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key, this.initialIndex = 0});
@@ -127,7 +136,7 @@ class MainShellState extends State<MainShell> {
             ),
           ),
           Positioned(
-            bottom: 12,
+            bottom: kMainShellBottomNavBottomOffset,
             left: 12,
             right: 12,
             child: CustomBottomNavBar(
@@ -174,8 +183,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 75,
-      margin: const EdgeInsets.only(top: 5),
+      height: kMainShellBottomNavHeight,
+      margin: const EdgeInsets.only(top: kMainShellBottomNavTopMargin),
       decoration: BoxDecoration(
         color: AppColors.card,
         boxShadow: [

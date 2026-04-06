@@ -29,47 +29,58 @@ class CustomVerticalFilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? (selectedColor ?? AppColors.primary)
-              : (backgroundColor ?? AppColors.white),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected
-                ? (selectedColor ?? AppColors.primary)
-                : (color.outline.withValues(alpha: 0.2)),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Text(icon!, style: const TextStyle(fontSize: 22)),
-            ],
-            const SizedBox(height: 6),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final itemWidth = constraints.maxWidth;
+        final compact = itemWidth < 84;
+        final iconSize = compact ? 18.0 : 22.0;
+        final labelFontSize = compact ? FontSize.size11 : FontSize.size12;
+        final contentPadding = EdgeInsets.symmetric(
+          horizontal: compact ? 4 : 6,
+          vertical: compact ? 6 : 8,
+        );
 
-            Text(
-              label,
-              style:
-                getSemiBoldStyle(
-                  fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size12,
-                  color: isSelected ? color.onPrimary : color.onSurface,
-                ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+        return GestureDetector(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: contentPadding,
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? (selectedColor ?? AppColors.primary)
+                  : (backgroundColor ?? AppColors.white),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected
+                    ? (selectedColor ?? AppColors.primary)
+                    : (color.outline.withValues(alpha: 0.2)),
+                width: 1,
+              ),
             ),
-          ],
-        ),
-      ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (icon != null) ...[
+                  Text(icon!, style: TextStyle(fontSize: iconSize)),
+                ],
+                SizedBox(height: compact ? 4 : 6),
+                Text(
+                  label,
+                  style: getSemiBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: labelFontSize,
+                    color: isSelected ? color.onPrimary : color.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -56,67 +56,67 @@ class CartContent extends StatelessWidget {
         // ── Subtle divider ──
         Container(
           height: 1,
-          margin: const EdgeInsets.symmetric(horizontal: 16),
+          margin: const EdgeInsets.symmetric(horizontal: 14),
           color: AppColors.divider.withValues(alpha: 0.5),
         ),
 
         // ── Items count header ──
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
-          child: Row(
-            children: [
-              Text(
-                '${locale.product} (${items.length})',
-                style: getSemiBoldStyle(
-                  fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size14,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const Spacer(),
-              if (selectedVendorId != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: unavailableCount > 0
-                        ? AppColors.warning.withValues(alpha: 0.1)
-                        : AppColors.success.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        unavailableCount > 0
-                            ? Icons.warning_amber_rounded
-                            : Icons.check_circle_outline,
-                        size: 14,
-                        color: unavailableCount > 0
-                            ? AppColors.warning
-                            : AppColors.success,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        dummyVendors
-                            .firstWhere((v) => v.id == selectedVendorId)
-                            .name,
-                        style: getMediumStyle(
-                          fontFamily: FontConstant.cairo,
-                          fontSize: FontSize.size11,
-                          color: unavailableCount > 0
-                              ? AppColors.warning
-                              : AppColors.success,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+        //   child: Row(
+        //     children: [
+        //       Text(
+        //         '${locale.product} (${items.length})',
+        //         style: getSemiBoldStyle(
+        //           fontFamily: FontConstant.cairo,
+        //           fontSize: FontSize.size13,
+        //           color: AppColors.textPrimary,
+        //         ),
+        //       ),
+        //       const Spacer(),
+        //       if (selectedVendorId != null)
+        //         Container(
+        //           padding: const EdgeInsets.symmetric(
+        //             horizontal: 8,
+        //             vertical: 2,
+        //           ),
+        //           decoration: BoxDecoration(
+        //             color: unavailableCount > 0
+        //                 ? AppColors.warning.withValues(alpha: 0.1)
+        //                 : AppColors.success.withValues(alpha: 0.1),
+        //             borderRadius: BorderRadius.circular(8),
+        //           ),
+        //           child: Row(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: [
+        //               Icon(
+        //                 unavailableCount > 0
+        //                     ? Icons.warning_amber_rounded
+        //                     : Icons.check_circle_outline,
+        //                 size: 12,
+        //                 color: unavailableCount > 0
+        //                     ? AppColors.warning
+        //                     : AppColors.success,
+        //               ),
+        //               const SizedBox(width: 4),
+        //               Text(
+        //                 dummyVendors
+        //                     .firstWhere((v) => v.id == selectedVendorId)
+        //                     .name,
+        //                 style: getMediumStyle(
+        //                   fontFamily: FontConstant.cairo,
+        //                   fontSize: FontSize.size10,
+        //                   color: unavailableCount > 0
+        //                       ? AppColors.warning
+        //                       : AppColors.success,
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //     ],
+        //   ),
+        // ),
 
         // ── Items list ──
         Expanded(child: _buildItemsList()),
@@ -125,26 +125,18 @@ class CartContent extends StatelessWidget {
   }
 
   Widget _buildUnavailableWarning(BuildContext context, int count) {
-    final locale = context.localization;
-
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.fromLTRB(14, 6, 14, 0),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppColors.warning.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.warning.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.info_outline,
-            color: AppColors.warning,
-            size: 20,
-          ),
-          const SizedBox(width: 10),
+          Icon(Icons.info_outline, color: AppColors.warning, size: 18),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +145,7 @@ class CartContent extends StatelessWidget {
                   'منتجات غير متوفرة',
                   style: getBoldStyle(
                     fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size13,
+                    fontSize: FontSize.size12,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -161,7 +153,7 @@ class CartContent extends StatelessWidget {
                   '$count من المنتجات غير متوفرة في هذا المتجر',
                   style: getRegularStyle(
                     fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size11,
+                    fontSize: FontSize.size10,
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -186,8 +178,8 @@ class CartContent extends StatelessWidget {
       },
       child: Container(
         key: const ValueKey('select_prompt'),
-        margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.fromLTRB(14, 6, 14, 6),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -203,7 +195,7 @@ class CartContent extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
@@ -211,10 +203,10 @@ class CartContent extends StatelessWidget {
               child: Icon(
                 Icons.store_rounded,
                 color: AppColors.primary,
-                size: 22,
+                size: 18,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +215,7 @@ class CartContent extends StatelessWidget {
                     locale.select_vendor_to_show_price,
                     style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size14,
+                      fontSize: FontSize.size12,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -232,7 +224,7 @@ class CartContent extends StatelessWidget {
                     locale.select_vendors_to_compare,
                     style: getRegularStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size12,
+                      fontSize: FontSize.size10,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -242,7 +234,7 @@ class CartContent extends StatelessWidget {
             Icon(
               Icons.touch_app_rounded,
               color: AppColors.primary.withValues(alpha: 0.6),
-              size: 24,
+              size: 20,
             ),
           ],
         ),
@@ -253,9 +245,9 @@ class CartContent extends StatelessWidget {
   Widget _buildItemsList() {
     return ListView.separated(
       key: const PageStorageKey<String>('cart_items_list'),
-      padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+      padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
       itemCount: items.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 6),
+      separatorBuilder: (_, _) => const SizedBox(height: 5),
       itemBuilder: (_, index) => CartItemCard(
         isDiscounted: index % 2 == 0,
         item: items[index],
@@ -265,7 +257,8 @@ class CartContent extends StatelessWidget {
         onDecrement: () => onUpdateQuantity(items[index], false),
         onDelete: () => onDeleteItem(items[index]),
         enableHeroAnimation: activeHeroProductId == items[index].id,
-        animatePrice: selectedVendorId != null && items[index].id == animatingPriceItemId,
+        animatePrice:
+            selectedVendorId != null && items[index].id == animatingPriceItemId,
       ),
     );
   }

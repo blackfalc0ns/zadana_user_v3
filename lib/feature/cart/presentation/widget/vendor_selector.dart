@@ -40,7 +40,7 @@ class VendorSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return Container(
       height: 70,
       decoration: BoxDecoration(
@@ -99,7 +99,7 @@ class _VendorChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -113,9 +113,7 @@ class _VendorChip extends StatelessWidget {
               : color.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected
-                ? color.primary
-                : Colors.grey.shade300,
+            color: isSelected ? color.primary : Colors.grey.shade300,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: !hasSelection

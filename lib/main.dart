@@ -9,7 +9,10 @@ import 'package:device_preview/device_preview.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
-  runApp(MyApp());
+  runApp(DevicePreview(
+    enabled: true,
+    builder: (context) => const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       locale: const Locale('ar'),
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.deliveryOtp,
+      initialRoute: AppRoutes.mainShell,
     );
   }
 }
