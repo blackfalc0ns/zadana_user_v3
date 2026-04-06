@@ -372,6 +372,21 @@
   "order_success_subtitle": "شكراً لطلبك! سيتم توصيل طلبك قريباً",
   "order_number": "رقم الطلب",
   "courier_name": "اسم المندوب",
-  "continue_shopping": "متابعة التسوق",
-  "view_order_details": "عرض تفاصيل الطلب"
+  "delegate_values": "قيم المندوب",
+  "continue_shopping": "مواصلة التسوق",
+  "view_order_details": "عرض تفاصيل الطلب",
+  "delivery_get_otp": "رمز التحقق",
+
+  "delivery_datetime_title": "تاريخ ووقت التسليم",
+  "select_date_time": "حدد التاريخ والوقت",
+  "select_delivery_time": "اختر وقت التسليم",
+  "delivery_time_selected": "تم تحديد وقت التسليم",
+  "today": "اليوم",
+  "tomorrow": "غداً",
+  "delivery_time_note": "قد يختلف وقت التسليم حسب التوفر",
+  "reset": "إعادة تعيين",
+  "delivery_code_section_title": "رمز التسليم",
+  "otp_verification_code": "رمز التحقق OTP",
+  "otp_show_instruction": "اضغط لعرض رمز التحقق عند استلام الطلب",
+  "view_otp_code": "عرض رمز OTP"
 }

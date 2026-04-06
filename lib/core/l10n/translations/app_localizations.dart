@@ -2054,6 +2054,12 @@ abstract class AppLocalizations {
   /// **'Courier Name'**
   String get courier_name;
 
+  /// No description provided for @delegate_values.
+  ///
+  /// In en, this message translates to:
+  /// **'Delegate Values'**
+  String get delegate_values;
+
   /// No description provided for @continue_shopping.
   ///
   /// In en, this message translates to:
@@ -2065,6 +2071,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Order Details'**
   String get view_order_details;
+
+  /// No description provided for @delivery_get_otp.
+  ///
+  /// In en, this message translates to:
+  /// **'verification code'**
+  String get delivery_get_otp;
+
+  /// No description provided for @delivery_datetime_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Date & Time'**
+  String get delivery_datetime_title;
+
+  /// No description provided for @select_date_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date and time'**
+  String get select_date_time;
+
+  /// No description provided for @select_delivery_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Select delivery time'**
+  String get select_delivery_time;
+
+  /// No description provided for @delivery_time_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected delivery time'**
+  String get delivery_time_selected;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @delivery_time_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery time may vary based on availability'**
+  String get delivery_time_note;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @delivery_code_section_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Code'**
+  String get delivery_code_section_title;
+
+  /// No description provided for @otp_verification_code.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP Verification Code'**
+  String get otp_verification_code;
+
+  /// No description provided for @otp_show_instruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Press to view verification code upon order receipt'**
+  String get otp_show_instruction;
+
+  /// No description provided for @view_otp_code.
+  ///
+  /// In en, this message translates to:
+  /// **'View OTP Code'**
+  String get view_otp_code;
 }
 
 class _AppLocalizationsDelegate

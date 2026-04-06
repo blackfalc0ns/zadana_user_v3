@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/animated_card_wrapper.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/delivery_datetime_selector.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/delivery_info_card.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/order_summary_card.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_method_card.dart';
@@ -30,6 +31,16 @@ class PaymentCardsSection extends StatelessWidget {
         AnimatedCardWrapper(
           delay: 200,
           child: const DeliveryInfoCard(),
+        ),
+        const SizedBox(height: Spacing.md),
+        AnimatedCardWrapper(
+          delay: 250,
+          child: DeliveryDateTimeSelector(
+            onDateTimeChanged: (dateTime) {
+              // Seçilen tarih/saat burada işlenebilir
+              debugPrint('Selected delivery time: $dateTime');
+            },
+          ),
         ),
         const SizedBox(height: Spacing.md),
         AnimatedCardWrapper(

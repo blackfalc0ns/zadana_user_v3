@@ -92,6 +92,41 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     });
   }
 
+  /// Get total old price (before discounts) for available items
+  double get _totalOldPrice {
+    if (_selectedVendorId == null) return 0.0;
+
+    final availableItems = _getAvailableItems();
+    return availableItems.fold(0.0, (sum, item) {
+      final vp = item.getPriceForVendor(_selectedVendorId!);
+      if (vp != null) {
+        // Use oldPrice if discounted, otherwise use current price
+        final priceToUse = vp.isDiscounted && vp.oldPrice != null
+            ? vp.oldPrice!
+            : vp.price;
+        return sum + (priceToUse * item.quantity);
+      }
+      return sum;
+    });
+  }
+
+  /// Get total savings amount
+  double get _totalSavings => _totalOldPrice - _totalPrice;
+
+  /// Check if there are any discounts
+  bool get _hasDiscounts {
+    if (_selectedVendorId == null) return false;
+
+    final availableItems = _getAvailableItems();
+    return availableItems.any((item) {
+      final vp = item.getPriceForVendor(_selectedVendorId!);
+      return vp != null &&
+          vp.isDiscounted &&
+          vp.oldPrice != null &&
+          vp.oldPrice! > vp.price;
+    });
+  }
+
   String _selectedVendorName(BuildContext context) {
     final locale = context.localization;
     return _selectedVendorId == null
@@ -263,6 +298,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                       selectedVendorId: _selectedVendorId,
                       items: _items,
                       totalPrice: _totalPrice,
+                      totalOldPrice: _totalOldPrice,
+                      totalSavings: _totalSavings,
+                      hasDiscounts: _hasDiscounts,
                       selectedVendorName: _selectedVendorName(context),
                       animations: _animations,
                       onComparison: _showComparison,

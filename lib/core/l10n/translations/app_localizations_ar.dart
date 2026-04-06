@@ -1001,8 +1001,50 @@ class AppLocalizationsAr extends AppLocalizations {
   String get courier_name => 'اسم المندوب';
 
   @override
-  String get continue_shopping => 'متابعة التسوق';
+  String get delegate_values => 'قيم المندوب';
+
+  @override
+  String get continue_shopping => 'مواصلة التسوق';
 
   @override
   String get view_order_details => 'عرض تفاصيل الطلب';
+
+  @override
+  String get delivery_get_otp => 'رمز التحقق';
+
+  @override
+  String get delivery_datetime_title => 'تاريخ ووقت التسليم';
+
+  @override
+  String get select_date_time => 'حدد التاريخ والوقت';
+
+  @override
+  String get select_delivery_time => 'اختر وقت التسليم';
+
+  @override
+  String get delivery_time_selected => 'تم تحديد وقت التسليم';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get tomorrow => 'غداً';
+
+  @override
+  String get delivery_time_note => 'قد يختلف وقت التسليم حسب التوفر';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get delivery_code_section_title => 'رمز التسليم';
+
+  @override
+  String get otp_verification_code => 'رمز التحقق OTP';
+
+  @override
+  String get otp_show_instruction => 'اضغط لعرض رمز التحقق عند استلام الطلب';
+
+  @override
+  String get view_otp_code => 'عرض رمز OTP';
 }
