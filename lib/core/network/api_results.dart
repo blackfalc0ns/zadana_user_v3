@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 import 'failures.dart';
 
@@ -16,13 +17,32 @@ class ApiErrorResult<T> extends ApiResult<T> {
   ApiErrorResult({required this.failure});
 }
 
-// Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
-//   final bool isConnected =
-//       await InternetConnectionChecker.instance.hasConnection;
-//   if (!isConnected) {
-//     return ApiErrorResult<T>(failure: Failure(errorMessage: 'no internet'));
-//   }
+Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
+  final bool isConnected = await InternetConnection().hasInternetAccess;
+  if (!isConnected) {
+    return ApiErrorResult<T>(
+      failure: const Failure(
+        errorMessage: 'No internet connection.',
+        code: 'connection_error',
+      ),
+    );
+  }
 
+  try {
+    final result = await apiCall();
+    return ApiSuccessResult<T>(data: result);
+  } on DioException catch (dioError) {
+    return ApiErrorResult<T>(
+      failure: ServerFailure.fromDioError(dioException: dioError),
+    );
+  } catch (_) {
+    return ApiErrorResult<T>(
+      failure: const Failure(errorMessage: 'Unexpected error occurred.'),
+    );
+  }
+}
+
+// Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
 //   try {
 //     final result = await apiCall();
 //     return ApiSuccessResult<T>(data: result);
@@ -31,24 +51,11 @@ class ApiErrorResult<T> extends ApiResult<T> {
 //       failure: ServerFailure.fromDioError(dioException: dioError),
 //     );
 //   } catch (error) {
-//     return ApiErrorResult<T>(failure: Failure(errorMessage: error.toString()));
+//     return ApiErrorResult<T>(
+//       failure: Failure(errorMessage: error.toString()),
+//     );
 //   }
-//  }
-
-Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
-  try {
-    final result = await apiCall();
-    return ApiSuccessResult<T>(data: result);
-  } on DioException catch (dioError) {
-    return ApiErrorResult<T>(
-      failure: ServerFailure.fromDioError(dioException: dioError),
-    );
-  } catch (error) {
-    return ApiErrorResult<T>(
-      failure: Failure(errorMessage: error.toString()),
-    );
-  }
-}
+// }
 
 Future<ApiResult<T>> safeLocalCall<T>(Future<T> Function() localCall) async {
   try {

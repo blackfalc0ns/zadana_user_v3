@@ -53,7 +53,7 @@ class AuthExperienceShell extends StatelessWidget {
                     title: heroTitle,
                     subtitle: heroSubtitle,
                   ),
-                  const SizedBox(height: Spacing.lg),
+                  const SizedBox(height: Spacing.sm),
                   _FormCard(
                     badge: sectionBadge,
                     title: sectionTitle,
@@ -142,8 +142,7 @@ class _HeroHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
@@ -176,24 +175,26 @@ class _HeroHeader extends StatelessWidget {
                     Text(
                       title,
                       style: getBoldStyle(
-                        fontSize: 26,
+                        fontSize: 20,
                         fontFamily: FontConstant.cairo,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: Spacing.sm),
+                    const SizedBox(height: 4),
                     Text(
                       subtitle,
                       style: getRegularStyle(
-                        fontSize: FontSize.size16,
+                        fontSize: 13,
                         fontFamily: FontConstant.cairo,
                         color: Colors.white.withValues(alpha: 0.92),
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: Spacing.base),
+              const SizedBox(width: 8),
 
               const _HeroProduceArtwork(),
             ],
@@ -210,27 +211,67 @@ class _HeroProduceArtwork extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 124,
-      height: 168,
+      width: 108,
+      height: 72,
       child: Stack(
-        children: const [
+        clipBehavior: Clip.none,
+        children: [
           Positioned(
-            top: 0,
-            left: 18,
-            child: _ProduceBox(
-              assetPath: 'assets/images/Cabbage.png',
-              size: 72,
+            top: 8,
+            left: 10,
+            child: Container(
+              width: 88,
+              height: 52,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withValues(alpha: 0.16),
+                    Colors.white.withValues(alpha: 0.06),
+                  ],
+                ),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
+              ),
             ),
           ),
           Positioned(
-            top: 60,
-            left: 45,
-            child: _ProduceBox(assetPath: 'assets/images/Tomato.png', size: 72),
+            top: 0,
+            right: 6,
+            child: Container(
+              width: 18,
+              height: 18,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.14),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
           Positioned(
-            top: 99,
-            right: 55,
-            child: _ProduceBox(assetPath: 'assets/images/Chilli.png', size: 65),
+            top: 18,
+            left: 0,
+            child: _ProduceBox(
+              assetPath: 'assets/images/Cabbage.png',
+              size: 34,
+              rotation: -0.22,
+            ),
+          ),
+          Positioned(
+            top: 6,
+            left: 32,
+            child: _ProduceBox(
+              assetPath: 'assets/images/Tomato.png',
+              size: 40,
+              rotation: -0.04,
+            ),
+          ),
+          Positioned(
+            top: 22,
+            right: 2,
+            child: _ProduceBox(
+              assetPath: 'assets/images/Chilli.png',
+              size: 32,
+              rotation: 0.20,
+            ),
           ),
         ],
       ),
@@ -239,23 +280,38 @@ class _HeroProduceArtwork extends StatelessWidget {
 }
 
 class _ProduceBox extends StatelessWidget {
-  const _ProduceBox({required this.assetPath, required this.size});
+  const _ProduceBox({
+    required this.assetPath,
+    required this.size,
+    this.rotation = 0,
+  });
 
   final String assetPath;
   final double size;
+  final double rotation;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
+    return Transform.rotate(
+      angle: rotation,
+      child: Container(
+        width: size,
+        height: size,
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.22),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Image.asset(assetPath, fit: BoxFit.contain),
       ),
-      child: Image.asset(assetPath, fit: BoxFit.contain),
     );
   }
 }

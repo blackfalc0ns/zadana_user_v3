@@ -16,4 +16,5 @@ abstract class EndPoints {
   static const String sendDeliveryOtp = '/delivery/otp/send';
   static const String verifyDeliveryOtp = '/delivery/otp/verify';
   static const String resendDeliveryOtp = '/delivery/otp/resend';
+  
 }
