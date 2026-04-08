@@ -1,10 +1,14 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_container.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_data.dart';
-import 'package:zadana_user_v3/core/widgets/banner/banner_page_view.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_dots_indicator.dart';
+import 'package:zadana_user_v3/core/widgets/banner/banner_page_view.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_banner_item_entity.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 
 class PromoBanner extends StatefulWidget {
   const PromoBanner({super.key});
@@ -14,8 +18,8 @@ class PromoBanner extends StatefulWidget {
 }
 
 class _PromoBannerState extends State<PromoBanner> {
-  late PageController _pageController;
-  late Timer _timer;
+  late final PageController _pageController;
+  Timer? _timer;
   int _currentPage = 0;
 
   static const Duration _autoSlideDuration = Duration(seconds: 4);
@@ -24,28 +28,25 @@ class _PromoBannerState extends State<PromoBanner> {
   @override
   void initState() {
     super.initState();
-    _initializeController();
-    _startAutoSlide();
-  }
-
-  void _initializeController() {
     _pageController = PageController();
   }
 
-  void _startAutoSlide() {
-    _timer = Timer.periodic(_autoSlideDuration, (timer) {
-      _goToNextPage();
+  void _startAutoSlide(List<BannerData> banners) {
+    _timer?.cancel();
+    _timer = Timer.periodic(_autoSlideDuration, (_) {
+      _goToNextPage(banners);
     });
   }
 
-  void _goToNextPage() {
-    final banners = _getBanners();
+  void _goToNextPage(List<BannerData> banners) {
+    if (banners.isEmpty) return;
+
     if (_currentPage < banners.length - 1) {
       _currentPage++;
     } else {
       _currentPage = 0;
     }
-    
+
     if (_pageController.hasClients) {
       _pageController.animateToPage(
         _currentPage,
@@ -55,58 +56,74 @@ class _PromoBannerState extends State<PromoBanner> {
     }
   }
 
+  List<BannerData> _mapBannerItems(List<HomeBannerItemEntity> items) {
+    return items
+        .map(
+          (item) => BannerData(
+            tag: item.tag,
+            title: item.title,
+            subtitle: item.subtitle,
+            actionLabel: item.actionLabel,
+            imageUrl: item.imageUrl,
+          ),
+        )
+        .toList();
+  }
+
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
 
-  List<BannerData> _getBanners() {
-    final locale = context.localization;
-    return [
-      BannerData(
-        tag: 'عرض خاص',
-        title: 'توصيل مجاني للطلبات فوق 100 ريال',
-        subtitle: 'استمتع بالتوصيل المجاني لجميع أنحاء المدينة',
-        actionLabel: 'اطلب الآن',
-        imageUrl: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600',
-      ),
-      BannerData(
-        tag: 'جودة عالية',
-        title: 'منتجات طازجة يومياً من أفضل المزارع',
-        subtitle: 'ضمان الجودة والطعم الأصيل',
-        actionLabel: 'تسوق الآن',
-        imageUrl: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=600',
-      ),
-      BannerData(
-        tag: 'خدمة سريعة',
-        title: 'توصيل في نفس اليوم لجميع الطلبات',
-        subtitle: 'خدمة عملاء متميزة على مدار الساعة',
-        actionLabel: 'اكتشف المزيد',
-        imageUrl: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=600',
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
-    final banners = _getBanners();
-    
-    return BannerContainer(
-      child: Stack(
-        children: [
-          BannerPageView(
-            controller: _pageController,
-            banners: banners,
-            onPageChanged: _onPageChanged,
+    return BlocBuilder<HomeViewModel, HomeState>(
+      buildWhen: (previous, current) =>
+          previous.bannerSection != current.bannerSection,
+      builder: (context, state) {
+        final bannerSection = state.bannerSection.data;
+
+        if (bannerSection == null ||
+            !bannerSection.isActive ||
+            bannerSection.items.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final banners = _mapBannerItems(bannerSection.items);
+        if (banners.isEmpty) {
+          _timer?.cancel();
+          return const SizedBox.shrink();
+        }
+
+        if (_currentPage >= banners.length) {
+          _currentPage = 0;
+        }
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          if (_timer == null || !_timer!.isActive) {
+            _startAutoSlide(banners);
+          }
+        });
+
+        return BannerContainer(
+          child: Stack(
+            children: [
+              BannerPageView(
+                controller: _pageController,
+                banners: banners,
+                onPageChanged: _onPageChanged,
+              ),
+              BannerDotsIndicator(
+                itemCount: banners.length,
+                currentPage: _currentPage,
+              ),
+            ],
           ),
-          BannerDotsIndicator(
-            itemCount: banners.length,
-            currentPage: _currentPage,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

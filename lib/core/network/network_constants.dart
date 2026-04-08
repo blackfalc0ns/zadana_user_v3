@@ -5,6 +5,10 @@ abstract class NetworkConstants {
 }
 
 abstract class EndPoints {
+  static const String home = '/home';
+  static const String homeBanners = '/home/banners';
+  static const String homeCategories = '/home/categories';
+  static const String homeBestSelling = '/home/best-selling';
   static const String register = "/customers/auth/register";
   static const String login = '/customers/auth/login';
   static const String forgetPassword = '/customers/auth/forgot-password';
@@ -16,5 +20,4 @@ abstract class EndPoints {
   static const String sendDeliveryOtp = '/delivery/otp/send';
   static const String verifyDeliveryOtp = '/delivery/otp/verify';
   static const String resendDeliveryOtp = '/delivery/otp/resend';
-  
 }

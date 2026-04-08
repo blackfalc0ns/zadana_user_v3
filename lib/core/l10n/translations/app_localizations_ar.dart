@@ -213,7 +213,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deliver_to => 'التوصيل إلى';
 
   @override
-  String get location => 'وسط المدينة، نيويورك';
+  String get location => 'السعوديه';
 
   @override
   String get search_hint => 'ابحث عن منتجات أو متاجر...';
@@ -235,6 +235,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get section_best_selling => 'الأكثر مبيع';
+
+  @override
+  String get best_selling_unavailable => 'لا توجد منتجات الاكثر مبيعا متاحه';
 
   @override
   String get section_featured => 'مميزة';
@@ -259,6 +262,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nav_categories => 'الأقسام';
+
+  @override
+  String get categ => 'الأقسام';
 
   @override
   String get nav_cart => 'السلة';
@@ -482,6 +488,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get error_no_internet => 'ما فيه إنترنت';
+
+  @override
+  String get offline_connection_issue_title => 'مشكله ف الاتصال';
+
+  @override
+  String get offline_connection_issue_message =>
+      'تحقق من الانترنت وحاول مره اخري';
 
   @override
   String get error_unknown => 'صار خطأ غير متوقع';

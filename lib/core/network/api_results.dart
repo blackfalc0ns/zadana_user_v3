@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 import 'failures.dart';
 
@@ -18,16 +17,6 @@ class ApiErrorResult<T> extends ApiResult<T> {
 }
 
 Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
-  final bool isConnected = await InternetConnection().hasInternetAccess;
-  if (!isConnected) {
-    return ApiErrorResult<T>(
-      failure: const Failure(
-        errorMessage: 'No internet connection.',
-        code: 'connection_error',
-      ),
-    );
-  }
-
   try {
     final result = await apiCall();
     return ApiSuccessResult<T>(data: result);

@@ -548,6 +548,12 @@ abstract class AppLocalizations {
   /// **'Best Selling'**
   String get section_best_selling;
 
+  /// No description provided for @best_selling_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No best-selling products available'**
+  String get best_selling_unavailable;
+
   /// No description provided for @section_featured.
   ///
   /// In en, this message translates to:
@@ -595,6 +601,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Categories'**
   String get nav_categories;
+
+  /// No description provided for @categ.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categ;
 
   /// No description provided for @nav_cart.
   ///
@@ -1033,6 +1045,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No internet connection'**
   String get error_no_internet;
+
+  /// No description provided for @offline_connection_issue_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection problem'**
+  String get offline_connection_issue_title;
+
+  /// No description provided for @offline_connection_issue_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your internet and try again'**
+  String get offline_connection_issue_message;
 
   /// No description provided for @error_unknown.
   ///

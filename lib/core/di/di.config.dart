@@ -87,6 +87,14 @@ import '../../feature/delivery_verification/domain/usecase/verify_delivery_otp_u
     as _i8;
 import '../../feature/delivery_verification/presentation/manager/delivery_otp_view_model.dart'
     as _i796;
+import '../../feature/home/data/data_source/home_remote_data_source.dart'
+    as _i730;
+import '../../feature/home/data/data_source/home_remote_data_source_impl.dart'
+    as _i1072;
+import '../../feature/home/data/repo/home_repository_impl.dart' as _i311;
+import '../../feature/home/domain/repo/home_repository.dart' as _i227;
+import '../../feature/home/domain/usecase/home_usecase.dart' as _i465;
+import '../../feature/home/presentation/manager/home_view_model.dart' as _i495;
 import '../../feature/location/data/datasources/location_data_source.dart'
     as _i408;
 import '../../feature/location/data/datasources/location_data_source_imp.dart'
@@ -210,6 +218,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i952.LoginRemoteDataSource>(
       () => _i912.LoginRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i730.HomeRemoteDataSource>(
+      () => _i1072.HomeRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
     gh.factory<_i415.VerifyOtpRepository>(
       () => _i548.VerifyOtpRepositoryImpl(
         gh<_i698.VerifyOtpRemoteDataSource>(),
@@ -245,6 +256,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i248.LoginUseCase>(
       () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
     );
+    gh.factory<_i227.HomeRepository>(
+      () => _i311.HomeRepositoryImpl(gh<_i730.HomeRemoteDataSource>()),
+    );
+    gh.factory<_i465.HomeUseCase>(
+      () => _i465.HomeUseCase(gh<_i227.HomeRepository>()),
+    );
     gh.factory<_i334.RegisterRemoteDataSource>(
       () => _i168.RegisterRemoteDataSourceImpl(
         apiServices: gh<_i804.ApiServices>(),
@@ -260,6 +277,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1006.ProfileRepository>(
       () => _i771.ProfileRepositoryImpl(gh<_i371.ProfileRemoteDataSource>()),
+    );
+    gh.factory<_i495.HomeViewModel>(
+      () => _i495.HomeViewModel(gh<_i465.HomeUseCase>()),
     );
     gh.factory<_i732.ForgetPasswordUseCase>(
       () => _i732.ForgetPasswordUseCase(

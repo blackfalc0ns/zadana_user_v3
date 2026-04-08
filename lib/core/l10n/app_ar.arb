@@ -78,7 +78,7 @@
   "footer_action_signup": "تسجيل",
 
   "deliver_to": "التوصيل إلى",
-  "location": "وسط المدينة، نيويورك",
+  "location": "السعوديه",
 
   "search_hint": "ابحث عن منتجات أو متاجر...",
 
@@ -89,6 +89,7 @@
 
   "section_special_offers": "عروض",
   "section_best_selling": "الأكثر مبيع",
+  "best_selling_unavailable": "لا توجد منتجات الاكثر مبيعا متاحه",
   "section_featured": "مميزة",
   "section_recommended": "مقترح لك",
   "section_explore": "استكشف أكثر",
@@ -99,6 +100,7 @@
 
   "nav_home": "الرئيسية",
   "nav_categories": "الأقسام",
+  "categ": "الأقسام",
   "nav_cart": "السلة",
   "nav_orders": "طلباتي",
   "nav_profile": "حسابي",
@@ -179,6 +181,8 @@
   "quantity": "الكمية",
 
   "error_no_internet": "ما فيه إنترنت",
+  "offline_connection_issue_title": "مشكله ف الاتصال",
+  "offline_connection_issue_message": "تحقق من الانترنت وحاول مره اخري",
   "error_server": "خطأ بالسيرفر",
 
   "product_details": "تفاصيل المنتج",

@@ -243,6 +243,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get section_best_selling => 'Best Selling';
 
   @override
+  String get best_selling_unavailable => 'No best-selling products available';
+
+  @override
   String get section_featured => 'Featured Products';
 
   @override
@@ -265,6 +268,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nav_categories => 'Categories';
+
+  @override
+  String get categ => 'Categories';
 
   @override
   String get nav_cart => 'Cart';
@@ -491,6 +497,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_no_internet => 'No internet connection';
+
+  @override
+  String get offline_connection_issue_title => 'Connection problem';
+
+  @override
+  String get offline_connection_issue_message =>
+      'Check your internet and try again';
 
   @override
   String get error_unknown => 'Unexpected error occurred';

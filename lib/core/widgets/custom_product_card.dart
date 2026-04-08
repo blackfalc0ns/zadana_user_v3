@@ -103,7 +103,7 @@ class CustomProductCard extends StatelessWidget {
                                 children: [
                                   Text(
                                     product.name,
-                                    style: getSemiBoldStyle(
+                                    style: getSemiBoldStyle(color: color.onSurface,
                                       fontFamily: FontConstant.cairo,
                                       fontSize: titleFontSize,
                                     ),

@@ -91,6 +91,7 @@
 
 "section_special_offers"  : "Special Offers",
 "section_best_selling"    : "Best Selling",
+"best_selling_unavailable": "No best-selling products available",
 "section_featured"        : "Featured Products",
 "section_recommended"     : "Recommended For You",
 "section_explore"         : "Explore More",
@@ -103,6 +104,7 @@
 
 "nav_home"                : "Home",
 "nav_categories"          : "Categories",
+"categ"                   : "Categories",
 "nav_cart"                : "Cart",
 "nav_orders"              : "Orders",
 "nav_profile"             : "Profile",
@@ -179,6 +181,8 @@
   "error_bad_certificate": "Invalid security certificate",
   "error_request_cancelled": "Request was cancelled",
   "error_no_internet": "No internet connection",
+  "offline_connection_issue_title": "Connection problem",
+  "offline_connection_issue_message": "Check your internet and try again",
   "error_unknown": "Unexpected error occurred",
   "error_no_response": "No response received from server",
   "error_bad_request": "Bad request",

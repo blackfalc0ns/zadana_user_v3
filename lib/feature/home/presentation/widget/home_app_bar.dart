@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/constants/app_constants.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_search_bar.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({
     super.key,
-    required this.deliverToLabel,
-    required this.location,
     this.onMenuTap,
     this.onLocationTap,
     this.onNotificationsTap,
@@ -20,8 +22,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.searchController,
   });
 
-  final String deliverToLabel;
-  final String location;
   final VoidCallback? onMenuTap;
   final VoidCallback? onLocationTap;
   final VoidCallback? onNotificationsTap;
@@ -30,69 +30,86 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TextEditingController? searchController;
 
   @override
-  Size get preferredSize => const Size.fromHeight(156);
+  Size get preferredSize => const Size.fromHeight(164);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        padding: const EdgeInsets.only(top: 32),
-        decoration: BoxDecoration(
-          gradient: AppColors.primarygradient,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(25),
-            bottomRight: Radius.circular(25),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
+    final locale = context.localization;
+
+    return BlocBuilder<HomeViewModel, HomeState>(
+      builder: (context, state) {
+        final homeResponse = state.appBarSection.data;
+
+        return Material(
+          child: Container(
+            padding: const EdgeInsets.only(top: 32),
+            decoration: BoxDecoration(
+              gradient: AppColors.primarygradient,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  _ActionButton(icon: Icons.menu_rounded, onTap: onMenuTap),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _LocationCard(
-                      deliverToLabel: deliverToLabel,
-                      location: location,
-                      onTap: onLocationTap,
-                    ),
+                  Row(
+                    children: [
+                      _ActionButton(icon: Icons.menu_rounded, onTap: onMenuTap),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _LocationCard(
+                          deliverToLabel: locale.deliver_to,
+                          location: homeResponse?.location.isNotEmpty == true
+                              ? homeResponse!.location
+                              : locale.location,
+                          addressLine: homeResponse?.addressLine ?? '',
+                          onTap: onLocationTap,
+                        ),
+                      ),
+                      const SizedBox(width: Spacing.md),
+                      _ActionButton(
+                        notificationCount:
+                            homeResponse?.notificationsCount ?? 0,
+                        onTap: onNotificationsTap ?? onLocationTap,
+                        isPrimary: true,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: Spacing.md),
-                  _ActionButton(
-                    icon: Icons.notifications_none_rounded,
-                    onTap: onNotificationsTap ?? onLocationTap,
-                    isPrimary: true,
+                  const SizedBox(height: 4),
+                  HomeSearchBar(
+                    controller: searchController,
+                    onChanged: onSearchChanged,
+                    onTap: onSearchTap,
+                    readOnly: onSearchTap != null,
+                    padding: EdgeInsets.zero,
+                    onFilterTap: () {},
                   ),
+                  const SizedBox(height: 8),
                 ],
               ),
-              const SizedBox(height: 4),
-              HomeSearchBar(
-                controller: searchController,
-                onChanged: onSearchChanged,
-                onTap: onSearchTap,
-                readOnly: onSearchTap != null,
-                padding: EdgeInsets.zero,
-
-                onFilterTap: () {},
-              ),
-              const SizedBox(height: 8),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({required this.icon, this.onTap, this.isPrimary = false});
+  const _ActionButton({
+    this.icon,
+    this.onTap,
+    this.isPrimary = false,
+    this.notificationCount = 0,
+  });
 
-  final IconData icon;
+  final IconData? icon;
   final VoidCallback? onTap;
   final bool isPrimary;
+  final int notificationCount;
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +168,9 @@ class _ActionButton extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '7',
+                            notificationCount > 99
+                                ? '99+'
+                                : notificationCount.toString(),
                             style: getBoldStyle(
                               fontFamily: FontConstant.cairo,
                               color: AppColors.white,
@@ -174,11 +193,13 @@ class _LocationCard extends StatelessWidget {
   const _LocationCard({
     required this.deliverToLabel,
     required this.location,
+    required this.addressLine,
     this.onTap,
   });
 
   final String deliverToLabel;
   final String location;
+  final String addressLine;
   final VoidCallback? onTap;
 
   @override
@@ -246,6 +267,19 @@ class _LocationCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (addressLine.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      addressLine,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        color: AppColors.white.withValues(alpha: 0.85),
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -21,6 +21,8 @@ class StorageKeys {
   // ── Cache timestamps ──
   static const String lastSync = 'last_sync';
   static const String cacheExpiry = 'cache_expiry';
+  static const String homeBannersCache = 'home_banners_cache';
+  static const String homeCategoriesCache = 'home_categories_cache';
 }
 
 /// Miscellaneous constant keys (intent extras, route args, etc.)

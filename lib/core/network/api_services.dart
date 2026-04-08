@@ -16,6 +16,10 @@ import 'package:zadana_user_v3/feature/profile/data/models/profile_response_mode
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_request_model.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_response_model.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_categories_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
 part 'api_services.g.dart';
 
 @RestApi()
@@ -24,15 +28,25 @@ abstract class ApiServices {
   @factoryMethod
   factory ApiServices(Dio dio) = _ApiServices;
 
+  @GET(EndPoints.home)
+  Future<HomeAppBarModelDto> getHomeAppBar();
+
+  @GET(EndPoints.homeBanners)
+  Future<HomeBannerResponseModelDto> getHomeBanners();
+
+  @GET(EndPoints.homeCategories)
+  Future<HomeCategoriesResponseModelDto> getHomeCategories();
+
+  @GET(EndPoints.homeBestSelling)
+  Future<HomeBestSellingResponseModelDto> getHomeBestSelling();
+
   @POST(EndPoints.register)
   Future<RegisterResponseDto> registerUser(
     @Body() RegisterRequestDto requestDto,
   );
 
-   @POST(EndPoints.login)
-  Future<LoginResponseModelDto> login(
-    @Body() LoginRequestModelDto request,
-  );
+  @POST(EndPoints.login)
+  Future<LoginResponseModelDto> login(@Body() LoginRequestModelDto request);
 
   @POST(EndPoints.forgetPassword)
   Future<ForgetPasswordResponseDto> forgetPassword(
@@ -53,14 +67,10 @@ abstract class ApiServices {
   Future<ProfileResponseModelDto> getProfile();
 
   @GET(EndPoints.searchLocations)
-  Future<List<LocationSearchDto>> searchLocations(
-    @Query('query') String query,
-  );
+  Future<List<LocationSearchDto>> searchLocations(@Query('query') String query);
 
   @POST(EndPoints.sendDeliveryOtp)
-  Future<void> sendDeliveryOtp(
-    @Body() DeliveryOtpRequestModel request,
-  );
+  Future<void> sendDeliveryOtp(@Body() DeliveryOtpRequestModel request);
 
   @POST(EndPoints.verifyDeliveryOtp)
   Future<DeliveryOtpResponseModel> verifyDeliveryOtp(
@@ -68,7 +78,5 @@ abstract class ApiServices {
   );
 
   @POST(EndPoints.resendDeliveryOtp)
-  Future<void> resendDeliveryOtp(
-    @Body() DeliveryOtpRequestModel request,
-  );
+  Future<void> resendDeliveryOtp(@Body() DeliveryOtpRequestModel request);
 }
