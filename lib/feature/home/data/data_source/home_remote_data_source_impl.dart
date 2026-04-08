@@ -3,7 +3,12 @@ import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/feature/home/data/data_source/home_remote_data_source.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_brands_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_categories_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
 
 @Injectable(as: HomeRemoteDataSource)
@@ -30,5 +35,30 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<HomeBestSellingResponseModelDto> getHomeBestSelling() {
     return _apiServices.getHomeBestSelling();
+  }
+
+  @override
+  Future<HomeBrandsResponseModelDto> getHomeBrands() {
+    return _apiServices.getHomeBrands();
+  }
+
+  @override
+  Future<HomeRecommendedResponseModelDto> getHomeRecommended() {
+    return _apiServices.getHomeRecommended();
+  }
+
+  @override
+  Future<HomeFeaturedResponseModelDto> getHomeFeaturedProducts() {
+    return _apiServices.getHomeFeaturedProducts();
+  }
+
+  @override
+  Future<HomeSpecialOffersResponseModelDto> getHomeSpecialOffers() {
+    return _apiServices.getHomeSpecialOffers();
+  }
+
+  @override
+  Future<HomeExploreMoreResponseModelDto> getHomeExploreMore() {
+    return _apiServices.getHomeExploreMore();
   }
 }

@@ -234,19 +234,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get section_special_offers => 'عروض';
 
   @override
+  String get special_offers_unavailable => 'لا توجد عروض خاصة متاحه';
+
+  @override
   String get section_best_selling => 'الأكثر مبيع';
 
   @override
   String get best_selling_unavailable => 'لا توجد منتجات الاكثر مبيعا متاحه';
 
   @override
+  String get section_brands => 'العلامات التجارية';
+
+  @override
+  String get brands_unavailable => 'لا توجد علامات تجارية متاحه';
+
+  @override
   String get section_featured => 'مميزة';
+
+  @override
+  String get featured_unavailable => 'لا توجد منتجات مميزة متاحه';
 
   @override
   String get section_recommended => 'مقترح لك';
 
   @override
+  String get recommended_unavailable => 'لا توجد منتجات مقترحة متاحه';
+
+  @override
   String get section_explore => 'استكشف أكثر';
+
+  @override
+  String get explore_more_unavailable => 'لا توجد منتجات استكشاف متاحه';
 
   @override
   String get see_all => 'عرض الكل';

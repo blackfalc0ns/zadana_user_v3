@@ -1,16 +1,33 @@
+import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
+import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_banner_item_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_item_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_brand_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_brands_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_categories_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_category_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_featured_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_recommended_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_special_offer_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_banner_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_banner_item_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_best_selling_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_brands_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_categories_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_category_item_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_recommended_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_response_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
@@ -107,15 +124,180 @@ extension HomeBestSellingResponseModelDtoMapper
   }
 }
 
+extension HomeBrandItemModelDtoMapper on HomeBrandItemModelDto {
+  BrandModel toEntity() {
+    return BrandModel(
+      id: id ?? '',
+      name: name ?? '',
+      logo: _resolveImageUrl(logo),
+      coverImage: _resolveImageUrl(coverImage),
+      productCount: productCount ?? 0,
+      description: description,
+      emoji: _buildBrandFallback(name),
+    );
+  }
+}
+
+extension HomeBrandsResponseModelDtoMapper on HomeBrandsResponseModelDto {
+  HomeBrandsEntity toEntity() {
+    return HomeBrandsEntity(
+      key: key ?? '',
+      title: title ?? '',
+      isActive: isActive ?? false,
+      theme: theme,
+      itemsCount: itemsCount ?? 0,
+      items: items?.map((item) => item.toEntity()).toList() ?? const [],
+    );
+  }
+}
+
+extension HomeRecommendedItemModelDtoMapper on HomeRecommendedItemModelDto {
+  ProductModel toEntity() {
+    return ProductModel(
+      id: id ?? '',
+      name: name ?? '',
+      store: store ?? '',
+      price: price ?? 0,
+      oldPrice: oldPrice,
+      imageUrl: _resolveImageUrl(imageUrl),
+      rating: rating,
+      reviewCount: reviewCount,
+      discount: discount,
+      isFavorite: isFavorite ?? false,
+      unit: unit,
+      isDiscounted: isDiscounted ?? false,
+    );
+  }
+}
+
+extension HomeRecommendedResponseModelDtoMapper
+    on HomeRecommendedResponseModelDto {
+  HomeRecommendedEntity toEntity() {
+    return HomeRecommendedEntity(
+      key: key ?? '',
+      title: title ?? '',
+      isActive: isActive ?? false,
+      theme: theme,
+      itemsCount: itemsCount ?? 0,
+      items: items?.map((item) => item.toEntity()).toList() ?? const [],
+    );
+  }
+}
+
+extension HomeFeaturedItemModelDtoMapper on HomeFeaturedItemModelDto {
+  ProductModel toEntity() {
+    return ProductModel(
+      id: id ?? '',
+      name: name ?? '',
+      store: store ?? '',
+      price: price ?? 0,
+      oldPrice: oldPrice,
+      imageUrl: _resolveImageUrl(imageUrl),
+      rating: rating,
+      reviewCount: reviewCount,
+      discount: discount,
+      isFavorite: isFavorite ?? false,
+      unit: unit,
+      isDiscounted: isDiscounted ?? false,
+    );
+  }
+}
+
+extension HomeFeaturedResponseModelDtoMapper on HomeFeaturedResponseModelDto {
+  HomeFeaturedEntity toEntity() {
+    return HomeFeaturedEntity(
+      key: key ?? '',
+      title: title ?? '',
+      isActive: isActive ?? false,
+      theme: theme,
+      itemsCount: itemsCount ?? 0,
+      items: items?.map((item) => item.toEntity()).toList() ?? const [],
+    );
+  }
+}
+
+extension HomeSpecialOfferItemModelDtoMapper on HomeSpecialOfferItemModelDto {
+  ProductModel toEntity() {
+    return ProductModel(
+      id: id ?? '',
+      name: name ?? '',
+      store: store ?? '',
+      price: price ?? 0,
+      oldPrice: oldPrice,
+      imageUrl: _resolveImageUrl(imageUrl),
+      rating: rating,
+      reviewCount: reviewCount,
+      discount: discount,
+      isFavorite: isFavorite ?? false,
+      unit: unit,
+      isDiscounted: isDiscounted ?? false,
+    );
+  }
+}
+
+extension HomeSpecialOffersResponseModelDtoMapper
+    on HomeSpecialOffersResponseModelDto {
+  HomeSpecialOffersEntity toEntity() {
+    return HomeSpecialOffersEntity(
+      key: key ?? '',
+      title: title ?? '',
+      isActive: isActive ?? false,
+      theme: theme,
+      itemsCount: itemsCount ?? 0,
+      items: items?.map((item) => item.toEntity()).toList() ?? const [],
+    );
+  }
+}
+
+extension HomeExploreMoreItemModelDtoMapper on HomeExploreMoreItemModelDto {
+  ProductModel toEntity() {
+    return ProductModel(
+      id: id ?? '',
+      name: name ?? '',
+      store: store ?? '',
+      price: price ?? 0,
+      oldPrice: oldPrice,
+      imageUrl: _resolveImageUrl(imageUrl),
+      rating: rating,
+      reviewCount: reviewCount,
+      discount: discount,
+      isFavorite: isFavorite ?? false,
+      unit: unit,
+      isDiscounted: isDiscounted ?? false,
+    );
+  }
+}
+
+extension HomeExploreMoreResponseModelDtoMapper
+    on HomeExploreMoreResponseModelDto {
+  HomeExploreMoreEntity toEntity() {
+    return HomeExploreMoreEntity(
+      key: key ?? '',
+      title: title ?? '',
+      isActive: isActive ?? false,
+      theme: theme,
+      itemsCount: itemsCount ?? 0,
+      items: items?.map((item) => item.toEntity()).toList() ?? const [],
+    );
+  }
+}
+
 String _resolveImageUrl(String? imageUrl) {
   if (imageUrl == null || imageUrl.isEmpty) {
     return '';
   }
-
   final uri = Uri.tryParse(imageUrl);
   if (uri != null && uri.hasScheme) {
     return imageUrl;
   }
 
   return Uri.parse(NetworkConstants.baseUrl).resolve(imageUrl).toString();
+}
+
+String _buildBrandFallback(String? name) {
+  if (name == null || name.trim().isEmpty) {
+    return 'B';
+  }
+
+  return name.trim().substring(0, 1);
 }

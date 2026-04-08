@@ -28,7 +28,12 @@ class HomeScreen extends StatelessWidget {
         ..doIntent(const HomeLoadEvent())
         ..doIntent(const HomeBannerLoadEvent())
         ..doIntent(const HomeCategoriesLoadEvent())
-        ..doIntent(const HomeBestSellingLoadEvent()),
+        ..doIntent(const HomeBestSellingLoadEvent())
+        ..doIntent(const HomeBrandsLoadEvent())
+        ..doIntent(const HomeRecommendedLoadEvent())
+        ..doIntent(const HomeFeaturedLoadEvent())
+        ..doIntent(const HomeSpecialOffersLoadEvent())
+        ..doIntent(const HomeExploreMoreLoadEvent()),
       child: _HomeScreenView(onMenuTap: onMenuTap),
     );
   }
@@ -49,7 +54,12 @@ class _HomeScreenView extends StatelessWidget {
             ..doIntent(const HomeRetryEvent())
             ..doIntent(const HomeBannerRetryEvent())
             ..doIntent(const HomeCategoriesRetryEvent())
-            ..doIntent(const HomeBestSellingRetryEvent());
+            ..doIntent(const HomeBestSellingRetryEvent())
+            ..doIntent(const HomeBrandsRetryEvent())
+            ..doIntent(const HomeRecommendedRetryEvent())
+            ..doIntent(const HomeFeaturedRetryEvent())
+            ..doIntent(const HomeSpecialOffersRetryEvent())
+            ..doIntent(const HomeExploreMoreRetryEvent());
         },
         child: CustomScrollView(
           key: const PageStorageKey<String>('home_scroll_view'),

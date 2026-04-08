@@ -39,6 +39,7 @@ class PriceText extends StatelessWidget {
     );
     final oldPriceStyle = AppTextStyles.bodySmall.copyWith(
       decoration: TextDecoration.lineThrough,
+      decorationThickness: 1.2,
       color: AppColors.textHint,
       fontSize: (compact ? 9.5 : 11) * fontScale,
     );
@@ -66,13 +67,6 @@ class PriceText extends StatelessWidget {
                 Text(
                   PriceFormatter.formatPrice(oldPrice!),
                   style: oldPriceStyle,
-                ),
-                SizedBox(width: compact ? 1 : 2),
-                Text(
-                  'ريال',
-                  style: oldPriceStyle.copyWith(
-                    fontSize: (compact ? 8.5 : 9) * fontScale,
-                  ),
                 ),
               ],
             ],

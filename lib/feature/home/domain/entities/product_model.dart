@@ -60,4 +60,22 @@ class ProductModel {
      isDiscounted: isDiscounted ?? this.isDiscounted,
     );
   }
+
+  int get discountPercentage {
+    if (discount != null && discount!.trim().isNotEmpty) {
+      final parsed = int.tryParse(discount!.replaceAll('%', '').trim());
+      if (parsed != null && parsed > 0) {
+        return parsed;
+      }
+    }
+
+    if (oldPrice != null && oldPrice! > price && oldPrice! > 0) {
+      final percentage = (((oldPrice! - price) / oldPrice!) * 100).round();
+      if (percentage > 0) {
+        return percentage;
+      }
+    }
+
+    return 0;
+  }
 }

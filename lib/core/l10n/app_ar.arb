@@ -88,11 +88,17 @@
   "banner_action": "تسوّق الحين",
 
   "section_special_offers": "عروض",
+  "special_offers_unavailable": "لا توجد عروض خاصة متاحه",
   "section_best_selling": "الأكثر مبيع",
   "best_selling_unavailable": "لا توجد منتجات الاكثر مبيعا متاحه",
+  "section_brands": "العلامات التجارية",
+  "brands_unavailable": "لا توجد علامات تجارية متاحه",
   "section_featured": "مميزة",
+  "featured_unavailable": "لا توجد منتجات مميزة متاحه",
   "section_recommended": "مقترح لك",
+  "recommended_unavailable": "لا توجد منتجات مقترحة متاحه",
   "section_explore": "استكشف أكثر",
+  "explore_more_unavailable": "لا توجد منتجات استكشاف متاحه",
 
   "see_all": "عرض الكل",
   "refresh": "تحديث",

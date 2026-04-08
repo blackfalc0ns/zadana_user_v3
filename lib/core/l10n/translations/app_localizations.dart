@@ -542,6 +542,12 @@ abstract class AppLocalizations {
   /// **'Special Offers'**
   String get section_special_offers;
 
+  /// No description provided for @special_offers_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No special offers available'**
+  String get special_offers_unavailable;
+
   /// No description provided for @section_best_selling.
   ///
   /// In en, this message translates to:
@@ -554,11 +560,29 @@ abstract class AppLocalizations {
   /// **'No best-selling products available'**
   String get best_selling_unavailable;
 
+  /// No description provided for @section_brands.
+  ///
+  /// In en, this message translates to:
+  /// **'Brands'**
+  String get section_brands;
+
+  /// No description provided for @brands_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No brands available'**
+  String get brands_unavailable;
+
   /// No description provided for @section_featured.
   ///
   /// In en, this message translates to:
   /// **'Featured Products'**
   String get section_featured;
+
+  /// No description provided for @featured_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No featured products available'**
+  String get featured_unavailable;
 
   /// No description provided for @section_recommended.
   ///
@@ -566,11 +590,23 @@ abstract class AppLocalizations {
   /// **'Recommended For You'**
   String get section_recommended;
 
+  /// No description provided for @recommended_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No recommended products available'**
+  String get recommended_unavailable;
+
   /// No description provided for @section_explore.
   ///
   /// In en, this message translates to:
   /// **'Explore More'**
   String get section_explore;
+
+  /// No description provided for @explore_more_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No explore more products available'**
+  String get explore_more_unavailable;
 
   /// No description provided for @see_all.
   ///

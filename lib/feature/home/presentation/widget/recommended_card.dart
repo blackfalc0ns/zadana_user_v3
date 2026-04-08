@@ -73,15 +73,17 @@ class RecommendedCard extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Text(
-                            product.store,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              fontSize: 10,
+                          Expanded(
+                            child: Text(
+                              product.store,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 10,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                          Spacer(),
+                          const SizedBox(width: Spacing.xs),
                           Container(
                             padding: const EdgeInsets.all(Spacing.xs),
                             decoration: BoxDecoration(

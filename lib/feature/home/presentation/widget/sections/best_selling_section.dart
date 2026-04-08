@@ -85,7 +85,7 @@ class BestSellingSection extends StatelessWidget {
                   return SizedBox(
                     width: 120,
                     child: CustomProductCard(
-                      discountPercentage: 0,
+                      discountPercentage: product.discountPercentage,
                       isDiscounted: product.isDiscounted,
                       product: product,
                       showFavorite: true,

@@ -90,11 +90,17 @@
 
 
 "section_special_offers"  : "Special Offers",
+"special_offers_unavailable": "No special offers available",
 "section_best_selling"    : "Best Selling",
 "best_selling_unavailable": "No best-selling products available",
+"section_brands"          : "Brands",
+"brands_unavailable"      : "No brands available",
 "section_featured"        : "Featured Products",
+"featured_unavailable"    : "No featured products available",
 "section_recommended"     : "Recommended For You",
+"recommended_unavailable" : "No recommended products available",
 "section_explore"         : "Explore More",
+"explore_more_unavailable": "No explore more products available",
 
 
 "see_all"                 : "See All",

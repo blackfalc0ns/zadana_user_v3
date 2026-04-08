@@ -18,7 +18,12 @@ import 'package:zadana_user_v3/feature/delivery_verification/data/models/deliver
 import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_response_model.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_brands_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_categories_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
 part 'api_services.g.dart';
 
@@ -39,6 +44,21 @@ abstract class ApiServices {
 
   @GET(EndPoints.homeBestSelling)
   Future<HomeBestSellingResponseModelDto> getHomeBestSelling();
+
+  @GET(EndPoints.homeBrands)
+  Future<HomeBrandsResponseModelDto> getHomeBrands();
+
+  @GET(EndPoints.homeRecommended)
+  Future<HomeRecommendedResponseModelDto> getHomeRecommended();
+
+  @GET(EndPoints.homeFeaturedProducts)
+  Future<HomeFeaturedResponseModelDto> getHomeFeaturedProducts();
+
+  @GET(EndPoints.homeSpecialOffers)
+  Future<HomeSpecialOffersResponseModelDto> getHomeSpecialOffers();
+
+  @GET(EndPoints.homeExploreMore)
+  Future<HomeExploreMoreResponseModelDto> getHomeExploreMore();
 
   @POST(EndPoints.register)
   Future<RegisterResponseDto> registerUser(

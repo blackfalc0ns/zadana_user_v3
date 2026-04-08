@@ -240,19 +240,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get section_special_offers => 'Special Offers';
 
   @override
+  String get special_offers_unavailable => 'No special offers available';
+
+  @override
   String get section_best_selling => 'Best Selling';
 
   @override
   String get best_selling_unavailable => 'No best-selling products available';
 
   @override
+  String get section_brands => 'Brands';
+
+  @override
+  String get brands_unavailable => 'No brands available';
+
+  @override
   String get section_featured => 'Featured Products';
+
+  @override
+  String get featured_unavailable => 'No featured products available';
 
   @override
   String get section_recommended => 'Recommended For You';
 
   @override
+  String get recommended_unavailable => 'No recommended products available';
+
+  @override
   String get section_explore => 'Explore More';
+
+  @override
+  String get explore_more_unavailable => 'No explore more products available';
 
   @override
   String get see_all => 'See All';

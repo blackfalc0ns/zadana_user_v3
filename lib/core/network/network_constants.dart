@@ -9,6 +9,11 @@ abstract class EndPoints {
   static const String homeBanners = '/home/banners';
   static const String homeCategories = '/home/categories';
   static const String homeBestSelling = '/home/best-selling';
+  static const String homeBrands = '/home/brands';
+  static const String homeRecommended = '/home/recommended';
+  static const String homeFeaturedProducts = '/home/featured-products';
+  static const String homeSpecialOffers = '/home/special-offers';
+  static const String homeExploreMore = '/home/explore-more';
   static const String register = "/customers/auth/register";
   static const String login = '/customers/auth/login';
   static const String forgetPassword = '/customers/auth/forgot-password';

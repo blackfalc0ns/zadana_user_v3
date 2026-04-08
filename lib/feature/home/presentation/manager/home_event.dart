@@ -18,6 +18,26 @@ class HomeBestSellingLoadEvent extends HomeEvent {
   const HomeBestSellingLoadEvent();
 }
 
+class HomeBrandsLoadEvent extends HomeEvent {
+  const HomeBrandsLoadEvent();
+}
+
+class HomeRecommendedLoadEvent extends HomeEvent {
+  const HomeRecommendedLoadEvent();
+}
+
+class HomeFeaturedLoadEvent extends HomeEvent {
+  const HomeFeaturedLoadEvent();
+}
+
+class HomeSpecialOffersLoadEvent extends HomeEvent {
+  const HomeSpecialOffersLoadEvent();
+}
+
+class HomeExploreMoreLoadEvent extends HomeEvent {
+  const HomeExploreMoreLoadEvent();
+}
+
 class HomeRetryEvent extends HomeEvent {
   const HomeRetryEvent();
 }
@@ -32,6 +52,26 @@ class HomeCategoriesRetryEvent extends HomeEvent {
 
 class HomeBestSellingRetryEvent extends HomeEvent {
   const HomeBestSellingRetryEvent();
+}
+
+class HomeBrandsRetryEvent extends HomeEvent {
+  const HomeBrandsRetryEvent();
+}
+
+class HomeRecommendedRetryEvent extends HomeEvent {
+  const HomeRecommendedRetryEvent();
+}
+
+class HomeFeaturedRetryEvent extends HomeEvent {
+  const HomeFeaturedRetryEvent();
+}
+
+class HomeSpecialOffersRetryEvent extends HomeEvent {
+  const HomeSpecialOffersRetryEvent();
+}
+
+class HomeExploreMoreRetryEvent extends HomeEvent {
+  const HomeExploreMoreRetryEvent();
 }
 
 class HomeResetEvent extends HomeEvent {

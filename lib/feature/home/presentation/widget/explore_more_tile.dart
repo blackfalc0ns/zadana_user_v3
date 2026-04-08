@@ -69,6 +69,7 @@ class ExploreMoreTile extends StatelessWidget {
                     children: [
                       PriceText(
                         price: product.price,
+                        oldPrice: product.oldPrice,
                         unit: product.unit,
                       ),
                     ],

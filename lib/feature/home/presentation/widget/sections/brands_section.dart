@@ -1,141 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/pages/brand_page.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/brand_card.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.dart';
-
-// Mock brands data - Replace with actual API call
-final List<Map<String, dynamic>> brandsData = [
-  {
-    'id': 'juhayna',
-    'name': 'جهينة',
-    'emoji': '🥛',
-    'logo':
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Juhayna_Food_Industries_logo.svg/1200px-Juhayna_Food_Industries_logo.svg.png',
-    'coverImage':
-        'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    'productCount': 45,
-    'description': 'منتجات الألبان والعصائر الطبيعية',
-  },
-  {
-    'id': 'almarai',
-    'name': 'المراعي',
-    'emoji': '🧈',
-    'logo': 'https://example.com/almarai.png',
-    'productCount': 67,
-  },
-  {
-    'id': 'beyti',
-    'name': 'بيتي',
-    'emoji': '🥩',
-    'logo': 'https://example.com/beyti.png',
-    'productCount': 32,
-  },
-  {
-    'id': 'puck',
-    'name': 'بوك',
-    'emoji': '🧀',
-    'logo': 'https://example.com/puck.png',
-    'productCount': 28,
-  },
-  {
-    'id': 'domty',
-    'name': 'دمياط',
-    'emoji': '🧀',
-    'logo': 'https://example.com/domty.png',
-    'productCount': 41,
-  },
-  {
-    'id': 'lactel',
-    'name': 'لاكتيل',
-    'emoji': '🥛',
-    'logo': 'https://example.com/lactel.png',
-    'productCount': 35,
-  },
-  {
-    'id': 'president',
-    'name': 'بريزيدان',
-    'emoji': '🧈',
-    'logo': 'https://example.com/president.png',
-    'productCount': 29,
-  },
-  {
-    'id': 'kiri',
-    'name': 'كيري',
-    'emoji': '🧀',
-    'logo': 'https://example.com/kiri.png',
-    'productCount': 18,
-  },
-  {
-    'id': 'nada',
-    'name': 'ندى',
-    'emoji': '🥛',
-    'logo': 'https://example.com/nada.png',
-    'productCount': 52,
-  },
-  {
-    'id': 'sadia',
-    'name': 'ساديا',
-    'emoji': '🍗',
-    'logo': 'https://example.com/sadia.png',
-    'productCount': 38,
-  },
-  {
-    'id': 'americana',
-    'name': 'أمريكانا',
-    'emoji': '🍔',
-    'logo': 'https://example.com/americana.png',
-    'productCount': 44,
-  },
-  {
-    'id': 'chipsy',
-    'name': 'شيبسي',
-    'emoji': '🥔',
-    'logo': 'https://example.com/chipsy.png',
-    'productCount': 25,
-  },
-  {
-    'id': 'indomie',
-    'name': 'إندومي',
-    'emoji': '🍜',
-    'logo': 'https://example.com/indomie.png',
-    'productCount': 15,
-  },
-  {
-    'id': 'barilla',
-    'name': 'باريلا',
-    'emoji': '🍝',
-    'logo': 'https://example.com/barilla.png',
-    'productCount': 22,
-  },
-  {
-    'id': 'nestle',
-    'name': 'نستله',
-    'emoji': '🍫',
-    'logo': 'https://example.com/nestle.png',
-    'productCount': 78,
-  },
-];
 
 class BrandsSection extends StatelessWidget {
   const BrandsSection({super.key});
 
-  void _navigateToBrandPage(
-    BuildContext context,
-    Map<String, dynamic> brandData,
-  ) {
-    final brand = BrandModel(
-      id: brandData['id'],
-      name: brandData['name'],
-      logo: brandData['logo'],
-      emoji: brandData['emoji'],
-      productCount: brandData['productCount'],
-      coverImage: brandData['coverImage'],
-      description: brandData['description'],
-    );
-
+  void _navigateToBrandPage(BuildContext context, BrandModel brand) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => BrandPage(brand: brand)),
@@ -144,54 +25,208 @@ class BrandsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
+
+    return BlocBuilder<HomeViewModel, HomeState>(
+      buildWhen: (previous, current) =>
+          previous.brandsSection != current.brandsSection,
+      builder: (context, state) {
+        if (state.brandsSection.isLoading) {
+          return const _BrandsLoadingSection();
+        }
+
+        final section = state.brandsSection.data;
+        if (section?.isActive == false) {
+          return const SizedBox.shrink();
+        }
+
+        if (state.brandsSection.failure != null &&
+            state.brandsSection.data == null) {
+          return _BrandsSectionContainer(
+            child: Column(
+              children: [
+                SectionHeader(
+                  actionColor: Colors.white,
+                  title: locale.section_brands,
+                  actionLabel: locale.see_all,
+                  isActionBold: true,
+                  titleColor: AppColors.white,
+                  horizontalPadding: 16,
+                ),
+                const SizedBox(height: Spacing.md),
+                const _OfflineBrandsSection(),
+              ],
+            ),
+          );
+        }
+
+        final items = section?.items ?? const <BrandModel>[];
+        if (items.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return _BrandsSectionContainer(
+          child: Column(
+            children: [
+              SectionHeader(
+                actionColor: Colors.white,
+                title: section?.title.isNotEmpty == true
+                    ? section!.title
+                    : locale.section_brands,
+                actionLabel: locale.see_all,
+                isActionBold: true,
+                titleColor: AppColors.white,
+                horizontalPadding: 16,
+              ),
+              const SizedBox(height: Spacing.md),
+              SizedBox(
+                height: 180,
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: Spacing.sm,
+                    mainAxisSpacing: Spacing.sm,
+                    childAspectRatio: 0.9,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final brand = items[index];
+                    return BrandCard(
+                      name: brand.name,
+                      emoji: brand.emoji ?? brand.name.substring(0, 1),
+                      onTap: () => _navigateToBrandPage(context, brand),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _BrandsSectionContainer extends StatelessWidget {
+  const _BrandsSectionContainer({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       decoration: const BoxDecoration(color: AppColors.primary),
       margin: EdgeInsets.zero,
+      child: child,
+    );
+  }
+}
+
+class _BrandsLoadingSection extends StatelessWidget {
+  const _BrandsLoadingSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.localization;
+
+    return _BrandsSectionContainer(
       child: Column(
         children: [
-          // Header
           SectionHeader(
             actionColor: Colors.white,
-            title: 'تصفح حسب العلامة التجارية',
-            actionLabel: 'عرض الكل',
+            title: locale.section_brands,
+            actionLabel: locale.see_all,
             isActionBold: true,
             titleColor: AppColors.white,
             horizontalPadding: 16,
-            onActionTap: () {
-              // TODO: Navigate to all brands page
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('عرض جميع العلامات التجارية')),
-              );
-            },
           ),
-
           const SizedBox(height: Spacing.md),
-
-          // Scrollable Grid of brands
-          SizedBox(
+          const SizedBox(
             height: 180,
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
-              scrollDirection: Axis.horizontal,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: Spacing.sm,
-                mainAxisSpacing: Spacing.sm,
-                childAspectRatio: 0.9,
-              ),
-              itemCount: brandsData.length,
-              itemBuilder: (context, index) {
-                final brand = brandsData[index];
-                return BrandCard(
-                  name: brand['name']!,
-                  emoji: brand['emoji']!,
-                  onTap: () => _navigateToBrandPage(context, brand),
-                );
-              },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Spacing.sm),
+              child: ShimmerEffect(child: _BrandsGridSkeleton()),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _BrandsGridSkeleton extends StatelessWidget {
+  const _BrandsGridSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: Spacing.sm,
+        mainAxisSpacing: Spacing.sm,
+        childAspectRatio: 0.9,
+      ),
+      itemCount: 6,
+      itemBuilder: (_, _) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(Spacing.cardRadius),
+        ),
+        padding: const EdgeInsets.all(Spacing.xs),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Bone(width: 45, height: 45, radius: 999),
+            SizedBox(height: 8),
+            Bone(width: 50, height: 10, radius: 999),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OfflineBrandsSection extends StatelessWidget {
+  const _OfflineBrandsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.md,
+          vertical: Spacing.lg,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.wifi_off_rounded, size: 34, color: color.primary),
+            const SizedBox(height: Spacing.sm),
+            Text(
+              locale.brands_unavailable,
+              style: getSemiBoldStyle(
+                fontSize: FontSize.size14,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

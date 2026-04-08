@@ -121,6 +121,7 @@ class CustomProductCard extends StatelessWidget {
                                       Expanded(
                                         child: PriceText(
                                           price: product.price,
+                                          oldPrice: product.oldPrice,
                                           compact: scale < 0.95,
                                           fontScale: scale,
                                         ),
