@@ -33,9 +33,11 @@ class ProductImage extends StatelessWidget {
         height: height,
         child: ColoredBox(
           color: whiteBackground ? AppColors.white : AppColors.background,
-          child: emoji != null && emoji!.isNotEmpty
-              ? _buildEmoji()
-              : _buildImage(),
+          child: url.isNotEmpty
+              ? _buildImage()
+              : (emoji != null && emoji!.isNotEmpty
+                    ? _buildEmoji()
+                    : _errorWidget()),
         ),
       ),
     );
@@ -47,6 +49,23 @@ class ProductImage extends StatelessWidget {
     return Hero(
       tag: heroTag!,
       transitionOnUserGestures: true,
+      createRectTween: (begin, end) {
+        return MaterialRectCenterArcTween(begin: begin, end: end);
+      },
+      placeholderBuilder: (context, heroSize, child) {
+        return Opacity(opacity: 0, child: child);
+      },
+      flightShuttleBuilder:
+          (
+            flightContext,
+            animation,
+            flightDirection,
+            fromHeroContext,
+            toHeroContext,
+          ) {
+            final destinationHero = toHeroContext.widget as Hero;
+            return destinationHero.child;
+          },
       child: Material(color: Colors.transparent, child: imageShell),
     );
   }
@@ -85,19 +104,16 @@ class ProductImage extends StatelessWidget {
                   height: constraints.maxHeight,
                   fit: resolvedFit,
                   alignment: Alignment.center,
+                  gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
                 )
               : Image.network(
                   url,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  fit: resolvedFit,
                   alignment: Alignment.center,
+                  gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
-                  loadingBuilder: (_, child, progress) {
-                    if (progress == null) return child;
-                    return const ColoredBox(color: AppColors.shimmerBase);
-                  },
                 );
 
           return Center(child: image);

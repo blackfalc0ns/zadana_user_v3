@@ -8,7 +8,7 @@ class ProductMainImage extends StatelessWidget {
   final String imageUrl;
   final String productId;
   final double height;
-  final String? activeProductId;
+  final String? heroTag;
 
   const ProductMainImage({
     super.key,
@@ -16,7 +16,7 @@ class ProductMainImage extends StatelessWidget {
     required this.imageUrl,
     required this.productId,
     this.height = 250,
-    this.activeProductId,
+    this.heroTag,
   });
 
   @override
@@ -30,7 +30,7 @@ class ProductMainImage extends StatelessWidget {
         height: height,
         borderRadius: Spacing.cardRadius,
         whiteBackground: true,
-      heroTag: productHeroTag(productId),
+        heroTag: heroTag ?? productHeroTag(productId),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
@@ -71,16 +72,24 @@ class ExploreMoreSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.sm),
             ...items.map(
-              (product) => ExploreMoreTile(
-                product: product,
-                addToCartLabel: locale.add_to_cart,
-                onTap: () {
-                  ProductNavigationHelper.navigateToProductDetails(
-                    context,
-                    product,
-                  );
-                },
-              ),
+              (product) {
+                final heroTag = productHeroTag(
+                  product.id,
+                  source: 'home-explore-more',
+                );
+                return ExploreMoreTile(
+                  product: product,
+                  heroTag: heroTag,
+                  addToCartLabel: locale.add_to_cart,
+                  onTap: () {
+                    ProductNavigationHelper.navigateToProductDetails(
+                      context,
+                      product,
+                      heroTag: heroTag,
+                    );
+                  },
+                );
+              },
             ),
           ],
         );

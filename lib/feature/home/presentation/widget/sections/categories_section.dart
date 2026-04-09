@@ -5,6 +5,9 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_category_item_entity.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -140,50 +143,63 @@ class _HomeCategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.colorScheme;
 
-    return Container(
-      width: 76,
-      margin: const EdgeInsetsDirectional.only(end: Spacing.sm),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: color.surface,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: color.outline.withValues(alpha: 0.2),
-                width: .5,
+    return GestureDetector(
+      onTap: () {
+        CategoryNavigationService().setSelectedCategory(
+          CategoryEntity(
+            id: category.id,
+            name: category.name,
+            imageAsset: category.imageUrl,
+            emoji: category.name.isNotEmpty ? category.name.substring(0, 1) : '',
+          ),
+        );
+        mainShellKey.currentState?.jumpToTab(1);
+      },
+      child: Container(
+        width: 76,
+        margin: const EdgeInsetsDirectional.only(end: Spacing.sm),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: color.surface,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: color.outline.withValues(alpha: 0.2),
+                  width: .5,
+                ),
               ),
-            ),
-            padding: const EdgeInsets.all(10),
-            child: ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: category.imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (_, _) =>
-                    Container(color: color.surfaceContainerHighest),
-                errorWidget: (_, _, _) => Image.asset(
-                  'assets/images/image_not_found.png',
+              padding: const EdgeInsets.all(10),
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: category.imageUrl,
                   fit: BoxFit.cover,
+                  placeholder: (_, _) =>
+                      Container(color: color.surfaceContainerHighest),
+                  errorWidget: (_, _, _) => Image.asset(
+                    'assets/images/image_not_found.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            category.name,
-            style: getRegularStyle(
-              fontSize: FontSize.size11,
-              fontFamily: FontConstant.cairo,
-              color: color.onSurface,
+            const SizedBox(height: 6),
+            Text(
+              category.name,
+              style: getRegularStyle(
+                fontSize: FontSize.size11,
+                fontFamily: FontConstant.cairo,
+                color: color.onSurface,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

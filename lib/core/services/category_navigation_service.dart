@@ -1,40 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 
-/// Service لإدارة التنقل بين الأقسام من الهوم سكرين لتاب التسوق
+/// Service to manage moving from home categories to the shopping tab.
 class CategoryNavigationService extends ChangeNotifier {
   static final CategoryNavigationService _instance =
       CategoryNavigationService._internal();
+
   factory CategoryNavigationService() => _instance;
+
   CategoryNavigationService._internal();
 
   CategoryEntity? _selectedCategory;
 
-  /// القسم المختار من الهوم سكرين
+  /// The category selected from the home screen.
   CategoryEntity? get selectedCategory => _selectedCategory;
 
-  /// تحديد القسم المختار
+  /// Update the selected category.
   void setSelectedCategory(CategoryEntity category) {
     _selectedCategory = category;
     notifyListeners();
   }
 
-  /// مسح القسم المختار
+  /// Clear the selected category.
   void clearSelectedCategory() {
     _selectedCategory = null;
     notifyListeners();
   }
 
-  /// إشعار بتغيير التاب
+  /// Notify listeners when the tab changes.
   void notifyTabChanged() {
     notifyListeners();
   }
 
-  /// تحويل من CategoryEntity إلى اسم القسم المستخدم في CategoryScreen
+  /// Returns the category name that should appear on CategoryScreen.
   String? getCategoryNameForScreen() {
     if (_selectedCategory == null) return null;
 
-    // تحويل من id إلى اسم القسم
+    if (_selectedCategory!.name.isNotEmpty) {
+      return _selectedCategory!.name;
+    }
+
     switch (_selectedCategory!.id) {
       case 'cat1':
         return 'خضروات';

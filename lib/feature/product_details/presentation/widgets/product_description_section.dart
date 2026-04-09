@@ -16,6 +16,7 @@ class ProductDescriptionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(Spacing.base),
       color: AppColors.surface,
       child: Column(
@@ -23,6 +24,8 @@ class ProductDescriptionSection extends StatelessWidget {
         children: [
           Text(
             title,
+            textAlign: TextAlign.start,
+            textDirection: TextDirection.rtl,
             style: AppTextStyles.labelLarge.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -30,6 +33,8 @@ class ProductDescriptionSection extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           Text(
             description,
+            textAlign: TextAlign.start,
+            textDirection: TextDirection.rtl,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               height: 1.5,

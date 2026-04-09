@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
+import 'package:zadana_user_v3/feature/brand/data/mapper/brand_products_mapper.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
 import 'package:zadana_user_v3/feature/brand/domain/enums/product_sort_option.dart';
-import 'package:zadana_user_v3/feature/brand/data/mock_brand_products.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/logic/brand_filter_logic.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/services/brand_filter_service.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_header.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_products_grid.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_search_bar.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/filter_chip_row.dart';
-import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_products_grid.dart';
-import 'package:zadana_user_v3/feature/brand/presentation/services/brand_filter_service.dart';
 
 class BrandPage extends StatefulWidget {
   const BrandPage({super.key, required this.brand});
+
   final BrandModel brand;
+
   @override
   State<BrandPage> createState() => _BrandPageState();
 }
@@ -30,45 +34,78 @@ class _BrandPageState extends State<BrandPage> {
   List<BrandProductModel> _filteredProducts = [];
   List<String> _categories = [];
   List<String> _units = [];
+  bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _allProducts = MockBrandProducts.getProducts(
-      widget.brand.id,
-      widget.brand.name,
-    );
-    _categories = BrandFilterLogic.extractCategories(_allProducts);
-    _units = BrandFilterLogic.extractUnits(_allProducts);
-    _applyFilters();
+    _loadBrandProducts();
   }
 
-  void _applyFilters() {
+  Future<void> _loadBrandProducts() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final apiServices = getIt<ApiServices>();
+      final response = await apiServices.getBrandProducts(widget.brand.id);
+      final products = response.toEntities(widget.brand);
+
+      if (!mounted) return;
+
+      _allProducts = products;
+      _categories = BrandFilterLogic.extractCategories(_allProducts);
+      _units = BrandFilterLogic.extractUnits(_allProducts);
+      _applyFilters(shouldSetState: false);
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = error.toString();
+        _allProducts = [];
+        _filteredProducts = [];
+        _categories = [];
+        _units = [];
+      });
+    }
+  }
+
+  void _applyFilters({bool shouldSetState = true}) {
     var filtered = _allProducts.where((product) {
-      // Category filter
       if (_selectedCategory != null && product.category != _selectedCategory) {
         return false;
       }
 
-      // Subcategory filter
       if (_selectedSubcategory != null &&
           product.subcategory != _selectedSubcategory) {
         return false;
       }
 
-      // Price range filter
       if (product.price < _priceRange.start || product.price > _priceRange.end) {
         return false;
       }
 
-      // Unit filter
-      if (_selectedUnit != null && product.unit != _selectedUnit) return false;
+      if (_selectedUnit != null && product.unit != _selectedUnit) {
+        return false;
+      }
 
       return true;
     }).toList();
 
     filtered = BrandFilterLogic.sortProducts(filtered, _currentSort);
-    setState(() => _filteredProducts = filtered);
+
+    if (shouldSetState) {
+      setState(() => _filteredProducts = filtered);
+    } else {
+      _filteredProducts = filtered;
+    }
   }
 
   void _showFilterBottomSheet() async {
@@ -175,22 +212,55 @@ class _BrandPageState extends State<BrandPage> {
                 },
               ),
             ),
-          BrandProductsGrid(products: _filteredProducts),
+          if (_isLoading)
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_errorMessage != null)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.error_outline, size: 48),
+                      const SizedBox(height: 12),
+                      Text(
+                        _errorMessage!,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadBrandProducts,
+                        child: const Text('إعادة المحاولة'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else
+            BrandProductsGrid(products: _filteredProducts),
         ],
       ),
-      floatingActionButton: CustomBottomFilterButtons(
-        sortLabel: 'ترتيب',
-        filterLabel: 'تصنيف',
-        onSortPressed: _showSortBottomSheet,
-        onFilterPressed: _showFilterBottomSheet,
-        hasActiveFilters:
-            _selectedCategory != null ||
-            _selectedSubcategory != null ||
-            _selectedUnit != null ||
-            _priceRange.start != 0 ||
-            _priceRange.end != 500 ||
-            _currentSort != ProductSortOption.bestSellers,
-      ),
+      floatingActionButton: _isLoading || _errorMessage != null
+          ? null
+          : CustomBottomFilterButtons(
+              sortLabel: 'ترتيب',
+              filterLabel: 'تصنيف',
+              onSortPressed: _showSortBottomSheet,
+              onFilterPressed: _showFilterBottomSheet,
+              hasActiveFilters:
+                  _selectedCategory != null ||
+                  _selectedSubcategory != null ||
+                  _selectedUnit != null ||
+                  _priceRange.start != 0 ||
+                  _priceRange.end != 500 ||
+                  _currentSort != ProductSortOption.bestSellers,
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

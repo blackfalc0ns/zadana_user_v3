@@ -7,15 +7,11 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 class ProductBottomActions extends StatelessWidget {
   final VoidCallback? onAddToCart;
   final VoidCallback? onGoToCart;
-  final String? addToCartText;
-  final String? goToCartText;
 
   const ProductBottomActions({
     super.key,
     this.onAddToCart,
     this.onGoToCart,
-    this.addToCartText,
-    this.goToCartText,
   });
 
   @override
@@ -42,7 +38,7 @@ class ProductBottomActions extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onAddToCart,
                 icon: const FaIcon(FontAwesomeIcons.cartPlus, size: 18),
-                label: Text(addToCartText ?? l10n.add_to_cart_button),
+                label: Text(l10n.add_to_cart_button),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
@@ -53,7 +49,7 @@ class ProductBottomActions extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: onGoToCart,
                 icon: const FaIcon(FontAwesomeIcons.shoppingCart, size: 18),
-                label: Text(goToCartText ?? 'السلة'),
+                label: const Text('السلة'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),

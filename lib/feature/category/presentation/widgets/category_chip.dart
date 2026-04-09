@@ -24,7 +24,7 @@ class CategoryChip extends StatelessWidget {
 
     return CustomFilterChip(
       label: label,
-      icon: emoji,
+      icon: emoji.isEmpty ? null : emoji,
       isSelected: isSelected,
       onTap: onTap ?? () {},
       backgroundColor: color.surface,

@@ -2,59 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
-import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
-import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/shimmer_wrapper.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class ProductsGrid extends StatelessWidget {
   const ProductsGrid({
     super.key,
-    required this.category,
+    required this.products,
     required this.subCategory,
     this.sortOption = '',
     this.filters = const [],
     this.selectedQuantity,
-    this.selectedProductType,
-    this.selectedPart,
     this.selectedBrand,
     this.priceRange = const RangeValues(0, 1000),
     this.activeHeroProductId,
     this.onProductTap,
     this.isLoading = false,
+    this.emptyStateMessage,
   });
 
-  final String category;
+  final List<ProductModel> products;
   final String subCategory;
   final String sortOption;
   final List<String> filters;
   final String? selectedQuantity;
-  final String? selectedProductType;
-  final String? selectedPart;
   final String? selectedBrand;
   final RangeValues priceRange;
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
   final bool isLoading;
+  final String? emptyStateMessage;
 
   @override
   Widget build(BuildContext context) {
-    List<ProductModel> products = _getProductsForCategory(
-      category,
-      subCategory,
-    );
-
-    products = _applyFilters(
+    var filteredProducts = _applyFilters(
       products,
       filters,
-      category: category,
-      selectedProductType: selectedProductType,
-      selectedPart: selectedPart,
+      selectedQuantity: selectedQuantity,
       selectedBrand: selectedBrand,
       priceRange: priceRange,
     );
-    products = _applySorting(products, sortOption);
+    filteredProducts = _applySorting(filteredProducts, sortOption);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -83,8 +74,22 @@ class ProductsGrid extends StatelessWidget {
           );
         }
 
+        if (filteredProducts.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+              child: Text(
+                emptyStateMessage ?? 'لا توجد منتجات متاحة حاليًا',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
         return GridView.builder(
-          key: PageStorageKey<String>('products_grid_${category}_$subCategory'),
+          key: PageStorageKey<String>(
+            'products_grid_${filteredProducts.length}_$subCategory',
+          ),
           padding: const EdgeInsets.only(
             top: 4,
             left: Spacing.md,
@@ -97,15 +102,15 @@ class ProductsGrid extends StatelessWidget {
             crossAxisSpacing: Spacing.xss,
             mainAxisSpacing: Spacing.xss,
           ),
-          itemCount: products.length,
+          itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
-            final product = selectedQuantity == null
-                ? products[index]
-                : products[index].copyWith(unit: selectedQuantity);
+            final product = filteredProducts[index];
+            final heroTag = productHeroTag(product.id, source: 'category-grid');
             return CustomProductCard(
-              discountPercentage: index * 12,
-              isDiscounted: index % 2 == 0,
+              discountPercentage: product.discountPercentage,
+              isDiscounted: product.isDiscounted,
               product: product,
+              heroTag: heroTag,
               onCardTap: () {
                 if (onProductTap != null) {
                   onProductTap!(product);
@@ -114,6 +119,7 @@ class ProductsGrid extends StatelessWidget {
                 ProductNavigationHelper.navigateToProductDetails(
                   context,
                   product,
+                  heroTag: heroTag,
                 );
               },
               onAddTap: () {},
@@ -127,11 +133,11 @@ class ProductsGrid extends StatelessWidget {
     );
   }
 
-  List<ProductModel> _getProductsForCategory(
-    String category,
+  List<ProductModel> _getProductsForSubCategory(
+    List<ProductModel> products,
     String subCategory,
   ) {
-    return kCategoryProducts[category] ?? [];
+    return products;
   }
 
   List<ProductModel> _applySorting(
@@ -182,9 +188,7 @@ class ProductsGrid extends StatelessWidget {
   List<ProductModel> _applyFilters(
     List<ProductModel> products,
     List<String> filters, {
-    required String category,
-    required String? selectedProductType,
-    required String? selectedPart,
+    required String? selectedQuantity,
     required String? selectedBrand,
     required RangeValues priceRange,
   }) {
@@ -193,26 +197,13 @@ class ProductsGrid extends StatelessWidget {
         return false;
       }
 
-      if (selectedPart != null && !product.name.contains(selectedPart)) {
+      if (selectedQuantity != null &&
+          (product.unit == null || product.unit != selectedQuantity)) {
         return false;
       }
 
       if (selectedBrand != null && product.store != selectedBrand) {
         return false;
-      }
-
-      if (selectedProductType != null) {
-        final matchingParts =
-            kProductParts[category]?[selectedProductType] ?? const <String>[];
-
-        if (matchingParts.isNotEmpty) {
-          final matchesType = matchingParts.any(product.name.contains);
-          if (!matchesType) {
-            return false;
-          }
-        } else if (!product.name.contains(selectedProductType)) {
-          return false;
-        }
       }
 
       if (filters.isEmpty) {

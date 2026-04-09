@@ -72,7 +72,7 @@ class CartItemCard extends StatelessWidget {
                   width: 68,
                   height: 68,
                   borderRadius: Spacing.cardRadius,
-                  heroTag: productHeroTag(item.id),
+                  heroTag: productHeroTag(item.id, source: 'cart-item'),
                 ),
                 const SizedBox(width: 10),
                 Expanded(

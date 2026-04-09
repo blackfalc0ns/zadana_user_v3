@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_chip.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/shimmer_wrapper.dart';
 
 class CategoryChips extends StatelessWidget {
   const CategoryChips({
     super.key,
+    required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,
     this.isLoading = false,
   });
 
+  final List<CategoryEntity> categories;
   final String selectedCategory;
   final Function(String) onCategorySelected;
   final bool isLoading;
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +41,6 @@ class CategoryChips extends StatelessWidget {
       );
     }
 
-    final categories = kCategoryList;
-
     return SizedBox(
       height: 40,
       child: ListView.separated(
@@ -49,9 +48,9 @@ class CategoryChips extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
         itemCount: categories.length,
         separatorBuilder: (context, index) => const SizedBox(width: Spacing.sm),
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          final isSelected = category.name == selectedCategory;
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            final isSelected = category.name == selectedCategory;
 
           return CategoryChip(
             label: category.name,

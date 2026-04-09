@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
-import 'package:zadana_user_v3/feature/brand/data/mock_brand_products.dart';
-import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
 
 class FilterBrandSection extends StatefulWidget {
   const FilterBrandSection({
     super.key,
-    required this.selectedCategory,
+    required this.brands,
     required this.selectedBrand,
     required this.onBrandSelected,
   });
 
-  final String? selectedCategory;
+  final List<String> brands;
   final String? selectedBrand;
   final Function(String?) onBrandSelected;
 
@@ -34,18 +32,14 @@ class _FilterBrandSectionState extends State<FilterBrandSection> {
   void didUpdateWidget(FilterBrandSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedBrand != oldWidget.selectedBrand ||
-        widget.selectedCategory != oldWidget.selectedCategory) {
+        widget.brands != oldWidget.brands) {
       localSelectedBrand = widget.selectedBrand;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.selectedCategory == null) {
-      return const SizedBox.shrink();
-    }
-
-    final brands = getBrandsForCategory(widget.selectedCategory!);
+    final brands = widget.brands;
     if (brands.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -75,8 +69,7 @@ class _FilterBrandSectionState extends State<FilterBrandSection> {
               itemCount: brands.length,
               itemBuilder: (context, index) {
                 final brand = brands[index];
-                final products = MockBrandProducts.getProducts(brand, brand);
-                final logo = products.isNotEmpty ? products.first.emoji : null;
+                final logo = brand.isNotEmpty ? brand.substring(0, 1) : null;
                 final isSelected = localSelectedBrand == brand;
 
                 return CustomVerticalFilterChip(

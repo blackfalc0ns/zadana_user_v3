@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -82,11 +83,16 @@ class SpecialOffersSection extends StatelessWidget {
                 separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
                 itemBuilder: (_, i) {
                   final product = items[i];
+                  final heroTag = productHeroTag(
+                    product.id,
+                    source: 'home-special-offers',
+                  );
                   return SizedBox(
                     width: 120,
                     child: CustomProductCard(
                       product: product,
                       showFavorite: true,
+                      heroTag: heroTag,
                       discountPercentage: product.discountPercentage,
                       isDiscounted: product.isDiscounted,
                       onAddTap: () {},
@@ -94,6 +100,7 @@ class SpecialOffersSection extends StatelessWidget {
                         ProductNavigationHelper.navigateToProductDetails(
                           context,
                           product,
+                          heroTag: heroTag,
                         );
                       },
                       onFavoriteTap: () {},

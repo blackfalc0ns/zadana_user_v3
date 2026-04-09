@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class ProductHeaderSection extends StatelessWidget {
   final String productName;
+  final String? unit;
   final int quantity;
   final VoidCallback onIncrease;
   final VoidCallback onDecrease;
@@ -13,6 +14,7 @@ class ProductHeaderSection extends StatelessWidget {
   const ProductHeaderSection({
     super.key,
     required this.productName,
+    this.unit,
     required this.quantity,
     required this.onIncrease,
     required this.onDecrease,
@@ -21,7 +23,7 @@ class ProductHeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Container(
       padding: const EdgeInsets.all(Spacing.base),
       color: AppColors.surface,
@@ -42,22 +44,29 @@ class ProductHeaderSection extends StatelessWidget {
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-                      ),
-                      child: Text(
-                        '1 كجم',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
+                    if (unit != null && unit!.trim().isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Text(
+                          unit!,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ],

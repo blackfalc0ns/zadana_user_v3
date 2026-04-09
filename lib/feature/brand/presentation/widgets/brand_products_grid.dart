@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
@@ -32,9 +33,14 @@ class BrandProductsGrid extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
               final brandProduct = products[index];
+              final heroTag = productHeroTag(
+                brandProduct.id,
+                source: 'brand-grid',
+              );
               return CustomProductCard(
                 discountPercentage: index * 12,
                 isDiscounted: index % 2 == 0,
+                heroTag: heroTag,
                 product: ProductModel(
                   id: brandProduct.id,
                   name: brandProduct.name,
@@ -65,6 +71,7 @@ class BrandProductsGrid extends StatelessWidget {
                       unit: brandProduct.unit,
                       isDiscounted: false,
                     ),
+                    heroTag: heroTag,
                   );
                 },
                 onAddTap: brandProduct.isInStock ? () {} : null,

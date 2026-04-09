@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_header_section.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_description_section.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/price_comparison_section.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/similar_products_section.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/price_comparison_section.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_description_section.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_header_section.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/similar_products_section.dart';
 
 class ProductDetailsContent extends StatelessWidget {
   final String productName;
+  final String? unit;
   final int quantity;
   final VoidCallback onIncrease;
   final VoidCallback onDecrease;
@@ -16,6 +18,7 @@ class ProductDetailsContent extends StatelessWidget {
   final double basePrice;
   final double? oldPrice;
   final String currency;
+  final List<ProductVendorPriceEntity> vendorPrices;
   final List<ProductModel> similarProducts;
   final Function(ProductModel)? onSimilarProductTap;
   final Function(ProductModel)? onSimilarProductAddToCart;
@@ -24,6 +27,7 @@ class ProductDetailsContent extends StatelessWidget {
   const ProductDetailsContent({
     super.key,
     required this.productName,
+    this.unit,
     required this.quantity,
     required this.onIncrease,
     required this.onDecrease,
@@ -32,6 +36,7 @@ class ProductDetailsContent extends StatelessWidget {
     required this.basePrice,
     this.oldPrice,
     required this.currency,
+    required this.vendorPrices,
     required this.similarProducts,
     this.onSimilarProductTap,
     this.onSimilarProductAddToCart,
@@ -44,11 +49,11 @@ class ProductDetailsContent extends StatelessWidget {
       children: [
         ProductHeaderSection(
           productName: productName,
+          unit: unit,
           quantity: quantity,
           onIncrease: onIncrease,
           onDecrease: onDecrease,
         ),
-        const SizedBox(height: Spacing.base),
         ProductDescriptionSection(
           title: descriptionTitle,
           description: description,
@@ -58,6 +63,7 @@ class ProductDetailsContent extends StatelessWidget {
           basePrice: basePrice,
           oldPrice: oldPrice,
           currency: currency,
+          vendorPrices: vendorPrices,
         ),
         const SizedBox(height: Spacing.base),
         SimilarProductsSection(

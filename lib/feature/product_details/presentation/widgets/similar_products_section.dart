@@ -48,8 +48,8 @@ class SimilarProductsSection extends StatelessWidget {
                 return SizedBox(
                   width: 130,
                   child: CustomProductCard(
-                    discountPercentage: index * 12,
-                    isDiscounted: index % 2 == 0,
+                    discountPercentage: product.discountPercentage,
+                    isDiscounted: product.isDiscounted,
                     product: product,
                     onCardTap: () => onProductTap?.call(product),
                     onAddTap: () => onAddToCart?.call(product),

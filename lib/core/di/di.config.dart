@@ -118,6 +118,16 @@ import '../../feature/profile/domain/repo/profile_repository.dart' as _i1006;
 import '../../feature/profile/domain/usecase/profile_usecase.dart' as _i766;
 import '../../feature/profile/presentation/manager/profile_view_model.dart'
     as _i701;
+import '../../feature/product_details/data/data_source/product_details_remote_data_source.dart'
+    as _i640;
+import '../../feature/product_details/data/data_source/product_details_remote_data_source_impl.dart'
+    as _i641;
+import '../../feature/product_details/data/repo/product_details_repository_impl.dart'
+    as _i642;
+import '../../feature/product_details/domain/repo/product_details_repository.dart'
+    as _i643;
+import '../../feature/product_details/domain/usecase/product_details_usecase.dart'
+    as _i644;
 import '../helpers/permision_service.dart' as _i367;
 import '../helpers/shared_pref.dart' as _i42;
 import '../network/api_services.dart' as _i804;
@@ -221,6 +231,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i730.HomeRemoteDataSource>(
       () => _i1072.HomeRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i640.ProductDetailsRemoteDataSource>(
+      () => _i641.ProductDetailsRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
     gh.factory<_i415.VerifyOtpRepository>(
       () => _i548.VerifyOtpRepositoryImpl(
         gh<_i698.VerifyOtpRemoteDataSource>(),
@@ -261,6 +274,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i465.HomeUseCase>(
       () => _i465.HomeUseCase(gh<_i227.HomeRepository>()),
+    );
+    gh.factory<_i643.ProductDetailsRepository>(
+      () => _i642.ProductDetailsRepositoryImpl(
+        gh<_i640.ProductDetailsRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i644.ProductDetailsUseCase>(
+      () => _i644.ProductDetailsUseCase(gh<_i643.ProductDetailsRepository>()),
     );
     gh.factory<_i334.RegisterRemoteDataSource>(
       () => _i168.RegisterRemoteDataSourceImpl(

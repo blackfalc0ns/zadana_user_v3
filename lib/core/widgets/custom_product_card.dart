@@ -20,6 +20,7 @@ class CustomProductCard extends StatelessWidget {
     this.onFavoriteTap,
     this.showFavorite = false,
     this.enableHeroAnimation = true,
+    this.heroTag,
     required this.isDiscounted,
     required this.discountPercentage,
   });
@@ -30,6 +31,7 @@ class CustomProductCard extends StatelessWidget {
   final VoidCallback? onFavoriteTap;
   final bool showFavorite;
   final bool enableHeroAnimation;
+  final String? heroTag;
   final bool isDiscounted;
   final int discountPercentage;
 
@@ -90,7 +92,7 @@ class CustomProductCard extends StatelessWidget {
                               height: imageHeight,
                               borderRadius: Spacing.cardRadius,
                               heroTag: enableHeroAnimation
-                                  ? productHeroTag(product.id)
+                                  ? (heroTag ?? productHeroTag(product.id))
                                   : null,
                             ),
                           ),

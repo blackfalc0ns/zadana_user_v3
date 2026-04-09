@@ -25,6 +25,10 @@ import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_m
 import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/brand_products_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_products_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
+import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
 part 'api_services.g.dart';
 
 @RestApi()
@@ -59,6 +63,26 @@ abstract class ApiServices {
 
   @GET(EndPoints.homeExploreMore)
   Future<HomeExploreMoreResponseModelDto> getHomeExploreMore();
+
+  @GET(EndPoints.brandProducts)
+  Future<BrandProductsResponseModelDto> getBrandProducts(
+    @Path('brandId') String brandId,
+  );
+
+  @GET(EndPoints.categorySubcategories)
+  Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
+    @Path('categoryId') String categoryId,
+  );
+
+  @GET(EndPoints.categoryProducts)
+  Future<CategoryProductsResponseModelDto> getCategoryProducts(
+    @Path('categoryId') String categoryId,
+  );
+
+  @GET(EndPoints.productDetails)
+  Future<ProductDetailsResponseModelDto> getProductDetails(
+    @Path('productId') String productId,
+  );
 
   @POST(EndPoints.register)
   Future<RegisterResponseDto> registerUser(

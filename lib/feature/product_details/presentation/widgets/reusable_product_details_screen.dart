@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_main_image.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_details_content.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_bottom_actions.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_bottom_actions.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_details_content.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_main_image.dart';
 
 class ReusableProductDetailsScreen extends StatelessWidget {
   final String productId;
   final String productName;
+  final String? unit;
   final String emoji;
   final String imageUrl;
   final int quantity;
@@ -19,21 +21,20 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   final double basePrice;
   final double? oldPrice;
   final String currency;
+  final List<ProductVendorPriceEntity> vendorPrices;
   final List<ProductModel> similarProducts;
   final Function(ProductModel)? onSimilarProductTap;
   final Function(ProductModel)? onSimilarProductAddToCart;
   final VoidCallback? onAddToCart;
   final VoidCallback? onGoToCart;
-  final String? addToCartText;
-  final String? goToCartText;
   final double imageHeight;
-  final Widget? customAppBar;
   final String? activeProductId;
 
   const ReusableProductDetailsScreen({
     super.key,
     required this.productId,
     required this.productName,
+    this.unit,
     required this.emoji,
     required this.imageUrl,
     required this.quantity,
@@ -44,15 +45,13 @@ class ReusableProductDetailsScreen extends StatelessWidget {
     required this.basePrice,
     this.oldPrice,
     required this.currency,
+    required this.vendorPrices,
     required this.similarProducts,
     this.onSimilarProductTap,
     this.onSimilarProductAddToCart,
     this.onAddToCart,
     this.onGoToCart,
-    this.addToCartText,
-    this.goToCartText,
     this.imageHeight = 250,
-    this.customAppBar,
     this.activeProductId,
   });
 
@@ -60,17 +59,15 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar:
-          customAppBar as PreferredSizeWidget? ??
-          AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () => Navigator.pop(context),
-            ),
-            backgroundColor: AppColors.surface,
-            elevation: 0,
-            title: Text(productName, style: AppTextStyles.h4),
-          ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+        ),
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+        title: Text(productName, style: AppTextStyles.h4),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -79,10 +76,10 @@ class ReusableProductDetailsScreen extends StatelessWidget {
               imageUrl: imageUrl,
               productId: productId,
               height: imageHeight,
-              activeProductId: activeProductId,
             ),
             ProductDetailsContent(
               productName: productName,
+              unit: unit,
               quantity: quantity,
               onIncrease: onIncrease,
               onDecrease: onDecrease,
@@ -91,6 +88,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
               basePrice: basePrice,
               oldPrice: oldPrice,
               currency: currency,
+              vendorPrices: vendorPrices,
               similarProducts: similarProducts,
               onSimilarProductTap: onSimilarProductTap,
               onSimilarProductAddToCart: onSimilarProductAddToCart,
@@ -102,8 +100,6 @@ class ReusableProductDetailsScreen extends StatelessWidget {
       bottomSheet: ProductBottomActions(
         onAddToCart: onAddToCart,
         onGoToCart: onGoToCart,
-        addToCartText: addToCartText,
-        goToCartText: goToCartText,
       ),
     );
   }

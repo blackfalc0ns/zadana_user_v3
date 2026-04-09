@@ -26,8 +26,8 @@ import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/pages/verify
 import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/building_details_page.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
-import 'package:zadana_user_v3/feature/category_product/presentaion/widget/category_product_model.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_order_screen.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
@@ -96,7 +96,7 @@ class RouteGenerator {
           builder: (_) => BuildingDetailsPage(initialLocation: locationEntity),
         );
       case AppRoutes.productDetails:
-        final product = settings.arguments as CategoryProductModel;
+        final product = settings.arguments as ProductModel;
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               ProductDetailsScreen(product: product),

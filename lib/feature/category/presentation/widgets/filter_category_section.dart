@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
-import 'package:zadana_user_v3/feature/category/data/fake/category_fake_data.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 
 class FilterCategorySection extends StatefulWidget {
   const FilterCategorySection({
     super.key,
+    required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,
   });
 
+  final List<CategoryEntity> categories;
   final String? selectedCategory;
   final Function(String?) onCategorySelected;
 
@@ -39,8 +41,8 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
   @override
   Widget build(BuildContext context) {
     final displayedCategories = showAllCategories
-        ? kCategoryList
-        : kCategoryList.take(8).toList();
+        ? widget.categories
+        : widget.categories.take(8).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +85,7 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
             );
           },
         ),
-        if (kCategoryList.length > 8)
+        if (widget.categories.length > 8)
           Padding(
             padding: const EdgeInsets.only(top: Spacing.xs),
             child: Center(

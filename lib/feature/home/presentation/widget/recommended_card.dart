@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
@@ -12,11 +11,13 @@ class RecommendedCard extends StatelessWidget {
   const RecommendedCard({
     super.key,
     required this.product,
+    required this.heroTag,
     this.onTap,
     this.onFavoriteTap,
   });
 
   final ProductModel product;
+  final String heroTag;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteTap;
 
@@ -55,7 +56,7 @@ class RecommendedCard extends StatelessWidget {
                       width: 48,
                       height: 48,
                       borderRadius: Spacing.cardRadius,
-                      heroTag: productHeroTag(product.id),
+                      heroTag: heroTag,
                     ),
                   ),
                 ),

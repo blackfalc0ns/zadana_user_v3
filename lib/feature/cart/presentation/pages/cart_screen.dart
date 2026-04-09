@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
@@ -217,6 +218,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       context,
       product,
       activeProductId: item.id,
+      heroTag: productHeroTag(item.id, source: 'cart-item'),
     );
 
     if (!mounted) return;

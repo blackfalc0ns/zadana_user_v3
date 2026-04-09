@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -38,15 +39,21 @@ class FavoritesGrid extends StatelessWidget {
           itemCount: products.length,
           itemBuilder: (context, index) {
             final product = products[index];
+            final heroTag = productHeroTag(
+              product.id,
+              source: 'favorites-grid',
+            );
             return CustomProductCard(
               discountPercentage: index * 12,
               isDiscounted: index % 2 == 0,
               product: product,
+              heroTag: heroTag,
               showFavorite: true,
               onCardTap: () {
                 ProductNavigationHelper.navigateToProductDetails(
                   context,
                   product,
+                  heroTag: heroTag,
                 );
               },
               onAddTap: () => onAddToCart(product),

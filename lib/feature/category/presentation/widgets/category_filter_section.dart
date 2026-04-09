@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_animal_type_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_brand_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_category_section.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_meat_part_section.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_price_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_quantity_section.dart';
 
 class CategoryFilterSection extends StatelessWidget {
   final bool showCategorySection;
+  final List<CategoryEntity> categories;
+  final List<String> quantities;
+  final List<String> brands;
   final String? selectedCategory;
-  final String? selectedProductType;
-  final String? selectedPart;
   final String? selectedQuantity;
   final String? selectedBrand;
   final RangeValues priceRange;
   final Function(String?) onCategorySelected;
-  final Function(String?) onProductTypeSelected;
-  final Function(String?) onPartSelected;
   final Function(String?) onQuantitySelected;
   final Function(String?) onBrandSelected;
   final Function(RangeValues) onPriceRangeChanged;
@@ -25,15 +23,14 @@ class CategoryFilterSection extends StatelessWidget {
   const CategoryFilterSection({
     super.key,
     this.showCategorySection = true,
+    this.categories = const [],
+    this.quantities = const [],
+    this.brands = const [],
     this.selectedCategory,
-    this.selectedProductType,
-    this.selectedPart,
     this.selectedQuantity,
     this.selectedBrand,
     required this.priceRange,
     required this.onCategorySelected,
-    required this.onProductTypeSelected,
-    required this.onPartSelected,
     required this.onQuantitySelected,
     required this.onBrandSelected,
     required this.onPriceRangeChanged,
@@ -42,27 +39,13 @@ class CategoryFilterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final detailSections = <Widget>[
-      FilterAnimalTypeSection(
-        selectedCategory: selectedCategory,
-        selectedProductType: selectedProductType,
-        onProductTypeSelected: (type) {
-          onProductTypeSelected(type);
-          onPartSelected(null);
-        },
-      ),
-      FilterMeatPartSection(
-        selectedCategory: selectedCategory,
-        selectedProductType: selectedProductType,
-        selectedPart: selectedPart,
-        onPartSelected: onPartSelected,
-      ),
       FilterQuantitySection(
-        selectedCategory: selectedCategory,
+        quantities: quantities,
         selectedQuantity: selectedQuantity,
         onQuantitySelected: onQuantitySelected,
       ),
       FilterBrandSection(
-        selectedCategory: selectedCategory,
+        brands: brands,
         selectedBrand: selectedBrand,
         onBrandSelected: onBrandSelected,
       ),
@@ -78,17 +61,15 @@ class CategoryFilterSection extends StatelessWidget {
         if (showCategorySection) ...[
           const SizedBox(height: Spacing.sm),
           FilterCategorySection(
+            categories: categories,
             selectedCategory: selectedCategory,
             onCategorySelected: (category) {
               onCategorySelected(category);
-              onProductTypeSelected(null);
-              onPartSelected(null);
               onQuantitySelected(null);
               onBrandSelected(null);
             },
           ),
         ],
-      //  const SizedBox(height: Spacing.xs),
         ..._withSpacing(detailSections),
       ],
     );
@@ -99,9 +80,7 @@ class CategoryFilterSection extends StatelessWidget {
     for (var i = 0; i < sections.length; i++) {
       widgets.add(sections[i]);
       if (i != sections.length - 1) {
-        widgets.add(
-          SizedBox(height: i < 3 ? Spacing.xs : Spacing.sm),
-        );
+        widgets.add(const SizedBox(height: Spacing.sm));
       }
     }
     return widgets;
