@@ -66,9 +66,7 @@ class ExploreMoreSection extends StatelessWidget {
         return Column(
           children: [
             SectionHeader(
-              title: section?.title.isNotEmpty == true
-                  ? section!.title
-                  : locale.section_explore,
+              title: locale.section_explore,
               actionLabel: locale.see_all,
             ),
             const SizedBox(height: Spacing.sm),
@@ -119,7 +117,9 @@ class _ExploreMoreTileSkeleton extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: context.colorScheme.outline.withValues(alpha: 0.12)),
+        border: Border.all(
+          color: context.colorScheme.outline.withValues(alpha: 0.12),
+        ),
       ),
       child: const Row(
         children: [

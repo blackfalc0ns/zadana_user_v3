@@ -69,9 +69,7 @@ class FeaturedProductsSection extends StatelessWidget {
         return Column(
           children: [
             SectionHeader(
-              title: section?.title.isNotEmpty == true
-                  ? section!.title
-                  : locale.section_featured,
+              title: locale.section_featured,
               actionLabel: locale.see_all,
             ),
             const SizedBox(height: Spacing.md),

@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
@@ -74,13 +75,10 @@ class RecommendedCard extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              product.store,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                fontSize: 10,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            child: PriceText(
+                              price: product.price,
+                              oldPrice: product.oldPrice,
+                              compact: true,
                             ),
                           ),
                           const SizedBox(width: Spacing.xs),

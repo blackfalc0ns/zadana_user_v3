@@ -26,91 +26,94 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildImageShell();
-  }
-
-  Widget _buildImageShell() {
-    final childContent = emoji != null && emoji!.isNotEmpty
-        ? _buildEmoji()
-        : _buildImage();
-
-    // Hero only wraps the content (emoji/image), not the container
-    final heroContent = (heroTag == null || heroTag!.isEmpty)
-        ? childContent
-        : Hero(
-            tag: heroTag!,
-            transitionOnUserGestures: true,
-            child: Material(color: Colors.transparent, child: childContent),
-          );
-
-    return ClipRRect(
+    final imageShell = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: Container(
+      child: SizedBox(
         width: width,
         height: height,
-        color: whiteBackground ? AppColors.white : AppColors.background,
-        child: heroContent,
+        child: ColoredBox(
+          color: whiteBackground ? AppColors.white : AppColors.background,
+          child: emoji != null && emoji!.isNotEmpty
+              ? _buildEmoji()
+              : _buildImage(),
+        ),
       ),
+    );
+
+    if (heroTag == null || heroTag!.isEmpty) {
+      return imageShell;
+    }
+
+    return Hero(
+      tag: heroTag!,
+      transitionOnUserGestures: true,
+      child: Material(color: Colors.transparent, child: imageShell),
     );
   }
 
   Widget _buildEmoji() {
-    return Center(
-      child: Text(
-        emoji!,
-        style: TextStyle(
-          fontSize: (height * 0.42)
-              .clamp(FontSize.size24, FontSize.size30)
-              .toDouble(),
+    return SizedBox.expand(
+      child: Center(
+        child: Text(
+          emoji!,
+          style: TextStyle(
+            fontSize: (height * 0.42)
+                .clamp(FontSize.size24, FontSize.size30)
+                .toDouble(),
+          ),
+          textAlign: TextAlign.center,
         ),
-        textAlign: TextAlign.center,
       ),
     );
   }
 
   Widget _buildImage() {
     if (url.isEmpty) {
-      return Container(
-        color: AppColors.divider,
-        child: const Icon(
-          Icons.image_not_supported_outlined,
-          color: AppColors.textHint,
-        ),
-      );
+      return _errorWidget();
     }
 
     final resolvedFit = whiteBackground ? BoxFit.contain : fit;
-    final child = url.startsWith('assets/')
-        ? Image.asset(
-            url,
-            width: width,
-            height: height,
-            fit: resolvedFit,
-            errorBuilder: (_, _, _) => _errorWidget(),
-          )
-        : Image.network(
-            url,
-            width: width,
-            height: height,
-            fit: resolvedFit,
-            errorBuilder: (_, _, _) => _errorWidget(),
-            loadingBuilder: (_, child, progress) {
-              if (progress == null) return child;
-              return Container(color: AppColors.shimmerBase);
-            },
-          );
 
-    return whiteBackground
-        ? Padding(padding: const EdgeInsets.all(8), child: child)
-        : child;
+    return Padding(
+      padding: EdgeInsets.all(whiteBackground ? 8 : 0),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final image = url.startsWith('assets/')
+              ? Image.asset(
+                  url,
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  fit: resolvedFit,
+                  alignment: Alignment.center,
+                  errorBuilder: (_, _, _) => _errorWidget(),
+                )
+              : Image.network(
+                  url,
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  fit: resolvedFit,
+                  alignment: Alignment.center,
+                  errorBuilder: (_, _, _) => _errorWidget(),
+                  loadingBuilder: (_, child, progress) {
+                    if (progress == null) return child;
+                    return const ColoredBox(color: AppColors.shimmerBase);
+                  },
+                );
+
+          return Center(child: image);
+        },
+      ),
+    );
   }
 
   Widget _errorWidget() {
-    return Container(
+    return const ColoredBox(
       color: AppColors.divider,
-      child: const Icon(
-        Icons.image_not_supported_outlined,
-        color: AppColors.textHint,
+      child: Center(
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          color: AppColors.textHint,
+        ),
       ),
     );
   }

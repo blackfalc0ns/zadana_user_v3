@@ -70,9 +70,7 @@ class BrandsSection extends StatelessWidget {
             children: [
               SectionHeader(
                 actionColor: Colors.white,
-                title: section?.title.isNotEmpty == true
-                    ? section!.title
-                    : locale.section_brands,
+                title: locale.section_brands,
                 actionLabel: locale.see_all,
                 isActionBold: true,
                 titleColor: AppColors.white,

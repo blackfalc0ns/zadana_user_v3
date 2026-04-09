@@ -69,9 +69,7 @@ class RecommendedSection extends StatelessWidget {
         return Column(
           children: [
             SectionHeader(
-              title: section?.title.isNotEmpty == true
-                  ? section!.title
-                  : locale.section_recommended,
+              title: locale.section_recommended,
               actionLabel: locale.refresh,
             ),
             const SizedBox(height: Spacing.sm),

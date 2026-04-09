@@ -69,9 +69,7 @@ class SpecialOffersSection extends StatelessWidget {
         return Column(
           children: [
             SectionHeader(
-              title: section?.title.isNotEmpty == true
-                  ? section!.title
-                  : locale.section_special_offers,
+              title: locale.section_special_offers,
               actionLabel: locale.see_all,
             ),
             const SizedBox(height: Spacing.md),

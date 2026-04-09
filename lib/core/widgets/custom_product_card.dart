@@ -45,7 +45,10 @@ class CustomProductCard extends StatelessWidget {
             ? constraints.maxHeight
             : 140.0;
         final scale = (cardWidth / 110).clamp(0.82, 1.12).toDouble();
-        final imageHeight = (cardHeight * 0.42).clamp(46.0, 75.0).toDouble();
+        final imageHeight = (cardHeight * 0.34).clamp(38.0, 60.0).toDouble();
+        final imageSectionHeight = (cardHeight * 0.5)
+            .clamp(imageHeight + 14, 84.0)
+            .toDouble();
         final horizontalPadding = (cardWidth * 0.06).clamp(4.0, 8.0).toDouble();
         final verticalPadding = (cardHeight * 0.05).clamp(4.0, 8.0).toDouble();
         final titleFontSize = (12 * scale).clamp(9.5, 12.5).toDouble();
@@ -74,17 +77,22 @@ class CustomProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: imageHeight,
+                          height: imageSectionHeight,
                           width: double.infinity,
-                          child: ProductImage(
-                            emoji: product.emoji,
-                            url: product.imageUrl,
-                            width: double.infinity,
-                            height: imageHeight,
-                            borderRadius: Spacing.cardRadius,
-                            heroTag: enableHeroAnimation
-                                ? productHeroTag(product.id)
-                                : null,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: (imageSectionHeight - imageHeight) * 0.35,
+                            ),
+                            child: ProductImage(
+                              emoji: product.emoji,
+                              url: product.imageUrl,
+                              width: double.infinity,
+                              height: imageHeight,
+                              borderRadius: Spacing.cardRadius,
+                              heroTag: enableHeroAnimation
+                                  ? productHeroTag(product.id)
+                                  : null,
+                            ),
                           ),
                         ),
                         Expanded(
