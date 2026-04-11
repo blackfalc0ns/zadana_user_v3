@@ -1,13 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
-import 'package:zadana_user_v3/feature/cart/data/dummy_cart_data.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_state.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_app_bar.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_bottom_bar.dart';
@@ -16,7 +22,6 @@ import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dar
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_empty_state.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_comparison_sheet.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 
@@ -24,59 +29,121 @@ class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
+  State<CartScreen> createState() => _CartScreenProviderState();
 }
 
-class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
-  static const double _cartBottomBarGap = 8.0;
-  static const double _cartBottomBarReservedHeight = 96.0;
-
-  late List<CartItemModel> _items;
-  String? _selectedVendorId;
-  String? _activeHeroProductId;
-  String? _animatingPriceItemId;
-  late CartAnimations _animations;
-  bool _isLoading = true;
-  Timer? _loadingTimer;
-  Timer? _animationTimer;
+class _CartScreenProviderState extends State<CartScreen> {
+  late final CartViewModel _viewModel;
+  late final CartNavigationService _cartNavigationService;
 
   @override
   void initState() {
     super.initState();
-    _items = List.from(dummyCartItems);
-    _selectedVendorId = null;
-    _animations = CartAnimations(this);
-    CartNavigationService().addListener(_startFakeLoading);
-    _startFakeLoading();
+    _cartNavigationService = CartNavigationService()
+      ..addListener(_handleCartTabChanged);
+    _viewModel = getIt<CartViewModel>()
+      ..doIntent(const CartLoadVendorsEvent())
+      ..doIntent(const CartLoadItemsEvent());
+  }
+
+  void _handleCartTabChanged() {
+    _viewModel
+      ..doIntent(const CartLoadVendorsEvent())
+      ..doIntent(const CartLoadItemsEvent());
   }
 
   @override
   void dispose() {
-    _loadingTimer?.cancel();
-    _animationTimer?.cancel();
-    CartNavigationService().removeListener(_startFakeLoading);
+    _cartNavigationService.removeListener(_handleCartTabChanged);
+    _viewModel.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _viewModel,
+      child: const _CartScreenView(),
+    );
+  }
+}
+
+class _CartScreenView extends StatefulWidget {
+  const _CartScreenView();
+
+  @override
+  State<_CartScreenView> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<_CartScreenView>
+    with TickerProviderStateMixin {
+  static const double _cartBottomBarGap = 8.0;
+  static const double _cartBottomBarReservedHeight = 96.0;
+
+  String? _selectedVendorId;
+  String? _activeHeroProductId;
+  String? _animatingPriceItemId;
+  bool _isRefreshingSelectedVendorPrices = false;
+  int _priceAnimationVersion = 0;
+  final Map<String, Timer> _quantityDebouncers = {};
+  final Map<String, int> _pendingQuantityBaselines = {};
+  late final CartNavigationService _cartNavigationService;
+  late CartAnimations _animations;
+
+  @override
+  void initState() {
+    super.initState();
+    _cartNavigationService = CartNavigationService()
+      ..addListener(_resetVendorSelection);
+    _selectedVendorId = null;
+    _animations = CartAnimations(this);
+  }
+
+  @override
+  void dispose() {
+    _cartNavigationService.removeListener(_resetVendorSelection);
+    for (final timer in _quantityDebouncers.values) {
+      timer.cancel();
+    }
     _animations.dispose();
     super.dispose();
   }
 
-  void _startFakeLoading() {
-    _loadingTimer?.cancel();
-    if (mounted) {
-      setState(() => _isLoading = true);
-    }
-    _loadingTimer = Timer(const Duration(milliseconds: 1500), () {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
+  void _resetVendorSelection() {
+    if (!mounted) return;
+    setState(() {
+      _selectedVendorId = null;
+      _activeHeroProductId = null;
+      _animatingPriceItemId = null;
+      _isRefreshingSelectedVendorPrices = false;
+      _priceAnimationVersion = 0;
     });
   }
 
-  int get _totalQuantity => _items.fold(0, (sum, i) => sum + i.quantity);
+  List<CartVendorEntity> get _vendors =>
+      context.read<CartViewModel>().state.vendors;
+  List<CartItemModel> get _items => context.read<CartViewModel>().state.items;
+  String? get _loadedVendorId =>
+      context.read<CartViewModel>().state.loadedVendorId;
+  bool get _isLoadingSelectedVendorPrices {
+    if (_selectedVendorId == null) return false;
+    return _isRefreshingSelectedVendorPrices;
+  }
+
+  int get _totalQuantity =>
+      context.read<CartViewModel>().state.summary?.totalQuantity ??
+      _items.fold(0, (sum, i) => sum + i.quantity);
   bool get _isEmpty => _items.isEmpty;
 
   List<CartItemModel> _getAvailableItems() {
     if (_selectedVendorId == null) return [];
     return _items
-        .where((item) => item.isAvailableAt(_selectedVendorId!))
+        .where(
+          (item) => item.isAvailableAt(
+            _selectedVendorId!,
+            loadedVendorId: _loadedVendorId,
+          ),
+        )
         .toList();
   }
 
@@ -85,7 +152,10 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
     final availableItems = _getAvailableItems();
     return availableItems.fold(0.0, (sum, item) {
-      final vp = item.getPriceForVendor(_selectedVendorId!);
+      final vp = item.getPriceForVendor(
+        _selectedVendorId!,
+        loadedVendorId: _loadedVendorId,
+      );
       if (vp != null) {
         return sum + (vp.price * item.quantity);
       }
@@ -93,15 +163,16 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     });
   }
 
-  /// Get total old price (before discounts) for available items
   double get _totalOldPrice {
     if (_selectedVendorId == null) return 0.0;
 
     final availableItems = _getAvailableItems();
     return availableItems.fold(0.0, (sum, item) {
-      final vp = item.getPriceForVendor(_selectedVendorId!);
+      final vp = item.getPriceForVendor(
+        _selectedVendorId!,
+        loadedVendorId: _loadedVendorId,
+      );
       if (vp != null) {
-        // Use oldPrice if discounted, otherwise use current price
         final priceToUse = vp.isDiscounted && vp.oldPrice != null
             ? vp.oldPrice!
             : vp.price;
@@ -111,16 +182,17 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     });
   }
 
-  /// Get total savings amount
   double get _totalSavings => _totalOldPrice - _totalPrice;
 
-  /// Check if there are any discounts
   bool get _hasDiscounts {
     if (_selectedVendorId == null) return false;
 
     final availableItems = _getAvailableItems();
     return availableItems.any((item) {
-      final vp = item.getPriceForVendor(_selectedVendorId!);
+      final vp = item.getPriceForVendor(
+        _selectedVendorId!,
+        loadedVendorId: _loadedVendorId,
+      );
       return vp != null &&
           vp.isDiscounted &&
           vp.oldPrice != null &&
@@ -130,32 +202,69 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
   String _selectedVendorName(BuildContext context) {
     final locale = context.localization;
+    final selectedVendor = _vendors
+        .where((vendor) => vendor.id == _selectedVendorId)
+        .firstOrNull;
+
     return _selectedVendorId == null
         ? locale.select_vendor_to_show_price
-        : dummyVendors.firstWhere((v) => v.id == _selectedVendorId).name;
+        : selectedVendor?.name ?? locale.select_vendor_to_show_price;
   }
 
   void _updateQuantity(CartItemModel item, bool increment) {
+    if (!increment && item.quantity <= 1) {
+      _showDeleteDialog(item);
+      return;
+    }
+
+    final previousQuantity = item.quantity;
+    final nextQuantity = increment
+        ? previousQuantity + 1
+        : previousQuantity - 1;
+
+    _pendingQuantityBaselines.putIfAbsent(item.id, () => previousQuantity);
+
     setState(() {
-      if (increment) {
-        item.quantity++;
-      } else if (item.quantity > 1) {
-        item.quantity--;
-      } else {
-        _showDeleteDialog(item);
-      }
+      item.quantity = nextQuantity;
+    });
+
+    _quantityDebouncers[item.id]?.cancel();
+    _quantityDebouncers[item.id] = Timer(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      final baselineQuantity =
+          _pendingQuantityBaselines.remove(item.id) ?? previousQuantity;
+      _quantityDebouncers.remove(item.id);
+      context.read<CartViewModel>().doIntent(
+        CartUpdateQuantityEvent(
+          itemId: item.id,
+          productId: item.productId,
+          quantity: item.quantity,
+          previousQuantity: baselineQuantity,
+        ),
+      );
     });
   }
 
   void _showDeleteDialog(CartItemModel item) => showDeleteItemDialog(
     context: context,
     itemName: item.name,
-    onConfirm: () => setState(() => _items.remove(item)),
+    onConfirm: () {
+      _quantityDebouncers.remove(item.id)?.cancel();
+      _pendingQuantityBaselines.remove(item.id);
+      context.read<CartViewModel>().doIntent(CartRemoveItemEvent(item));
+    },
   );
 
   void _showClearDialog() => showClearCartDialog(
     context: context,
-    onConfirm: () => setState(() => _items.clear()),
+    onConfirm: () {
+      for (final timer in _quantityDebouncers.values) {
+        timer.cancel();
+      }
+      _quantityDebouncers.clear();
+      _pendingQuantityBaselines.clear();
+      context.read<CartViewModel>().doIntent(const CartClearAllEvent());
+    },
   );
 
   void _showComparison() {
@@ -167,15 +276,27 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
     showVendorComparisonSheet(
       context: context,
-      vendors: dummyVendors,
+      vendors: _vendors,
       items: _items,
       currentVendorId: _selectedVendorId!,
       onVendorSelected: _onVendorSelected,
     );
   }
 
-  void _onVendorSelected(String id) {
-    setState(() => _selectedVendorId = id);
+  Future<void> _onVendorSelected(String id) async {
+    if (_selectedVendorId == id) return;
+
+    setState(() {
+      _selectedVendorId = id;
+      _animatingPriceItemId = null;
+      _isRefreshingSelectedVendorPrices = true;
+    });
+
+    context.read<CartViewModel>().doIntent(CartLoadItemsEvent(vendorId: id));
+
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+
+    if (!mounted || _selectedVendorId != id) return;
     _animations.playPriceAnimation();
   }
 
@@ -184,30 +305,28 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
         ? item.cheapest
         : item.vendorPrices.firstWhere(
             (vendor) => vendor.id == _selectedVendorId,
-            orElse: () => item.cheapest,
+            orElse: () =>
+                item.getPriceForVendor(
+                  _selectedVendorId!,
+                  loadedVendorId: _loadedVendorId,
+                ) ??
+                item.cheapest,
           );
 
     final product = ProductModel(
-      id: item.id,
+      id: item.productId,
       name: item.name,
       store: vendorPrice.name,
       price: vendorPrice.price,
-      imageUrl: '',
+      imageUrl: item.imageUrl,
       unit: item.unit,
-      emoji: item.imageUrl,
+      emoji: '',
       isDiscounted: false,
     );
 
     setState(() {
       _activeHeroProductId = item.id;
       _animatingPriceItemId = item.id;
-    });
-
-    _animationTimer?.cancel();
-    _animationTimer = Timer(const Duration(milliseconds: 600), () {
-      if (mounted) {
-        setState(() => _animatingPriceItemId = null);
-      }
     });
 
     await WidgetsBinding.instance.endOfFrame;
@@ -217,8 +336,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     await ProductNavigationHelper.navigateToProductDetails(
       context,
       product,
-      activeProductId: item.id,
-      heroTag: productHeroTag(item.id, source: 'cart-item'),
+      activeProductId: item.productId,
+      heroTag: productHeroTag(item.productId, source: 'cart-item'),
     );
 
     if (!mounted) return;
@@ -256,61 +375,168 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final cartState = context.watch<CartViewModel>().state;
     final color = context.colorScheme;
     final bottomNavReservedSpace = mainShellBottomNavReservedSpace(context);
     final cartBottomOffset = bottomNavReservedSpace + _cartBottomBarGap;
     final contentBottomPadding =
         cartBottomOffset + _cartBottomBarReservedHeight;
+    final isInitialLoading =
+        (cartState.isLoadingVendors && cartState.vendors.isEmpty) ||
+        (cartState.isLoadingItems && cartState.items.isEmpty);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: color.surface,
-        appBar: CartAppBar(
-          itemCount: _items.length,
-          totalQuantity: _totalQuantity,
-          onClearAll: _isEmpty ? null : _showClearDialog,
-        ),
-        body: _isLoading
-            ? const CartLoadingSkeleton()
-            : _isEmpty
-            ? CartEmptyState(onStartShopping: () => Navigator.pop(context))
-            : Stack(
-                children: [
-                  Positioned.fill(
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: contentBottomPadding),
-                      child: CartContent(
-                        items: _items,
-                        selectedVendorId: _selectedVendorId,
-                        activeHeroProductId: _activeHeroProductId,
-                        animatingPriceItemId: _animatingPriceItemId,
-                        onVendorSelected: _onVendorSelected,
-                        onItemTap: _openProductDetails,
-                        onUpdateQuantity: _updateQuantity,
-                        onDeleteItem: _showDeleteDialog,
+    return BlocListener<CartViewModel, CartState>(
+      listenWhen: (previous, current) =>
+          previous.isLoadingItems != current.isLoadingItems ||
+          previous.loadedVendorId != current.loadedVendorId ||
+          previous.clearCartSuccessMessage != current.clearCartSuccessMessage ||
+          previous.clearCartErrorMessage != current.clearCartErrorMessage ||
+          previous.removeItemSuccessMessage !=
+              current.removeItemSuccessMessage ||
+          previous.removeItemErrorMessage != current.removeItemErrorMessage ||
+          previous.updateQuantityErrorMessage !=
+              current.updateQuantityErrorMessage,
+      listener: (_, state) {
+        if (!mounted) return;
+
+        final hasUpdatedSelectedVendorPrices =
+            state.loadedVendorId == _selectedVendorId &&
+            state.loadedVendorId != null &&
+            !state.isLoadingItems;
+        if (hasUpdatedSelectedVendorPrices) {
+          setState(() {
+            _isRefreshingSelectedVendorPrices = false;
+            _priceAnimationVersion++;
+          });
+          _animations.playPriceAnimation();
+        }
+
+        if (state.clearCartSuccessMessage != null) {
+          for (final timer in _quantityDebouncers.values) {
+            timer.cancel();
+          }
+          _quantityDebouncers.clear();
+          _pendingQuantityBaselines.clear();
+          setState(() {
+            _selectedVendorId = null;
+            _activeHeroProductId = null;
+            _animatingPriceItemId = null;
+            _isRefreshingSelectedVendorPrices = false;
+          });
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.clearCartSuccessMessage!,
+          );
+          context.read<CartViewModel>().clearCartFeedback();
+        }
+
+        if (state.clearCartErrorMessage != null) {
+          CustomSnackbar.showError(
+            context: context,
+            message: state.clearCartErrorMessage!,
+          );
+          context.read<CartViewModel>().clearCartFeedback();
+        }
+
+        if (state.removeItemSuccessMessage != null) {
+          _quantityDebouncers.remove(state.removedItemId)?.cancel();
+          _pendingQuantityBaselines.remove(state.removedItemId);
+          if (state.items.isEmpty) {
+            setState(() {
+              _selectedVendorId = null;
+              _activeHeroProductId = null;
+              _animatingPriceItemId = null;
+              _isRefreshingSelectedVendorPrices = false;
+            });
+          }
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.removeItemSuccessMessage!,
+          );
+          context.read<CartViewModel>().clearRemoveItemFeedback();
+        }
+
+        if (state.removeItemErrorMessage != null) {
+          CustomSnackbar.showError(
+            context: context,
+            message: state.removeItemErrorMessage!,
+          );
+          context.read<CartViewModel>().clearRemoveItemFeedback();
+        }
+
+        if (state.updateQuantityErrorMessage != null) {
+          CustomSnackbar.showError(
+            context: context,
+            message: state.updateQuantityErrorMessage!,
+          );
+          _pendingQuantityBaselines.remove(state.updatedQuantityItemId);
+          context.read<CartViewModel>().clearUpdateQuantityFeedback();
+        }
+
+        if (!state.isLoadingItems && _isRefreshingSelectedVendorPrices) {
+          setState(() {
+            _isRefreshingSelectedVendorPrices = false;
+          });
+        }
+      },
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          backgroundColor: color.surface,
+          appBar: CartAppBar(
+            itemCount: _items.length,
+            totalQuantity: _totalQuantity,
+            onClearAll: _isEmpty ? null : _showClearDialog,
+          ),
+          body: isInitialLoading
+              ? const CartLoadingSkeleton()
+              : _isEmpty
+              ? CartEmptyState(
+                  onStartShopping: () =>
+                      mainShellKey.currentState?.jumpToTab(0),
+                )
+              : Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: contentBottomPadding),
+                        child: CartContent(
+                          items: _items,
+                          vendors: cartState.vendors,
+                          selectedVendorId: _selectedVendorId,
+                          loadedVendorId: cartState.loadedVendorId,
+                          isLoadingSelectedVendorPrices:
+                              _isLoadingSelectedVendorPrices,
+                          priceAnimationVersion: _priceAnimationVersion,
+                          activeHeroProductId: _activeHeroProductId,
+                          animatingPriceItemId: _animatingPriceItemId,
+                          onVendorSelected: _onVendorSelected,
+                          onItemTap: _openProductDetails,
+                          onUpdateQuantity: _updateQuantity,
+                          onDeleteItem: _showDeleteDialog,
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: cartBottomOffset,
-                    child: CartBottomBar(
-                      selectedVendorId: _selectedVendorId,
-                      items: _items,
-                      totalPrice: _totalPrice,
-                      totalOldPrice: _totalOldPrice,
-                      totalSavings: _totalSavings,
-                      hasDiscounts: _hasDiscounts,
-                      selectedVendorName: _selectedVendorName(context),
-                      animations: _animations,
-                      onComparison: _showComparison,
-                      onCheckout: _onCheckout,
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: cartBottomOffset,
+                      child: CartBottomBar(
+                        selectedVendorId: _selectedVendorId,
+                        items: _items,
+                        totalPrice: _totalPrice,
+                        totalOldPrice: _totalOldPrice,
+                        totalSavings: _totalSavings,
+                        hasDiscounts: _hasDiscounts,
+                        selectedVendorName: _selectedVendorName(context),
+                        animations: _animations,
+                        onComparison: _showComparison,
+                        onCheckout: _onCheckout,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }

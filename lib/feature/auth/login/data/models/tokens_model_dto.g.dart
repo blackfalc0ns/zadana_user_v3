@@ -9,7 +9,7 @@ part of 'tokens_model_dto.dart';
 TokensModelDto _$TokensModelDtoFromJson(Map<String, dynamic> json) =>
     TokensModelDto(
       accessToken: json['accessToken'] as String,
-      refreshToken: json['refreshToken'] as String,
+      refreshToken: json['refreshToken'] as String?,
     );
 
 Map<String, dynamic> _$TokensModelDtoToJson(TokensModelDto instance) =>

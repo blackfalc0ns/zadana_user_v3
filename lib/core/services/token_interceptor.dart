@@ -6,17 +6,25 @@ import '../network/network_constants.dart';
 
 @injectable
 class TokenInterceptor extends Interceptor {
+  static const String skipAuthKey = 'skipAuth';
+
   final TokenService tokenService = getIt.get<TokenService>();
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (options.extra[skipAuthKey] == true) {
+      options.headers.remove(NetworkConstants.authorization);
+      handler.next(options);
+      return;
+    }
+
     final String? token = await tokenService.getToken();
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       options.headers[NetworkConstants.authorization] =
           "${NetworkConstants.bearer} $token";
     }
-    return super.onRequest(options, handler);
+    handler.next(options);
   }
 }

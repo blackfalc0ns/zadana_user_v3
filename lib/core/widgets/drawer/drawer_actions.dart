@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_dialogs.dart';
 
 class DrawerActions {
@@ -183,7 +184,7 @@ class DrawerActions {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Container(
+      builder: (sheetContext) => Container(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -217,7 +218,7 @@ class DrawerActions {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(sheetContext),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: Spacing.md),
                       shape: RoundedRectangleBorder(
@@ -234,10 +235,9 @@ class DrawerActions {
                 const SizedBox(width: Spacing.md),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      // TODO: Perform logout
-                      print('User logged out');
+                    onPressed: () async {
+                      Navigator.pop(sheetContext);
+                      await LogoutHelper.performLogout(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error,

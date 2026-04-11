@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zadana_user_v3/core/services/language_interceptor.dart';
+import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
 import '../services/token_interceptor.dart';
 import 'network_constants.dart';
 
@@ -13,6 +14,7 @@ abstract class ExternalModules {
   Dio provideDio(
     PrettyDioLogger prettyDioLogger,
     TokenInterceptor tokenInterceptor,
+    DeviceIdInterceptor deviceIdInterceptor,
     LanguageInterceptor languageInterceptor,
   ) {
     final dio = Dio();
@@ -25,29 +27,28 @@ abstract class ExternalModules {
 
     dio.interceptors.add(languageInterceptor);
     dio.interceptors.add(tokenInterceptor);
+    dio.interceptors.add(deviceIdInterceptor);
     dio.interceptors.add(prettyDioLogger);
 
     return dio;
   }
 
- @Named('osmDio')
-@lazySingleton
-Dio provideOsmDio(
-  PrettyDioLogger prettyDioLogger,
-) {
-  final dio = Dio();
+  @Named('osmDio')
+  @lazySingleton
+  Dio provideOsmDio(PrettyDioLogger prettyDioLogger) {
+    final dio = Dio();
 
-  dio.options.baseUrl = 'https://nominatim.openstreetmap.org';
-  dio.options.headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'User-Agent': 'zadana-user-app',
-  };
+    dio.options.baseUrl = 'https://nominatim.openstreetmap.org';
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'User-Agent': 'zadana-user-app',
+    };
 
-  dio.interceptors.add(prettyDioLogger);
+    dio.interceptors.add(prettyDioLogger);
 
-  return dio;
-}
+    return dio;
+  }
 
   @lazySingleton
   PrettyDioLogger providePrettyDioLogger() {

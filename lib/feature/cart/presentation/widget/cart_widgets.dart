@@ -27,13 +27,20 @@ class CartBottomBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(Spacing.screenH, Spacing.md, Spacing.screenH,
-          Spacing.screenH + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+        Spacing.screenH,
+        Spacing.md,
+        Spacing.screenH,
+        Spacing.screenH + MediaQuery.of(context).padding.bottom,
+      ),
       decoration: BoxDecoration(
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-              color: AppColors.shadow, blurRadius: 12, offset: const Offset(0, -4))
+            color: AppColors.shadow,
+            blurRadius: 12,
+            offset: const Offset(0, -4),
+          ),
         ],
       ),
       child: Column(
@@ -42,17 +49,27 @@ class CartBottomBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('$itemCount ${l10n.item} • $totalQuantity ${l10n.product}',
-                  style: AppTextStyles.labelMedium
-                      .copyWith(color: AppColors.textSecondary)),
+              Text(
+                '$itemCount ${l10n.item} • $totalQuantity ${l10n.product}',
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               Row(
                 children: [
-                  Text('${l10n.total}: ',
-                      style: AppTextStyles.labelMedium
-                          .copyWith(color: AppColors.textSecondary)),
-                  Text('${totalPrice.toStringAsFixed(0)} ج',
-                      style: AppTextStyles.labelMedium.copyWith(
-                          color: AppColors.primary, fontWeight: FontWeight.w700)),
+                  Text(
+                    '${l10n.total}: ',
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Text(
+                    '${totalPrice.toStringAsFixed(0)} ج',
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -74,9 +91,12 @@ class CartBottomBar extends StatelessWidget {
                     children: [
                       const Text('📊', style: TextStyle(fontSize: 16)),
                       const SizedBox(width: 6),
-                      Text(l10n.compare,
-                          style: AppTextStyles.button
-                              .copyWith(color: AppColors.primary)),
+                      Text(
+                        l10n.compare,
+                        style: AppTextStyles.button.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -91,12 +111,16 @@ class CartBottomBar extends StatelessWidget {
                       backgroundColor: AppColors.primary,
                       foregroundColor: AppColors.textOnPrimary,
                       shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(Spacing.buttonRadius)),
+                        borderRadius: BorderRadius.circular(
+                          Spacing.buttonRadius,
+                        ),
+                      ),
                       elevation: 0,
                     ),
-                    child: Text('${l10n.complete_from} $selectedVendorName',
-                        style: AppTextStyles.button),
+                    child: Text(
+                      '${l10n.complete_from} $selectedVendorName',
+                      style: AppTextStyles.button,
+                    ),
                   ),
                 ),
               ),

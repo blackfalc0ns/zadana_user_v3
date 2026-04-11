@@ -173,6 +173,7 @@
   "total": "Total",
   "checkout": "Checkout",
   "cart_empty": "Your cart is empty",
+  "cart_empty_description": "There are no products in your shopping cart",
   "cart_empty_message": "Start shopping and add products to your cart",
   "shop_now": "Shop Now",
   "delete_item": "Delete Item",

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/comparison_buttons.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/comparison_cards.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/comparison_widgets.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 
 class ComparisonSelectionView extends StatelessWidget {
-  final List<VendorModel> vendors;
+  final List<CartVendorEntity> vendors;
   final Set<String> selectedIds;
   final String currentVendorId;
   final void Function(String) onToggle;
@@ -26,7 +26,7 @@ class ComparisonSelectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Column(
       children: [
         const ComparisonHandle(),

@@ -39,7 +39,8 @@ class TokenService {
    bool get isRefreshTokenSaved =>
       _sharedPreferences.getBool(AppConstants.isRefreshTokenSaved) ?? false;
 
-  Future<void> saveRefreshToken(String token) async {
+  Future<void> saveRefreshToken(String? token) async {
+    if (token == null || token.isEmpty) return;
     await _sharedPreferences.setBool(AppConstants.isRefreshTokenSaved, true);
     await _prefs.write(key: AppConstants.refreshToken, value: token);
   }
@@ -52,5 +53,10 @@ class TokenService {
   Future<void> deleteRefreshToken() async {
     await _sharedPreferences.setBool(AppConstants.isRefreshTokenSaved, false);
     await _prefs.delete(key: AppConstants.refreshToken);
+  }
+
+  Future<void> clearTokens() async {
+    await deleteToken();
+    await deleteRefreshToken();
   }
 }

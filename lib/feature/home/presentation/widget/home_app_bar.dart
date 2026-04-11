@@ -267,19 +267,6 @@ class _LocationCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (addressLine.isNotEmpty) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      addressLine,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: getMediumStyle(
-                        fontFamily: FontConstant.cairo,
-                        color: AppColors.white.withValues(alpha: 0.85),
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),

@@ -30,9 +30,13 @@ class ComparisonTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: Text(title,
-          style: AppTextStyles.h4.copyWith(
-              color: AppColors.textPrimary, fontWeight: FontWeight.w700)),
+      child: Text(
+        title,
+        style: AppTextStyles.h4.copyWith(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
@@ -45,9 +49,12 @@ class ComparisonSubtitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(subtitle,
-          style: AppTextStyles.labelSmall
-              .copyWith(color: AppColors.textSecondary)),
+      child: Text(
+        subtitle,
+        style: AppTextStyles.labelSmall.copyWith(
+          color: AppColors.textSecondary,
+        ),
+      ),
     );
   }
 }
@@ -59,7 +66,7 @@ class ResultsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: Row(
@@ -72,14 +79,21 @@ class ResultsHeader extends StatelessWidget {
                 color: AppColors.background,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.arrow_forward_ios_rounded,
-                  size: 16, color: AppColors.textSecondary),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
           const SizedBox(width: 12),
-          Text(l10n.comparison_results,
-              style: AppTextStyles.h4.copyWith(
-                  color: AppColors.textPrimary, fontWeight: FontWeight.w700)),
+          Text(
+            l10n.comparison_results,
+            style: AppTextStyles.h4.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
@@ -99,17 +113,19 @@ class SavingsBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.primary.withValues(alpha: 0.1),
-            const Color(0xFFE0F4F7)
-          ]),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary.withValues(alpha: 0.1),
+              const Color(0xFFE0F4F7),
+            ],
+          ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         ),
@@ -118,22 +134,33 @@ class SavingsBanner extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.savings_outlined,
-                  size: 20, color: AppColors.white),
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.savings_outlined,
+                size: 20,
+                color: AppColors.white,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${l10n.save_amount} ${savings.toStringAsFixed(0)} ج.م',
-                      style: AppTextStyles.labelLarge.copyWith(
-                          color: AppColors.primary, fontWeight: FontWeight.w700)),
-                  Text('${l10n.if_buy_from} $vendorName',
-                      style: AppTextStyles.labelSmall
-                          .copyWith(color: AppColors.textSecondary)),
+                  Text(
+                    '${l10n.save_amount} ${savings.toStringAsFixed(0)} ج.م',
+                    style: AppTextStyles.labelLarge.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    '${l10n.if_buy_from} $vendorName',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),

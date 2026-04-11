@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 
 void showVendorComparisonSheet({
   required BuildContext context,
-  required List<VendorModel> vendors,
+  required List<CartVendorEntity> vendors,
   required List<CartItemModel> items,
   required String currentVendorId,
   required void Function(String vendorId) onVendorSelected,
@@ -25,7 +25,7 @@ void showVendorComparisonSheet({
 }
 
 class _VendorComparisonSheet extends StatefulWidget {
-  final List<VendorModel> vendors;
+  final List<CartVendorEntity> vendors;
   final List<CartItemModel> items;
   final String currentVendorId;
   final void Function(String vendorId) onVendorSelected;
@@ -62,20 +62,19 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
     return total;
   }
 
-  /// Get count of available items for a vendor
-  int _availableCountFor(String vendorId) {
-    return widget.items.where((item) => item.isAvailableAt(vendorId)).length;
-  }
-
   /// Get count of unavailable items for a vendor
   int _unavailableCountFor(String vendorId) {
     return widget.items.where((item) => !item.isAvailableAt(vendorId)).length;
   }
 
-  List<MapEntry<VendorModel, double>> get _sortedResults {
+  List<MapEntry<CartVendorEntity, double>> get _sortedResults {
     return _selectedIds
-        .map((id) => MapEntry(
-            widget.vendors.firstWhere((v) => v.id == id), _totalFor(id)))
+        .map(
+          (id) => MapEntry(
+            widget.vendors.firstWhere((v) => v.id == id),
+            _totalFor(id),
+          ),
+        )
         .toList()
       ..sort((a, b) => a.value.compareTo(b.value));
   }
@@ -106,17 +105,17 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
           duration: const Duration(milliseconds: 400),
           transitionBuilder: (Widget child, Animation<double> animation) {
             return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              )),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
+              child: FadeTransition(opacity: animation, child: child),
             );
           },
           child: _showResults ? _buildResults() : _buildSelection(),
@@ -139,7 +138,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        
+
         // Header
         Container(
           padding: const EdgeInsets.all(20),
@@ -200,7 +199,10 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
               ),
               const SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.info.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -210,11 +212,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: AppColors.info,
-                      size: 16,
-                    ),
+                    Icon(Icons.info_outline, color: AppColors.info, size: 16),
                     const SizedBox(width: 8),
                     Text(
                       'تم اختيار ${_selectedIds.length} من 3 متاجر',
@@ -229,7 +227,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
             ],
           ),
         ),
-        
+
         // Vendor Selection
         Expanded(
           child: ListView.separated(
@@ -240,7 +238,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
               final vendor = widget.vendors[index];
               final isSelected = _selectedIds.contains(vendor.id);
               final canSelect = _selectedIds.length < 3 || isSelected;
-              
+
               return GestureDetector(
                 onTap: canSelect ? () => _toggleVendor(vendor.id) : null,
                 child: AnimatedContainer(
@@ -248,30 +246,32 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: isSelected
-                      ? LinearGradient(
-                          colors: [
-                            AppColors.primary.withValues(alpha: 0.15),
-                            AppColors.secondary.withValues(alpha: 0.05),
-                          ],
-                        )
-                      : null,
+                        ? LinearGradient(
+                            colors: [
+                              AppColors.primary.withValues(alpha: 0.15),
+                              AppColors.secondary.withValues(alpha: 0.05),
+                            ],
+                          )
+                        : null,
                     color: isSelected ? null : AppColors.background,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: isSelected 
-                        ? AppColors.primary.withValues(alpha: 0.3)
-                        : canSelect 
+                      color: isSelected
+                          ? AppColors.primary.withValues(alpha: 0.3)
+                          : canSelect
                           ? AppColors.border
                           : AppColors.textSecondary.withValues(alpha: 0.3),
                       width: isSelected ? 2 : 1,
                     ),
-                    boxShadow: isSelected ? [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ] : null,
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
                   ),
                   child: Row(
                     children: [
@@ -280,24 +280,29 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                         height: 48,
                         decoration: BoxDecoration(
                           gradient: isSelected
-                            ? LinearGradient(
-                                colors: [
-                                  AppColors.primary,
-                                  AppColors.primary.withValues(alpha: 0.8),
-                                ],
-                              )
-                            : LinearGradient(
-                                colors: [
-                                  AppColors.textSecondary.withValues(alpha: 0.1),
-                                  AppColors.textSecondary.withValues(alpha: 0.05),
-                                ],
-                              ),
+                              ? LinearGradient(
+                                  colors: [
+                                    AppColors.primary,
+                                    AppColors.primary.withValues(alpha: 0.8),
+                                  ],
+                                )
+                              : LinearGradient(
+                                  colors: [
+                                    AppColors.textSecondary.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    AppColors.textSecondary.withValues(
+                                      alpha: 0.05,
+                                    ),
+                                  ],
+                                ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
-                          child: Text(
-                            vendor.emoji,
-                            style: const TextStyle(fontSize: 20),
+                          child: const Icon(
+                            Icons.storefront_rounded,
+                            size: 20,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -313,8 +318,8 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                                   style: AppTextStyles.labelLarge.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: canSelect
-                                      ? AppColors.textPrimary
-                                      : AppColors.textSecondary,
+                                        ? AppColors.textPrimary
+                                        : AppColors.textSecondary,
                                   ),
                                 ),
                                 if (_unavailableCountFor(vendor.id) > 0) ...[
@@ -325,7 +330,9 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.warning.withValues(alpha: 0.1),
+                                      color: AppColors.warning.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
@@ -345,9 +352,11 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                               'إجمالي: ${_totalFor(vendor.id).toStringAsFixed(2)} ريال',
                               style: AppTextStyles.labelMedium.copyWith(
                                 color: isSelected
-                                  ? AppColors.primary
-                                  : AppColors.textSecondary,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
                               ),
                             ),
                           ],
@@ -358,20 +367,24 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                         width: 24,
                         height: 24,
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : Colors.transparent,
+                          color: isSelected
+                              ? AppColors.primary
+                              : Colors.transparent,
                           border: Border.all(
-                            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.textSecondary,
                             width: 2,
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: isSelected
-                          ? Icon(
-                              Icons.check,
-                              color: AppColors.white,
-                              size: 16,
-                            )
-                          : null,
+                            ? Icon(
+                                Icons.check,
+                                color: AppColors.white,
+                                size: 16,
+                              )
+                            : null,
                       ),
                     ],
                   ),
@@ -380,7 +393,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
             },
           ),
         ),
-        
+
         // Compare Button
         Container(
           padding: const EdgeInsets.all(20),
@@ -388,20 +401,22 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: _selectedIds.length >= 2 
-                ? () => setState(() => _showResults = true)
-                : null,
+              onPressed: _selectedIds.length >= 2
+                  ? () => setState(() => _showResults = true)
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                disabledBackgroundColor: AppColors.textSecondary.withValues(alpha: 0.3),
+                disabledBackgroundColor: AppColors.textSecondary.withValues(
+                  alpha: 0.3,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: Text(
-                _selectedIds.length < 2 
-                  ? 'اختر متجرين على الأقل للمقارنة'
-                  : 'مقارنة المتاجر المختارة',
+                _selectedIds.length < 2
+                    ? 'اختر متجرين على الأقل للمقارنة'
+                    : 'مقارنة المتاجر المختارة',
                 style: AppTextStyles.labelLarge.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeight.bold,
@@ -416,7 +431,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
 
   Widget _buildResults() {
     final results = _sortedResults;
-    
+
     return Column(
       key: const ValueKey('results'),
       children: [
@@ -430,7 +445,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        
+
         // Header
         Container(
           padding: const EdgeInsets.all(20),
@@ -486,7 +501,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
             ],
           ),
         ),
-        
+
         // Results
         Expanded(
           child: ListView.separated(
@@ -498,7 +513,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
               final vendor = result.key;
               final total = result.value;
               final isFirst = index == 0;
-              
+
               return _buildVendorResultCard(vendor, total, index + 1, isFirst);
             },
           ),
@@ -507,7 +522,12 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
     );
   }
 
-  Widget _buildVendorResultCard(VendorModel vendor, double total, int rank, bool isFirst) {
+  Widget _buildVendorResultCard(
+    CartVendorEntity vendor,
+    double total,
+    int rank,
+    bool isFirst,
+  ) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -543,14 +563,18 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
+                      colors: [
+                        AppColors.primary,
+                        AppColors.primary.withValues(alpha: 0.8),
+                      ],
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: Text(
-                      vendor.emoji,
-                      style: const TextStyle(fontSize: 18),
+                    child: Icon(
+                      Icons.storefront_rounded,
+                      size: 18,
+                      color: isFirst ? AppColors.white : AppColors.white,
                     ),
                   ),
                 ),
@@ -583,7 +607,7 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
               ],
             ),
           ),
-          
+
           // Items Table
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -606,7 +630,9 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                         AppColors.textSecondary.withValues(alpha: 0.05),
                       ],
                     ),
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -634,13 +660,13 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                     ],
                   ),
                 ),
-                
+
                 // Table Rows
                 ...widget.items.asMap().entries.map((entry) {
                   final index = entry.key;
                   final item = entry.value;
                   final isAvailable = item.isAvailableAt(vendor.id);
-                  final price = isAvailable 
+                  final price = isAvailable
                       ? item.getPriceForVendor(vendor.id)?.price ?? 0
                       : 0;
 
@@ -648,8 +674,8 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: index.isEven
-                        ? Colors.transparent
-                        : AppColors.background.withValues(alpha: 0.3),
+                          ? Colors.transparent
+                          : AppColors.background.withValues(alpha: 0.3),
                     ),
                     child: Row(
                       children: [
@@ -708,7 +734,9 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.error.withValues(alpha: 0.1),
+                                    color: AppColors.error.withValues(
+                                      alpha: 0.1,
+                                    ),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -721,7 +749,6 @@ class _VendorComparisonSheetState extends State<_VendorComparisonSheet> {
                                   ),
                                 ),
                         ),
-                        
                       ],
                     ),
                   );

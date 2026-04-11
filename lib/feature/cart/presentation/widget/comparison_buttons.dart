@@ -8,19 +8,19 @@ class CompareButton extends StatelessWidget {
   final int selectedCount;
   final VoidCallback? onPressed;
 
-  const CompareButton({
-    super.key,
-    required this.selectedCount,
-    this.onPressed,
-  });
+  const CompareButton({super.key, required this.selectedCount, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Padding(
       padding: EdgeInsets.fromLTRB(
-          16, 8, 16, 16 + MediaQuery.of(context).padding.bottom),
+        16,
+        8,
+        16,
+        16 + MediaQuery.of(context).padding.bottom,
+      ),
       child: Column(
         children: [
           if (selectedCount < 2)
@@ -29,12 +29,18 @@ class CompareButton extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.info_outline,
-                      size: 16, color: AppColors.textSecondary),
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: AppColors.textSecondary,
+                  ),
                   const SizedBox(width: 6),
-                  Text(l10n.select_one_more_vendor,
-                      style: AppTextStyles.labelSmall
-                          .copyWith(color: AppColors.textSecondary)),
+                  Text(
+                    l10n.select_one_more_vendor,
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -48,11 +54,14 @@ class CompareButton extends StatelessWidget {
                 foregroundColor: AppColors.white,
                 disabledBackgroundColor: AppColors.disabled,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(Spacing.buttonRadius)),
+                  borderRadius: BorderRadius.circular(Spacing.buttonRadius),
+                ),
                 elevation: 0,
               ),
-              child: Text('${l10n.compare_prices} ($selectedCount)',
-                  style: AppTextStyles.button),
+              child: Text(
+                '${l10n.compare_prices} ($selectedCount)',
+                style: AppTextStyles.button,
+              ),
             ),
           ),
         ],
@@ -74,10 +83,14 @@ class SelectCheapestButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Padding(
       padding: EdgeInsets.fromLTRB(
-          16, 8, 16, 16 + MediaQuery.of(context).padding.bottom),
+        16,
+        8,
+        16,
+        16 + MediaQuery.of(context).padding.bottom,
+      ),
       child: SizedBox(
         width: double.infinity,
         height: Spacing.buttonHeight,
@@ -87,12 +100,15 @@ class SelectCheapestButton extends StatelessWidget {
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Spacing.buttonRadius)),
+              borderRadius: BorderRadius.circular(Spacing.buttonRadius),
+            ),
             elevation: 0,
           ),
           icon: const Icon(Icons.check_circle_rounded, size: 20),
-          label: Text('${l10n.select_cheapest} $vendorName (${l10n.cheapest})',
-              style: AppTextStyles.button),
+          label: Text(
+            '${l10n.select_cheapest} $vendorName (${l10n.cheapest})',
+            style: AppTextStyles.button,
+          ),
         ),
       ),
     );

@@ -1,41 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-
-class VendorModel {
-  final String id;
-  final String name;
-  final String emoji;
-
-  const VendorModel({
-    required this.id,
-    required this.name,
-    required this.emoji,
-  });
-}
-
-final List<VendorModel> dummyVendors = [
-  const VendorModel(id: 'v1', name: 'كارفور', emoji: '🛒'),
-  const VendorModel(id: 'v2', name: 'سبينس', emoji: '🏪'),
-  const VendorModel(id: 'v3', name: 'هايبر وان', emoji: '🏬'),
-  const VendorModel(id: 'v4', name: 'بشاير', emoji: '🛍️'),
-  const VendorModel(id: 'v5', name: 'أونستوب', emoji: '🏪'),
-  const VendorModel(id: 'v6', name: 'فاتورة', emoji: '📦'),
-  const VendorModel(id: 'v7', name: 'جملة', emoji: '🏭'),
-];
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 
 class VendorSelector extends StatelessWidget {
-  final List<VendorModel> vendors;
-  final String? selectedVendorId; // تغيير إلى nullable
-  final void Function(String) onVendorSelected;
-
   const VendorSelector({
     super.key,
     required this.vendors,
     required this.selectedVendorId,
     required this.onVendorSelected,
   });
+
+  final List<CartVendorEntity> vendors;
+  final String? selectedVendorId;
+  final void Function(String) onVendorSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +49,11 @@ class VendorSelector extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
               itemCount: vendors.length,
               separatorBuilder: (_, _) => const SizedBox(width: 6),
-              itemBuilder: (_, i) => _VendorChip(
-                vendor: vendors[i],
-                isSelected: vendors[i].id == selectedVendorId,
+              itemBuilder: (_, index) => _VendorChip(
+                vendor: vendors[index],
+                isSelected: vendors[index].id == selectedVendorId,
                 hasSelection: selectedVendorId != null,
-                onTap: () => onVendorSelected(vendors[i].id),
+                onTap: () => onVendorSelected(vendors[index].id),
               ),
             ),
           ),
@@ -84,17 +64,17 @@ class VendorSelector extends StatelessWidget {
 }
 
 class _VendorChip extends StatelessWidget {
-  final VendorModel vendor;
-  final bool isSelected;
-  final bool hasSelection;
-  final VoidCallback onTap;
-
   const _VendorChip({
     required this.vendor,
     required this.isSelected,
     required this.hasSelection,
     required this.onTap,
   });
+
+  final CartVendorEntity vendor;
+  final bool isSelected;
+  final bool hasSelection;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +109,23 @@ class _VendorChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(vendor.emoji, style: const TextStyle(fontSize: 20)),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: SizedBox(
+                width: 36,
+                height: 36,
+                child: CachedNetworkImage(
+                  imageUrl: vendor.logoUrl ?? '',
+                  fit: BoxFit.cover,
+                  placeholder: (_, _) =>
+                      ColoredBox(color: color.surfaceContainerHighest),
+                  errorWidget: (_, _, _) => Image.asset(
+                    'assets/images/image_not_found.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(width: 8),
             Text(
               vendor.name,

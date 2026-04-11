@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
+import 'package:zadana_user_v3/feature/auth/forget_password/presentation/manager/forget_password_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/presentation/widgets/forget_password_form.dart';
 
 /// Forget Password Screen
@@ -15,7 +17,10 @@ class ForgetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _ForgetPasswordView();
+    return BlocProvider(
+      create: (_) => getIt<ForgetPasswordViewModel>(),
+      child: const _ForgetPasswordView(),
+    );
   }
 }
 
@@ -23,14 +28,6 @@ class _ForgetPasswordView extends StatelessWidget {
   const _ForgetPasswordView();
 
   void _onSuccess(BuildContext context, String identifier) {
-    final locale = context.localization;
-
-    CustomSnackbar.showSuccess(
-      context: context,
-      message: locale.msg_verification_code_sent,
-    );
-
-    // Navigate to verify OTP screen
     context.pushNamed(AppRoutes.verifyResetOtp, arguments: identifier);
   }
 

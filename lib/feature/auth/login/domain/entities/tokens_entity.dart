@@ -2,10 +2,10 @@
 /// Domain layer - Pure Dart
 class TokensEntity {
   final String accessToken;
-  final String refreshToken;
+  final String? refreshToken;
 
   const TokensEntity({
     required this.accessToken,
-    required this.refreshToken,
+    this.refreshToken,
   });
 }

@@ -174,7 +174,8 @@
   "total": "الإجمالي",
   "checkout": "إتمام الطلب",
 
-  "cart_empty": "السلة فاضية",
+  "cart_empty": "السلة فارغة",
+  "cart_empty_description": "لا توجد منتجات في سلة التسوق",
   "cart_empty_message": "ابدأ تسوق وحط منتجات",
   "shop_now": "تسوّق الحين",
 

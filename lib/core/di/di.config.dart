@@ -35,6 +35,14 @@ import '../../feature/auth/login/data/data_source/login_remote_data_source_impl.
 import '../../feature/auth/login/data/repo/login_repository_impl.dart' as _i94;
 import '../../feature/auth/login/domain/repo/login_repository.dart' as _i558;
 import '../../feature/auth/login/domain/usecase/login_usecase.dart' as _i248;
+import '../../feature/auth/logout/data/data_source/logout_remote_data_source.dart'
+    as _i609;
+import '../../feature/auth/logout/data/data_source/logout_remote_data_source_impl.dart'
+    as _i692;
+import '../../feature/auth/logout/data/repo/logout_repository_impl.dart'
+    as _i691;
+import '../../feature/auth/logout/domain/repo/logout_repository.dart' as _i31;
+import '../../feature/auth/logout/domain/usecase/logout_usecase.dart' as _i426;
 import '../../feature/auth/register/data/data_source/register_remote_data_source.dart'
     as _i334;
 import '../../feature/auth/register/data/data_source/register_remote_data_source_impl.dart'
@@ -71,6 +79,23 @@ import '../../feature/auth/verify_otp/domain/usecase/verify_otp_usecase.dart'
     as _i851;
 import '../../feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart'
     as _i718;
+import '../../feature/cart/data/data_source/cart_remote_data_source.dart'
+    as _i1034;
+import '../../feature/cart/data/data_source/cart_remote_data_source_impl.dart'
+    as _i640;
+import '../../feature/cart/data/repo/cart_repository_impl.dart' as _i132;
+import '../../feature/cart/data/services/guest_cart_sync_service.dart' as _i219;
+import '../../feature/cart/domain/repo/cart_repository.dart' as _i435;
+import '../../feature/cart/domain/usecase/add_cart_item_usecase.dart' as _i448;
+import '../../feature/cart/domain/usecase/clear_cart_usecase.dart' as _i327;
+import '../../feature/cart/domain/usecase/get_cart_usecase.dart' as _i925;
+import '../../feature/cart/domain/usecase/get_cart_vendors_usecase.dart'
+    as _i1065;
+import '../../feature/cart/domain/usecase/remove_cart_item_usecase.dart'
+    as _i483;
+import '../../feature/cart/domain/usecase/update_cart_item_quantity_usecase.dart'
+    as _i8;
+import '../../feature/cart/presentation/manager/cart_view_model.dart' as _i341;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
     as _i691;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source_impl.dart'
@@ -109,6 +134,16 @@ import '../../feature/location/domain/usecase/search_locations_usecase.dart'
     as _i903;
 import '../../feature/location/presentation/manager/location_view_model.dart'
     as _i343;
+import '../../feature/product_details/data/data_source/product_details_remote_data_source.dart'
+    as _i304;
+import '../../feature/product_details/data/data_source/product_details_remote_data_source_impl.dart'
+    as _i704;
+import '../../feature/product_details/data/repo/product_details_repository_impl.dart'
+    as _i1028;
+import '../../feature/product_details/domain/repo/product_details_repository.dart'
+    as _i888;
+import '../../feature/product_details/domain/usecase/product_details_usecase.dart'
+    as _i875;
 import '../../feature/profile/data/data_source/profile_remote_data_source.dart'
     as _i371;
 import '../../feature/profile/data/data_source/profile_remote_data_source_impl.dart'
@@ -118,21 +153,13 @@ import '../../feature/profile/domain/repo/profile_repository.dart' as _i1006;
 import '../../feature/profile/domain/usecase/profile_usecase.dart' as _i766;
 import '../../feature/profile/presentation/manager/profile_view_model.dart'
     as _i701;
-import '../../feature/product_details/data/data_source/product_details_remote_data_source.dart'
-    as _i640;
-import '../../feature/product_details/data/data_source/product_details_remote_data_source_impl.dart'
-    as _i641;
-import '../../feature/product_details/data/repo/product_details_repository_impl.dart'
-    as _i642;
-import '../../feature/product_details/domain/repo/product_details_repository.dart'
-    as _i643;
-import '../../feature/product_details/domain/usecase/product_details_usecase.dart'
-    as _i644;
 import '../helpers/permision_service.dart' as _i367;
 import '../helpers/shared_pref.dart' as _i42;
 import '../network/api_services.dart' as _i804;
 import '../network/external_modules.dart' as _i576;
 import '../network/osm_api_services.dart' as _i777;
+import '../services/device_id_interceptor.dart' as _i930;
+import '../services/device_id_service.dart' as _i148;
 import '../services/language_interceptor.dart' as _i32;
 import '../services/language_service.dart' as _i819;
 import '../services/token_interceptor.dart' as _i1056;
@@ -179,24 +206,34 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i819.LanguageService>(
       () => _i819.LanguageService(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i148.DeviceIdService>(
+      () => _i148.DeviceIdService(gh<_i460.SharedPreferences>()),
+    );
     gh.factory<_i408.LocationDataSource>(
       () => _i1072.LocationDataSourceImpl(
         gh<_i777.OsmApiServices>(),
         gh<_i367.LocationPermissionService>(),
       ),
     );
+    gh.factory<_i930.DeviceIdInterceptor>(
+      () => _i930.DeviceIdInterceptor(
+        gh<_i227.TokenService>(),
+        gh<_i148.DeviceIdService>(),
+      ),
+    );
     gh.factory<_i32.LanguageInterceptor>(
       () => _i32.LanguageInterceptor(gh<_i819.LanguageService>()),
-    );
-    gh.factory<_i912.LocationRepository>(
-      () => _i232.LocationRepositoryImpl(gh<_i408.LocationDataSource>()),
     );
     gh.lazySingleton<_i361.Dio>(
       () => externalModules.provideDio(
         gh<_i528.PrettyDioLogger>(),
         gh<_i1056.TokenInterceptor>(),
+        gh<_i930.DeviceIdInterceptor>(),
         gh<_i32.LanguageInterceptor>(),
       ),
+    );
+    gh.factory<_i912.LocationRepository>(
+      () => _i232.LocationRepositoryImpl(gh<_i408.LocationDataSource>()),
     );
     gh.factory<_i1061.GetAddressFromCoordinatesUseCase>(
       () => _i1061.GetAddressFromCoordinatesUseCase(
@@ -228,17 +265,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i952.LoginRemoteDataSource>(
       () => _i912.LoginRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i304.ProductDetailsRemoteDataSource>(
+      () => _i704.ProductDetailsRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
     gh.factory<_i730.HomeRemoteDataSource>(
       () => _i1072.HomeRemoteDataSourceImpl(gh<_i804.ApiServices>()),
-    );
-    gh.factory<_i640.ProductDetailsRemoteDataSource>(
-      () => _i641.ProductDetailsRemoteDataSourceImpl(gh<_i804.ApiServices>()),
-    );
-    gh.factory<_i415.VerifyOtpRepository>(
-      () => _i548.VerifyOtpRepositoryImpl(
-        gh<_i698.VerifyOtpRemoteDataSource>(),
-        gh<_i227.TokenService>(),
-      ),
     );
     gh.factory<_i343.LocationViewModel>(
       () => _i343.LocationViewModel(
@@ -250,24 +281,37 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i371.ProfileRemoteDataSource>(
       () => _i544.ProfileRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i888.ProductDetailsRepository>(
+      () => _i1028.ProductDetailsRepositoryImpl(
+        gh<_i304.ProductDetailsRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i609.LogoutRemoteDataSource>(
+      () => _i692.LogoutRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
     gh.factory<_i881.ForgetPasswordRepository>(
       () => _i384.ForgetPasswordRepositoryImpl(
         gh<_i596.ForgetPasswordRemoteDataSource>(),
       ),
+    );
+    gh.factory<_i1034.CartRemoteDataSource>(
+      () => _i640.CartRemoteDataSourceImpl(
+        gh<_i804.ApiServices>(),
+        gh<_i361.Dio>(),
+        gh<_i227.TokenService>(),
+        gh<_i148.DeviceIdService>(),
+      ),
+    );
+    gh.factory<_i31.LogoutRepository>(
+      () => _i691.LogoutRepositoryImpl(gh<_i609.LogoutRemoteDataSource>()),
     );
     gh.factory<_i122.ResetPasswordRemoteDataSource>(
       () => _i992.ResetPasswordRemoteDataSourceImpl(
         apiServices: gh<_i804.ApiServices>(),
       ),
     );
-    gh.factory<_i558.LoginRepository>(
-      () => _i94.LoginRepositoryImpl(
-        gh<_i952.LoginRemoteDataSource>(),
-        gh<_i227.TokenService>(),
-      ),
-    );
-    gh.factory<_i248.LoginUseCase>(
-      () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
+    gh.factory<_i426.LogoutUseCase>(
+      () => _i426.LogoutUseCase(repository: gh<_i31.LogoutRepository>()),
     );
     gh.factory<_i227.HomeRepository>(
       () => _i311.HomeRepositoryImpl(gh<_i730.HomeRemoteDataSource>()),
@@ -275,21 +319,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i465.HomeUseCase>(
       () => _i465.HomeUseCase(gh<_i227.HomeRepository>()),
     );
-    gh.factory<_i643.ProductDetailsRepository>(
-      () => _i642.ProductDetailsRepositoryImpl(
-        gh<_i640.ProductDetailsRemoteDataSource>(),
-      ),
-    );
-    gh.factory<_i644.ProductDetailsUseCase>(
-      () => _i644.ProductDetailsUseCase(gh<_i643.ProductDetailsRepository>()),
-    );
     gh.factory<_i334.RegisterRemoteDataSource>(
       () => _i168.RegisterRemoteDataSourceImpl(
         apiServices: gh<_i804.ApiServices>(),
       ),
     );
-    gh.factory<_i851.VerifyOtpUseCase>(
-      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
+    gh.factory<_i875.ProductDetailsUseCase>(
+      () => _i875.ProductDetailsUseCase(gh<_i888.ProductDetailsRepository>()),
     );
     gh.factory<_i891.DeliveryVerificationRepo>(
       () => _i1023.DeliveryVerificationRepoImpl(
@@ -325,6 +361,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i122.ResetPasswordRemoteDataSource>(),
       ),
     );
+    gh.factory<_i435.CartRepository>(
+      () => _i132.CartRepositoryImpl(gh<_i1034.CartRemoteDataSource>()),
+    );
     gh.factory<_i399.RegisterRepository>(
       () => _i466.RegisterRepositoryImpl(gh<_i334.RegisterRemoteDataSource>()),
     );
@@ -334,11 +373,33 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i701.ProfileViewModel>(
       () => _i701.ProfileViewModel(gh<_i766.ProfileUseCase>()),
     );
-    gh.factory<_i718.VerifyOtpViewModel>(
-      () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),
+    gh.factory<_i448.AddCartItemUseCase>(
+      () => _i448.AddCartItemUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i327.ClearCartUseCase>(
+      () => _i327.ClearCartUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i925.GetCartUseCase>(
+      () => _i925.GetCartUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i1065.GetCartVendorsUseCase>(
+      () => _i1065.GetCartVendorsUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i483.RemoveCartItemUseCase>(
+      () => _i483.RemoveCartItemUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i8.UpdateCartItemQuantityUseCase>(
+      () => _i8.UpdateCartItemQuantityUseCase(gh<_i435.CartRepository>()),
     );
     gh.factory<_i166.RegisterUseCase>(
       () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
+    );
+    gh.lazySingleton<_i219.GuestCartSyncService>(
+      () => _i219.GuestCartSyncService(
+        gh<_i460.SharedPreferences>(),
+        gh<_i227.TokenService>(),
+        gh<_i448.AddCartItemUseCase>(),
+      ),
     );
     gh.factory<_i796.DeliveryOtpViewModel>(
       () => _i796.DeliveryOtpViewModel(
@@ -352,11 +413,44 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i491.ResetPasswordRepository>(),
       ),
     );
+    gh.factory<_i415.VerifyOtpRepository>(
+      () => _i548.VerifyOtpRepositoryImpl(
+        gh<_i698.VerifyOtpRemoteDataSource>(),
+        gh<_i227.TokenService>(),
+        gh<_i219.GuestCartSyncService>(),
+      ),
+    );
+    gh.factory<_i558.LoginRepository>(
+      () => _i94.LoginRepositoryImpl(
+        gh<_i952.LoginRemoteDataSource>(),
+        gh<_i227.TokenService>(),
+        gh<_i219.GuestCartSyncService>(),
+      ),
+    );
+    gh.factory<_i248.LoginUseCase>(
+      () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
+    );
     gh.factory<_i330.RegisterViewModel>(
       () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
     );
+    gh.factory<_i851.VerifyOtpUseCase>(
+      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
+    );
+    gh.factory<_i341.CartViewModel>(
+      () => _i341.CartViewModel(
+        gh<_i1065.GetCartVendorsUseCase>(),
+        gh<_i925.GetCartUseCase>(),
+        gh<_i327.ClearCartUseCase>(),
+        gh<_i483.RemoveCartItemUseCase>(),
+        gh<_i8.UpdateCartItemQuantityUseCase>(),
+        gh<_i219.GuestCartSyncService>(),
+      ),
+    );
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
+    );
+    gh.factory<_i718.VerifyOtpViewModel>(
+      () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),
     );
     return this;
   }

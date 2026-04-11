@@ -12,6 +12,9 @@ import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dar
 class CartItemCard extends StatelessWidget {
   final CartItemModel item;
   final String? selectedVendorId;
+  final String? loadedVendorId;
+  final bool isLoadingSelectedVendorPrices;
+  final int priceAnimationVersion;
   final VoidCallback onTap;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
@@ -23,6 +26,9 @@ class CartItemCard extends StatelessWidget {
     super.key,
     required this.item,
     required this.selectedVendorId,
+    this.loadedVendorId,
+    this.isLoadingSelectedVendorPrices = false,
+    this.priceAnimationVersion = 0,
     required this.onTap,
     required this.onIncrement,
     required this.onDecrement,
@@ -39,9 +45,19 @@ class CartItemCard extends StatelessWidget {
     // Calculate discount based on selected vendor
     String? discountText;
     if (selectedVendorId != null) {
-      final vendorPrice = item.getPriceForVendor(selectedVendorId!);
-      if (vendorPrice != null && vendorPrice.isDiscounted && vendorPrice.oldPrice != null && vendorPrice.oldPrice! > vendorPrice.price) {
-        final discountPercent = ((vendorPrice.oldPrice! - vendorPrice.price) / vendorPrice.oldPrice! * 100).round();
+      final vendorPrice = item.getPriceForVendor(
+        selectedVendorId!,
+        loadedVendorId: loadedVendorId,
+      );
+      if (vendorPrice != null &&
+          vendorPrice.isDiscounted &&
+          vendorPrice.oldPrice != null &&
+          vendorPrice.oldPrice! > vendorPrice.price) {
+        final discountPercent =
+            ((vendorPrice.oldPrice! - vendorPrice.price) /
+                    vendorPrice.oldPrice! *
+                    100)
+                .round();
         discountText = '$discountPercent%';
       }
     }
@@ -67,12 +83,12 @@ class CartItemCard extends StatelessWidget {
             child: Row(
               children: [
                 ProductImage(
-                  emoji: item.imageUrl,
-                  url: '',
+                  emoji: '',
+                  url: item.imageUrl,
                   width: 68,
                   height: 68,
                   borderRadius: Spacing.cardRadius,
-                  heroTag: productHeroTag(item.id, source: 'cart-item'),
+                  heroTag: productHeroTag(item.productId, source: 'cart-item'),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -156,46 +172,92 @@ class CartItemCard extends StatelessWidget {
 
   Widget _buildPrice(dynamic locale, ColorScheme color) {
     if (selectedVendorId == null) {
-      return Text(
-        locale.select_vendor_to_show_price,
-        style: getRegularStyle(
-          fontFamily: FontConstant.cairo,
-          fontSize: FontSize.size10,
-          color: color.onSurfaceVariant,
+      return _wrapPriceChangeAnimation(
+        child: Text(
+          locale.select_vendor_to_show_price,
+          style: getRegularStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size10,
+            color: color.onSurfaceVariant,
+          ),
         ),
+        priceKey: 'prompt',
       );
     }
 
-    final isAvailable = item.isAvailableAt(selectedVendorId!);
-    if (!isAvailable) {
-      return _buildUnavailableBadge(color);
+    if (isLoadingSelectedVendorPrices) {
+      return _wrapPriceChangeAnimation(
+        child: _buildLoadingPrice(color),
+        priceKey: 'loading-$selectedVendorId',
+      );
     }
 
-    final vendorPrice = item.getPriceForVendor(selectedVendorId!);
+    final isAvailable = item.isAvailableAt(
+      selectedVendorId!,
+      loadedVendorId: loadedVendorId,
+    );
+    if (!isAvailable) {
+      return _wrapPriceChangeAnimation(
+        child: _buildUnavailableBadge(color),
+        priceKey: 'unavailable',
+      );
+    }
+
+    final vendorPrice = item.getPriceForVendor(
+      selectedVendorId!,
+      loadedVendorId: loadedVendorId,
+    );
     final price = vendorPrice?.price;
     final oldPrice = vendorPrice?.oldPrice;
     final isDiscounted = vendorPrice?.isDiscounted ?? false;
 
     if (price == null) {
-      return Text(
-        locale.select_vendor_to_show_price,
-        style: getRegularStyle(
-          fontFamily: FontConstant.cairo,
-          fontSize: FontSize.size10,
-          color: color.onSurfaceVariant,
+      return _wrapPriceChangeAnimation(
+        child: Text(
+          locale.select_vendor_to_show_price,
+          style: getRegularStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size10,
+            color: color.onSurfaceVariant,
+          ),
         ),
+        priceKey: 'missing-price',
       );
     }
 
     final hasDiscount = isDiscounted && oldPrice != null && oldPrice > price;
-
-    if (animatePrice) {
-      return _buildAnimatedPrice(locale, color, oldPrice, price, hasDiscount);
-    }
-
-    return hasDiscount
+    final priceWidget = animatePrice
+        ? _buildAnimatedPrice(locale, color, oldPrice, price, hasDiscount)
+        : hasDiscount
         ? _buildDiscountedPrice(locale, color, oldPrice, price)
         : _buildRegularPrice(locale, price);
+
+    return _wrapPriceChangeAnimation(
+      child: priceWidget,
+      priceKey:
+          '$selectedVendorId-$loadedVendorId-$priceAnimationVersion-$price-$oldPrice-$isDiscounted',
+    );
+  }
+
+  Widget _wrapPriceChangeAnimation({
+    required Widget child,
+    required String priceKey,
+  }) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 350),
+      switchInCurve: Curves.easeOutBack,
+      switchOutCurve: Curves.easeIn,
+      transitionBuilder: (child, animation) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.18, 0),
+            end: Offset.zero,
+          ).animate(animation),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      child: KeyedSubtree(key: ValueKey(priceKey), child: child),
+    );
   }
 
   Widget _buildUnavailableBadge(ColorScheme color) {
@@ -221,6 +283,31 @@ class CartItemCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoadingPrice(ColorScheme color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 12,
+          height: 12,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.6,
+            color: AppColors.primary,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          'جاري تحديث السعر',
+          style: getMediumStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size11,
+            color: color.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 

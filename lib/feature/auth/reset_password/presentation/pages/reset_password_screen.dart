@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/widgets/reset_password_form.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
@@ -16,7 +18,10 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _ResetPasswordView(identifier: identifier, otpCode: otpCode);
+    return BlocProvider(
+      create: (_) => getIt<ResetPasswordViewModel>(),
+      child: _ResetPasswordView(identifier: identifier, otpCode: otpCode),
+    );
   }
 }
 
@@ -45,10 +50,6 @@ class _ResetPasswordView extends StatelessWidget {
         identifier: identifier,
         otpCode: otpCode,
         onSuccess: () {
-          CustomSnackbar.showSuccess(
-            context: context,
-            message: locale.msg_password_reset_success,
-          );
           context.pushNamedAndRemoveUntil(
             AppRoutes.login,
             predicate: (route) => false,

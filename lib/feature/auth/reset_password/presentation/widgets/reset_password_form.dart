@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/domain/entities/reset_password_request_entity.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_event.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_state.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_password_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
@@ -28,7 +34,6 @@ class _ResetPasswordFormState
   final _formKey = GlobalKey<FormState>();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -37,17 +42,17 @@ class _ResetPasswordFormState
     super.dispose();
   }
 
-  Future<void> _onSubmit(BuildContext context) async {
+  void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      await Future.delayed(const Duration(seconds: 2));
-
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        widget.onSuccess();
-      }
+      context.read<ResetPasswordViewModel>().doIntent(
+        ResetPasswordSubmitEvent(
+          requestEntity: ResetPasswordRequestEntity(
+            identifier: widget.identifier,
+            otpCode: widget.otpCode,
+            newPassword: _newPasswordController.text,
+          ),
+        ),
+      );
     }
   }
 
@@ -55,43 +60,61 @@ class _ResetPasswordFormState
   Widget build(BuildContext context) {
     final locale = context.localization;
 
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FieldLabel(locale.label_new_password),
-          AppPasswordField(
-            controller: _newPasswordController,
-            hint: locale.hint_new_password,
-            validator: (v) =>
-                Validations.validatePassword(context, v),
-          ),
-          const SizedBox(height: Spacing.base),
+    return BlocConsumer<ResetPasswordViewModel, ResetPasswordState>(
+      listener: (context, state) {
+        if (state.isSuccess && state.responseEntity != null) {
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.responseEntity!.message,
+          );
+          widget.onSuccess();
+        }
 
-          FieldLabel(locale.label_new_password),
-          AppPasswordField(
-            controller: _confirmPasswordController,
-            hint: locale.hint_new_password,
-            validator: (v) {
-              if (v == null || v.isEmpty) {
-                return locale.confirm_password_is_required;
-              }
-              if (v != _newPasswordController.text) {
-                return locale.passwords_do_not_match;
-              }
-              return null;
-            },
+        if (state.errorMessage != null) {
+          CustomSnackbar.showError(
+            context: context,
+            message: state.errorMessage!,
+          );
+        }
+      },
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FieldLabel(locale.label_new_password),
+              AppPasswordField(
+                controller: _newPasswordController,
+                hint: locale.hint_new_password,
+                validator: (v) =>
+                    Validations.validatePassword(context, v),
+              ),
+              const SizedBox(height: Spacing.base),
+              FieldLabel(locale.label_new_password),
+              AppPasswordField(
+                controller: _confirmPasswordController,
+                hint: locale.hint_new_password,
+                validator: (v) {
+                  if (v == null || v.isEmpty) {
+                    return locale.confirm_password_is_required;
+                  }
+                  if (v != _newPasswordController.text) {
+                    return locale.passwords_do_not_match;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: Spacing.xl),
+              AppButtonSwitch(
+                label: locale.btn_confirm,
+                onPressed: () => _onSubmit(context),
+                isLoading: state.isLoading,
+              ),
+            ],
           ),
-          const SizedBox(height: Spacing.xl),
-
-          AppButtonSwitch(
-            label: locale.btn_confirm,
-            onPressed: () => _onSubmit(context),
-            isLoading: _isLoading,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

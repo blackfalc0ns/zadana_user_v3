@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/widgets/profile_dashboard_content.dart';
 
@@ -39,9 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (shouldLogout == true && context.mounted) {
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+      await LogoutHelper.performLogout(context);
     }
   }
 

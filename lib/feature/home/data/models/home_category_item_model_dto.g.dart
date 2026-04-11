@@ -2,6 +2,10 @@
 
 part of 'home_category_item_model_dto.dart';
 
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
 HomeCategoryItemModelDto _$HomeCategoryItemModelDtoFromJson(
   Map<String, dynamic> json,
 ) => HomeCategoryItemModelDto(

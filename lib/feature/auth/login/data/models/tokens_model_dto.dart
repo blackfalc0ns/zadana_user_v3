@@ -8,11 +8,11 @@ part 'tokens_model_dto.g.dart';
 @JsonSerializable()
 class TokensModelDto {
   final String accessToken;
-  final String refreshToken;
+  final String? refreshToken;
 
   const TokensModelDto({
     required this.accessToken,
-    required this.refreshToken,
+    this.refreshToken,
   });
 
   factory TokensModelDto.fromJson(Map<String, dynamic> json) =>

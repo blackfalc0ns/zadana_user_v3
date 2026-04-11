@@ -85,7 +85,10 @@ class RouteGenerator {
       case AppRoutes.startSelectLocationPage:
         return MaterialPageRoute(builder: (_) => StartSelectLocationPage());
       case AppRoutes.verifyOtp:
-        return MaterialPageRoute(builder: (_) => VerifyOtpScreen());
+        final identifier = settings.arguments as String?;
+        return MaterialPageRoute(
+          builder: (_) => VerifyOtpScreen(identifier: identifier),
+        );
       case AppRoutes.manualAddressEntry:
         return MaterialPageRoute(
           builder: (_) => const ManualAddressEntryPage(),

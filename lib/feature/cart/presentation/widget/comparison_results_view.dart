@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/comparison_buttons.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/comparison_widgets.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_result_card.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 
 class ComparisonResultsView extends StatelessWidget {
-  final List<MapEntry<VendorModel, double>> results;
+  final List<MapEntry<CartVendorEntity, double>> results;
   final String currentVendorId;
   final double savings;
   final VoidCallback onBack;

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/animated_price_display.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 
 class VendorInfoRow extends StatelessWidget {
   final String selectedVendorId;
@@ -25,15 +24,12 @@ class VendorInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    
+
     return Row(
       children: [
         _buildVendorInfo(context, locale),
         const Spacer(),
-        AnimatedPriceDisplay(
-          totalPrice: totalPrice,
-          animations: animations,
-        ),
+        AnimatedPriceDisplay(totalPrice: totalPrice, animations: animations),
       ],
     );
   }
@@ -50,23 +46,20 @@ class VendorInfoRow extends StatelessWidget {
 
   Widget _buildVendorEmoji(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color.primaryContainer,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        dummyVendors.firstWhere((v) => v.id == selectedVendorId).emoji,
-        style: const TextStyle(fontSize: 24),
-      ),
+      child: Icon(Icons.storefront_rounded, color: color.primary, size: 24),
     );
   }
 
   Widget _buildVendorDetails(BuildContext context, locale) {
     final color = context.colorScheme;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

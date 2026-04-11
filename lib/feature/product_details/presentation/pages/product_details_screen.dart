@@ -7,6 +7,9 @@ import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_details_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_details_usecase.dart';
@@ -32,20 +35,70 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   late final ProductDetailsUseCase _productDetailsUseCase;
+  late final AddCartItemUseCase _addCartItemUseCase;
+  late final GuestCartSyncService _guestCartSyncService;
   late Future<ApiResult<ProductDetailsEntity>> _productDetailsFuture;
   int _quantity = 1;
   String? _activeProductId;
+  bool _isAddingToCart = false;
 
   @override
   void initState() {
     super.initState();
     _productDetailsUseCase = getIt<ProductDetailsUseCase>();
+    _addCartItemUseCase = getIt<AddCartItemUseCase>();
+    _guestCartSyncService = getIt<GuestCartSyncService>();
     _activeProductId = widget.activeProductId;
     _productDetailsFuture = _loadProductDetails();
   }
 
   Future<ApiResult<ProductDetailsEntity>> _loadProductDetails() {
     return _productDetailsUseCase.getProductDetails(widget.product.id);
+  }
+
+  Future<void> _addToCart(ProductDetailsEntity productDetails) async {
+    if (_isAddingToCart) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    if (productDetails.masterProductId.isEmpty) {
+      CustomSnackbar.showError(
+        context: context,
+        message: 'Product id is unavailable for this item.',
+      );
+      return;
+    }
+
+    setState(() => _isAddingToCart = true);
+
+    final request = AddCartItemRequestEntity(
+      productId: productDetails.masterProductId,
+      quantity: _quantity,
+    );
+
+    final result = await _addCartItemUseCase.call(request);
+
+    if (!mounted) return;
+
+    switch (result) {
+      case ApiSuccessResult():
+        await _guestCartSyncService.cacheGuestCartItem(request);
+        if (!mounted) return;
+        CustomSnackbar.showSuccess(
+          context: context,
+          message: result.data.message.isNotEmpty
+              ? result.data.message
+              : l10n.product_added_to_cart(_quantity, productDetails.name),
+        );
+      case ApiErrorResult():
+        CustomSnackbar.showError(
+          context: context,
+          message: result.failure.errorMessage,
+        );
+    }
+
+    if (mounted) {
+      setState(() => _isAddingToCart = false);
+    }
   }
 
   @override
@@ -61,7 +114,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             : null;
 
         final title = productDetails?.name ?? widget.product.name;
-        final imageUrl = productDetails?.imageUrl ?? (widget.product.imageUrl ?? '');
+        final imageUrl = productDetails?.imageUrl ?? (widget.product.imageUrl);
         final productId = productDetails?.id ?? widget.product.id;
 
         return Scaffold(
@@ -110,17 +163,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       setState(() => _activeProductId = product.id);
                       await WidgetsBinding.instance.endOfFrame;
 
-                      if (mounted) {
-                        ProductNavigationHelper.navigateToProductDetails(
-                          context,
-                          product,
-                          activeProductId: product.id,
-                          heroTag: productHeroTag(
-                            product.id,
-                            source: 'similar-products',
-                          ),
-                        );
-                      }
+                      if (!mounted) return;
+
+                      ProductNavigationHelper.navigateToProductDetails(
+                        context,
+                        product,
+                        activeProductId: product.id,
+                        heroTag: productHeroTag(
+                          product.id,
+                          source: 'similar-products',
+                        ),
+                      );
                     },
                     onSimilarProductAddToCart: (product) {
                       CustomSnackbar.showSuccess(
@@ -147,13 +200,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           bottomSheet: productDetails == null
               ? null
               : ProductBottomActions(
-                  onAddToCart: () => CustomSnackbar.showSuccess(
-                    context: context,
-                    message: l10n.product_added_to_cart(
-                      _quantity,
-                      productDetails.name,
-                    ),
-                  ),
+                  onAddToCart: _isAddingToCart
+                      ? null
+                      : () => _addToCart(productDetails),
                   onGoToCart: () => CustomSnackbar.showInfo(
                     context: context,
                     message: 'الانتقال للسلة',
@@ -358,11 +407,7 @@ class _DetailsBone extends StatelessWidget {
   final double height;
   final double radius;
 
-  const _DetailsBone({
-    this.width,
-    required this.height,
-    required this.radius,
-  });
+  const _DetailsBone({this.width, required this.height, required this.radius});
 
   @override
   Widget build(BuildContext context) {

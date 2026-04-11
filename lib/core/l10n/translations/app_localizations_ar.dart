@@ -463,7 +463,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get checkout => 'إتمام الطلب';
 
   @override
-  String get cart_empty => 'السلة فاضية';
+  String get cart_empty => 'السلة فارغة';
+
+  @override
+  String get cart_empty_description => 'لا توجد منتجات في سلة التسوق';
 
   @override
   String get cart_empty_message => 'ابدأ تسوق وحط منتجات';

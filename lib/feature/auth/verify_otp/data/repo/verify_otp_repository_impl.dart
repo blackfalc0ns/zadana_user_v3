@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/mapper/mapper_verify_otp.dart';
+import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
 import '../../domain/entities/verify_otp_request_entity.dart';
 import '../../domain/entities/verify_otp_response_entity.dart';
 import '../../domain/repo/verify_otp_repository.dart';
@@ -13,8 +14,13 @@ import '../data_source/verify_otp_remote_data_source.dart';
 class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
   final VerifyOtpRemoteDataSource _remoteDataSource;
   final TokenService _tokenService;
+  final GuestCartSyncService _guestCartSyncService;
 
-  const VerifyOtpRepositoryImpl(this._remoteDataSource, this._tokenService);
+  const VerifyOtpRepositoryImpl(
+    this._remoteDataSource,
+    this._tokenService,
+    this._guestCartSyncService,
+  );
 
   @override
   Future<ApiResult<VerifyOtpResponseEntity>> verifyOtp(
@@ -28,6 +34,7 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
       if (accessToken != null && refreshToken != null) {
         await _tokenService.saveAccessToken(accessToken);
         await _tokenService.saveRefreshToken(refreshToken);
+        await _guestCartSyncService.syncPendingItemsIfAuthenticated();
       }
 
       return result.toEntity();

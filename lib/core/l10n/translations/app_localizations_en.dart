@@ -473,6 +473,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cart_empty => 'Cart is Empty!';
 
   @override
+  String get cart_empty_description =>
+      'There are no products in your shopping cart';
+
+  @override
   String get cart_empty_message =>
       'Start shopping and add products to your cart';
 

@@ -4,24 +4,20 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_item_card.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_item_card.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 
 class CartContent extends StatelessWidget {
-  final List<CartItemModel> items;
-  final String? selectedVendorId;
-  final Function(String) onVendorSelected;
-  final Function(CartItemModel) onItemTap;
-  final Function(CartItemModel, bool) onUpdateQuantity;
-  final Function(CartItemModel) onDeleteItem;
-  final String? activeHeroProductId;
-  final String? animatingPriceItemId;
-
   const CartContent({
     super.key,
     required this.items,
+    required this.vendors,
     required this.selectedVendorId,
+    required this.loadedVendorId,
+    required this.isLoadingSelectedVendorPrices,
+    required this.priceAnimationVersion,
     required this.onVendorSelected,
     required this.onItemTap,
     required this.onUpdateQuantity,
@@ -30,95 +26,49 @@ class CartContent extends StatelessWidget {
     this.animatingPriceItemId,
   });
 
+  final List<CartItemModel> items;
+  final List<CartVendorEntity> vendors;
+  final String? selectedVendorId;
+  final String? loadedVendorId;
+  final bool isLoadingSelectedVendorPrices;
+  final int priceAnimationVersion;
+  final Function(String) onVendorSelected;
+  final Function(CartItemModel) onItemTap;
+  final Function(CartItemModel, bool) onUpdateQuantity;
+  final Function(CartItemModel) onDeleteItem;
+  final String? activeHeroProductId;
+  final String? animatingPriceItemId;
+
   @override
   Widget build(BuildContext context) {
-    final locale = context.localization;
     final unavailableCount = selectedVendorId == null
         ? 0
-        : items.where((item) => !item.isAvailableAt(selectedVendorId!)).length;
+        : isLoadingSelectedVendorPrices
+        ? 0
+        : items
+              .where(
+                (item) => !item.isAvailableAt(
+                  selectedVendorId!,
+                  loadedVendorId: loadedVendorId,
+                ),
+              )
+              .length;
 
     return Column(
       children: [
-        // ── Vendor selector ──
         VendorSelector(
-          vendors: dummyVendors,
+          vendors: vendors,
           selectedVendorId: selectedVendorId,
           onVendorSelected: onVendorSelected,
         ),
-
-        // ── Vendor prompt (when no vendor selected) ──
         if (selectedVendorId == null) _buildSelectVendorPrompt(context),
-
-        // ── Unavailable items warning ──
         if (selectedVendorId != null && unavailableCount > 0)
           _buildUnavailableWarning(context, unavailableCount),
-
-        // ── Subtle divider ──
         Container(
           height: 1,
           margin: const EdgeInsets.symmetric(horizontal: 14),
           color: AppColors.divider.withValues(alpha: 0.5),
         ),
-
-        // ── Items count header ──
-        // Padding(
-        //   padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
-        //   child: Row(
-        //     children: [
-        //       Text(
-        //         '${locale.product} (${items.length})',
-        //         style: getSemiBoldStyle(
-        //           fontFamily: FontConstant.cairo,
-        //           fontSize: FontSize.size13,
-        //           color: AppColors.textPrimary,
-        //         ),
-        //       ),
-        //       const Spacer(),
-        //       if (selectedVendorId != null)
-        //         Container(
-        //           padding: const EdgeInsets.symmetric(
-        //             horizontal: 8,
-        //             vertical: 2,
-        //           ),
-        //           decoration: BoxDecoration(
-        //             color: unavailableCount > 0
-        //                 ? AppColors.warning.withValues(alpha: 0.1)
-        //                 : AppColors.success.withValues(alpha: 0.1),
-        //             borderRadius: BorderRadius.circular(8),
-        //           ),
-        //           child: Row(
-        //             mainAxisSize: MainAxisSize.min,
-        //             children: [
-        //               Icon(
-        //                 unavailableCount > 0
-        //                     ? Icons.warning_amber_rounded
-        //                     : Icons.check_circle_outline,
-        //                 size: 12,
-        //                 color: unavailableCount > 0
-        //                     ? AppColors.warning
-        //                     : AppColors.success,
-        //               ),
-        //               const SizedBox(width: 4),
-        //               Text(
-        //                 dummyVendors
-        //                     .firstWhere((v) => v.id == selectedVendorId)
-        //                     .name,
-        //                 style: getMediumStyle(
-        //                   fontFamily: FontConstant.cairo,
-        //                   fontSize: FontSize.size10,
-        //                   color: unavailableCount > 0
-        //                       ? AppColors.warning
-        //                       : AppColors.success,
-        //                 ),
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //     ],
-        //   ),
-        // ),
-
-        // ── Items list ──
         Expanded(child: _buildItemsList()),
       ],
     );
@@ -251,6 +201,9 @@ class CartContent extends StatelessWidget {
       itemBuilder: (_, index) => CartItemCard(
         item: items[index],
         selectedVendorId: selectedVendorId,
+        loadedVendorId: loadedVendorId,
+        isLoadingSelectedVendorPrices: isLoadingSelectedVendorPrices,
+        priceAnimationVersion: priceAnimationVersion,
         onTap: () => onItemTap(items[index]),
         onIncrement: () => onUpdateQuantity(items[index], true),
         onDecrement: () => onUpdateQuantity(items[index], false),

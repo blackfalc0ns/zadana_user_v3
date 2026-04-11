@@ -15,19 +15,16 @@ class CartAnimations {
       vsync: vsync,
     );
 
-    _priceSlideAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _priceAnimationController,
-      curve: Curves.easeOutBack,
-    ));
+    _priceSlideAnimation =
+        Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _priceAnimationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
 
     _priceFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _priceAnimationController,
-        curve: Curves.easeOut,
-      ),
+      CurvedAnimation(parent: _priceAnimationController, curve: Curves.easeOut),
     );
   }
 
@@ -50,10 +47,7 @@ class CartAnimations {
       position: Tween<Offset>(
         begin: const Offset(0.0, 1.0),
         end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOutQuart,
-      )),
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutQuart)),
       child: child,
     );
   }
@@ -66,10 +60,7 @@ class CartAnimations {
       position: Tween<Offset>(
         begin: const Offset(0.0, 0.3),
         end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOutCubic,
-      )),
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
       child: FadeTransition(opacity: animation, child: child),
     );
   }

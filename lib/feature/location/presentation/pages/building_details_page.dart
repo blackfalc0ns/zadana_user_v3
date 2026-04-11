@@ -78,7 +78,7 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView> with Address
       apartmentNo: currentState.apartmentNo, label: currentState.label,
     );
     viewModel.doIntent(SetSelectedLocationEvent(completeLocation));
-    Navigator.pushNamed(context, AppRoutes.login, arguments: completeLocation);
+    Navigator.pushNamed(context, AppRoutes.signUp, arguments: completeLocation);
   }
 
   @override

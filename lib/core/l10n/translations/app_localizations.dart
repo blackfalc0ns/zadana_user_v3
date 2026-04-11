@@ -998,6 +998,12 @@ abstract class AppLocalizations {
   /// **'Cart is Empty!'**
   String get cart_empty;
 
+  /// No description provided for @cart_empty_description.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no products in your shopping cart'**
+  String get cart_empty_description;
+
   /// No description provided for @cart_empty_message.
   ///
   /// In en, this message translates to:

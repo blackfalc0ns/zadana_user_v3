@@ -1,0 +1,25 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'vendor_price_response_dto.g.dart';
+
+@JsonSerializable()
+class VendorPriceResponseDto {
+  const VendorPriceResponseDto({
+    required this.id,
+    required this.name,
+    required this.price,
+    this.oldPrice,
+    required this.isDiscounted,
+  });
+
+  final String id;
+  final String name;
+  final double price;
+  final double? oldPrice;
+  final bool isDiscounted;
+
+  factory VendorPriceResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$VendorPriceResponseDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VendorPriceResponseDtoToJson(this);
+}

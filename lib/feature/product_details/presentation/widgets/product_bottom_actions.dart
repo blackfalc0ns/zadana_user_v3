@@ -8,11 +8,7 @@ class ProductBottomActions extends StatelessWidget {
   final VoidCallback? onAddToCart;
   final VoidCallback? onGoToCart;
 
-  const ProductBottomActions({
-    super.key,
-    this.onAddToCart,
-    this.onGoToCart,
-  });
+  const ProductBottomActions({super.key, this.onAddToCart, this.onGoToCart});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +44,7 @@ class ProductBottomActions extends StatelessWidget {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: onGoToCart,
-                icon: const FaIcon(FontAwesomeIcons.shoppingCart, size: 18),
+                icon: const FaIcon(FontAwesomeIcons.cartShopping, size: 18),
                 label: const Text('السلة'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),

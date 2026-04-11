@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 
 class VendorResultCard extends StatelessWidget {
-  final VendorModel vendor;
+  final CartVendorEntity vendor;
   final double total;
   final int rank;
   final bool isCheapest;
@@ -27,7 +27,7 @@ class VendorResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return GestureDetector(
       onTap: onSelect,
       child: Container(
@@ -39,8 +39,8 @@ class VendorResultCard extends StatelessWidget {
             color: isCheapest
                 ? AppColors.primary
                 : isCurrent
-                    ? AppColors.primary.withValues(alpha: 0.5)
-                    : AppColors.border,
+                ? AppColors.primary.withValues(alpha: 0.5)
+                : AppColors.border,
             width: isCheapest || isCurrent ? 2 : 1,
           ),
         ),
@@ -54,16 +54,17 @@ class VendorResultCard extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text('$rank',
-                    style: AppTextStyles.labelLarge.copyWith(
-                        color: isCheapest
-                            ? AppColors.white
-                            : AppColors.textSecondary,
-                        fontWeight: FontWeight.w700)),
+                child: Text(
+                  '$rank',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: isCheapest
+                        ? AppColors.white
+                        : AppColors.textSecondary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(width: 12),
-            Text(vendor.emoji, style: const TextStyle(fontSize: 24)),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -71,15 +72,20 @@ class VendorResultCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(vendor.name,
-                          style: AppTextStyles.labelLarge.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w700)),
+                      Text(
+                        vendor.name,
+                        style: AppTextStyles.labelLarge.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       if (isCheapest) ...[
                         const SizedBox(width: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(6),
@@ -89,11 +95,14 @@ class VendorResultCard extends StatelessWidget {
                             children: [
                               const Text('🏆', style: TextStyle(fontSize: 10)),
                               const SizedBox(width: 2),
-                              Text(l10n.cheapest,
-                                  style: AppTextStyles.labelSmall.copyWith(
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 10)),
+                              Text(
+                                l10n.cheapest,
+                                style: AppTextStyles.labelSmall.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 10,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -102,25 +111,35 @@ class VendorResultCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   if (!isCheapest && savings > 0)
-                    Text('${l10n.more_expensive_by} ${savings.toStringAsFixed(0)} ج.م',
-                        style: AppTextStyles.labelSmall
-                            .copyWith(color: AppColors.error)),
+                    Text(
+                      '${l10n.more_expensive_by} ${savings.toStringAsFixed(0)} ج.م',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
                 ],
               ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${total.toStringAsFixed(0)} ج.م',
-                    style: AppTextStyles.labelLarge.copyWith(
-                        color: isCheapest
-                            ? AppColors.primary
-                            : AppColors.textPrimary,
-                        fontWeight: FontWeight.w700)),
+                Text(
+                  '${total.toStringAsFixed(0)} ج.م',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: isCheapest
+                        ? AppColors.primary
+                        : AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 if (isCurrent && !isCheapest)
-                  Text(l10n.currently_selected,
-                      style: AppTextStyles.labelSmall.copyWith(
-                          color: AppColors.textSecondary, fontSize: 10)),
+                  Text(
+                    l10n.currently_selected,
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textSecondary,
+                      fontSize: 10,
+                    ),
+                  ),
               ],
             ),
           ],

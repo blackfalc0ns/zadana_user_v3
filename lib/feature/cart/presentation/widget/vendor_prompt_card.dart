@@ -24,7 +24,7 @@ class VendorPromptCard extends StatelessWidget {
 
   Widget _buildStoreIcon(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -42,7 +42,7 @@ class VendorPromptCard extends StatelessWidget {
   Widget _buildPromptText(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -69,7 +69,7 @@ class VendorPromptCard extends StatelessWidget {
 
   Widget _buildTouchIcon(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return Icon(Icons.touch_app, color: color.primary, size: 24);
   }
 }
