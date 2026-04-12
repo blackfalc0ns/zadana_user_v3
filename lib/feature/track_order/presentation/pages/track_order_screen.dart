@@ -1,9 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_driver_card.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_time_line.dart';
@@ -15,10 +15,10 @@ class TrackOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     const steps = [
-      ('تم استلام الطلب', true),
-      ('جاري التحضير', true),
-      ('خرج للتوصيل', false),
-      ('تم التسليم', false),
+      ('?? ?????? ?????', true),
+      ('???? ???????', true),
+      ('??? ???????', false),
+      ('?? ???????', false),
     ];
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -26,7 +26,7 @@ class TrackOrderScreen extends StatelessWidget {
         backgroundColor: color.surface,
         appBar: AppBar(
           title: Text(
-            'تتبع الطلب',
+            '???? ?????',
             style: getRegularStyle(
               fontSize: 22,
               fontFamily: FontConstant.cairo,
@@ -36,14 +36,14 @@ class TrackOrderScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            // ── Scrollable content ──
+            // -- Scrollable content --
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(Spacing.base),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── ETA Card ──
+                    // -- ETA Card --
                     Container(
                       padding: const EdgeInsets.all(Spacing.base),
                       decoration: BoxDecoration(
@@ -72,7 +72,7 @@ class TrackOrderScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'موعد الوصول المتوقع',
+                                '???? ?????? ???????',
                                 style: getBoldStyle(
                                   fontSize: FontSize.size15,
                                   fontFamily: FontConstant.cairo,
@@ -83,7 +83,7 @@ class TrackOrderScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            '03 سبتمبر 2026، 11:00 ص',
+                            '03 ?????? 2026? 11:00 ?',
                             style: getBoldStyle(
                               fontSize: FontSize.size18,
                               fontFamily: FontConstant.cairo,
@@ -96,12 +96,12 @@ class TrackOrderScreen extends StatelessWidget {
 
                     const SizedBox(height: Spacing.base),
 
-                    // ── Driver Card ──
+                    // -- Driver Card --
                     const TrackOrderDriverCard(),
 
                     const SizedBox(height: Spacing.base),
 
-                    // ── Delivery Illustration ──
+                    // -- Delivery Illustration --
                     Container(
                       padding: const EdgeInsets.all(Spacing.md),
                       decoration: BoxDecoration(
@@ -122,7 +122,7 @@ class TrackOrderScreen extends StatelessWidget {
 
                     const SizedBox(height: Spacing.base),
 
-                    // ── Order Steps ──
+                    // -- Order Steps --
                     Container(
                       padding: const EdgeInsets.all(Spacing.base),
                       decoration: BoxDecoration(
@@ -144,7 +144,7 @@ class TrackOrderScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'خطوات الطلب',
+                                '????? ?????',
                                 style: getBoldStyle(
                                   fontSize: FontSize.size16,
                                   fontFamily: FontConstant.cairo,
@@ -157,7 +157,7 @@ class TrackOrderScreen extends StatelessWidget {
                           ...steps.asMap().entries.map(
                                 (entry) => TrackOrderTimelineTile(
                                   title: entry.value.$1,
-                                  time: '03 سبتمبر 2026 - 2:10',
+                                  time: '03 ?????? 2026 - 2:10',
                                   active: entry.value.$2,
                                   last: entry.key == steps.length - 1,
                                   showButton: entry.key == 2,
@@ -173,7 +173,7 @@ class TrackOrderScreen extends StatelessWidget {
               ),
             ),
 
-            // ── Bottom Button ──
+            // -- Bottom Button --
             Container(
               padding: const EdgeInsets.fromLTRB(
                 Spacing.base,
@@ -192,7 +192,7 @@ class TrackOrderScreen extends StatelessWidget {
                 ],
               ),
               child: AppButton(
-                text: 'عرض الطلبات',
+                text: '??? ???????',
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.orders),
                 color: color.primary,
                 textColor: color.onPrimary,
@@ -204,5 +204,6 @@ class TrackOrderScreen extends StatelessWidget {
     );
   }
 }
+
 
 

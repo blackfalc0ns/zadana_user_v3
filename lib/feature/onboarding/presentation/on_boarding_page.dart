@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/app_constants.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
@@ -45,10 +46,10 @@ class StartPage extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Image.asset(
-                      AppConstants.logoDark,
+                      Assets.logoLight,
                       height: 40,
                       fit: BoxFit.contain,
-                      color: Colors.white,
+                     
                     ),
                   ),
 
@@ -131,3 +132,4 @@ class StartPage extends StatelessWidget {
     );
   }
 }
+

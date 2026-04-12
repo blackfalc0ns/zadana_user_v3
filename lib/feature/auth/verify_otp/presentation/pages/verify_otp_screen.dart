@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
@@ -25,7 +27,7 @@ class VerifyOtpScreen extends StatelessWidget {
         listener: _handleStateChanges,
         child: AuthExperienceShell(
           showBackButton: true,
-          heroBadge: 'خطوة أخيرة',
+          heroBadge: 'Ø®Ø·ÙˆØ© Ø£Ø®ÙŠØ±Ø©',
           heroTitle: AppLocalizations.of(context)!.otp_screen_title,
           heroSubtitle:
               'Confirm your code to continue into a smoother grocery experience with your account fully verified.',
@@ -33,7 +35,29 @@ class VerifyOtpScreen extends StatelessWidget {
           sectionTitle: AppLocalizations.of(context)!.otp_screen_title,
           sectionDescription: AppLocalizations.of(context)!.otp_screen_subtitle,
           sectionIcon: Icons.verified_user_outlined,
-          body: VerifyOtpForm(identifier: identifier ?? ''),
+          body: BlocBuilder<VerifyOtpViewModel, VerifyOtpState>(
+            builder: (context, state) {
+              final showGlobalError =
+                  !state.isLoading &&
+                  !state.isSuccess &&
+                  state.failure != null;
+
+              if (showGlobalError) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: Spacing.lg,
+                  ),
+                  child: ApiErrorWidget.fromFailure(
+                    state.failure!,
+                    onRetry: context.read<VerifyOtpViewModel>().clearFeedback,
+                  ),
+                );
+              }
+
+              return VerifyOtpForm(identifier: identifier ?? '');
+            },
+          ),
         ),
       ),
     );
@@ -41,6 +65,7 @@ class VerifyOtpScreen extends StatelessWidget {
 
   void _handleStateChanges(BuildContext context, VerifyOtpState state) {
     if (state.isSuccess) {
+      context.read<VerifyOtpViewModel>().clearFeedback();
       CustomSnackbar.showSuccess(
         context: context,
         message:
@@ -56,13 +81,6 @@ class VerifyOtpScreen extends StatelessWidget {
         return;
       }
       context.pushReplacementNamed(AppRoutes.mainShell);
-    }
-
-    if (state.errorMessage != null) {
-      CustomSnackbar.showError(
-        context: context,
-        message: state.errorMessage.toString(),
-      );
     }
   }
 }

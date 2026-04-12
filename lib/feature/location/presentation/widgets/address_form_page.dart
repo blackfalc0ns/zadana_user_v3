@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
 import 'package:zadana_user_v3/feature/location/presentation/widgets/address_form_widgets.dart';
@@ -36,27 +38,39 @@ class AddressFormPage extends StatelessWidget {
         title: Text(title, style: AppTextStyles.h3),
         centerTitle: true,
       ),
-      body: BlocConsumer<LocationViewModel, LocationState>(
-        listener: (context, state) {
-          if (state.errorMessage?.isNotEmpty == true) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!), backgroundColor: AppColors.error),
+      body: BlocBuilder<LocationViewModel, LocationState>(
+        builder: (context, state) {
+          final showGlobalError =
+              !state.isLoading &&
+              state.failure != null;
+
+          if (showGlobalError) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.screenH),
+                child: ApiErrorWidget.fromFailure(
+                  state.failure!,
+                  onRetry: context.read<LocationViewModel>().clearFeedback,
+                  onGoBack: () => Navigator.pop(context),
+                ),
+              ),
             );
           }
+
+          return SafeArea(
+            child: Column(
+              children: [
+                Expanded(child: formContent),
+                AddressFormWidgets.buildConfirmButton(
+                  isLoading: state.isLoading,
+                  onPressed: onConfirm,
+                  text: confirmButtonText,
+                  context: context,
+                ),
+              ],
+            ),
+          );
         },
-        builder: (context, state) => SafeArea(
-          child: Column(
-            children: [
-              Expanded(child: formContent),
-              AddressFormWidgets.buildConfirmButton(
-                isLoading: state.isLoading,
-                onPressed: onConfirm,
-                text: confirmButtonText,
-                context: context,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

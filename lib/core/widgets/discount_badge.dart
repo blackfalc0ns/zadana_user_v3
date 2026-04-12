@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'dart:math' as math;
 
 class DiscountBadge extends StatelessWidget {
-  final String discountText;
-  final Color color;
-  final double topRightRadius;
-  final double bottomLeftRadius;
-  final double trianglesize;
-  final double cornerRadius;
-  final double fontSize;
-  final Color shadowColor;
 
   const DiscountBadge({
     super.key,
@@ -22,9 +14,20 @@ class DiscountBadge extends StatelessWidget {
     this.fontSize = 14.0,
      required this.shadowColor,
   });
+  final String discountText;
+  final Color color;
+  final double topRightRadius;
+  final double bottomLeftRadius;
+  final double trianglesize;
+  final double cornerRadius;
+  final double fontSize;
+  final Color shadowColor;
 
   @override
   Widget build(BuildContext context) {
+    final badgeExtent = trianglesize.clamp(18.0, 60.0);
+    final contentPadding = (badgeExtent * 0.08).clamp(1.5, 4.0);
+
     return CustomPaint(
       painter: TrianglePainter(
         shadowColor: shadowColor.withValues(alpha: 0.5),
@@ -33,18 +36,28 @@ class DiscountBadge extends StatelessWidget {
         cornerRadius: cornerRadius,
       ),
       child: Container(
-        alignment: Alignment(-1, -1),
-        padding: EdgeInsets.all(4),
-        width: 60,
-        height: 60,
+        alignment: const Alignment(-1, -1),
+        padding: EdgeInsets.all(contentPadding),
+        width: badgeExtent,
+        height: badgeExtent,
         child: Transform.rotate(
-          angle: -pi / 4, // Rotate text to fit diagonal
+          angle: -math.pi / 4,
           child: Text(
             discountText,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
-              fontSize: fontSize,
+              fontSize: fontSize + 0.5,
               fontWeight: FontWeight.bold,
+              height: 1,
+              letterSpacing: 0,
+              shadows: const [
+                Shadow(
+                  color: Color(0x55000000),
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
+                ),
+              ],
             ),
           ),
         ),
@@ -54,10 +67,6 @@ class DiscountBadge extends StatelessWidget {
 }
 
 class TrianglePainter extends CustomPainter {
-  final Color color;
-  final Color shadowColor;
-  final double trianglesize;
-  final double cornerRadius;
 
   TrianglePainter({
     required this.color,
@@ -65,6 +74,10 @@ class TrianglePainter extends CustomPainter {
     required this.cornerRadius,
      required this.shadowColor,
   });
+  final Color color;
+  final Color shadowColor;
+  final double trianglesize;
+  final double cornerRadius;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -72,7 +85,7 @@ class TrianglePainter extends CustomPainter {
     final shadowPaint = Paint()
       ..color = shadowColor.withAlpha(40)
       ..style = PaintingStyle.fill
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 4);
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
     final path = Path();
     

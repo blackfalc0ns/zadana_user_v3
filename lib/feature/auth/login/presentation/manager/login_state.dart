@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/network/failures.dart';
 import '../../domain/entities/login_response_entity.dart';
 
 /// State for login feature
@@ -7,12 +8,14 @@ class LoginState {
   final String? errorMessage;
   final bool isSuccess;
   final LoginResponseEntity? loginResponse;
+  final Failure? failure;
 
   const LoginState({
     this.isLoading = false,
     this.errorMessage,
     this.isSuccess = false,
     this.loginResponse,
+    this.failure,
   });
 
   LoginState copyWith({
@@ -20,12 +23,14 @@ class LoginState {
     String? errorMessage,
     bool? isSuccess,
     LoginResponseEntity? loginResponse,
+    Failure? failure,
   }) {
     return LoginState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isSuccess: isSuccess ?? this.isSuccess,
       loginResponse: loginResponse ?? this.loginResponse,
+      failure: failure,
     );
   }
 
@@ -36,7 +41,8 @@ class LoginState {
         other.isLoading == isLoading &&
         other.errorMessage == errorMessage &&
         other.isSuccess == isSuccess &&
-        other.loginResponse == loginResponse;
+        other.loginResponse == loginResponse &&
+        other.failure == failure;
   }
 
   @override
@@ -45,5 +51,6 @@ class LoginState {
         errorMessage,
         isSuccess,
         loginResponse,
+        failure,
       );
 }

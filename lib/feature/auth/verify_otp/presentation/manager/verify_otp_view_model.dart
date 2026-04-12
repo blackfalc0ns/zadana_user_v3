@@ -34,6 +34,7 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
     emit(state.copyWith(
       isLoading: true,
       errorMessage: null,
+      failure: null,
     ));
 
     developer.log(
@@ -54,6 +55,7 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
           isLoading: false,
           isSuccess: true,
           verifyOtpResponse: result.data,
+          failure: null,
         ));
 
       case ApiErrorResult():
@@ -64,8 +66,19 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
 
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: result.failure.code,
+          errorMessage: result.failure.errorMessage,
+          failure: result.failure,
         ));
     }
+  }
+
+  void clearFeedback() {
+    emit(
+      state.copyWith(
+        errorMessage: null,
+        isSuccess: false,
+        failure: null,
+      ),
+    );
   }
 }

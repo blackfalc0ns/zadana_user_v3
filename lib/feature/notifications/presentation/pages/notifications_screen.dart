@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 
@@ -51,3 +51,4 @@ class NotificationsScreen extends StatelessWidget {
     );
   }
 }
+

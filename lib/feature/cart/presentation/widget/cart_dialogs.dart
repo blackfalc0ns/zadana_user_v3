@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 void showDeleteItemDialog({
@@ -39,6 +39,36 @@ void showClearCartDialog({
       message: locale.clear_cart_confirmation,
       confirmLabel: locale.clear_all,
       onConfirm: onConfirm,
+    ),
+  );
+}
+
+Future<bool?> showCheckoutRegistrationDialog(BuildContext context) {
+  final color = context.colorScheme;
+  final locale = context.localization;
+
+  return showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => Directionality(
+      textDirection: TextDirection.rtl,
+      child: AlertDialog(
+        backgroundColor: color.surface,
+        title: Text(locale.checkout, style: TextStyle(color: color.onSurface)),
+        content: Text(
+          'لازم تكمل التسجيل الأول عشان تقدر تتم الطلب.',
+          style: TextStyle(color: color.onSurfaceVariant),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(locale.no),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('إكمال التسجيل'),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -205,3 +235,4 @@ class _CartActionDialog extends StatelessWidget {
     );
   }
 }
+

@@ -12,6 +12,7 @@ class ProfileResponseModelDto {
   final String email;
   final String phone;
   final String role;
+  final int favoritesCount;
 
   const ProfileResponseModelDto({
     required this.id,
@@ -19,6 +20,7 @@ class ProfileResponseModelDto {
     required this.email,
     required this.phone,
     required this.role,
+    required this.favoritesCount,
   });
 
   factory ProfileResponseModelDto.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +36,7 @@ class ProfileResponseModelDto {
       email: email,
       phone: phone,
       role: role,
+      favoritesCount: favoritesCount,
     );
   }
 }

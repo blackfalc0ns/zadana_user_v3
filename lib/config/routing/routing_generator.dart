@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/presentation/pages/forget_password_screen.dart';
+import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/pages/login_screen.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/pages/register_screen.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
@@ -12,8 +13,8 @@ import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart'
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
-import 'package:zadana_user_v3/feature/onbarding/presentation/splash_page.dart';
-import 'package:zadana_user_v3/feature/onbarding/presentation/on_boarding_page.dart';
+import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/edit_profile_screen.dart';
@@ -39,7 +40,12 @@ class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.login:
-        return MaterialPageRoute(builder: (_) => const LoginScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<LoginViewModel>(),
+            child: const LoginScreen(),
+          ),
+        );
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => SplashPage());
       case AppRoutes.startPage:
@@ -180,3 +186,4 @@ class RouteGenerator {
     );
   }
 }
+

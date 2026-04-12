@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/assets.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class CartEmptyState extends StatelessWidget {
-  final VoidCallback onStartShopping;
-
   const CartEmptyState({super.key, required this.onStartShopping});
+  final VoidCallback onStartShopping;
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,6 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
 import 'package:zadana_user_v3/core/widgets/custom_text_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/domain/entities/register_request_entity.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_event.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_state.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
@@ -61,9 +60,7 @@ class _SignUpFormState extends State<SignUpForm> {
         longitude: location?.longitude ?? 0.0,
       );
 
-      context.read<RegisterViewModel>().doIntent(
-        RegisterSubmitEvent(registerRequestEntity: registerRequestEntity),
-      );
+      context.read<RegisterViewModel>().register(registerRequestEntity);
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_search_entity.dart';
 
@@ -6,6 +7,7 @@ class LocationState {
   final bool isSearchLoading;
   final bool isSuccess;
   final String? errorMessage;
+  final Failure? failure;
   final List<LocationSearchResultEntity> searchResults;
   final LocationEntity? selectedLocation;
   final String query;
@@ -22,6 +24,7 @@ class LocationState {
     this.isSearchLoading = false,
     this.isSuccess = false,
     this.errorMessage,
+    this.failure,
     this.searchResults = const [],
     this.selectedLocation,
     this.query = '',
@@ -39,6 +42,7 @@ class LocationState {
     bool? isSearchLoading,
     bool? isSuccess,
     String? errorMessage,
+    Failure? failure,
     List<LocationSearchResultEntity>? searchResults,
     LocationEntity? selectedLocation,
     String? query,
@@ -55,6 +59,7 @@ class LocationState {
       isSearchLoading: isSearchLoading ?? this.isSearchLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       errorMessage: errorMessage,
+      failure: failure,
       searchResults: searchResults ?? this.searchResults,
       selectedLocation: selectedLocation ?? this.selectedLocation,
       query: query ?? this.query,
@@ -88,6 +93,7 @@ class LocationState {
         other.isSearchLoading == isSearchLoading &&
         other.isSuccess == isSuccess &&
         other.errorMessage == errorMessage &&
+        other.failure == failure &&
         other.searchResults == searchResults &&
         other.selectedLocation == selectedLocation &&
         other.query == query &&
@@ -107,6 +113,7 @@ class LocationState {
       isSearchLoading,
       isSuccess,
       errorMessage,
+      failure,
       searchResults,
       selectedLocation,
       query,

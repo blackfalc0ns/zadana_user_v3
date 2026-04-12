@@ -6,6 +6,7 @@ class ProfileResponseEntity {
   final String email;
   final String phone;
   final String role;
+  final int favoritesCount;
 
   const ProfileResponseEntity({
     required this.id,
@@ -13,5 +14,6 @@ class ProfileResponseEntity {
     required this.email,
     required this.phone,
     required this.role,
+    required this.favoritesCount,
   });
 }

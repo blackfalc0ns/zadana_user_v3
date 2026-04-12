@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/get_address_from_coordinates_use_case.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/get_current_location_with_address_use_case.dart';
@@ -56,6 +57,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             addressLine: event.addressLine,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -64,6 +66,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             city: event.city,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -72,6 +75,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             area: event.area,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -80,6 +84,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             buildingNo: event.buildingNo,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -88,6 +93,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             floorNo: event.floorNo,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -96,6 +102,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             apartmentNo: event.apartmentNo,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -104,6 +111,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             label: event.label,
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -111,6 +119,7 @@ class LocationViewModel extends Cubit<LocationState> {
         emit(
           state.copyWith(
             errorMessage: null,
+            failure: null,
           ),
         );
 
@@ -128,6 +137,7 @@ class LocationViewModel extends Cubit<LocationState> {
       state.copyWith(
         query: event.query,
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -167,6 +177,7 @@ class LocationViewModel extends Cubit<LocationState> {
       state.copyWith(
         isSearchLoading: true,
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -185,6 +196,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             isSearchLoading: false,
             searchResults: result.data,
+            failure: null,
           ),
         );
 
@@ -197,6 +209,10 @@ class LocationViewModel extends Cubit<LocationState> {
             state.copyWith(
               isSearchLoading: false,
               errorMessage: 'البحث مؤقتاً غير متاح، يرجى المحاولة لاحقاً',
+              failure: const Failure(
+                errorMessage: 'البحث مؤقتاً غير متاح، يرجى المحاولة لاحقاً',
+                code: 'error_unknown',
+              ),
               searchResults: const [],
             ),
           );
@@ -204,7 +220,8 @@ class LocationViewModel extends Cubit<LocationState> {
           emit(
             state.copyWith(
               isSearchLoading: false,
-              errorMessage: result.failure.code,
+              errorMessage: result.failure.errorMessage,
+              failure: result.failure,
             ),
           );
         }
@@ -217,6 +234,7 @@ class LocationViewModel extends Cubit<LocationState> {
         query: event.location.addressLine,
         searchResults: const [],
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -233,6 +251,7 @@ class LocationViewModel extends Cubit<LocationState> {
       state.copyWith(
         isLoading: true,
         errorMessage: null,
+        failure: null,
       ),
     );
 
@@ -255,11 +274,13 @@ class LocationViewModel extends Cubit<LocationState> {
             addressLine: result.data.addressLine,
             city: result.data.city,
             area: result.data.area,
+            failure: null,
           ),
         );
 
       case ApiErrorResult():
         String errorMessage = result.failure.errorMessage;
+        Failure failure = result.failure;
         
         // Handle specific location permission errors
         if (errorMessage.contains('خدمة الموقع غير مفعلة')) {
@@ -270,10 +291,16 @@ class LocationViewModel extends Cubit<LocationState> {
           errorMessage = 'يحتاج التطبيق إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.';
         }
         
+        failure = Failure(
+          errorMessage: errorMessage,
+          code: result.failure.code,
+        );
+
         emit(
           state.copyWith(
             isLoading: false,
             errorMessage: errorMessage,
+            failure: failure,
           ),
         );
     }
@@ -310,6 +337,7 @@ class LocationViewModel extends Cubit<LocationState> {
     state.copyWith(
       isLoading: true,
       errorMessage: null,
+      failure: null,
     ),
   );
 
@@ -335,6 +363,7 @@ class LocationViewModel extends Cubit<LocationState> {
           addressLine: result.data.addressLine,
           city: result.data.city,
           area: result.data.area,
+          failure: null,
         ),
       );
 
@@ -354,7 +383,8 @@ class LocationViewModel extends Cubit<LocationState> {
         emit(
           state.copyWith(
             isLoading: false,
-            errorMessage: result.failure.code,
+            errorMessage: result.failure.errorMessage,
+            failure: result.failure,
           ),
         );
       }
@@ -368,7 +398,18 @@ class LocationViewModel extends Cubit<LocationState> {
         city: event.location.city,
         area: event.location.area,
         errorMessage: null,
+        failure: null,
         isSuccess: true,
+      ),
+    );
+  }
+
+  void clearFeedback() {
+    emit(
+      state.copyWith(
+        errorMessage: null,
+        failure: null,
+        isSuccess: false,
       ),
     );
   }

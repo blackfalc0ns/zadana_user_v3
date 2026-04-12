@@ -221,8 +221,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
     if (token != null && token.isNotEmpty) {
       return Options(
         headers: {
-          NetworkConstants.authorization:
-              '${NetworkConstants.bearer} $token',
+          NetworkConstants.authorization: '${NetworkConstants.bearer} $token',
         },
         extra: {TokenInterceptor.skipAuthKey: true},
       );

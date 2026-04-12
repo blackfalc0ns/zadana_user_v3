@@ -27,13 +27,18 @@ abstract class ExternalModules {
     LanguageInterceptor languageInterceptor,
     CacheStore cacheStore,
   ) {
-    final dio = Dio();
-
-    dio.options.baseUrl = NetworkConstants.baseUrl;
-    dio.options.headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: NetworkConstants.baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
+        headers: const {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
 
     dio.interceptors.add(languageInterceptor);
     dio.interceptors.add(tokenInterceptor);

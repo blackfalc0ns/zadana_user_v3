@@ -1268,4 +1268,85 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get view_otp_code => 'عرض رمز OTP';
+
+  @override
+  String get location_accuracy_dialog_title => 'تفعيل دقة الموقع';
+
+  @override
+  String get location_accuracy_dialog_message =>
+      'للحصول على موقعك الحالي بدقة أكبر وتسريع التوصيل، سنطلب من الجهاز تفعيل إعدادات الموقع المناسبة.';
+
+  @override
+  String get location_accuracy_dialog_hint =>
+      'قد تظهر لك نافذة من النظام لتأكيد استخدام الموقع أو تحسين دقته. يمكنك المتابعة أو المحاولة لاحقًا.';
+
+  @override
+  String get location_accuracy_dialog_continue => 'متابعة';
+
+  @override
+  String get location_accuracy_dialog_not_now => 'ليس الآن';
+
+  @override
+  String get home_empty_title => 'لا توجد منتجات أو أقسام متاحة الآن';
+
+  @override
+  String get home_empty_description =>
+      'لم يصلنا أي محتوى للصفحة الرئيسية حاليًا. اسحب للتحديث أو جرّب مرة أخرى بعد قليل.';
+
+  @override
+  String get profile_guest_title => 'أنت تتصفح كزائر';
+
+  @override
+  String get profile_guest_subtitle =>
+      'سجّل الدخول أو أنشئ حسابًا للوصول إلى الطلبات والمفضلة وبياناتك الشخصية.';
+
+  @override
+  String get profile_guest_explore_title => 'متاح لك الآن';
+
+  @override
+  String get profile_guest_addresses_subtitle =>
+      'يمكنك إضافة عنوان، لكن مزامنة البيانات تحتاج إلى تسجيل الدخول';
+
+  @override
+  String get profile_role_label => 'الدور';
+
+  @override
+  String get profile_status_label => 'الحالة';
+
+  @override
+  String get profile_status_active => 'نشط';
+
+  @override
+  String get profile_edit_subtitle => 'حدّث اسمك ورقمك والبريد الإلكتروني';
+
+  @override
+  String get profile_addresses_subtitle =>
+      'إدارة عناوين التوصيل والموقع المحفوظ';
+
+  @override
+  String get profile_orders_subtitle => 'راجع طلباتك الحالية والسابقة بسهولة';
+
+  @override
+  String get profile_language_subtitle => 'إدارة لغة التطبيق';
+
+  @override
+  String get profile_notifications_subtitle => 'تحكم في الإشعارات والتنبيهات';
+
+  @override
+  String get profile_password_subtitle => 'حدّث كلمة المرور لحماية حسابك';
+
+  @override
+  String get profile_help_subtitle => 'تواصل معنا أو اطّلع على المساعدة';
+
+  @override
+  String get profile_faq_subtitle => 'أسئلة وإجابات سريعة تساعدك';
+
+  @override
+  String get profile_about_subtitle => 'اعرف أكثر عن التطبيق والإصدار الحالي';
+
+  @override
+  String get profile_privacy_subtitle => 'الخصوصية والشروط والأحكام';
+
+  @override
+  String get profile_logout_subtitle => 'تسجيل الخروج من هذا الجهاز';
 }

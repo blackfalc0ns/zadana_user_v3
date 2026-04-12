@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
@@ -66,7 +67,12 @@ class BrandProductsGrid extends StatelessWidget {
                     heroTag: heroTag,
                   );
                 },
-                onAddTap: brandProduct.isInStock ? () {} : null,
+                onAddTap: brandProduct.isInStock
+                    ? () => HomeProductCartHelper.addProductToCart(
+                        context,
+                        product,
+                      )
+                    : null,
               );
             }, childCount: products.length),
           ),

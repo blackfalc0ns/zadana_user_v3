@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
@@ -82,6 +83,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     switch (result) {
       case ApiSuccessResult():
         await _guestCartSyncService.cacheGuestCartItem(request);
+        CartCountSyncService().incrementBy(request.quantity);
         if (!mounted) return;
         CustomSnackbar.showSuccess(
           context: context,
@@ -197,7 +199,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ],
             ),
           ),
-          bottomSheet: productDetails == null
+          bottomNavigationBar: productDetails == null
               ? null
               : ProductBottomActions(
                   onAddToCart: _isAddingToCart

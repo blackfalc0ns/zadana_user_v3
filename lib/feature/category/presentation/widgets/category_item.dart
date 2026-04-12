@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 
@@ -65,3 +65,4 @@ class CategoryItem extends StatelessWidget {
     );
   }
 }
+

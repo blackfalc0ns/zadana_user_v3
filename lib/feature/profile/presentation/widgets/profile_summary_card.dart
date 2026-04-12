@@ -6,16 +6,20 @@ import 'package:zadana_user_v3/config/theme/text_styles.dart';
 class ProfileSummaryCard extends StatelessWidget {
   const ProfileSummaryCard({
     super.key,
+    required this.title,
     required this.name,
     required this.phone,
     required this.email,
-    required this.onEditTap,
+    this.onEditTap,
+    this.showEditButton = true,
   });
 
+  final String title;
   final String name;
   final String phone;
   final String email;
-  final VoidCallback onEditTap;
+  final VoidCallback? onEditTap;
+  final bool showEditButton;
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +35,19 @@ class ProfileSummaryCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         gradient: AppColors.primarygradient,
-
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(34)),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              _TopIconButton(icon: Icons.edit_outlined, onTap: onEditTap),
+              if (showEditButton && onEditTap != null)
+                _TopIconButton(icon: Icons.edit_outlined, onTap: onEditTap!)
+              else
+                const SizedBox(width: 42, height: 42),
               const Spacer(),
               Text(
-                'حسابي',
+                title,
                 style: AppTextStyles.h3.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
@@ -65,7 +71,7 @@ class ProfileSummaryCard extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              name.trim().isNotEmpty ? name.trim()[0] : 'ز',
+              name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : 'Z',
               style: AppTextStyles.h1.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
@@ -73,7 +79,6 @@ class ProfileSummaryCard extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: Spacing.sm),
           Text(
             name,

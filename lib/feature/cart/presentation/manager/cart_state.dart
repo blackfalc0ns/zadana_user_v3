@@ -1,6 +1,7 @@
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_summary_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
+import 'package:zadana_user_v3/core/network/failures.dart';
 
 class CartState {
   const CartState({
@@ -23,6 +24,8 @@ class CartState {
     this.updatedQuantityItemId,
     this.vendorsErrorMessage,
     this.itemsErrorMessage,
+    this.vendorsFailure,
+    this.itemsFailure,
   });
 
   final bool isLoadingVendors;
@@ -44,6 +47,8 @@ class CartState {
   final String? updatedQuantityItemId;
   final String? vendorsErrorMessage;
   final String? itemsErrorMessage;
+  final Failure? vendorsFailure;
+  final Failure? itemsFailure;
 
   CartState copyWith({
     bool? isLoadingVendors,
@@ -65,6 +70,8 @@ class CartState {
     String? updatedQuantityItemId,
     String? vendorsErrorMessage,
     String? itemsErrorMessage,
+    Failure? vendorsFailure,
+    Failure? itemsFailure,
     bool clearClearCartSuccessMessage = false,
     bool clearClearCartErrorMessage = false,
     bool clearRemoveItemSuccessMessage = false,
@@ -74,6 +81,8 @@ class CartState {
     bool clearUpdatedQuantityItemId = false,
     bool clearVendorsErrorMessage = false,
     bool clearItemsErrorMessage = false,
+    bool clearVendorsFailure = false,
+    bool clearItemsFailure = false,
   }) {
     return CartState(
       isLoadingVendors: isLoadingVendors ?? this.isLoadingVendors,
@@ -113,6 +122,12 @@ class CartState {
       itemsErrorMessage: clearItemsErrorMessage
           ? null
           : itemsErrorMessage ?? this.itemsErrorMessage,
+      vendorsFailure: clearVendorsFailure
+          ? null
+          : vendorsFailure ?? this.vendorsFailure,
+      itemsFailure: clearItemsFailure
+          ? null
+          : itemsFailure ?? this.itemsFailure,
     );
   }
 }

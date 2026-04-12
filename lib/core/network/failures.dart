@@ -126,13 +126,13 @@ class ServerFailure extends Failure {
       default:
         return ServerFailure(
           errorMessage: message ?? 'Unexpected server error.',
-          code: 'error_unknown',
+          code: _extractCode(data) ?? 'error_unknown',
         );
     }
   }
 
   static String? _extractMessage(dynamic data) {
-    if (data is Map<String, dynamic>) {
+    if (data is Map) {
       final detail = data['detail'];
       final message = data['message'];
       final error = data['error'];
@@ -142,6 +142,20 @@ class ServerFailure extends Failure {
       if (message is String && message.trim().isNotEmpty) return message;
       if (error is String && error.trim().isNotEmpty) return error;
       if (title is String && title.trim().isNotEmpty) return title;
+    }
+
+    if (data is String && data.trim().isNotEmpty) {
+      return data;
+    }
+
+    return null;
+  }
+
+  static String? _extractCode(dynamic data) {
+    if (data is Map) {
+      final code = data['code'];
+      if (code is String && code.trim().isNotEmpty) return code;
+      if (code != null) return code.toString();
     }
 
     return null;

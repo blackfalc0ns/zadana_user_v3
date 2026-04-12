@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/recommended_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/recommended_card.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.dart';
 
 class RecommendedSection extends StatelessWidget {
@@ -81,7 +81,7 @@ class RecommendedSection extends StatelessWidget {
                     product.id,
                     source: 'home-recommended',
                   );
-                  return RecommendedCard(
+                  return RecommendedProductCard(
                     product: product,
                     heroTag: heroTag,
                     onTap: () =>
@@ -162,3 +162,4 @@ class _RecommendedCardSkeleton extends StatelessWidget {
     );
   }
 }
+

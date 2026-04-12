@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
-import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart';
+import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
@@ -144,7 +143,8 @@ class ProductsGrid extends StatelessWidget {
                   heroTag: heroTag,
                 );
               },
-              onAddTap: () {},
+              onAddTap: () =>
+                  HomeProductCartHelper.addProductToCart(context, product),
               showFavorite: true,
               enableHeroAnimation: true,
             );
@@ -309,3 +309,4 @@ class _Bone extends StatelessWidget {
     );
   }
 }
+

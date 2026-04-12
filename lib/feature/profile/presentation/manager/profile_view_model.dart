@@ -30,7 +30,7 @@ class ProfileViewModel extends Cubit<ProfileState> {
   Future<void> _loadProfile() async {
     emit(state.copyWith(
       isLoading: true,
-      errorMessage: null,
+      failure: null,
     ));
 
     developer.log(
@@ -51,7 +51,7 @@ class ProfileViewModel extends Cubit<ProfileState> {
           isLoading: false,
           isSuccess: true,
           profileResponse: result.data,
-          errorMessage: null,
+          failure: null,
         ));
 
       case ApiErrorResult():
@@ -63,7 +63,7 @@ class ProfileViewModel extends Cubit<ProfileState> {
         emit(state.copyWith(
           isLoading: false,
           isSuccess: false,
-          errorMessage: result.failure.code,
+          failure: result.failure,
         ));
     }
   }

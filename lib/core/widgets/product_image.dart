@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 
 class ProductImage extends StatelessWidget {
@@ -145,3 +145,4 @@ class ProductImage extends StatelessWidget {
     );
   }
 }
+

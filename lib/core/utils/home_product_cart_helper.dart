@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
@@ -50,6 +51,7 @@ class HomeProductCartHelper {
         switch (addResult) {
           case ApiSuccessResult():
             await guestCartSyncService.cacheGuestCartItem(request);
+            CartCountSyncService().incrementBy(request.quantity);
             if (!context.mounted) return;
             CustomSnackbar.showSuccess(
               context: context,

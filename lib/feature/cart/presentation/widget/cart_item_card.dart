@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
@@ -63,110 +63,123 @@ class CartItemCard extends StatelessWidget {
       }
     }
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: color.outline.withValues(alpha: 0.12)),
-              color: color.surface,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: color.shadow.withValues(alpha: 0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            Ink(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: color.outline.withValues(alpha: 0.12),
                 ),
-              ],
-            ),
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              children: [
-                ProductImage(
-                  emoji: '',
-                  url: item.imageUrl,
-                  width: 68,
-                  height: 68,
-                  borderRadius: Spacing.cardRadius,
-                  heroTag: productHeroTag(item.productId, source: 'cart-item'),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: getBoldStyle(
-                          fontFamily: FontConstant.cairo,
-                          fontSize: FontSize.size13,
-                          color: color.onSurface,
+                color: color.surface,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.shadow.withValues(alpha: 0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  ProductImage(
+                    emoji: '',
+                    url: item.imageUrl,
+                    width: 68,
+                    height: 68,
+                    borderRadius: Spacing.cardRadius,
+                    heroTag: productHeroTag(
+                      item.productId,
+                      source: 'cart-item',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: getBoldStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size13,
+                            color: color.onSurface,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 3),
-                      _buildPrice(locale, color),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          _buildButton(Icons.remove, onDecrement),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: color.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              '${item.quantity}',
-                              style: getBoldStyle(
-                                fontFamily: FontConstant.cairo,
-                                fontSize: FontSize.size13,
-                                color: color.onSurface,
+                        const SizedBox(height: 3),
+                        _buildPrice(locale, color),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            _buildButton(Icons.remove, onDecrement),
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.surfaceContainerHighest,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                '${item.quantity}',
+                                style: getBoldStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  fontSize: FontSize.size13,
+                                  color: color.onSurface,
+                                ),
                               ),
                             ),
-                          ),
-                          _buildButton(Icons.add, onIncrement),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 6),
-                GestureDetector(
-                  onTap: onDelete,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Icon(
-                      Iconsax.trash,
-                      size: 18,
-                      color: Colors.red.shade400,
+                            _buildButton(Icons.add, onIncrement),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          if (discountText != null)
-            Positioned(
-              left: 0,
-              child: DiscountBadge(
-                discountText: discountText,
-                shadowColor: color.shadow,
-                trianglesize: 38,
-                fontSize: 11,
+                  const SizedBox(width: 6),
+                  _buildDeleteButton(),
+                ],
               ),
             ),
-        ],
+            if (discountText != null)
+              Positioned(
+                left: 0,
+                child: DiscountBadge(
+                  discountText: discountText,
+                  shadowColor: color.shadow,
+                  trianglesize: 38,
+                  fontSize: 11,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onDelete,
+        borderRadius: BorderRadius.circular(6),
+        child: Ink(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.red.shade50,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(Iconsax.trash, size: 18, color: Colors.red.shade400),
+        ),
       ),
     );
   }
@@ -392,18 +405,23 @@ class CartItemCard extends StatelessWidget {
   }
 
   Widget _buildButton(IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 28,
-        height: 28,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300, width: 1),
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(6),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: Ink(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300, width: 1),
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(icon, size: 15, color: AppColors.black),
         ),
-        child: Icon(icon, size: 15, color: AppColors.black),
       ),
     );
   }
 }
+

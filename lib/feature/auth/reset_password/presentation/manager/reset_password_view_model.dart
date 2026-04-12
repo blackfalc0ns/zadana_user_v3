@@ -33,6 +33,7 @@ class ResetPasswordViewModel extends Cubit<ResetPasswordState> {
     emit(state.copyWith(
       isLoading: true,
       errorMessage: null,
+      failure: null,
     ));
 
     developer.log(
@@ -50,12 +51,24 @@ class ResetPasswordViewModel extends Cubit<ResetPasswordState> {
           isLoading: false,
           isSuccess: true,
           responseEntity: result.data,
+          failure: null,
         ));
       case ApiErrorResult():
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: result.failure.code,
+          errorMessage: result.failure.errorMessage,
+          failure: result.failure,
         ));
     }
+  }
+
+  void clearFeedback() {
+    emit(
+      state.copyWith(
+        errorMessage: null,
+        isSuccess: false,
+        failure: null,
+      ),
+    );
   }
 }

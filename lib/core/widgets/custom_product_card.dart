@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
@@ -106,7 +106,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
             .clamp(imageHeight + 14, 84.0)
             .toDouble();
         final horizontalPadding = (cardWidth * 0.06).clamp(4.0, 8.0).toDouble();
-        final verticalPadding = (cardHeight * 0.05).clamp(4.0, 8.0).toDouble();
+        final verticalPadding = (cardHeight * 0.05).clamp(4.0, 7.0).toDouble();
+        final contentSpacing = (cardHeight * 0.045).clamp(2.0, 6.0).toDouble();
         final titleFontSize = (12 * scale).clamp(9.5, 12.5).toDouble();
         final cartSize = (28 * scale).clamp(22.0, 28.0).toDouble();
         final cartIconSize = (13 * scale).clamp(10.0, 13.0).toDouble();
@@ -116,12 +117,13 @@ class _CustomProductCardState extends State<CustomProductCard> {
             .clamp(34.0, 45.0)
             .toDouble();
 
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            GestureDetector(
-              onTap: widget.onCardTap,
-              child: Container(
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: widget.onCardTap,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   borderRadius: BorderRadius.circular(Spacing.cardRadius),
@@ -158,69 +160,62 @@ class _CustomProductCardState extends State<CustomProductCard> {
                               horizontalPadding,
                               verticalPadding,
                               horizontalPadding,
-                              verticalPadding * 0.75,
+                              verticalPadding * 0.55,
                             ),
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.product.name,
-                                    style: getSemiBoldStyle(
-                                      color: color.onSurface,
-                                      fontFamily: FontConstant.cairo,
-                                      fontSize: titleFontSize,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.product.name,
+                                  style: getSemiBoldStyle(
+                                    color: color.onSurface,
+                                    fontFamily: FontConstant.cairo,
+                                    fontSize: titleFontSize,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: contentSpacing),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: PriceText(
+                                        price: widget.product.price,
+                                        oldPrice: widget.product.oldPrice,
+                                        compact:
+                                            scale < 1.02 ||
+                                            widget.product.oldPrice != null,
+                                        fontScale: scale,
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(
-                                    height: (cardHeight * 0.05)
-                                        .clamp(4.0, 8.0)
-                                        .toDouble(),
-                                  ),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        child: PriceText(
-                                          price: widget.product.price,
-                                          oldPrice: widget.product.oldPrice,
-                                          compact: scale < 0.95,
-                                          fontScale: scale,
+                                    SizedBox(
+                                      width: (cardWidth * 0.035)
+                                          .clamp(3.0, 6.0)
+                                          .toDouble(),
+                                    ),
+                                    GestureDetector(
+                                      onTap: widget.onAddTap,
+                                      child: Container(
+                                        width: cartSize,
+                                        height: cartSize,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(6),
+                                          color: AppColors.primary,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: (cardWidth * 0.035)
-                                            .clamp(3.0, 6.0)
-                                            .toDouble(),
-                                      ),
-                                      GestureDetector(
-                                        onTap: widget.onAddTap,
-                                        child: Container(
-                                          width: cartSize,
-                                          height: cartSize,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
-                                            color: AppColors.primary,
-                                          ),
-                                          child: Center(
-                                            child: FaIcon(
-                                              FontAwesomeIcons.cartPlus,
-                                              color: AppColors.white,
-                                              size: cartIconSize,
-                                            ),
+                                        child: Center(
+                                          child: FaIcon(
+                                            FontAwesomeIcons.cartPlus,
+                                            color: AppColors.white,
+                                            size: cartIconSize,
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -260,23 +255,24 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   ],
                 ),
               ),
-            ),
-            if (widget.isDiscounted)
-              Positioned(
-                left: 0,
-                top: 0,
-                child: DiscountBadge(
-                  discountText: '${widget.discountPercentage}%',
-                  cornerRadius: Spacing.cardRadius,
-                  color: AppColors.error,
-                  trianglesize: badgeTriangleSize,
-                  fontSize: (13 * scale).clamp(9.0, 13.0).toDouble(),
-                  shadowColor: color.shadow,
+              if (widget.isDiscounted)
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  child: DiscountBadge(
+                    discountText: '${widget.discountPercentage}%',
+                    cornerRadius: Spacing.cardRadius,
+                    color: AppColors.error,
+                    trianglesize: badgeTriangleSize,
+                    fontSize: (13 * scale).clamp(9.0, 13.0).toDouble(),
+                    shadowColor: color.shadow,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );
   }
 }
+

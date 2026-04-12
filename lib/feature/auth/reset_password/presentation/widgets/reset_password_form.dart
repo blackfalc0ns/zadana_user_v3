@@ -69,13 +69,6 @@ class _ResetPasswordFormState
           );
           widget.onSuccess();
         }
-
-        if (state.errorMessage != null) {
-          CustomSnackbar.showError(
-            context: context,
-            message: state.errorMessage!,
-          );
-        }
       },
       builder: (context, state) {
         return Form(

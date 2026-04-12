@@ -8,6 +8,7 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
@@ -76,20 +77,39 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
     final center = _mapController.camera.center;
     _isConfirmingLocation = true;
 
-    // Clear any previous success state first
-    context.read<LocationViewModel>().doIntent(const ClearLocationSuccessEvent());
+    context.read<LocationViewModel>().doIntent(
+      const ClearLocationSuccessEvent(),
+    );
 
-    // Small delay to ensure state is cleared, then get address
     Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        context.read<LocationViewModel>().doIntent(
-              GetAddressFromCoordinatesEvent(
-                latitude: center.latitude,
-                longitude: center.longitude,
-              ),
-            );
-      }
+      if (!mounted) return;
+
+      context.read<LocationViewModel>().doIntent(
+            GetAddressFromCoordinatesEvent(
+              latitude: center.latitude,
+              longitude: center.longitude,
+            ),
+          );
     });
+  }
+
+  void _retryLastAction(BuildContext context) {
+    final viewModel = context.read<LocationViewModel>();
+    viewModel.clearFeedback();
+
+    final query = _searchController.text.trim();
+    if (query.isNotEmpty) {
+      viewModel.doIntent(SearchLocationSubmitEvent(query));
+      return;
+    }
+
+    final center = _mapController.camera.center;
+    viewModel.doIntent(
+      GetAddressFromCoordinatesEvent(
+        latitude: center.latitude,
+        longitude: center.longitude,
+      ),
+    );
   }
 
   @override
@@ -97,35 +117,40 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
     return Scaffold(
       body: BlocConsumer<LocationViewModel, LocationState>(
         listener: (context, state) {
-          if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-            _isConfirmingLocation = false;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-
-          // Alternative approach: Check if we have a location and we're confirming
           if (_isConfirmingLocation && !state.isLoading) {
             if (state.selectedLocation != null) {
               _isConfirmingLocation = false;
-              
-              // Navigate to building details page with the location data
+
               Navigator.pushReplacementNamed(
                 context,
                 AppRoutes.buildingDetails,
                 arguments: state.selectedLocation,
               );
-            } else if (state.errorMessage == null) {
-              // If no location and no error, something went wrong
+            } else if (state.failure == null) {
               _isConfirmingLocation = false;
             }
           }
         },
         builder: (context, state) {
           final vm = context.read<LocationViewModel>();
+          final showGlobalError =
+              !state.isLoading &&
+              !state.isSearchLoading &&
+              state.failure != null &&
+              state.selectedLocation == null;
+
+          if (showGlobalError) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.screenH),
+                child: ApiErrorWidget.fromFailure(
+                  state.failure!,
+                  onRetry: () => _retryLastAction(context),
+                  onGoBack: () => Navigator.pop(context),
+                ),
+              ),
+            );
+          }
 
           return Stack(
             children: [
@@ -146,7 +171,6 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                   ),
                 ],
               ),
-
               const Center(
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 36),
@@ -157,7 +181,6 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                   ),
                 ),
               ),
-
               Positioned(
                 top: MediaQuery.of(context).padding.top + 8,
                 left: Spacing.base,
@@ -208,7 +231,6 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                   ],
                 ),
               ),
-
               if (state.isLoading || state.isSearchLoading)
                 const Positioned(
                   top: 120,
@@ -220,7 +242,6 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                     ),
                   ),
                 ),
-
               Positioned(
                 bottom: 0,
                 left: 0,

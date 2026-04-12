@@ -1,7 +1,7 @@
-﻿import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 class TrackOrderDriverCard extends StatelessWidget {
   const TrackOrderDriverCard({super.key});
@@ -28,7 +28,7 @@ class TrackOrderDriverCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'محمد',
+                  '????',
                   style: getMediumStyle(
                     fontSize: 16,
                     fontFamily: FontConstant.cairo,
@@ -37,7 +37,7 @@ class TrackOrderDriverCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'مسؤول التوصيل لطلبك اليوم',
+                  '????? ??????? ????? ?????',
                   style: getRegularStyle(
                     fontSize: 12,
                     fontFamily: FontConstant.cairo,
@@ -60,3 +60,4 @@ class TrackOrderDriverCard extends StatelessWidget {
     );
   }
 }
+

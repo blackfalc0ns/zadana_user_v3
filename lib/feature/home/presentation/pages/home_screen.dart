@@ -3,18 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
-import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/home_app_bar.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart'
+    as error_widgets;
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/best_selling_section.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/sections/brands_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/categories_section.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/sections/explore_more_section.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/sections/dynamic_home_preview_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/featured_products_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/home_banner_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/recommended_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/special_offers_section.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/sections/brands_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.onMenuTap});
@@ -34,8 +37,7 @@ class HomeScreen extends StatelessWidget {
         ..doIntent(const HomeBrandsLoadEvent())
         ..doIntent(const HomeRecommendedLoadEvent())
         ..doIntent(const HomeFeaturedLoadEvent())
-        ..doIntent(const HomeSpecialOffersLoadEvent())
-        ..doIntent(const HomeExploreMoreLoadEvent()),
+        ..doIntent(const HomeSpecialOffersLoadEvent()),
       child: _HomeScreenView(onMenuTap: onMenuTap),
     );
   }
@@ -52,16 +54,7 @@ class _HomeScreenView extends StatelessWidget {
       appBar: HomeAppBar(onMenuTap: onMenuTap),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<HomeViewModel>()
-            ..doIntent(const HomeRetryEvent())
-            ..doIntent(const HomeBannerRetryEvent())
-            ..doIntent(const HomeCategoriesRetryEvent())
-            ..doIntent(const HomeBestSellingRetryEvent())
-            ..doIntent(const HomeBrandsRetryEvent())
-            ..doIntent(const HomeRecommendedRetryEvent())
-            ..doIntent(const HomeFeaturedRetryEvent())
-            ..doIntent(const HomeSpecialOffersRetryEvent())
-            ..doIntent(const HomeExploreMoreRetryEvent());
+          _reloadAllSections(context);
         },
         child: BlocBuilder<HomeViewModel, HomeState>(
           builder: (context, state) {
@@ -69,6 +62,10 @@ class _HomeScreenView extends StatelessWidget {
                 !state.isLoading &&
                 !state.hasAnyData &&
                 state.firstFailure != null;
+            final showEmptyState =
+                !state.isLoading &&
+                !state.hasAnyData &&
+                state.firstFailure == null;
 
             return CustomScrollView(
               key: const PageStorageKey<String>('home_scroll_view'),
@@ -84,19 +81,21 @@ class _HomeScreenView extends StatelessWidget {
                         child: ApiErrorWidget.fromFailure(
                           state.firstFailure!,
                           onRetry: () {
-                            context.read<HomeViewModel>()
-                              ..doIntent(const HomeLoadEvent())
-                              ..doIntent(const HomeBannerLoadEvent())
-                              ..doIntent(const HomeCategoriesLoadEvent())
-                              ..doIntent(const HomeBestSellingLoadEvent())
-                              ..doIntent(const HomeBrandsLoadEvent())
-                              ..doIntent(const HomeRecommendedLoadEvent())
-                              ..doIntent(const HomeFeaturedLoadEvent())
-                              ..doIntent(const HomeSpecialOffersLoadEvent())
-                              ..doIntent(const HomeExploreMoreLoadEvent());
+                            _loadAllSections(context);
                           },
                         ),
                       ),
+                    ),
+                  )
+                else if (showEmptyState)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: error_widgets.BaseErrorWidget(
+                      title: context.localization.home_empty_title,
+                      description: context.localization.home_empty_description,
+                      icon: Icons.storefront_outlined,
+                      primaryColor: Theme.of(context).colorScheme.primary,
+                      onRetry: () => _reloadAllSections(context),
                     ),
                   )
                 else ...[
@@ -111,9 +110,10 @@ class _HomeScreenView extends StatelessWidget {
                   const SliverToBoxAdapter(child: BrandsSection()),
                   const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
                   const SliverToBoxAdapter(child: FeaturedProductsSection()),
-                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
-                  const SliverToBoxAdapter(child: ExploreMoreSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.xl)),
+                  const SliverToBoxAdapter(child: DynamicHomePreviewSection()),
                   const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                
                 ],
               ],
             );
@@ -121,5 +121,29 @@ class _HomeScreenView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _reloadAllSections(BuildContext context) {
+    context.read<HomeViewModel>()
+      ..doIntent(const HomeRetryEvent())
+      ..doIntent(const HomeBannerRetryEvent())
+      ..doIntent(const HomeCategoriesRetryEvent())
+      ..doIntent(const HomeBestSellingRetryEvent())
+      ..doIntent(const HomeBrandsRetryEvent())
+      ..doIntent(const HomeRecommendedRetryEvent())
+      ..doIntent(const HomeFeaturedRetryEvent())
+      ..doIntent(const HomeSpecialOffersRetryEvent());
+  }
+
+  void _loadAllSections(BuildContext context) {
+    context.read<HomeViewModel>()
+      ..doIntent(const HomeLoadEvent())
+      ..doIntent(const HomeBannerLoadEvent())
+      ..doIntent(const HomeCategoriesLoadEvent())
+      ..doIntent(const HomeBestSellingLoadEvent())
+      ..doIntent(const HomeBrandsLoadEvent())
+      ..doIntent(const HomeRecommendedLoadEvent())
+      ..doIntent(const HomeFeaturedLoadEvent())
+      ..doIntent(const HomeSpecialOffersLoadEvent());
   }
 }

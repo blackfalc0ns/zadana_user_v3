@@ -61,13 +61,6 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
           );
           widget.onSuccess(_identifierController.text.trim());
         }
-
-        if (state.errorMessage != null) {
-          CustomSnackbar.showError(
-            context: context,
-            message: state.errorMessage!,
-          );
-        }
       },
       builder: (context, state) {
         return Form(

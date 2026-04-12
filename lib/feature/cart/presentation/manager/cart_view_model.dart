@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_summary_entity.dart';
@@ -32,6 +33,7 @@ class CartViewModel extends Cubit<CartState> {
   final RemoveCartItemUseCase _removeCartItemUseCase;
   final UpdateCartItemQuantityUseCase _updateCartItemQuantityUseCase;
   final GuestCartSyncService _guestCartSyncService;
+  final CartCountSyncService _cartCountSyncService = CartCountSyncService();
 
   void doIntent(CartEvent event) {
     switch (event) {
@@ -85,6 +87,7 @@ class CartViewModel extends Cubit<CartState> {
         isLoadingVendors: true,
         isVendorsSuccess: false,
         clearVendorsErrorMessage: true,
+        clearVendorsFailure: true,
       ),
     );
 
@@ -101,6 +104,7 @@ class CartViewModel extends Cubit<CartState> {
             isVendorsSuccess: true,
             vendors: result.data.vendors,
             clearVendorsErrorMessage: true,
+            clearVendorsFailure: true,
           ),
         );
       case ApiErrorResult():
@@ -113,6 +117,7 @@ class CartViewModel extends Cubit<CartState> {
             isLoadingVendors: false,
             isVendorsSuccess: false,
             vendorsErrorMessage: result.failure.code,
+            vendorsFailure: result.failure,
           ),
         );
     }
@@ -124,6 +129,7 @@ class CartViewModel extends Cubit<CartState> {
         isLoadingItems: true,
         isItemsSuccess: false,
         clearItemsErrorMessage: true,
+        clearItemsFailure: true,
       ),
     );
 
@@ -134,6 +140,7 @@ class CartViewModel extends Cubit<CartState> {
     switch (result) {
       case ApiSuccessResult():
         developer.log('Cart items loaded', name: 'CartViewModel');
+        _cartCountSyncService.setCount(result.data.summary.totalQuantity);
         emit(
           state.copyWith(
             isLoadingItems: false,
@@ -142,6 +149,7 @@ class CartViewModel extends Cubit<CartState> {
             summary: result.data.summary,
             loadedVendorId: vendorId,
             clearItemsErrorMessage: true,
+            clearItemsFailure: true,
           ),
         );
       case ApiErrorResult():
@@ -154,6 +162,7 @@ class CartViewModel extends Cubit<CartState> {
             isLoadingItems: false,
             isItemsSuccess: false,
             itemsErrorMessage: result.failure.code,
+            itemsFailure: result.failure,
           ),
         );
     }
@@ -176,6 +185,7 @@ class CartViewModel extends Cubit<CartState> {
       case ApiSuccessResult():
         await _guestCartSyncService.clearPendingItems();
         developer.log('Cart cleared', name: 'CartViewModel');
+        _cartCountSyncService.setCount(0);
         emit(
           state.copyWith(
             isClearingCart: false,
@@ -225,6 +235,7 @@ class CartViewModel extends Cubit<CartState> {
         );
         final updatedItems = state.items.where((e) => e.id != item.id).toList();
         developer.log('Cart item removed: ${item.id}', name: 'CartViewModel');
+        _cartCountSyncService.setCount(result.data.summary.totalQuantity);
         emit(
           state.copyWith(
             isRemovingItem: false,
@@ -275,6 +286,7 @@ class CartViewModel extends Cubit<CartState> {
                   item.id == result.data.item.id ? result.data.item : item,
             )
             .toList();
+        _cartCountSyncService.setCount(result.data.summary.totalQuantity);
         emit(
           state.copyWith(
             items: updatedItems,

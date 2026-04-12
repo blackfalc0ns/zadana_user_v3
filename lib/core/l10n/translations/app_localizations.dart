@@ -2557,6 +2557,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View OTP Code'**
   String get view_otp_code;
+
+  /// No description provided for @location_accuracy_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location accuracy'**
+  String get location_accuracy_dialog_title;
+
+  /// No description provided for @location_accuracy_dialog_message.
+  ///
+  /// In en, this message translates to:
+  /// **'To detect your current location more precisely and speed up delivery, we will ask your device to enable the recommended location settings.'**
+  String get location_accuracy_dialog_message;
+
+  /// No description provided for @location_accuracy_dialog_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A system prompt may appear next to confirm location access or improve accuracy. You can continue now or try again later.'**
+  String get location_accuracy_dialog_hint;
+
+  /// No description provided for @location_accuracy_dialog_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get location_accuracy_dialog_continue;
+
+  /// No description provided for @location_accuracy_dialog_not_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get location_accuracy_dialog_not_now;
+
+  /// No description provided for @home_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No products or categories are available right now'**
+  String get home_empty_title;
+
+  /// No description provided for @home_empty_description.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load any content for the home page at the moment. Pull to refresh or try again in a little while.'**
+  String get home_empty_description;
+
+  /// No description provided for @profile_guest_title.
+  ///
+  /// In en, this message translates to:
+  /// **'You are browsing as a guest'**
+  String get profile_guest_title;
+
+  /// No description provided for @profile_guest_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in or create an account to access your orders, favorites, and personal details.'**
+  String get profile_guest_subtitle;
+
+  /// No description provided for @profile_guest_explore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Available for now'**
+  String get profile_guest_explore_title;
+
+  /// No description provided for @profile_guest_addresses_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You can add an address, but syncing your data requires signing in'**
+  String get profile_guest_addresses_subtitle;
+
+  /// No description provided for @profile_role_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get profile_role_label;
+
+  /// No description provided for @profile_status_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get profile_status_label;
+
+  /// No description provided for @profile_status_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get profile_status_active;
+
+  /// No description provided for @profile_edit_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your name, phone number, and email'**
+  String get profile_edit_subtitle;
+
+  /// No description provided for @profile_addresses_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage delivery addresses and saved locations'**
+  String get profile_addresses_subtitle;
+
+  /// No description provided for @profile_orders_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your current and previous orders easily'**
+  String get profile_orders_subtitle;
+
+  /// No description provided for @profile_language_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the app language'**
+  String get profile_language_subtitle;
+
+  /// No description provided for @profile_notifications_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control alerts and notifications'**
+  String get profile_notifications_subtitle;
+
+  /// No description provided for @profile_password_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your password to keep your account safe'**
+  String get profile_password_subtitle;
+
+  /// No description provided for @profile_help_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us or browse the help center'**
+  String get profile_help_subtitle;
+
+  /// No description provided for @profile_faq_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick questions and answers to help you'**
+  String get profile_faq_subtitle;
+
+  /// No description provided for @profile_about_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more about the app and current version'**
+  String get profile_about_subtitle;
+
+  /// No description provided for @profile_privacy_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy, terms, and legal information'**
+  String get profile_privacy_subtitle;
+
+  /// No description provided for @profile_logout_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out from this device'**
+  String get profile_logout_subtitle;
 }
 
 class _AppLocalizationsDelegate

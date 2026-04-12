@@ -1299,4 +1299,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get view_otp_code => 'View OTP Code';
+
+  @override
+  String get location_accuracy_dialog_title => 'Enable location accuracy';
+
+  @override
+  String get location_accuracy_dialog_message =>
+      'To detect your current location more precisely and speed up delivery, we will ask your device to enable the recommended location settings.';
+
+  @override
+  String get location_accuracy_dialog_hint =>
+      'A system prompt may appear next to confirm location access or improve accuracy. You can continue now or try again later.';
+
+  @override
+  String get location_accuracy_dialog_continue => 'Continue';
+
+  @override
+  String get location_accuracy_dialog_not_now => 'Not now';
+
+  @override
+  String get home_empty_title =>
+      'No products or categories are available right now';
+
+  @override
+  String get home_empty_description =>
+      'We could not load any content for the home page at the moment. Pull to refresh or try again in a little while.';
+
+  @override
+  String get profile_guest_title => 'You are browsing as a guest';
+
+  @override
+  String get profile_guest_subtitle =>
+      'Log in or create an account to access your orders, favorites, and personal details.';
+
+  @override
+  String get profile_guest_explore_title => 'Available for now';
+
+  @override
+  String get profile_guest_addresses_subtitle =>
+      'You can add an address, but syncing your data requires signing in';
+
+  @override
+  String get profile_role_label => 'Role';
+
+  @override
+  String get profile_status_label => 'Status';
+
+  @override
+  String get profile_status_active => 'Active';
+
+  @override
+  String get profile_edit_subtitle =>
+      'Update your name, phone number, and email';
+
+  @override
+  String get profile_addresses_subtitle =>
+      'Manage delivery addresses and saved locations';
+
+  @override
+  String get profile_orders_subtitle =>
+      'Review your current and previous orders easily';
+
+  @override
+  String get profile_language_subtitle => 'Manage the app language';
+
+  @override
+  String get profile_notifications_subtitle =>
+      'Control alerts and notifications';
+
+  @override
+  String get profile_password_subtitle =>
+      'Update your password to keep your account safe';
+
+  @override
+  String get profile_help_subtitle => 'Contact us or browse the help center';
+
+  @override
+  String get profile_faq_subtitle => 'Quick questions and answers to help you';
+
+  @override
+  String get profile_about_subtitle =>
+      'Learn more about the app and current version';
+
+  @override
+  String get profile_privacy_subtitle =>
+      'Privacy, terms, and legal information';
+
+  @override
+  String get profile_logout_subtitle => 'Sign out from this device';
 }

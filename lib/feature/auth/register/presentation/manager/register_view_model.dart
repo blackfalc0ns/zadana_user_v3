@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/feature/auth/register/domain/entities/register_request_entity.dart';
 import 'package:zadana_user_v3/feature/auth/register/domain/usecase/register_usecase.dart';
 import 'register_event.dart';
 import 'register_state.dart';
@@ -13,19 +14,14 @@ import 'register_state.dart';
 @injectable
 class RegisterViewModel extends Cubit<RegisterState> {
   RegisterViewModel(this._registerUseCase) : super(const RegisterState());
-final  RegisterUseCase _registerUseCase;
+  final RegisterUseCase _registerUseCase;
 
-  /// Main intent handler
-  /// Dispatches events to appropriate handlers
   void doIntent(RegisterEvent event) {
     switch (event) {
       case SwitchToSignUpEvent():
         _switchToSignUp();
       case SwitchToLoginEvent():
         _switchToLogin();
-      case RegisterSubmitEvent():
-        _registerUser(event);
-    
     }
   }
 
@@ -51,37 +47,52 @@ final  RegisterUseCase _registerUseCase;
     }
   }
 
-  /// Register new user
-  Future<void> _registerUser(
-    RegisterSubmitEvent event,
-  ) async {
-    emit(state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-    ));
+  Future<void> register(RegisterRequestEntity requestEntity) async {
+    emit(
+      state.copyWith(
+        isLoading: true,
+        errorMessage: null,
+        isSuccess: false,
+        failure: null,
+      ),
+    );
 
     developer.log(
-      'Registering user: ${event.registerRequestEntity.fullName}',
+      'Registering user: ${requestEntity.fullName}',
       name: 'RegisterViewModel',
     );
 
-    final result = await _registerUseCase.call(
-      event.registerRequestEntity,
-    );
+    final result = await _registerUseCase.call(requestEntity);
 
     switch (result) {
       case ApiSuccessResult():
-        emit(state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          registerResponseEntity: result.data,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            registerResponseEntity: result.data,
+            failure: null,
+          ),
+        );
       case ApiErrorResult():
-        emit(state.copyWith(
-          isLoading: false,
-          errorMessage: result.failure.code,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: false,
+            errorMessage: result.failure.errorMessage,
+            failure: result.failure,
+          ),
+        );
     }
   }
 
+  void clearFeedback() {
+    emit(
+      state.copyWith(
+        errorMessage: null,
+        isSuccess: false,
+        failure: null,
+      ),
+    );
+  }
 }

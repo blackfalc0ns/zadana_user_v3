@@ -7,9 +7,6 @@ import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class FavoritesGrid extends StatelessWidget {
-  final List<ProductModel> products;
-  final Function(ProductModel) onAddToCart;
-  final Function(ProductModel) onToggleFavorite;
 
   const FavoritesGrid({
     super.key,
@@ -17,6 +14,9 @@ class FavoritesGrid extends StatelessWidget {
     required this.onAddToCart,
     required this.onToggleFavorite,
   });
+  final List<ProductModel> products;
+  final Function(ProductModel) onAddToCart;
+  final Function(ProductModel) onToggleFavorite;
 
   @override
   Widget build(BuildContext context) {

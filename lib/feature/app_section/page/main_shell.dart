@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/network/api_services.dart';
+import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
+import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
+import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
+import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_cubit.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_state.dart';
+import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
+import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
+import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
+import 'package:dio/dio.dart';
 
 final GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
 const double kMainShellBottomNavHeight = 75.0;
@@ -20,7 +33,9 @@ const double kMainShellBottomNavBottomOffset = 12.0;
 const double kMainShellBottomNavTopMargin = 5.0;
 
 double mainShellBottomNavReservedSpace(BuildContext context) {
+  final safeBottomInset = MediaQuery.paddingOf(context).bottom;
   return kMainShellBottomNavHeight +
+      safeBottomInset +
       kMainShellBottomNavBottomOffset +
       kMainShellBottomNavTopMargin;
 }
@@ -38,6 +53,7 @@ class MainShellState extends State<MainShell> {
   late int _selectedIndex;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late final List<Widget?> _loadedScreens;
+  late final NavBadgeCubit _navBadgeCubit;
 
   final List<NavBarItem> _navItems = [];
   bool _isInitialized = false;
@@ -47,7 +63,26 @@ class MainShellState extends State<MainShell> {
     super.initState();
     _selectedIndex = widget.initialIndex;
     _loadedScreens = List<Widget?>.filled(5, null);
+    _navBadgeCubit = NavBadgeCubit(
+      getIt<GetCartUseCase>(),
+      FavoritesRepository(
+        FavoritesRemoteDataSourceImpl(
+          getIt<ApiServices>(),
+          getIt<Dio>(),
+          getIt<TokenService>(),
+          getIt<DeviceIdService>(),
+        ),
+      ),
+      FavoriteSyncService(),
+      CartCountSyncService(),
+    )..loadCounts();
     _ensureScreenLoaded(_selectedIndex);
+  }
+
+  @override
+  void dispose() {
+    _navBadgeCubit.close();
+    super.dispose();
   }
 
   @override
@@ -126,37 +161,48 @@ class MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: const AppDrawer(),
-      drawerEdgeDragWidth: 20,
-      body: Stack(
-        children: [
-          ...List.generate(_loadedScreens.length, (index) {
-            final screen = _loadedScreens[index];
-            if (screen == null) {
-              return const SizedBox.shrink();
-            }
+    final bottomSafeInset = MediaQuery.paddingOf(context).bottom;
 
-            return Offstage(
-              offstage: _selectedIndex != index,
-              child: HeroMode(
-                enabled: _selectedIndex == index,
-                child: screen,
+    return BlocProvider.value(
+      value: _navBadgeCubit,
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: const AppDrawer(),
+        drawerEdgeDragWidth: 20,
+        body: Stack(
+          children: [
+            ...List.generate(_loadedScreens.length, (index) {
+              final screen = _loadedScreens[index];
+              if (screen == null) {
+                return const SizedBox.shrink();
+              }
+
+              return Offstage(
+                offstage: _selectedIndex != index,
+                child: HeroMode(
+                  enabled: _selectedIndex == index,
+                  child: screen,
+                ),
+              );
+            }),
+            Positioned(
+              bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
+              left: 12,
+              right: 12,
+              child: BlocBuilder<NavBadgeCubit, NavBadgeState>(
+                builder: (context, state) {
+                  return CustomBottomNavBar(
+                    selectedIndex: _selectedIndex,
+                    navItems: _navItems,
+                    cartCount: state.cartCount,
+                    favoritesCount: state.favoritesCount,
+                    onItemSelected: _onItemTapped,
+                  );
+                },
               ),
-            );
-          }),
-          Positioned(
-            bottom: kMainShellBottomNavBottomOffset,
-            left: 12,
-            right: 12,
-            child: CustomBottomNavBar(
-              selectedIndex: _selectedIndex,
-              navItems: _navItems,
-              onItemSelected: _onItemTapped,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -177,12 +223,16 @@ class NavBarItem {
 class CustomBottomNavBar extends StatefulWidget {
   final int selectedIndex;
   final List<NavBarItem> navItems;
+  final int cartCount;
+  final int favoritesCount;
   final Function(int) onItemSelected;
 
   const CustomBottomNavBar({
     super.key,
     required this.selectedIndex,
     required this.navItems,
+    required this.cartCount,
+    required this.favoritesCount,
     required this.onItemSelected,
   });
 
@@ -239,16 +289,27 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                         color: active ? AppColors.primary : AppColors.surface,
                         shape: BoxShape.circle,
                       ),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          active ? item.activeIcon : item.icon,
-                          key: ValueKey(active ? item.activeIcon : item.icon),
-                          size: 24,
-                          color: active
-                              ? AppColors.white
-                              : AppColors.textSecondary,
-                        ),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              active ? item.activeIcon : item.icon,
+                              key: ValueKey(active ? item.activeIcon : item.icon),
+                              size: 24,
+                              color: active
+                                  ? AppColors.white
+                                  : AppColors.textSecondary,
+                            ),
+                          ),
+                          if (_badgeCountFor(index) > 0)
+                            Positioned(
+                              top: -8,
+                              right: -8,
+                              child: _NavBadge(count: _badgeCountFor(index)),
+                            ),
+                        ],
                       ),
                     ),
                     AnimatedDefaultTextStyle(
@@ -271,4 +332,43 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       );
     });
   }
+
+  int _badgeCountFor(int index) {
+    if (index == 2) return widget.cartCount;
+    if (index == 3) return widget.favoritesCount;
+    return 0;
+  }
 }
+
+class _NavBadge extends StatelessWidget {
+  const _NavBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final displayCount = count > 99 ? '99+' : '$count';
+
+    return Container(
+      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      decoration: BoxDecoration(
+        color: AppColors.error,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: AppColors.card, width: 1.5),
+      ),
+      child: Center(
+        child: Text(
+          displayCount,
+          textAlign: TextAlign.center,
+          style: getBoldStyle(
+            fontSize: 9,
+            fontFamily: FontConstant.cairo,
+            color: AppColors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+

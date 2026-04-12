@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -30,7 +30,7 @@ class AboutAppScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Image.asset(Assets.logo, width: 120, height: 120),
+            Image.asset(Assets.logoDark, width: 120, height: 120),
             const SizedBox(height: Spacing.lg),
             Text(
               l10n.app_name,
@@ -76,3 +76,4 @@ class AboutAppScreen extends StatelessWidget {
     );
   }
 }
+

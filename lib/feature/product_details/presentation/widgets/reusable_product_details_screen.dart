@@ -97,7 +97,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomSheet: ProductBottomActions(
+      bottomNavigationBar: ProductBottomActions(
         onAddToCart: onAddToCart,
         onGoToCart: onGoToCart,
       ),

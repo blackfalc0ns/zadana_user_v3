@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
@@ -194,20 +194,19 @@ class _SelectedVendorBar extends StatelessWidget {
                               const SizedBox(height: 1),
                               Text(
                                 '${PriceFormatter.formatPrice(totalOldPrice)} ${locale.currency}',
-                                style: getMediumStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  color: AppColors.textSecondary.withValues(
-                                    alpha: 0.75,
-                                  ),
-                                  fontSize: FontSize.size10,
-                                ).copyWith(
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationColor:
-                                      AppColors.textSecondary.withValues(
-                                        alpha: 0.55,
+                                style:
+                                    getMediumStyle(
+                                      fontFamily: FontConstant.cairo,
+                                      color: AppColors.textSecondary.withValues(
+                                        alpha: 0.75,
                                       ),
-                                  decorationThickness: 1.2,
-                                ),
+                                      fontSize: FontSize.size10,
+                                    ).copyWith(
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: AppColors.textSecondary
+                                          .withValues(alpha: 0.55),
+                                      decorationThickness: 1.2,
+                                    ),
                               ),
                             ],
                           ],
@@ -291,3 +290,4 @@ class _CartCheckoutButton extends StatelessWidget {
     );
   }
 }
+

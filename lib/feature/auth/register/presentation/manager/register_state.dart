@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/auth/register/domain/entities/register_response_entity.dart';
 
 /// State for register feature
@@ -8,6 +9,7 @@ class RegisterState {
   final String? errorMessage;
   final bool isSuccess;
   final RegisterResponseEntity? registerResponseEntity;
+  final Failure? failure;
 
   const RegisterState({
     this.registerResponseEntity,
@@ -15,6 +17,7 @@ class RegisterState {
     this.isLoading = false,
     this.errorMessage,
     this.isSuccess = false,
+    this.failure,
   });
 
   RegisterState copyWith({
@@ -23,6 +26,7 @@ class RegisterState {
     bool? isLoading,
     String? errorMessage,
     bool? isSuccess,
+    Failure? failure,
   }) {
     return RegisterState(
       registerResponseEntity:
@@ -31,6 +35,7 @@ class RegisterState {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isSuccess: isSuccess ?? this.isSuccess,
+      failure: failure,
     );
   }
 
@@ -41,9 +46,11 @@ class RegisterState {
         other.isSignUp == isSignUp &&
         other.isLoading == isLoading &&
         other.errorMessage == errorMessage &&
-        other.isSuccess == isSuccess;
+        other.isSuccess == isSuccess &&
+        other.failure == failure;
   }
 
   @override
-  int get hashCode => Object.hash(isSignUp, isLoading, errorMessage, isSuccess);
+  int get hashCode =>
+      Object.hash(isSignUp, isLoading, errorMessage, isSuccess, failure);
 }

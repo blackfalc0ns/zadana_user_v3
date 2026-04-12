@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 /// ─────────────────────────────────────────────────────────────
 /// Reusable button with loading state, icon, and variants.
@@ -176,3 +176,4 @@ class AppButton extends StatelessWidget {
     return Text(text, style: style);
   }
 }
+

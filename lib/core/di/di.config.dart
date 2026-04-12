@@ -36,6 +36,8 @@ import '../../feature/auth/login/data/data_source/login_remote_data_source_impl.
 import '../../feature/auth/login/data/repo/login_repository_impl.dart' as _i94;
 import '../../feature/auth/login/domain/repo/login_repository.dart' as _i558;
 import '../../feature/auth/login/domain/usecase/login_usecase.dart' as _i248;
+import '../../feature/auth/login/presentation/manager/login_view_model.dart'
+    as _i955;
 import '../../feature/auth/logout/data/data_source/logout_remote_data_source.dart'
     as _i609;
 import '../../feature/auth/logout/data/data_source/logout_remote_data_source_impl.dart'
@@ -454,6 +456,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
+    );
+    gh.factory<_i955.LoginViewModel>(
+      () => _i955.LoginViewModel(gh<_i248.LoginUseCase>()),
     );
     gh.factory<_i718.VerifyOtpViewModel>(
       () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),

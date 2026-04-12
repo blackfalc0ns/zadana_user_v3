@@ -25,7 +25,7 @@ class _SplashPageState extends State<SplashPage>
         context,
         SavedLocationService.hasSavedLocation
             ? AppRoutes.mainShell
-            : AppRoutes.startSelectLocationPage,
+            : AppRoutes.startPage,
       );
     }
   }

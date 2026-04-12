@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:dio/dio.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/widgets/clear_all_dialog.dart';
@@ -63,11 +64,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   void _addToCart(ProductModel product) {
-    final locale = context.localization;
-    CustomSnackbar.showSuccess(
-      context: context,
-      message: locale.product_added_to_cart(1, product.name),
-    );
+    HomeProductCartHelper.addProductToCart(context, product);
   }
 
   void _showClearDialog() {

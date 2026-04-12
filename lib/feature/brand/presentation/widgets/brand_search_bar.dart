@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
@@ -105,3 +105,4 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
+

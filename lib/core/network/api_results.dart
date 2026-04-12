@@ -31,21 +31,6 @@ Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
   }
 }
 
-// Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
-//   try {
-//     final result = await apiCall();
-//     return ApiSuccessResult<T>(data: result);
-//   } on DioException catch (dioError) {
-//     return ApiErrorResult<T>(
-//       failure: ServerFailure.fromDioError(dioException: dioError),
-//     );
-//   } catch (error) {
-//     return ApiErrorResult<T>(
-//       failure: Failure(errorMessage: error.toString()),
-//     );
-//   }
-// }
-
 Future<ApiResult<T>> safeLocalCall<T>(Future<T> Function() localCall) async {
   try {
     final result = await localCall();

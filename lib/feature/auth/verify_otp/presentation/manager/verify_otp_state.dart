@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/network/failures.dart';
 import '../../domain/entities/verify_otp_response_entity.dart';
 
 /// State for verify OTP feature
@@ -7,12 +8,14 @@ class VerifyOtpState {
   final String? errorMessage;
   final bool isSuccess;
   final VerifyOtpResponseEntity? verifyOtpResponse;
+  final Failure? failure;
 
   const VerifyOtpState({
     this.isLoading = false,
     this.errorMessage,
     this.isSuccess = false,
     this.verifyOtpResponse,
+    this.failure,
   });
 
   VerifyOtpState copyWith({
@@ -20,12 +23,14 @@ class VerifyOtpState {
     String? errorMessage,
     bool? isSuccess,
     VerifyOtpResponseEntity? verifyOtpResponse,
+    Failure? failure,
   }) {
     return VerifyOtpState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isSuccess: isSuccess ?? this.isSuccess,
       verifyOtpResponse: verifyOtpResponse ?? this.verifyOtpResponse,
+      failure: failure,
     );
   }
 
@@ -36,7 +41,8 @@ class VerifyOtpState {
         other.isLoading == isLoading &&
         other.errorMessage == errorMessage &&
         other.isSuccess == isSuccess &&
-        other.verifyOtpResponse == verifyOtpResponse;
+        other.verifyOtpResponse == verifyOtpResponse &&
+        other.failure == failure;
   }
 
   @override
@@ -45,5 +51,6 @@ class VerifyOtpState {
         errorMessage,
         isSuccess,
         verifyOtpResponse,
+        failure,
       );
 }
