@@ -43,10 +43,6 @@ class PriceText extends StatelessWidget {
       color: AppColors.textHint,
       fontSize: (compact ? 9.5 : 11) * fontScale,
     );
-    final unitStyle = AppTextStyles.bodySmall.copyWith(
-      color: AppColors.textHint,
-      fontSize: (compact ? 9 : 10) * fontScale,
-    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,

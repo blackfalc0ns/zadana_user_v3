@@ -62,8 +62,7 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                     onPrimary: Colors.white,
                     surface: Colors.white,
                     onSurface: Colors.black87,
-                  ),
-            dialogBackgroundColor: colors.surface,
+                  ), dialogTheme: DialogThemeData(backgroundColor: colors.surface),
           ),
           child: child!,
         );
@@ -93,8 +92,7 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                     onPrimary: Colors.white,
                     surface: Colors.white,
                     onSurface: Colors.black87,
-                  ),
-            dialogBackgroundColor: colors.surface,
+                  ), dialogTheme: DialogThemeData(backgroundColor: colors.surface),
           ),
           child: child!,
         );

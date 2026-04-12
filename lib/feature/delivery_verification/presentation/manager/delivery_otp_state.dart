@@ -1,4 +1,3 @@
-import 'package:zadana_user_v3/core/network/api_results.dart';
 
 class DeliveryOtpState {
   final bool isLoading;

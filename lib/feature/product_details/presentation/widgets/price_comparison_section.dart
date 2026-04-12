@@ -62,7 +62,7 @@ class PriceComparisonSection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               itemCount: stores.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (_, index) {
                 final store = stores[index];
                 final originalPrice = store['price'] as double;
@@ -96,18 +96,6 @@ class PriceComparisonSection extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  double _getHighestPrice(List<Map<String, dynamic>> stores) {
-    return stores
-        .map((store) => store['price'] as double)
-        .reduce((a, b) => a > b ? a : b);
-  }
-
-  double _getLowestPrice(List<Map<String, dynamic>> stores) {
-    return stores
-        .map((store) => store['new_price'] as double)
-        .reduce((a, b) => a < b ? a : b);
   }
 
   List<Map<String, dynamic>> _getStores() {
