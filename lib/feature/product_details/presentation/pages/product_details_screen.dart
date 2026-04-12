@@ -258,8 +258,8 @@ class _ProductDetailsLoadingContent extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: 3,
-                separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
-                itemBuilder: (_, __) => Container(
+                separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
+                itemBuilder: (_, _) => Container(
                   width: 145,
                   decoration: BoxDecoration(
                     color: AppColors.surface,
@@ -287,8 +287,8 @@ class _ProductDetailsLoadingContent extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: 3,
-                separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
-                itemBuilder: (_, __) => Container(
+                separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
+                itemBuilder: (_, _) => Container(
                   width: 130,
                   decoration: BoxDecoration(
                     color: AppColors.surface,

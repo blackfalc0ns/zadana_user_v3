@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/feature/delivery_verification/domain/entities/delivery_otp_entity.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/domain/usecase/send_delivery_otp_usecase.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/domain/usecase/verify_delivery_otp_usecase.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/domain/usecase/resend_delivery_otp_usecase.dart';

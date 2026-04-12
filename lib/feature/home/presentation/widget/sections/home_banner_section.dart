@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/banner/banner_container.dart';
+
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';

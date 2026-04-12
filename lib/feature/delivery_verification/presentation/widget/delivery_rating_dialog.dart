@@ -23,7 +23,7 @@ class DeliveryRatingDialog extends StatefulWidget {
 
 class _DeliveryRatingDialogState extends State<DeliveryRatingDialog> {
   final TextEditingController _commentController = TextEditingController();
-  int _starRating = 0;
+  final int _starRating = 0;
 
   @override
   void dispose() {

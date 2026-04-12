@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import '../../domain/entities/delivery_otp_entity.dart';
 import '../../domain/repo/delivery_verification_repo.dart';
 import '../data_source/delivery_verification_remote_data_source.dart';
 import '../models/delivery_otp_request_model.dart';

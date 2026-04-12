@@ -1,4 +1,3 @@
-import 'package:zadana_user_v3/feature/delivery_verification/domain/entities/delivery_otp_entity.dart';
 
 abstract class DeliveryOtpEvent {}
 
