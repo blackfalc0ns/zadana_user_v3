@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -91,19 +92,19 @@ class ProductsGrid extends StatelessWidget {
             );
           }
 
-          // Show simple text for non-error empty states
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-              child: Text(
-                emptyStateMessage ?? 'لا توجد منتجات في هذا القسم',
-                style: getSemiBoldStyle(
-                  fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size15,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+          // Show BaseErrorWidget for non-error empty states
+          final isNoCategories =
+              emptyStateMessage != null && emptyStateMessage!.contains('أقسام');
+
+          return BaseErrorWidget(
+            icon: isNoCategories
+                ? Icons.grid_view_rounded
+                : Icons.search_off_rounded,
+            title: emptyStateMessage ?? 'لا توجد منتجات',
+            description: isNoCategories
+                ? 'لم يتم العثور على أي أقسام متاحة في الوقت الحالي. نعمل على إضافة المزيد قريباً.'
+                : 'لا تتوفر منتجات في هذا القسم في الوقت الحالي، يمكنك تجربة تغيير فلاتر البحث أو العودة لاحقاً.',
+            primaryColor: Theme.of(context).colorScheme.primary,
           );
         }
 

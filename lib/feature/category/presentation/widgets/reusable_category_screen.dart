@@ -109,7 +109,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   }
 
   void _resetTempFilters() {
-    _tempFilterCategory = widget.filterSelectedCategory ??
+    _tempFilterCategory =
+        widget.filterSelectedCategory ??
         (widget.showCategoryFilterSection ? null : widget.selectedCategory);
     _tempFilterQuantity = widget.filterSelectedQuantity;
     _tempFilterBrand = widget.filterSelectedBrand;
@@ -261,9 +262,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                       _tempFilterProductType = productType;
                                       _tempFilterPart = null;
                                     }),
-                                onPartSelected: (part) => setSheetState(
-                                  () => _tempFilterPart = part,
-                                ),
+                                onPartSelected: (part) =>
+                                    setSheetState(() => _tempFilterPart = part),
                                 onPriceRangeChanged: (values) => setSheetState(
                                   () => _tempPriceRange = values,
                                 ),
@@ -279,7 +279,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                             }),
                             onClearAll: () {
                               setSheetState(() {
-                                _tempFilterCategory = widget.showCategoryFilterSection
+                                _tempFilterCategory =
+                                    widget.showCategoryFilterSection
                                     ? null
                                     : widget.selectedCategory;
                                 _tempFilterQuantity = null;

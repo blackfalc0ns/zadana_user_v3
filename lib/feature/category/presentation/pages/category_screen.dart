@@ -60,6 +60,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   String? _activeHeroProductId;
   String? _errorMessage;
   Failure? _failure;
+  VoidCallback? _currentRetryAction;
   RangeValues _priceRange = const RangeValues(0, 1000);
   RangeValues _priceBounds = const RangeValues(0, 1000);
 
@@ -185,6 +186,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _isLoading = false;
         _errorMessage = failure.code;
         _failure = failure;
+        _currentRetryAction = () => unawaited(_loadInitialData());
       });
     }
   }
@@ -271,6 +273,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _isSubCategoriesLoading = false;
         _errorMessage = failure.code;
         _failure = failure;
+        _currentRetryAction = () => unawaited(_selectCategory(category, fromOutside: fromOutside));
       });
     }
   }
@@ -377,6 +380,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _isLoading = false;
         _errorMessage = failure.code;
         _failure = failure;
+        _currentRetryAction = () => unawaited(_loadCategoryProducts());
       });
     }
   }
@@ -486,7 +490,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
       isSubCategoriesLoading: _isSubCategoriesLoading,
       emptyStateMessage: _errorMessage,
       errorFailure: _failure,
-      onRetryError: () => unawaited(_loadCategoryProducts()),
+      onRetryError: () {
+        if (_currentRetryAction != null) {
+          _currentRetryAction!();
+        } else {
+          unawaited(_loadInitialData());
+        }
+      },
       onCategorySelected: _onCategorySelected,
       onSubCategorySelected: (subCategory) {
         final isSameSubCategory = _selectedSubCategoryId == subCategory.id;
