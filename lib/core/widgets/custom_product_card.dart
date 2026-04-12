@@ -233,7 +233,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                             decoration: BoxDecoration(
                               color: AppColors.white.withValues(alpha: 0.85),
                               shape: BoxShape.circle,
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                   color: AppColors.shadow,
                                   blurRadius: 0.5,

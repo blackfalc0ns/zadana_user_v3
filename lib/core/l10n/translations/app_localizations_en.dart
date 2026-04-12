@@ -307,6 +307,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auth_subtitle_signup => 'Create an account to explore our app';
 
   @override
+  String get register_hero_badge => 'Start shopping';
+
+  @override
+  String get register_screen_title => 'Create account';
+
+  @override
+  String get register_hero_subtitle =>
+      'Create your account in a few steps and start shopping with ease.';
+
+  @override
+  String get register_section_badge => 'New account';
+
+  @override
+  String get register_form_title => 'Create a new account';
+
+  @override
+  String get register_form_description =>
+      'Enter your basic details to get started.';
+
+  @override
   String get toggle_login => 'Log In';
 
   @override
@@ -411,6 +431,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get otp_success_message => 'Account verified successfully';
+
+  @override
+  String get otp_hero_badge => 'Account verification';
+
+  @override
+  String get otp_hero_subtitle =>
+      'Enter the code sent to you to complete account verification.';
+
+  @override
+  String get otp_section_badge => 'Verify';
 
   @override
   String get otp_screen_title => 'Verification Code';

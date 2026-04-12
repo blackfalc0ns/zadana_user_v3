@@ -55,14 +55,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
           return AuthExperienceShell(
             showBackButton: true,
-            heroBadge: 'Ø§Ø¨Ø¯Ø£ Ø±Ø­Ù„ØªÙƒ Ø§Ù„Ø´Ø±Ø§Ø¦ÙŠØ©',
-            heroTitle: 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨',
-            heroSubtitle:
-                'Ø£Ù†Ø´Ø¦ Ø­Ø³Ø§Ø¨Ùƒ Ø¨Ø³Ù‡ÙˆÙ„Ø© ÙˆØ§Ø¨Ø¯Ø£ ÙÙŠ Ø­ÙØ¸ Ø§Ù„Ø¹Ù†Ø§ÙˆÙŠÙ† ÙˆØ§Ù„Ø·Ù„Ø¨Ø§Øª ÙˆØ§Ù„Ø§Ø³ØªÙØ§Ø¯Ø© Ù…Ù† ØªØ¬Ø±Ø¨Ø© ØªØ³ÙˆÙ‚ Ù…Ø±ØªØ¨Ø© ÙˆØ³Ø±ÙŠØ¹Ø©.',
-            sectionBadge: 'New account',
-            sectionTitle: 'Ø³Ø¬Ù„ Ø­Ø³Ø§Ø¨ Ø¬Ø¯ÙŠØ¯',
-            sectionDescription:
-                'Ø§Ù…Ù„Ø£ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ© ÙÙ‚Ø· ÙˆØ³Ù†ÙƒÙ…Ù„ Ù…Ø¹Ùƒ Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø¨Ø´ÙƒÙ„ Ø¨Ø³ÙŠØ· ÙˆÙˆØ§Ø¶Ø­.',
+            heroBadge: locale.register_hero_badge,
+            heroTitle: locale.register_screen_title,
+            heroSubtitle: locale.register_hero_subtitle,
+            sectionBadge: locale.register_section_badge,
+            sectionTitle: locale.register_form_title,
+            sectionDescription: locale.register_form_description,
             sectionIcon: Icons.person_add_alt_1_rounded,
             body: showGlobalError
                 ? Padding(
@@ -76,7 +74,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   )
                 : SignUpForm(
-                    locationEntity: widget.locationEntity ??
+                    locationEntity:
+                        widget.locationEntity ??
                         SavedLocationService.getSavedLocation(),
                     onEmailChanged: (identifier) {
                       _submittedIdentifier = identifier;

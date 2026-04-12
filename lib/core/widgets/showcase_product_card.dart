@@ -149,9 +149,9 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
               child: DiscountBadge(
                 discountText: '$discount%',
                 color: AppColors.error,
-                trianglesize: 28,
+                trianglesize: 32,
                 cornerRadius: 12,
-                fontSize: 7.2,
+                fontSize: 8.4,
                 shadowColor: AppColors.shadow,
               ),
             ),
@@ -232,13 +232,18 @@ class _FavoritePill extends StatelessWidget {
         width: 18,
         height: 18,
         decoration: BoxDecoration(
-          color: AppColors.white.withValues(alpha: 0.96),
+          color: AppColors.white.withValues(alpha: 0.85),
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.border),
+          boxShadow: const [
+            BoxShadow(
+              color: AppColors.shadow,
+              blurRadius: 0.5,
+            ),
+          ],
         ),
         child: Icon(
           isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-          size: 10,
+          size: 15,
           color: isFavorite ? AppColors.error : AppColors.textSecondary,
         ),
       ),

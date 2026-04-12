@@ -26,7 +26,8 @@ class DiscountBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final badgeExtent = trianglesize.clamp(18.0, 60.0);
-    final contentPadding = (badgeExtent * 0.08).clamp(1.5, 4.0);
+    final contentPadding = (badgeExtent * 0.06).clamp(1.0, 3.0);
+    final labelOffset = -(badgeExtent * 0.16);
 
     return CustomPaint(
       painter: TrianglePainter(
@@ -36,28 +37,34 @@ class DiscountBadge extends StatelessWidget {
         cornerRadius: cornerRadius,
       ),
       child: Container(
-        alignment: const Alignment(-1, -1),
+        alignment: Alignment.center,
         padding: EdgeInsets.all(contentPadding),
         width: badgeExtent,
         height: badgeExtent,
-        child: Transform.rotate(
-          angle: -math.pi / 4,
-          child: Text(
-            discountText,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: fontSize + 0.5,
-              fontWeight: FontWeight.bold,
-              height: 1,
-              letterSpacing: 0,
-              shadows: const [
-                Shadow(
-                  color: Color(0x55000000),
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
+        child: Transform.translate(
+          offset: Offset(labelOffset, labelOffset),
+          child: Transform.rotate(
+            angle: -math.pi / 4,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                discountText,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: fontSize + 0.5,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                  letterSpacing: 0,
+                  shadows: const [
+                    Shadow(
+                      color: Color(0x55000000),
+                      blurRadius: 2,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -112,8 +112,6 @@ class ProductImage extends StatelessWidget {
                   url,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  // fit: resolvedFit,
-                  alignment: Alignment.center,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
                 );

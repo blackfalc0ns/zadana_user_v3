@@ -297,6 +297,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get auth_subtitle_signup => 'سو حساب جديد وابدأ';
 
   @override
+  String get register_hero_badge => 'ابدأ التسوق';
+
+  @override
+  String get register_screen_title => 'إنشاء حساب';
+
+  @override
+  String get register_hero_subtitle =>
+      'أنشئ حسابك بخطوات بسيطة وابدأ التسوق بسهولة.';
+
+  @override
+  String get register_section_badge => 'حساب جديد';
+
+  @override
+  String get register_form_title => 'سجّل حساب جديد';
+
+  @override
+  String get register_form_description => 'أدخل بياناتك الأساسية للبدء.';
+
+  @override
   String get toggle_login => 'تسجيل دخول';
 
   @override
@@ -398,6 +417,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get otp_success_message => 'تم تفعيل الحساب';
+
+  @override
+  String get otp_hero_badge => 'تأكيد الحساب';
+
+  @override
+  String get otp_hero_subtitle => 'أدخل الرمز المرسل إليك لإكمال تفعيل الحساب.';
+
+  @override
+  String get otp_section_badge => 'تحقق';
 
   @override
   String get otp_screen_title => 'كود التحقق';

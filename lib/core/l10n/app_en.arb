@@ -87,9 +87,15 @@
   "location_service_disabled": "Location service is disabled",
   "location_permission_denied": "Location permission denied",
   "location_permission_denied_forever": "Location permission permanently denied",
- "auth_title"           : "Get Started Now",
+"auth_title"           : "Get Started Now",
 "auth_subtitle_login"  : "Welcome back! Log in to your account",
 "auth_subtitle_signup" : "Create an account to explore our app",
+"register_hero_badge": "Start shopping",
+"register_screen_title": "Create account",
+"register_hero_subtitle": "Create your account in a few steps and start shopping with ease.",
+"register_section_badge": "New account",
+"register_form_title": "Create a new account",
+"register_form_description": "Enter your basic details to get started.",
 
 
 "toggle_login"         : "Log In",
@@ -133,6 +139,9 @@
 "otp_verify_button": "Verify",
 "otp_complete_code_required": "Please enter the complete verification code",
 "otp_success_message": "Account verified successfully",
+"otp_hero_badge": "Account verification",
+"otp_hero_subtitle": "Enter the code sent to you to complete account verification.",
+"otp_section_badge": "Verify",
 "otp_screen_title": "Verification Code",
 "otp_screen_subtitle": "Enter the verification code sent to you to confirm your account",
 

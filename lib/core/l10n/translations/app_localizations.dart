@@ -638,6 +638,42 @@ abstract class AppLocalizations {
   /// **'Create an account to explore our app'**
   String get auth_subtitle_signup;
 
+  /// No description provided for @register_hero_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Start shopping'**
+  String get register_hero_badge;
+
+  /// No description provided for @register_screen_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get register_screen_title;
+
+  /// No description provided for @register_hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account in a few steps and start shopping with ease.'**
+  String get register_hero_subtitle;
+
+  /// No description provided for @register_section_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'New account'**
+  String get register_section_badge;
+
+  /// No description provided for @register_form_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new account'**
+  String get register_form_title;
+
+  /// No description provided for @register_form_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your basic details to get started.'**
+  String get register_form_description;
+
   /// No description provided for @toggle_login.
   ///
   /// In en, this message translates to:
@@ -841,6 +877,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account verified successfully'**
   String get otp_success_message;
+
+  /// No description provided for @otp_hero_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Account verification'**
+  String get otp_hero_badge;
+
+  /// No description provided for @otp_hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code sent to you to complete account verification.'**
+  String get otp_hero_subtitle;
+
+  /// No description provided for @otp_section_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get otp_section_badge;
 
   /// No description provided for @otp_screen_title.
   ///

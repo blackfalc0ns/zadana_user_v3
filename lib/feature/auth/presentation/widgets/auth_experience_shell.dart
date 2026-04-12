@@ -246,7 +246,7 @@ class _HeroProduceArtwork extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 18,
             left: 0,
             child: _ProduceBox(
@@ -255,7 +255,7 @@ class _HeroProduceArtwork extends StatelessWidget {
               rotation: -0.22,
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 6,
             left: 32,
             child: _ProduceBox(
@@ -264,7 +264,7 @@ class _HeroProduceArtwork extends StatelessWidget {
               rotation: -0.04,
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 22,
             right: 2,
             child: _ProduceBox(
@@ -366,9 +366,9 @@ class _AuthBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(
+        const Positioned.fill(
           child: DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,

@@ -21,13 +21,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _notificationsEnabled = true;
-  late Future<bool> _isGuestFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _isGuestFuture = _resolveGuestMode();
-  }
 
   Future<bool> _resolveGuestMode() async {
     final token = await getIt<TokenService>().getToken();
@@ -70,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: FutureBuilder<bool>(
-        future: _isGuestFuture,
+        future: _resolveGuestMode(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());

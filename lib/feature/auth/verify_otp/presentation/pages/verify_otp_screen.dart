@@ -5,7 +5,7 @@ import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
@@ -21,26 +21,25 @@ class VerifyOtpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
+
     return BlocProvider(
       create: (_) => getIt<VerifyOtpViewModel>(),
       child: BlocListener<VerifyOtpViewModel, VerifyOtpState>(
         listener: _handleStateChanges,
         child: AuthExperienceShell(
           showBackButton: true,
-          heroBadge: 'Ø®Ø·ÙˆØ© Ø£Ø®ÙŠØ±Ø©',
-          heroTitle: AppLocalizations.of(context)!.otp_screen_title,
-          heroSubtitle:
-              'Confirm your code to continue into a smoother grocery experience with your account fully verified.',
-          sectionBadge: 'Verify',
-          sectionTitle: AppLocalizations.of(context)!.otp_screen_title,
-          sectionDescription: AppLocalizations.of(context)!.otp_screen_subtitle,
+          heroBadge: locale.otp_hero_badge,
+          heroTitle: locale.otp_screen_title,
+          heroSubtitle: locale.otp_hero_subtitle,
+          sectionBadge: locale.otp_section_badge,
+          sectionTitle: locale.otp_screen_title,
+          sectionDescription: locale.otp_description,
           sectionIcon: Icons.verified_user_outlined,
           body: BlocBuilder<VerifyOtpViewModel, VerifyOtpState>(
             builder: (context, state) {
               final showGlobalError =
-                  !state.isLoading &&
-                  !state.isSuccess &&
-                  state.failure != null;
+                  !state.isLoading && !state.isSuccess && state.failure != null;
 
               if (showGlobalError) {
                 return Padding(
@@ -70,9 +69,10 @@ class VerifyOtpScreen extends StatelessWidget {
         context: context,
         message:
             state.verifyOtpResponse?.message ??
-            AppLocalizations.of(context)!.otp_success_message,
+            context.localization.otp_success_message,
       );
-      final shouldResumeCheckout = CheckoutFlowService().consumePendingCheckout();
+      final shouldResumeCheckout = CheckoutFlowService()
+          .consumePendingCheckout();
       if (shouldResumeCheckout) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const PaymentScreen()),
@@ -80,7 +80,10 @@ class VerifyOtpScreen extends StatelessWidget {
         );
         return;
       }
-      context.pushReplacementNamed(AppRoutes.mainShell);
+      context.pushNamedAndRemoveUntil(
+        AppRoutes.mainShell,
+        predicate: (Route<dynamic> route) => false,
+      );
     }
   }
 }

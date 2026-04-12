@@ -93,6 +93,12 @@
   "auth_title": "ابدأ معنا الحين",
   "auth_subtitle_login": "هلا فيك! سجّل دخولك",
   "auth_subtitle_signup": "سو حساب جديد وابدأ",
+  "register_hero_badge": "ابدأ التسوق",
+  "register_screen_title": "إنشاء حساب",
+  "register_hero_subtitle": "أنشئ حسابك بخطوات بسيطة وابدأ التسوق بسهولة.",
+  "register_section_badge": "حساب جديد",
+  "register_form_title": "سجّل حساب جديد",
+  "register_form_description": "أدخل بياناتك الأساسية للبدء.",
 
   "toggle_login": "تسجيل دخول",
   "toggle_signup": "تسجيل جديد",
@@ -134,6 +140,9 @@
   "otp_verify_button": "تحقق",
   "otp_complete_code_required": "اكتب الكود كامل",
   "otp_success_message": "تم تفعيل الحساب",
+  "otp_hero_badge": "تأكيد الحساب",
+  "otp_hero_subtitle": "أدخل الرمز المرسل إليك لإكمال تفعيل الحساب.",
+  "otp_section_badge": "تحقق",
   "otp_screen_title": "كود التحقق",
   "otp_screen_subtitle": "اكتب الكود عشان تأكد حسابك",
 
