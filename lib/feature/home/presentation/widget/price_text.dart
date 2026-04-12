@@ -72,15 +72,6 @@ class PriceText extends StatelessWidget {
             ],
           ),
         ),
-        if (unit != null && unit!.isNotEmpty) ...[
-          SizedBox(height: compact ? 1 : 2),
-          Text(
-            unit!,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: unitStyle,
-          ),
-        ],
       ],
     );
   }

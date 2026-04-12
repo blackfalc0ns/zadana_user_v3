@@ -40,10 +40,12 @@ class CartUpdateQuantityEvent extends CartEvent {
     required this.productId,
     required this.quantity,
     required this.previousQuantity,
+    this.vendorId,
   });
 
   final String itemId;
   final String productId;
   final int quantity;
   final int previousQuantity;
+  final String? vendorId;
 }

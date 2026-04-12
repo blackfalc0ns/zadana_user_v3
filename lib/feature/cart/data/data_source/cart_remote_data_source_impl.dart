@@ -183,12 +183,14 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<AddCartItemResponseDto> updateCartItemQuantity(
     String itemId,
+    String? vendorId,
     UpdateCartItemQuantityRequestDto request,
   ) async {
     try {
       final options = await _buildCartRequestOptions();
       final response = await _sendUpdateCartItemQuantityRequest(
         itemId: itemId,
+        vendorId: vendorId,
         request: request,
         options: options,
       );
@@ -205,6 +207,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       final guestOptions = await _buildCartRequestOptions(forceGuest: true);
       final response = await _sendUpdateCartItemQuantityRequest(
         itemId: itemId,
+        vendorId: vendorId,
         request: request,
         options: guestOptions,
       );
@@ -237,12 +240,16 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
   Future<Response<Map<String, dynamic>>> _sendUpdateCartItemQuantityRequest({
     required String itemId,
+    required String? vendorId,
     required UpdateCartItemQuantityRequestDto request,
     required Options options,
   }) async {
     try {
       return await _dio.patch<Map<String, dynamic>>(
         '${EndPoints.cartItems}/$itemId',
+        queryParameters: {
+          if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        },
         data: request.toJson(),
         options: options,
       );
@@ -251,6 +258,9 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
       return _dio.put<Map<String, dynamic>>(
         '${EndPoints.cartItems}/$itemId',
+        queryParameters: {
+          if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        },
         data: request.toJson(),
         options: options,
       );

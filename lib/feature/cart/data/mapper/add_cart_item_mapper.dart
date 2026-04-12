@@ -60,6 +60,9 @@ extension CartSummaryResponseDtoMapper on CartSummaryResponseDto {
     return CartSummaryEntity(
       itemsCount: itemsCount,
       totalQuantity: totalQuantity,
+      subtotal: subtotal,
+      discountAmount: discountAmount,
+      totalAmount: totalAmount,
     );
   }
 }

@@ -3,6 +3,13 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_best_selling_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_recommended_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/domain/usecase/home_usecase.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
@@ -10,8 +17,11 @@ import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart
 @injectable
 class HomeViewModel extends Cubit<HomeState> {
   final HomeUseCase _homeUseCase;
+  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
 
-  HomeViewModel(this._homeUseCase) : super(const HomeState());
+  HomeViewModel(this._homeUseCase) : super(const HomeState()) {
+    _favoriteSyncService.addListener(_syncFavoriteState);
+  }
 
   void doIntent(HomeEvent event) {
     switch (event) {
@@ -466,5 +476,152 @@ class HomeViewModel extends Cubit<HomeState> {
           ),
         );
     }
+  }
+
+  void _syncFavoriteState() {
+    final productId = _favoriteSyncService.productId;
+    final isFavorite = _favoriteSyncService.isFavorite;
+
+    if (productId == null || isFavorite == null) return;
+
+    emit(
+      state.copyWith(
+        bestSellingSection: state.bestSellingSection.copyWith(
+          data: _updateBestSellingFavorites(
+            state.bestSellingSection.data,
+            productId,
+            isFavorite,
+          ),
+        ),
+        recommendedSection: state.recommendedSection.copyWith(
+          data: _updateRecommendedFavorites(
+            state.recommendedSection.data,
+            productId,
+            isFavorite,
+          ),
+        ),
+        featuredSection: state.featuredSection.copyWith(
+          data: _updateFeaturedFavorites(
+            state.featuredSection.data,
+            productId,
+            isFavorite,
+          ),
+        ),
+        specialOffersSection: state.specialOffersSection.copyWith(
+          data: _updateSpecialOffersFavorites(
+            state.specialOffersSection.data,
+            productId,
+            isFavorite,
+          ),
+        ),
+        exploreMoreSection: state.exploreMoreSection.copyWith(
+          data: _updateExploreMoreFavorites(
+            state.exploreMoreSection.data,
+            productId,
+            isFavorite,
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<ProductModel> _updateProductFavorites(
+    List<ProductModel> items,
+    String productId,
+    bool isFavorite,
+  ) {
+    return items
+        .map(
+          (item) => item.id == productId
+              ? item.copyWith(isFavorite: isFavorite)
+              : item,
+        )
+        .toList();
+  }
+
+  HomeBestSellingEntity? _updateBestSellingFavorites(
+    HomeBestSellingEntity? section,
+    String productId,
+    bool isFavorite,
+  ) {
+    if (section == null) return null;
+    return HomeBestSellingEntity(
+      key: section.key,
+      title: section.title,
+      isActive: section.isActive,
+      theme: section.theme,
+      itemsCount: section.itemsCount,
+      items: _updateProductFavorites(section.items, productId, isFavorite),
+    );
+  }
+
+  HomeRecommendedEntity? _updateRecommendedFavorites(
+    HomeRecommendedEntity? section,
+    String productId,
+    bool isFavorite,
+  ) {
+    if (section == null) return null;
+    return HomeRecommendedEntity(
+      key: section.key,
+      title: section.title,
+      isActive: section.isActive,
+      theme: section.theme,
+      itemsCount: section.itemsCount,
+      items: _updateProductFavorites(section.items, productId, isFavorite),
+    );
+  }
+
+  HomeFeaturedEntity? _updateFeaturedFavorites(
+    HomeFeaturedEntity? section,
+    String productId,
+    bool isFavorite,
+  ) {
+    if (section == null) return null;
+    return HomeFeaturedEntity(
+      key: section.key,
+      title: section.title,
+      isActive: section.isActive,
+      theme: section.theme,
+      itemsCount: section.itemsCount,
+      items: _updateProductFavorites(section.items, productId, isFavorite),
+    );
+  }
+
+  HomeSpecialOffersEntity? _updateSpecialOffersFavorites(
+    HomeSpecialOffersEntity? section,
+    String productId,
+    bool isFavorite,
+  ) {
+    if (section == null) return null;
+    return HomeSpecialOffersEntity(
+      key: section.key,
+      title: section.title,
+      isActive: section.isActive,
+      theme: section.theme,
+      itemsCount: section.itemsCount,
+      items: _updateProductFavorites(section.items, productId, isFavorite),
+    );
+  }
+
+  HomeExploreMoreEntity? _updateExploreMoreFavorites(
+    HomeExploreMoreEntity? section,
+    String productId,
+    bool isFavorite,
+  ) {
+    if (section == null) return null;
+    return HomeExploreMoreEntity(
+      key: section.key,
+      title: section.title,
+      isActive: section.isActive,
+      theme: section.theme,
+      itemsCount: section.itemsCount,
+      items: _updateProductFavorites(section.items, productId, isFavorite),
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _favoriteSyncService.removeListener(_syncFavoriteState);
+    return super.close();
   }
 }

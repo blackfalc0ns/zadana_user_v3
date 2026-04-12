@@ -3,23 +3,78 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
-class RecommendedCard extends StatelessWidget {
+class RecommendedCard extends StatefulWidget {
   const RecommendedCard({
     super.key,
     required this.product,
     required this.heroTag,
     this.onTap,
+    this.onAddTap,
     this.onFavoriteTap,
   });
 
   final ProductModel product;
   final String heroTag;
   final VoidCallback? onTap;
+  final VoidCallback? onAddTap;
   final VoidCallback? onFavoriteTap;
+
+  @override
+  State<RecommendedCard> createState() => _RecommendedCardState();
+}
+
+class _RecommendedCardState extends State<RecommendedCard> {
+  late bool _isFavorite;
+  bool _isSubmittingFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.product.isFavorite;
+  }
+
+  @override
+  void didUpdateWidget(covariant RecommendedCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.product.isFavorite != widget.product.isFavorite) {
+      _isFavorite = widget.product.isFavorite;
+    }
+  }
+
+  Future<void> _handleFavoriteTap() async {
+    if (_isSubmittingFavorite) return;
+    if (widget.onFavoriteTap != null) {
+      widget.onFavoriteTap!.call();
+      return;
+    }
+
+    setState(() => _isSubmittingFavorite = true);
+    final result = _isFavorite
+        ? await HomeProductFavoritesHelper.removeProductFromFavorites(
+            widget.product,
+          )
+        : await HomeProductFavoritesHelper.addProductToFavorites(
+            widget.product,
+          );
+    if (!mounted) return;
+    if (result.message.isNotEmpty) {
+      if (result.isSuccess) {
+        CustomSnackbar.showSuccess(context: context, message: result.message);
+      } else {
+        CustomSnackbar.showError(context: context, message: result.message);
+      }
+    }
+    setState(() {
+      _isSubmittingFavorite = false;
+      if (result.isSuccess) _isFavorite = !_isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +84,7 @@ class RecommendedCard extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Stack(
         children: [
           Container(
@@ -51,12 +106,12 @@ class RecommendedCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(Spacing.cardRadius),
                     child: ProductImage(
-                      emoji: product.emoji,
-                      url: product.imageUrl,
+                      emoji: widget.product.emoji,
+                      url: widget.product.imageUrl,
                       width: 48,
                       height: 48,
                       borderRadius: Spacing.cardRadius,
-                      heroTag: heroTag,
+                      heroTag: widget.heroTag,
                     ),
                   ),
                 ),
@@ -68,7 +123,7 @@ class RecommendedCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        product.name,
+                        widget.product.name,
                         style: AppTextStyles.labelMedium.copyWith(fontSize: 12),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -77,22 +132,25 @@ class RecommendedCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: PriceText(
-                              price: product.price,
-                              oldPrice: product.oldPrice,
+                              price: widget.product.price,
+                              oldPrice: widget.product.oldPrice,
                               compact: true,
                             ),
                           ),
                           const SizedBox(width: Spacing.xs),
-                          Container(
-                            padding: const EdgeInsets.all(Spacing.xs),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: FaIcon(
-                              FontAwesomeIcons.cartPlus,
-                              color: AppColors.white,
-                              size: 14,
+                          GestureDetector(
+                            onTap: widget.onAddTap,
+                            child: Container(
+                              padding: const EdgeInsets.all(Spacing.xs),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: FaIcon(
+                                FontAwesomeIcons.cartPlus,
+                                color: AppColors.white,
+                                size: 14,
+                              ),
                             ),
                           ),
                         ],
@@ -105,34 +163,33 @@ class RecommendedCard extends StatelessWidget {
           ),
 
           // ── Favorite Icon ─────────────────────────────────────────
-          if (onFavoriteTap != null)
-            Positioned(
-              top: 4,
-              right: 4,
-              child: GestureDetector(
-                onTap: onFavoriteTap,
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: AppColors.white.withValues(alpha: 0.8),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
-                    ],
-                  ),
-                  child: Icon(
-                    product.isFavorite
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
-                    size: 16,
-                    color: product.isFavorite
-                        ? AppColors.error
-                        : AppColors.textSecondary,
-                  ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: _handleFavoriteTap,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: AppColors.white.withValues(alpha: 0.8),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
+                  ],
+                ),
+                child: Icon(
+                  _isFavorite
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                  size: 16,
+                  color: _isFavorite
+                      ? AppColors.error
+                      : AppColors.textSecondary,
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

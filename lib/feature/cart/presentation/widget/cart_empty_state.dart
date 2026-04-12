@@ -53,7 +53,7 @@ class CartEmptyState extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.xl),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.xxxl),
               child: AppButton(
                 onPressed: onStartShopping,
                 text: locale.start_shopping,

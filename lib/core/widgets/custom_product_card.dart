@@ -5,13 +5,15 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 
-class CustomProductCard extends StatelessWidget {
+class CustomProductCard extends StatefulWidget {
   const CustomProductCard({
     super.key,
     required this.product,
@@ -34,6 +36,58 @@ class CustomProductCard extends StatelessWidget {
   final String? heroTag;
   final bool isDiscounted;
   final int discountPercentage;
+
+  @override
+  State<CustomProductCard> createState() => _CustomProductCardState();
+}
+
+class _CustomProductCardState extends State<CustomProductCard> {
+  late bool _isFavorite;
+  bool _isSubmittingFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.product.isFavorite;
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomProductCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.product.isFavorite != widget.product.isFavorite) {
+      _isFavorite = widget.product.isFavorite;
+    }
+  }
+
+  Future<void> _handleFavoriteTap() async {
+    if (_isSubmittingFavorite) return;
+
+    if (widget.onFavoriteTap != null) {
+      widget.onFavoriteTap!.call();
+      return;
+    }
+
+    setState(() => _isSubmittingFavorite = true);
+    final result = _isFavorite
+        ? await HomeProductFavoritesHelper.removeProductFromFavorites(
+            widget.product,
+          )
+        : await HomeProductFavoritesHelper.addProductToFavorites(
+            widget.product,
+          );
+    if (!mounted) return;
+    if (result.message.isNotEmpty) {
+      if (result.isSuccess) {
+        CustomSnackbar.showSuccess(context: context, message: result.message);
+      } else {
+        CustomSnackbar.showError(context: context, message: result.message);
+      }
+    }
+    setState(() {
+      _isSubmittingFavorite = false;
+      if (result.isSuccess) _isFavorite = !_isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +120,7 @@ class CustomProductCard extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             GestureDetector(
-              onTap: onCardTap,
+              onTap: widget.onCardTap,
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.surface,
@@ -85,14 +139,14 @@ class CustomProductCard extends StatelessWidget {
                             padding: EdgeInsets.only(
                               top: (imageSectionHeight - imageHeight) * 0.35,
                             ),
-                            child: ProductImage(
-                              emoji: product.emoji,
-                              url: product.imageUrl,
+                              child: ProductImage(
+                              emoji: widget.product.emoji,
+                              url: widget.product.imageUrl,
                               width: double.infinity,
                               height: imageHeight,
                               borderRadius: Spacing.cardRadius,
-                              heroTag: enableHeroAnimation
-                                  ? (heroTag ?? productHeroTag(product.id))
+                              heroTag: widget.enableHeroAnimation
+                                  ? (widget.heroTag ?? productHeroTag(widget.product.id))
                                   : null,
                             ),
                           ),
@@ -112,7 +166,7 @@ class CustomProductCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    product.name,
+                                    widget.product.name,
                                     style: getSemiBoldStyle(color: color.onSurface,
                                       fontFamily: FontConstant.cairo,
                                       fontSize: titleFontSize,
@@ -130,8 +184,8 @@ class CustomProductCard extends StatelessWidget {
                                     children: [
                                       Expanded(
                                         child: PriceText(
-                                          price: product.price,
-                                          oldPrice: product.oldPrice,
+                                          price: widget.product.price,
+                                          oldPrice: widget.product.oldPrice,
                                           compact: scale < 0.95,
                                           fontScale: scale,
                                         ),
@@ -142,7 +196,7 @@ class CustomProductCard extends StatelessWidget {
                                             .toDouble(),
                                       ),
                                       GestureDetector(
-                                        onTap: onAddTap,
+                                        onTap: widget.onAddTap,
                                         child: Container(
                                           width: cartSize,
                                           height: cartSize,
@@ -170,12 +224,12 @@ class CustomProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (showFavorite)
+                    if (widget.showFavorite)
                       Positioned(
                         top: 4,
                         right: 4,
                         child: GestureDetector(
-                          onTap: onFavoriteTap,
+                          onTap: _handleFavoriteTap,
                           child: Container(
                             width: favoriteSize,
                             height: favoriteSize,
@@ -190,11 +244,11 @@ class CustomProductCard extends StatelessWidget {
                               ],
                             ),
                             child: Icon(
-                              product.isFavorite
+                              _isFavorite
                                   ? Icons.favorite_rounded
                                   : Icons.favorite_border_rounded,
                               size: favoriteIconSize,
-                              color: product.isFavorite
+                              color: _isFavorite
                                   ? AppColors.error
                                   : AppColors.textSecondary,
                             ),
@@ -205,12 +259,12 @@ class CustomProductCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (isDiscounted)
+            if (widget.isDiscounted)
               Positioned(
                 left: 0,
                 top: 0,
                 child: DiscountBadge(
-                  discountText: '$discountPercentage%',
+                  discountText: '${widget.discountPercentage}%',
                   cornerRadius: Spacing.cardRadius,
                   color: AppColors.error,
                   trianglesize: badgeTriangleSize,

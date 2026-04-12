@@ -65,11 +65,13 @@ class CartRepositoryImpl implements CartRepository {
   @override
   Future<ApiResult<AddCartItemResponseEntity>> updateCartItemQuantity({
     required String itemId,
+    String? vendorId,
     required UpdateCartItemQuantityRequestEntity request,
   }) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.updateCartItemQuantity(
         itemId,
+        vendorId,
         request.toDto(),
       );
       return response.toEntity();

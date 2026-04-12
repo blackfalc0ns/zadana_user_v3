@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class FavoritesEmptyState extends StatelessWidget {
   final VoidCallback onStartShopping;
@@ -24,13 +25,13 @@ class FavoritesEmptyState extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: color.errorContainer.withValues(alpha: 0.3),
+                color: color.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.favorite_border_rounded,
                 size: 48,
-                color: color.error,
+                color: color.primary,
               ),
             ),
             const SizedBox(height: Spacing.lg),
@@ -53,29 +54,17 @@ class FavoritesEmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.xl),
-            SizedBox(
-              width: 200,
-              height: Spacing.buttonHeight,
-              child: ElevatedButton(
+           Padding(
+             padding: const EdgeInsets.symmetric(horizontal: Spacing.xxxl),
+             child: AppButton(
                 onPressed: onStartShopping,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: color.primary,
-                  foregroundColor: color.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(Spacing.buttonRadius),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
+                
+                text:
                   locale.start_shopping,
-                  style: getMediumStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size14,
-                    color: color.onPrimary,
-                  ),
-                ),
+                
+                
               ),
-            ),
+           )
           ],
         ),
       ),

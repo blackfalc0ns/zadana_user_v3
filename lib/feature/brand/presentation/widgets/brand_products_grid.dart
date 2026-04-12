@@ -37,45 +37,36 @@ class BrandProductsGrid extends StatelessWidget {
                 brandProduct.id,
                 source: 'brand-grid',
               );
+              final product = ProductModel(
+                id: brandProduct.id,
+                name: brandProduct.name,
+                store: brandProduct.brandName,
+                price: brandProduct.price,
+                oldPrice: brandProduct.oldPrice,
+                imageUrl: brandProduct.imageUrl,
+                emoji: brandProduct.emoji,
+                discount: brandProduct.discount,
+                isFavorite: brandProduct.isFavorite,
+                unit: brandProduct.unit,
+                isDiscounted:
+                    brandProduct.hasDiscount ||
+                    ((brandProduct.oldPrice ?? 0) > brandProduct.price),
+              );
+
               return CustomProductCard(
-                discountPercentage: index * 12,
-                isDiscounted: index % 2 == 0,
+                discountPercentage: product.discountPercentage,
+                isDiscounted: product.isDiscounted,
                 heroTag: heroTag,
-                product: ProductModel(
-                  id: brandProduct.id,
-                  name: brandProduct.name,
-                  store: brandProduct.brandName,
-                  price: brandProduct.price,
-                  oldPrice: brandProduct.oldPrice,
-                  imageUrl: brandProduct.imageUrl,
-                  emoji: brandProduct.emoji,
-                  discount: brandProduct.discount,
-                  isFavorite: brandProduct.isFavorite,
-                  unit: brandProduct.unit,
-                  isDiscounted: false,
-                ),
+                product: product,
                 showFavorite: true,
                 onCardTap: () {
                   ProductNavigationHelper.navigateToProductDetails(
                     context,
-                    ProductModel(
-                      id: brandProduct.id,
-                      name: brandProduct.name,
-                      store: brandProduct.brandName,
-                      price: brandProduct.price,
-                      oldPrice: brandProduct.oldPrice,
-                      imageUrl: brandProduct.imageUrl,
-                      emoji: brandProduct.emoji,
-                      discount: brandProduct.discount,
-                      isFavorite: brandProduct.isFavorite,
-                      unit: brandProduct.unit,
-                      isDiscounted: false,
-                    ),
+                    product,
                     heroTag: heroTag,
                   );
                 },
                 onAddTap: brandProduct.isInStock ? () {} : null,
-                onFavoriteTap: () {},
               );
             }, childCount: products.length),
           ),

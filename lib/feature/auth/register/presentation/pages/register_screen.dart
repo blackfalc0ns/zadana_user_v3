@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
+import 'package:zadana_user_v3/core/services/saved_location_service.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
@@ -61,7 +62,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'املأ البيانات الأساسية فقط وسنكمل معك التجربة بشكل بسيط وواضح.',
         sectionIcon: Icons.person_add_alt_1_rounded,
         body: SignUpForm(
-          locationEntity: widget.locationEntity,
+          locationEntity:
+              widget.locationEntity ?? SavedLocationService.getSavedLocation(),
           onEmailChanged: (identifier) {
             _submittedIdentifier = identifier;
           },

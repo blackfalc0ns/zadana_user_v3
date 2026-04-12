@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
+import 'package:zadana_user_v3/core/services/saved_location_service.dart';
+import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
@@ -240,6 +244,7 @@ class _CartScreenState extends State<_CartScreenView>
           productId: item.productId,
           quantity: item.quantity,
           previousQuantity: baselineQuantity,
+          vendorId: _loadedVendorId,
         ),
       );
     });
@@ -347,16 +352,66 @@ class _CartScreenState extends State<_CartScreenView>
     });
   }
 
-  void _onCheckout() {
+  Future<void> _onCheckout() async {
     final locale = context.localization;
     if (_selectedVendorId == null) {
       _showSnackBar(locale.select_vendor_to_show_price);
       return;
     }
 
+    final token = await getIt<TokenService>().getToken();
+    if (!mounted) return;
+
+    final isGuest = token == null || token.isEmpty;
+    if (isGuest) {
+      final shouldRegister = await _showCheckoutAuthDialog();
+      if (!mounted || shouldRegister != true) return;
+
+      CheckoutFlowService().markPendingCheckout();
+      Navigator.pushNamed(
+        context,
+        AppRoutes.signUp,
+        arguments: SavedLocationService.getSavedLocation(),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const PaymentScreen()),
+    );
+  }
+
+  Future<bool?> _showCheckoutAuthDialog() {
+    final color = context.colorScheme;
+    final locale = context.localization;
+
+    return showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          backgroundColor: color.surface,
+          title: Text(
+            locale.checkout,
+            style: TextStyle(color: color.onSurface),
+          ),
+          content: Text(
+            'لازم تكمل التسجيل الأول عشان تقدر تتم الطلب.',
+            style: TextStyle(color: color.onSurfaceVariant),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(locale.no),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('إكمال التسجيل'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
@@ -95,15 +96,16 @@ class SpecialOffersSection extends StatelessWidget {
                       heroTag: heroTag,
                       discountPercentage: product.discountPercentage,
                       isDiscounted: product.isDiscounted,
-                      onAddTap: () {},
-                      onCardTap: () {
-                        ProductNavigationHelper.navigateToProductDetails(
-                          context,
-                          product,
-                          heroTag: heroTag,
-                        );
-                      },
-                      onFavoriteTap: () {},
+                      onAddTap: () => HomeProductCartHelper.addProductToCart(
+                        context,
+                        product,
+                      ),
+                      onCardTap: () => ProductNavigationHelper
+                          .navigateToProductDetails(
+                            context,
+                            product,
+                            heroTag: heroTag,
+                          ),
                     ),
                   );
                 },

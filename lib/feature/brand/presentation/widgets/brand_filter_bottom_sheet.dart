@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
-import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_option_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_filter_sections.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/subcategory_filter_section.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/unit_filter_section.dart';
@@ -8,10 +9,11 @@ import 'package:zadana_user_v3/feature/brand/presentation/widgets/unit_filter_se
 class BrandFilterBottomSheet {
   static Future<Map<String, dynamic>?> show({
     required BuildContext context,
-    required List<BrandProductModel> allProducts,
-    required List<String> categories,
+    required List<BrandFilterOptionDto> categories,
+    required List<BrandFilterSubcategoryItemDto> subcategories,
     required List<String> units,
     required RangeValues currentPriceRange,
+    required RangeValues priceBounds,
     required String? currentSelectedCategory,
     required String? currentSelectedSubcategory,
     required String? currentSelectedUnit,
@@ -50,30 +52,21 @@ class BrandFilterBottomSheet {
           children: [
             PriceRangeSection(
               priceRange: tempPriceRange,
+              priceBounds: priceBounds,
               onChanged: (values) =>
                   setModalState(() => tempPriceRange = values),
             ),
             const SizedBox(height: 8),
             CategoryFilterSection(
-              categories: categories,
+              categories: categories
+                  .map((item) => item.name?.trim() ?? '')
+                  .where((item) => item.isNotEmpty)
+                  .toList(),
               selectedCategory: tempSelectedCategory,
               onCategoryChanged: (category) {
                 setModalState(() {
                   tempSelectedCategory = category;
-                  if (tempSelectedSubcategory != null) {
-                    final availableSubcategories = allProducts
-                        .where((p) => p.category == category)
-                        .map((p) => p.subcategory)
-                        .where((s) => s != null)
-                        .cast<String>()
-                        .toSet()
-                        .toList();
-                    if (!availableSubcategories.contains(
-                      tempSelectedSubcategory,
-                    )) {
-                      tempSelectedSubcategory = null;
-                    }
-                  }
+                  tempSelectedSubcategory = null;
                 });
                 if (category != null) {
                   scrollSheetTo(170);
@@ -82,7 +75,8 @@ class BrandFilterBottomSheet {
             ),
             const SizedBox(height: 8),
             SubcategoryFilterSection(
-              allProducts: allProducts,
+              categories: categories,
+              subcategories: subcategories,
               selectedCategory: tempSelectedCategory,
               selectedSubcategory: tempSelectedSubcategory,
               onSubcategoryChanged: (subcategory) {
@@ -109,7 +103,7 @@ class BrandFilterBottomSheet {
           onClearAll: () => setModalState(() {
             tempSelectedCategory = null;
             tempSelectedSubcategory = null;
-            tempPriceRange = const RangeValues(0, 500);
+            tempPriceRange = priceBounds;
             tempSelectedUnit = null;
           }),
         ),

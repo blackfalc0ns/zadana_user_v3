@@ -37,6 +37,7 @@ class MainShell extends StatefulWidget {
 class MainShellState extends State<MainShell> {
   late int _selectedIndex;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  late final List<Widget?> _loadedScreens;
 
   final List<NavBarItem> _navItems = [];
   bool _isInitialized = false;
@@ -45,6 +46,8 @@ class MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex;
+    _loadedScreens = List<Widget?>.filled(5, null);
+    _ensureScreenLoaded(_selectedIndex);
   }
 
   @override
@@ -99,6 +102,7 @@ class MainShellState extends State<MainShell> {
     }
 
     setState(() {
+      _ensureScreenLoaded(index);
       _selectedIndex = index;
     });
   }
@@ -109,32 +113,39 @@ class MainShellState extends State<MainShell> {
 
   void openDrawer() => _scaffoldKey.currentState?.openDrawer();
 
+  void _ensureScreenLoaded(int index) {
+    _loadedScreens[index] ??= switch (index) {
+      0 => HomeScreen(onMenuTap: openDrawer),
+      1 => const CategoryScreen(),
+      2 => const CartScreen(),
+      3 => const FavoritesScreen(),
+      4 => const ProfileScreen(),
+      _ => const SizedBox.shrink(),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screens = [
-      HomeScreen(onMenuTap: openDrawer),
-      const CategoryScreen(),
-      const CartScreen(),
-      const FavoritesScreen(),
-      const ProfileScreen(),
-    ];
-
     return Scaffold(
       key: _scaffoldKey,
       drawer: const AppDrawer(),
       drawerEdgeDragWidth: 20,
       body: Stack(
         children: [
-          ...List.generate(
-            screens.length,
-            (index) => Offstage(
+          ...List.generate(_loadedScreens.length, (index) {
+            final screen = _loadedScreens[index];
+            if (screen == null) {
+              return const SizedBox.shrink();
+            }
+
+            return Offstage(
               offstage: _selectedIndex != index,
               child: HeroMode(
                 enabled: _selectedIndex == index,
-                child: screens[index],
+                child: screen,
               ),
-            ),
-          ),
+            );
+          }),
           Positioned(
             bottom: kMainShellBottomNavBottomOffset,
             left: 12,

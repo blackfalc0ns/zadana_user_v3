@@ -164,7 +164,7 @@ class _StartSelectLocationView extends StatelessWidget {
 
                           Navigator.pushNamed(
                             context,
-                            AppRoutes.signUp,
+                            AppRoutes.buildingDetails,
                             arguments: result,
                           );
                         }

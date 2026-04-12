@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/services/saved_location_service.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
@@ -63,7 +64,7 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView> with Address
     super.dispose();
   }
 
-  void _onConfirm() {
+  Future<void> _onConfirm() async {
     if (!_formKey.currentState!.validate() || !validateLabel()) {
       if (!validateLabel()) showLabelError();
       return;
@@ -78,13 +79,19 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView> with Address
       apartmentNo: currentState.apartmentNo, label: currentState.label,
     );
     viewModel.doIntent(SetSelectedLocationEvent(completeLocation));
-    Navigator.pushNamed(context, AppRoutes.signUp, arguments: completeLocation);
+    await SavedLocationService.saveLocation(completeLocation);
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.mainShell,
+      (route) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return AddressFormPage(
-      title: 'تفاصيل المبنى', confirmButtonText: 'متابعة للتسجيل',
+      title: 'تفاصيل المبنى', confirmButtonText: 'حفظ العنوان',
       isLoading: false, onConfirm: _onConfirm,
       formContent: Form(
         key: _formKey,

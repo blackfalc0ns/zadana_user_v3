@@ -7,14 +7,20 @@ class PriceRangeSection extends StatelessWidget {
   const PriceRangeSection({
     super.key,
     required this.priceRange,
+    required this.priceBounds,
     required this.onChanged,
   });
 
   final RangeValues priceRange;
+  final RangeValues priceBounds;
   final ValueChanged<RangeValues> onChanged;
 
   @override
   Widget build(BuildContext context) {
+    final sliderMax = priceBounds.end <= priceBounds.start
+        ? priceBounds.start + 1
+        : priceBounds.end;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,8 +31,8 @@ class PriceRangeSection extends StatelessWidget {
         const SizedBox(height: Spacing.md),
         RangeSlider(
           values: priceRange,
-          min: 0,
-          max: 500,
+          min: priceBounds.start,
+          max: sliderMax,
           divisions: 50,
           labels: RangeLabels(
             '${priceRange.start.round()} ج.م',
@@ -37,8 +43,14 @@ class PriceRangeSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('${priceRange.start.round()} ج.م', style: AppTextStyles.bodySmall),
-            Text('${priceRange.end.round()} ج.م', style: AppTextStyles.bodySmall),
+            Text(
+              '${priceRange.start.round()} ج.م',
+              style: AppTextStyles.bodySmall,
+            ),
+            Text(
+              '${priceRange.end.round()} ج.م',
+              style: AppTextStyles.bodySmall,
+            ),
           ],
         ),
       ],
@@ -70,7 +82,7 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
       case 'الألبان':
         return '🥛';
       case 'الزبادي':
-        return '🥛';
+        return '🥣';
       case 'العصائر':
         return '🧃';
       case 'الأجبان':
@@ -127,7 +139,8 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
             offset: const Offset(0, -12),
             child: Center(
               child: TextButton(
-                onPressed: () => setState(() => showAllCategories = !showAllCategories),
+                onPressed: () =>
+                    setState(() => showAllCategories = !showAllCategories),
                 child: Text(showAllCategories ? 'عرض أقل' : 'عرض المزيد'),
               ),
             ),

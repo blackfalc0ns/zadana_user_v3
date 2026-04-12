@@ -16,8 +16,10 @@ abstract class EndPoints {
   static const String homeSpecialOffers = '/home/special-offers';
   static const String homeExploreMore = '/home/explore-more';
   static const String brandProducts = '/brands/{brandId}/products';
+  static const String brandFilters = '/brands/{brandId}/filters';
   static const String categorySubcategories =
       '/categories/{categoryId}/subcategories';
+  static const String categoryFilters = '/categories/{categoryId}/filters';
   static const String categoryProducts = '/categories/{categoryId}/products';
   static const String productDetails = '/products/{productId}';
   static const String register = "/customers/auth/register";
@@ -32,6 +34,7 @@ abstract class EndPoints {
   static const String sendDeliveryOtp = '/delivery/otp/send';
   static const String verifyDeliveryOtp = '/delivery/otp/verify';
   static const String resendDeliveryOtp = '/delivery/otp/resend';
+  static const String favorites = '/favorites';
   static const String cartVendors = '/cart/vendors';
   static const String cartItems = '/cart/items';
   static const String cart = '/cart';

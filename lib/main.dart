@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       locale: const Locale('ar'),
       onGenerateRoute: RouteGenerator.getRoute,
-      initialRoute: AppRoutes.mainShell,
+      initialRoute: AppRoutes.splash,
     );
   }
 }

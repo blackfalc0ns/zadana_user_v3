@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 
 class ProductImage extends StatelessWidget {
   const ProductImage({
@@ -111,6 +112,7 @@ class ProductImage extends StatelessWidget {
                   url,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
+                  // fit: resolvedFit,
                   alignment: Alignment.center,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
@@ -123,13 +125,22 @@ class ProductImage extends StatelessWidget {
   }
 
   Widget _errorWidget() {
-    return const ColoredBox(
-      color: AppColors.divider,
-      child: Center(
-        child: Icon(
-          Icons.image_not_supported_outlined,
-          color: AppColors.textHint,
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Image.asset(
+        Assets.notFound,
+        fit: BoxFit.contain,
+        errorBuilder: (_, _, _) {
+          return const ColoredBox(
+            color: AppColors.divider,
+            child: Center(
+              child: Icon(
+                Icons.image_not_supported_outlined,
+                color: AppColors.textHint,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

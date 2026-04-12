@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_option_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_grid.dart';
 
 class SubcategoryFilterSection extends StatefulWidget {
   const SubcategoryFilterSection({
     super.key,
-    required this.allProducts,
+    required this.categories,
+    required this.subcategories,
     required this.selectedCategory,
     required this.selectedSubcategory,
     required this.onSubcategoryChanged,
   });
 
-  final List<BrandProductModel> allProducts;
+  final List<BrandFilterOptionDto> categories;
+  final List<BrandFilterSubcategoryItemDto> subcategories;
   final String? selectedCategory;
   final String? selectedSubcategory;
   final ValueChanged<String?> onSubcategoryChanged;
@@ -46,11 +49,22 @@ class _SubcategoryFilterSectionState extends State<SubcategoryFilterSection> {
       return const SizedBox.shrink();
     }
 
-    final availableSubcategories = widget.allProducts
-        .where((p) => p.category == widget.selectedCategory)
-        .map((p) => p.subcategory)
-        .where((s) => s != null && s.isNotEmpty)
-        .cast<String>()
+    final selectedCategoryId = widget.categories
+        .firstWhere(
+          (item) => item.name == widget.selectedCategory,
+          orElse: () => const BrandFilterOptionDto(),
+        )
+        .id;
+
+    final availableSubcategories = widget.subcategories
+        .where(
+          (item) =>
+              selectedCategoryId == null ||
+              selectedCategoryId.isEmpty ||
+              item.categoryId == selectedCategoryId,
+        )
+        .map((item) => item.name?.trim() ?? '')
+        .where((item) => item.isNotEmpty)
         .toSet()
         .toList()
       ..sort();

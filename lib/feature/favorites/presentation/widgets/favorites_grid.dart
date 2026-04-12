@@ -44,8 +44,8 @@ class FavoritesGrid extends StatelessWidget {
               source: 'favorites-grid',
             );
             return CustomProductCard(
-              discountPercentage: index * 12,
-              isDiscounted: index % 2 == 0,
+              discountPercentage: product.discountPercentage,
+              isDiscounted: product.isDiscounted,
               product: product,
               heroTag: heroTag,
               showFavorite: true,

@@ -14,6 +14,7 @@ abstract class CartRemoteDataSource {
   Future<RemoveCartItemResponseDto> removeCartItem(String itemId);
   Future<AddCartItemResponseDto> updateCartItemQuantity(
     String itemId,
+    String? vendorId,
     UpdateCartItemQuantityRequestDto request,
   );
 }

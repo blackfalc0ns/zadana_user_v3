@@ -17,6 +17,7 @@ abstract class CartRepository {
   Future<ApiResult<RemoveCartItemResponseEntity>> removeCartItem(String itemId);
   Future<ApiResult<AddCartItemResponseEntity>> updateCartItemQuantity({
     required String itemId,
+    String? vendorId,
     required UpdateCartItemQuantityRequestEntity request,
   });
 }

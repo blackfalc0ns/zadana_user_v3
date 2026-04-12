@@ -6,14 +6,20 @@ class FilterPriceSection extends StatelessWidget {
   const FilterPriceSection({
     super.key,
     required this.priceRange,
+    required this.priceBounds,
     required this.onPriceRangeChanged,
   });
 
   final RangeValues priceRange;
+  final RangeValues priceBounds;
   final Function(RangeValues) onPriceRangeChanged;
 
   @override
   Widget build(BuildContext context) {
+    final sliderMax = priceBounds.end <= priceBounds.start
+        ? priceBounds.start + 1
+        : priceBounds.end;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,8 +30,8 @@ class FilterPriceSection extends StatelessWidget {
         const SizedBox(height: Spacing.md),
         RangeSlider(
           values: priceRange,
-          min: 0,
-          max: 1000,
+          min: priceBounds.start,
+          max: sliderMax,
           divisions: 20,
           labels: RangeLabels(
             '${priceRange.start.round()} ج.م',

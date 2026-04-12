@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
@@ -146,7 +147,7 @@ class CartItemCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Icon(
-                      Icons.delete_outline,
+                      Iconsax.trash,
                       size: 18,
                       color: Colors.red.shade400,
                     ),
@@ -345,6 +346,14 @@ class CartItemCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
+          '${newPrice.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
+          style: getBoldStyle(
+            color: AppColors.primary,
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size13,
+          ),
+        ),
+        Text(
           oldPrice.toStringAsFixed(0),
           style:
               getRegularStyle(
@@ -356,14 +365,6 @@ class CartItemCard extends StatelessWidget {
                 decorationColor: color.onSurfaceVariant.withValues(alpha: 0.6),
                 decorationThickness: 1.2,
               ),
-        ),
-        Text(
-          '${newPrice.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
-          style: getBoldStyle(
-            color: AppColors.primary,
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size13,
-          ),
         ),
       ],
     );

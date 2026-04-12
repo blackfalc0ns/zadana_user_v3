@@ -11,6 +11,9 @@ CartSummaryResponseDto _$CartSummaryResponseDtoFromJson(
 ) => CartSummaryResponseDto(
   itemsCount: (json['itemsCount'] as num).toInt(),
   totalQuantity: (json['totalQuantity'] as num).toInt(),
+  subtotal: (json['subtotal'] as num?)?.toDouble(),
+  discountAmount: (json['discountAmount'] as num?)?.toDouble(),
+  totalAmount: (json['totalAmount'] as num?)?.toDouble(),
 );
 
 Map<String, dynamic> _$CartSummaryResponseDtoToJson(
@@ -18,4 +21,7 @@ Map<String, dynamic> _$CartSummaryResponseDtoToJson(
 ) => <String, dynamic>{
   'itemsCount': instance.itemsCount,
   'totalQuantity': instance.totalQuantity,
+  'subtotal': instance.subtotal,
+  'discountAmount': instance.discountAmount,
+  'totalAmount': instance.totalAmount,
 };

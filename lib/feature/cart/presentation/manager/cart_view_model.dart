@@ -259,6 +259,7 @@ class CartViewModel extends Cubit<CartState> {
 
     final result = await _updateCartItemQuantityUseCase.call(
       itemId: event.itemId,
+      vendorId: event.vendorId,
       request: UpdateCartItemQuantityRequestEntity(quantity: event.quantity),
     );
 

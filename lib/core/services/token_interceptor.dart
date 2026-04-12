@@ -24,6 +24,7 @@ class TokenInterceptor extends Interceptor {
     if (token != null && token.isNotEmpty) {
       options.headers[NetworkConstants.authorization] =
           "${NetworkConstants.bearer} $token";
+          print(' token to request: $token');
     }
     handler.next(options);
   }

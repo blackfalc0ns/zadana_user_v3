@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
+import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/category/data/mapper/category_products_mapper.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_part_item_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/reusable_category_screen.dart';
@@ -20,40 +25,18 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  static const List<Map<String, dynamic>> _sortOptions = [
-    {
-      'value': 'newest',
-      'title': 'الأحدث',
-      'subtitle': 'أحدث المنتجات المضافة',
-    },
-    {
-      'value': 'price_low_high',
-      'title': 'السعر من الأقل للأعلى',
-      'subtitle': 'ترتيب تصاعدي حسب السعر',
-    },
-    {
-      'value': 'price_high_low',
-      'title': 'السعر من الأعلى للأقل',
-      'subtitle': 'ترتيب تنازلي حسب السعر',
-    },
-    {
-      'value': 'best_selling',
-      'title': 'الأكثر مبيعًا',
-      'subtitle': 'المنتجات الأعلى طلبًا',
-    },
-    {
-      'value': 'alphabetical',
-      'title': 'أبجديًا',
-      'subtitle': 'ترتيب حسب الاسم',
-    },
-  ];
-
   final List<String> _selectedFilters = [];
   late final CategoryNavigationService _navigationService;
+  late final FavoriteSyncService _favoriteSyncService;
 
   List<CategoryEntity> _categories = const [];
   List<ProductModel> _products = const [];
   List<CategorySubcategoryItemDto> _subCategories = const [];
+  List<CategoryFilterOptionDto> _quantityOptions = const [];
+  List<CategoryFilterBrandItemDto> _brandOptions = const [];
+  List<CategoryFilterOptionDto> _productTypeOptions = const [];
+  List<CategoryFilterPartItemDto> _partOptions = const [];
+  List<Map<String, dynamic>> _sortOptions = const [];
 
   String _selectedCategory = '';
   String _selectedSortOption = '';
@@ -63,36 +46,54 @@ class _CategoryScreenState extends State<CategoryScreen> {
   String? _filterSelectedCategory;
   String? _filterSelectedQuantity;
   String? _filterSelectedBrand;
+  String? _filterSelectedProductType;
+  String? _filterSelectedPart;
+  String? _selectedQuantityId;
+  String? _selectedBrandId;
+  String? _selectedProductTypeId;
+  String? _selectedPartId;
   bool _isCategoryPreselectedFromOutside = false;
   bool _isLoading = true;
   bool _isSubCategoriesLoading = false;
   String? _activeHeroProductId;
   String? _errorMessage;
   RangeValues _priceRange = const RangeValues(0, 1000);
+  RangeValues _priceBounds = const RangeValues(0, 1000);
 
-  List<String> get _availableBrands {
-    final values = _products
-        .map((product) => product.store.trim())
-        .where((item) => item.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
-    return values;
-  }
+  List<String> get _availableBrands => _brandOptions
+      .map((item) => item.name?.trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList();
 
-  List<String> get _availableQuantities {
-    final values = _products
-        .map((product) => product.unit?.trim() ?? '')
+  List<String> get _availableQuantities => _quantityOptions
+      .map((item) => item.name?.trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList();
+
+  List<String> get _availableProductTypes => _productTypeOptions
+      .map((item) => item.name?.trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList();
+
+  List<String> get _availableParts {
+    final selectedProductTypeId = _selectedProductTypeId;
+    return _partOptions
+        .where(
+          (item) =>
+              selectedProductTypeId == null ||
+              selectedProductTypeId.isEmpty ||
+              item.productTypeId == selectedProductTypeId,
+        )
+        .map((item) => item.name?.trim() ?? '')
         .where((item) => item.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
-    return values;
+        .toList();
   }
 
   @override
   void initState() {
     super.initState();
+    _favoriteSyncService = FavoriteSyncService()
+      ..addListener(_syncFavoriteState);
     _navigationService = CategoryNavigationService()
       ..addListener(_checkSelectedCategory);
     unawaited(_loadInitialData());
@@ -100,8 +101,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   void dispose() {
+    _favoriteSyncService.removeListener(_syncFavoriteState);
     _navigationService.removeListener(_checkSelectedCategory);
     super.dispose();
+  }
+
+  void _syncFavoriteState() {
+    final productId = _favoriteSyncService.productId;
+    final isFavorite = _favoriteSyncService.isFavorite;
+
+    if (!mounted || productId == null || isFavorite == null) return;
+
+    setState(() {
+      _products = _products
+          .map(
+            (product) => product.id == productId
+                ? product.copyWith(isFavorite: isFavorite)
+                : product,
+          )
+          .toList();
+    });
   }
 
   Future<void> _loadInitialData() async {
@@ -195,10 +214,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
       _selectedSubCategoryId = null;
       _subCategories = const [];
       _products = const [];
+      _quantityOptions = const [];
+      _brandOptions = const [];
+      _productTypeOptions = const [];
+      _partOptions = const [];
+      _sortOptions = const [];
       _filterSelectedCategory = category.name;
       _filterSelectedQuantity = null;
       _filterSelectedBrand = null;
-      _priceRange = const RangeValues(0, 1000);
+      _filterSelectedProductType = null;
+      _filterSelectedPart = null;
+      _selectedQuantityId = null;
+      _selectedBrandId = null;
+      _selectedProductTypeId = null;
+      _selectedPartId = null;
+      _priceBounds = const RangeValues(0, 1000);
+      _priceRange = _priceBounds;
       _isCategoryPreselectedFromOutside = fromOutside;
       _isLoading = true;
       _isSubCategoriesLoading = true;
@@ -206,29 +237,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
 
     try {
-      final subCategories = await getIt<ApiServices>().getCategorySubcategories(
-        category.id,
-      );
-
+      final filters = await getIt<ApiServices>().getCategoryFilters(category.id);
       if (!mounted) return;
 
-      setState(() {
-        _subCategories = subCategories
-            .where(
-              (item) =>
-                  (item.id ?? '').isNotEmpty &&
-                  (item.name ?? '').trim().isNotEmpty,
-            )
-            .toList();
-        _isSubCategoriesLoading = false;
-      });
-
+      _applyCategoryFilters(filters);
       await _loadCategoryProducts();
     } catch (error) {
       if (!mounted) return;
       setState(() {
         _subCategories = const [];
         _products = const [];
+        _quantityOptions = const [];
+        _brandOptions = const [];
+        _productTypeOptions = const [];
+        _partOptions = const [];
+        _sortOptions = const [];
         _selectedSubCategory = null;
         _selectedSubCategoryId = null;
         _isLoading = false;
@@ -238,8 +261,67 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  Future<void> _loadCategoryProducts({String? requestedId}) async {
-    final targetId = requestedId ?? _selectedCategoryId;
+  void _applyCategoryFilters(CategoryFiltersResponseModelDto filters) {
+    final subCategories = (filters.subcategories ?? const [])
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
+        .toList();
+    final quantityOptions = (filters.quantities ?? const [])
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
+        .toList();
+    final brandOptions = (filters.brands ?? const [])
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
+        .toList();
+    final productTypeOptions = (filters.productTypes ?? const [])
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
+        .toList();
+    final partOptions = (filters.parts ?? const [])
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
+        .toList();
+
+    final minPrice = filters.priceRange?.min ?? 0;
+    final maxPrice = filters.priceRange?.max ?? minPrice;
+    final normalizedMax = maxPrice >= minPrice ? maxPrice : minPrice;
+    final priceBounds = RangeValues(minPrice, normalizedMax);
+
+    setState(() {
+      _subCategories = subCategories;
+      _quantityOptions = quantityOptions;
+      _brandOptions = brandOptions;
+      _productTypeOptions = productTypeOptions;
+      _partOptions = partOptions;
+      _sortOptions = (filters.sortOptions ?? const [])
+          .map(
+            (item) => {
+              'value': item.value ?? '',
+              'title': item.label ?? '',
+              'subtitle': null,
+            },
+          )
+          .where((item) => (item['value'] as String).isNotEmpty)
+          .toList();
+      _priceBounds = priceBounds;
+      _priceRange = priceBounds;
+      _isSubCategoriesLoading = false;
+    });
+  }
+
+  Future<void> _loadCategoryProducts() async {
+    final targetId = _selectedCategoryId;
     if (targetId == null || targetId.isEmpty) return;
 
     setState(() {
@@ -248,7 +330,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
 
     try {
-      final response = await getIt<ApiServices>().getCategoryProducts(targetId);
+      final response = await getIt<ApiServices>().getCategoryProducts(
+        targetId,
+        _selectedSubCategoryId,
+        _selectedProductTypeId,
+        _selectedPartId,
+        _selectedQuantityId,
+        _selectedBrandId,
+        _priceRange.start,
+        _priceRange.end,
+        _selectedSortOption.isEmpty ? null : _selectedSortOption,
+      );
       final products = (response.items ?? const [])
           .map((item) => item.toEntity())
           .toList();
@@ -258,6 +350,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       setState(() {
         _products = products;
         _isLoading = false;
+        _errorMessage = null;
       });
     } catch (error) {
       if (!mounted) return;
@@ -310,6 +403,42 @@ class _CategoryScreenState extends State<CategoryScreen> {
     unawaited(_selectCategory(category));
   }
 
+  String? _findOptionId(
+    List<CategoryFilterOptionDto> options,
+    String? selectedName,
+  ) {
+    if (selectedName == null || selectedName.isEmpty) return null;
+    return options
+        .where((item) => item.name == selectedName)
+        .map((item) => item.id)
+        .firstOrNull;
+  }
+
+  String? _findBrandId(String? selectedName) {
+    if (selectedName == null || selectedName.isEmpty) return null;
+    return _brandOptions
+        .where((item) => item.name == selectedName)
+        .map((item) => item.id)
+        .firstOrNull;
+  }
+
+  String? _findPartId(String? selectedName) {
+    if (selectedName == null || selectedName.isEmpty) return null;
+    return _partOptions
+        .where((item) => item.name == selectedName)
+        .map((item) => item.id)
+        .firstOrNull;
+  }
+
+  bool get _hasActivePriceFilter =>
+      _priceRange.start != _priceBounds.start ||
+      _priceRange.end != _priceBounds.end;
+
+  bool get _hasActiveCategoryFilter =>
+      !_isCategoryPreselectedFromOutside &&
+      _filterSelectedCategory != null &&
+      _filterSelectedCategory != _selectedCategory;
+
   @override
   Widget build(BuildContext context) {
     return ReusableCategoryScreen(
@@ -322,11 +451,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
       products: _products,
       availableBrands: _availableBrands,
       availableQuantities: _availableQuantities,
+      availableProductTypes: _availableProductTypes,
+      availableParts: _availableParts,
       selectedQuantity: _filterSelectedQuantity,
+      selectedProductType: _filterSelectedProductType,
+      selectedPart: _filterSelectedPart,
       filterSelectedCategory: _filterSelectedCategory,
       filterSelectedQuantity: _filterSelectedQuantity,
       filterSelectedBrand: _filterSelectedBrand,
       priceRange: _priceRange,
+      priceBounds: _priceBounds,
       showCategoryFilterSection: !_isCategoryPreselectedFromOutside,
       isLoading: _isLoading,
       subCategories: _subCategories,
@@ -341,18 +475,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
           _selectedSubCategory = isSameSubCategory ? null : subCategory.name;
         });
 
-        if (isSameSubCategory) {
-          unawaited(_loadCategoryProducts());
-          return;
-        }
-
-        unawaited(_loadCategoryProducts(requestedId: subCategory.id));
+        unawaited(_loadCategoryProducts());
       },
       onFilterApplied: _onFilterApplied,
       onSortChanged: (result) {
-        if (result != null) {
-          setState(() => _selectedSortOption = result);
-        }
+        setState(() {
+          _selectedSortOption = result ?? '';
+        });
+        unawaited(_loadCategoryProducts());
       },
       onFilterChanged: (result) {
         if (result == null) return;
@@ -363,31 +493,58 @@ class _CategoryScreenState extends State<CategoryScreen> {
           return;
         }
 
+        final quantity = result['quantity'] as String?;
+        final brand = result['brand'] as String?;
+        final productType = result['productType'] as String?;
+        final part = result['part'] as String?;
+        final priceRange = result['priceRange'] as RangeValues? ?? _priceBounds;
+
         setState(() {
           _filterSelectedCategory = categoryName ?? _filterSelectedCategory;
-          _filterSelectedQuantity = result['quantity'] as String?;
-          _filterSelectedBrand = result['brand'] as String?;
-          _priceRange = result['priceRange'] as RangeValues? ??
-              const RangeValues(0, 1000);
+          _filterSelectedQuantity = quantity;
+          _filterSelectedBrand = brand;
+          _filterSelectedProductType = productType;
+          _filterSelectedPart = part;
+          _selectedQuantityId = _findOptionId(_quantityOptions, quantity);
+          _selectedBrandId = _findBrandId(brand);
+          _selectedProductTypeId = _findOptionId(
+            _productTypeOptions,
+            productType,
+          );
+          _selectedPartId = _findPartId(part);
+          _priceRange = priceRange;
         });
+
+        unawaited(_loadCategoryProducts());
       },
-      onClearAllFilters: () => setState(() {
-        _filterSelectedCategory = _isCategoryPreselectedFromOutside
-            ? _selectedCategory
-            : null;
-        _filterSelectedQuantity = null;
-        _filterSelectedBrand = null;
-        _priceRange = const RangeValues(0, 1000);
-      }),
+      onClearAllFilters: () {
+        setState(() {
+          _filterSelectedCategory = _isCategoryPreselectedFromOutside
+              ? _selectedCategory
+              : null;
+          _filterSelectedQuantity = null;
+          _filterSelectedBrand = null;
+          _filterSelectedProductType = null;
+          _filterSelectedPart = null;
+          _selectedQuantityId = null;
+          _selectedBrandId = null;
+          _selectedProductTypeId = null;
+          _selectedPartId = null;
+          _priceRange = _priceBounds;
+        });
+        unawaited(_loadCategoryProducts());
+      },
       sortOptions: _sortOptions,
       hasActiveFilters:
           _selectedFilters.isNotEmpty ||
           _selectedSortOption.isNotEmpty ||
-          _filterSelectedCategory != null ||
+          _hasActiveCategoryFilter ||
           _filterSelectedQuantity != null ||
           _filterSelectedBrand != null ||
-          _priceRange.start != 0 ||
-          _priceRange.end != 1000,
+          _filterSelectedProductType != null ||
+          _filterSelectedPart != null ||
+          _selectedSubCategoryId != null ||
+          _hasActivePriceFilter,
       bottomNavHeight: 60,
       activeHeroProductId: _activeHeroProductId,
       onProductTap: _openProductDetails,

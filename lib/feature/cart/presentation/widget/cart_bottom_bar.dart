@@ -178,13 +178,39 @@ class _SelectedVendorBar extends StatelessWidget {
                             color: AppColors.primary.withValues(alpha: 0.15),
                           ),
                         ),
-                        child: Text(
-                          '${PriceFormatter.formatPrice(totalPrice)} ${locale.currency}',
-                          style: getBoldStyle(
-                            fontFamily: FontConstant.cairo,
-                            color: AppColors.primary,
-                            fontSize: FontSize.size12,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${PriceFormatter.formatPrice(totalPrice)} ${locale.currency}',
+                              style: getBoldStyle(
+                                fontFamily: FontConstant.cairo,
+                                color: AppColors.primary,
+                                fontSize: FontSize.size12,
+                              ),
+                            ),
+                            if (hasDiscounts && totalOldPrice > totalPrice) ...[
+                              const SizedBox(height: 1),
+                              Text(
+                                '${PriceFormatter.formatPrice(totalOldPrice)} ${locale.currency}',
+                                style: getMediumStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  color: AppColors.textSecondary.withValues(
+                                    alpha: 0.75,
+                                  ),
+                                  fontSize: FontSize.size10,
+                                ).copyWith(
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor:
+                                      AppColors.textSecondary.withValues(
+                                        alpha: 0.55,
+                                      ),
+                                  decorationThickness: 1.2,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                     ),

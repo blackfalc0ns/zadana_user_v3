@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -90,14 +91,16 @@ class RecommendedSection extends StatelessWidget {
                   return RecommendedCard(
                     product: product,
                     heroTag: heroTag,
-                    onTap: () {
-                      ProductNavigationHelper.navigateToProductDetails(
-                        context,
-                        product,
-                        heroTag: heroTag,
-                      );
-                    },
-                    onFavoriteTap: () {},
+                    onTap: () => ProductNavigationHelper
+                        .navigateToProductDetails(
+                          context,
+                          product,
+                          heroTag: heroTag,
+                        ),
+                    onAddTap: () => HomeProductCartHelper.addProductToCart(
+                      context,
+                      product,
+                    ),
                   );
                 },
               ),

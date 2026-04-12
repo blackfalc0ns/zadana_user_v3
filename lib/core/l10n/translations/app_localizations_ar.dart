@@ -811,10 +811,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favorites => 'المفضلة';
 
   @override
-  String get favorites_empty => 'ما عندك مفضلة';
+  String get favorites_empty => 'المفضلة فارغة';
 
   @override
-  String get favorites_empty_message => 'أضف منتجاتك المفضلة';
+  String get favorites_empty_message => 'لا توجد منتجات في قائمة المفضلة';
 
   @override
   String get clear_favorites => 'حذف كل المفضلة';

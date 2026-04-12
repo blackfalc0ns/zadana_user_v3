@@ -263,9 +263,25 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<BrandProductsResponseModelDto> getBrandProducts(String brandId) async {
+  Future<BrandProductsResponseModelDto> getBrandProducts(
+    String brandId,
+    String? categoryId,
+    String? subcategoryId,
+    String? unitId,
+    double? minPrice,
+    double? maxPrice,
+    String? sort,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'category_id': categoryId,
+      r'subcategory_id': subcategoryId,
+      r'unit_id': unitId,
+      r'min_price': minPrice,
+      r'max_price': maxPrice,
+      r'sort': sort,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BrandProductsResponseModelDto>(
@@ -282,6 +298,33 @@ class _ApiServices implements ApiServices {
     late BrandProductsResponseModelDto _value;
     try {
       _value = BrandProductsResponseModelDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BrandFiltersResponseModelDto> getBrandFilters(String brandId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BrandFiltersResponseModelDto>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/brands/${brandId}/filters',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BrandFiltersResponseModelDto _value;
+    try {
+      _value = BrandFiltersResponseModelDto.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -324,11 +367,58 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<CategoryProductsResponseModelDto> getCategoryProducts(
+  Future<CategoryFiltersResponseModelDto> getCategoryFilters(
     String categoryId,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<CategoryFiltersResponseModelDto>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/categories/${categoryId}/filters',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CategoryFiltersResponseModelDto _value;
+    try {
+      _value = CategoryFiltersResponseModelDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<CategoryProductsResponseModelDto> getCategoryProducts(
+    String categoryId,
+    String? subcategoryId,
+    String? productTypeId,
+    String? partId,
+    String? quantityId,
+    String? brandId,
+    double? minPrice,
+    double? maxPrice,
+    String? sort,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'subcategory_id': subcategoryId,
+      r'product_type_id': productTypeId,
+      r'part_id': partId,
+      r'quantity_id': quantityId,
+      r'brand_id': brandId,
+      r'min_price': minPrice,
+      r'max_price': maxPrice,
+      r'sort': sort,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<CategoryProductsResponseModelDto>(
@@ -679,6 +769,115 @@ class _ApiServices implements ApiServices {
   }
 
   @override
+  Future<FavoritesResponseDto> getFavorites() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<FavoritesResponseDto>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/favorites',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late FavoritesResponseDto _value;
+    try {
+      _value = FavoritesResponseDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<AddFavoriteResponseDto> addFavorite(AddFavoriteRequestDto request) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<AddFavoriteResponseDto>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/favorites',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AddFavoriteResponseDto _value;
+    try {
+      _value = AddFavoriteResponseDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ClearFavoritesResponseDto> clearFavorites() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ClearFavoritesResponseDto>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/favorites',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ClearFavoritesResponseDto _value;
+    try {
+      _value = ClearFavoritesResponseDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<RemoveFavoriteResponseDto> removeFavorite(String productId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<RemoveFavoriteResponseDto>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/favorites/${productId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late RemoveFavoriteResponseDto _value;
+    try {
+      _value = RemoveFavoriteResponseDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<CartVendorsResponseDto> getCartVendors() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -820,10 +1019,12 @@ class _ApiServices implements ApiServices {
   @override
   Future<AddCartItemResponseDto> updateCartItemQuantity(
     String itemId,
+    String? vendorId,
     UpdateCartItemQuantityRequestDto request,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'vendor_id': vendorId};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());

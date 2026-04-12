@@ -12,8 +12,13 @@ class UpdateCartItemQuantityUseCase {
 
   Future<ApiResult<AddCartItemResponseEntity>> call({
     required String itemId,
+    String? vendorId,
     required UpdateCartItemQuantityRequestEntity request,
   }) {
-    return _repository.updateCartItemQuantity(itemId: itemId, request: request);
+    return _repository.updateCartItemQuantity(
+      itemId: itemId,
+      vendorId: vendorId,
+      request: request,
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -32,17 +33,14 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         if (onClearAll != null)
-          TextButton(
+         IconButton(
             onPressed: onClearAll,
-            child: Text(
-              locale.clear_all,
-              style: getMediumStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size14,
-                color: color.error,
-              ),
+            icon: Icon(
+              Iconsax.trash,
+              size: 20,
+              color: color.error,
             ),
-          ),
+          )
       ],
     );
   }

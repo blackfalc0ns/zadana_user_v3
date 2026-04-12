@@ -20,11 +20,16 @@ class ReusableCategoryScreen extends StatefulWidget {
     required this.products,
     this.availableBrands = const [],
     this.availableQuantities = const [],
+    this.availableProductTypes = const [],
+    this.availableParts = const [],
     this.selectedQuantity,
+    this.selectedProductType,
+    this.selectedPart,
     this.filterSelectedCategory,
     this.filterSelectedQuantity,
     this.filterSelectedBrand,
     required this.priceRange,
+    required this.priceBounds,
     this.showCategoryFilterSection = true,
     required this.onCategorySelected,
     required this.onSubCategorySelected,
@@ -52,11 +57,16 @@ class ReusableCategoryScreen extends StatefulWidget {
   final List<ProductModel> products;
   final List<String> availableBrands;
   final List<String> availableQuantities;
+  final List<String> availableProductTypes;
+  final List<String> availableParts;
   final String? selectedQuantity;
+  final String? selectedProductType;
+  final String? selectedPart;
   final String? filterSelectedCategory;
   final String? filterSelectedQuantity;
   final String? filterSelectedBrand;
   final RangeValues priceRange;
+  final RangeValues priceBounds;
   final bool showCategoryFilterSection;
   final Function(String) onCategorySelected;
   final Function(CategorySubcategoryItemDto) onSubCategorySelected;
@@ -83,6 +93,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   late String? _tempFilterCategory;
   late String? _tempFilterQuantity;
   late String? _tempFilterBrand;
+  late String? _tempFilterProductType;
+  late String? _tempFilterPart;
   late RangeValues _tempPriceRange;
 
   @override
@@ -96,6 +108,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
         (widget.showCategoryFilterSection ? null : widget.selectedCategory);
     _tempFilterQuantity = widget.filterSelectedQuantity;
     _tempFilterBrand = widget.filterSelectedBrand;
+    _tempFilterProductType = widget.selectedProductType;
+    _tempFilterPart = widget.selectedPart;
     _tempPriceRange = widget.priceRange;
   }
 
@@ -143,7 +157,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
           children: [
             CategoryContent(
               categories: widget.categories,
-              showCategoryChips: widget.showCategoryFilterSection,
+              showCategoryChips: false,
               selectedCategory: widget.selectedCategory,
               selectedSubCategory: widget.selectedSubCategory,
               selectedSubCategoryId: widget.selectedSubCategoryId,
@@ -191,7 +205,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                       (sheetContext) => StatefulBuilder(
                         builder: (sheetContext, setSheetState) {
                           return CustomFilterBottomSheet(
-                            title: ' تصنيف المنتجات',
+                            title: 'تصنيف المنتجات',
                             cancelLabel: locale.cancel,
                             clearAllLabel: 'مسح الكل',
                             applyLabel: locale.apply,
@@ -203,15 +217,22 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                 categories: widget.categories,
                                 quantities: widget.availableQuantities,
                                 brands: widget.availableBrands,
+                                productTypes: widget.availableProductTypes,
+                                parts: widget.availableParts,
                                 selectedCategory: _tempFilterCategory,
                                 selectedQuantity: _tempFilterQuantity,
                                 selectedBrand: _tempFilterBrand,
+                                selectedProductType: _tempFilterProductType,
+                                selectedPart: _tempFilterPart,
                                 priceRange: _tempPriceRange,
+                                priceBounds: widget.priceBounds,
                                 onCategorySelected: (category) {
                                   setSheetState(() {
                                     _tempFilterCategory = category;
                                     _tempFilterQuantity = null;
                                     _tempFilterBrand = null;
+                                    _tempFilterProductType = null;
+                                    _tempFilterPart = null;
                                   });
                                   if (category != null) {
                                     _scrollSheetTo(sheetScrollController, 170);
@@ -228,6 +249,14 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                 onBrandSelected: (brand) => setSheetState(
                                   () => _tempFilterBrand = brand,
                                 ),
+                                onProductTypeSelected: (productType) =>
+                                    setSheetState(() {
+                                      _tempFilterProductType = productType;
+                                      _tempFilterPart = null;
+                                    }),
+                                onPartSelected: (part) => setSheetState(
+                                  () => _tempFilterPart = part,
+                                ),
                                 onPriceRangeChanged: (values) => setSheetState(
                                   () => _tempPriceRange = values,
                                 ),
@@ -237,6 +266,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                               'category': _tempFilterCategory,
                               'quantity': _tempFilterQuantity,
                               'brand': _tempFilterBrand,
+                              'productType': _tempFilterProductType,
+                              'part': _tempFilterPart,
                               'priceRange': _tempPriceRange,
                             }),
                             onClearAll: () {
@@ -246,7 +277,9 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                     : widget.selectedCategory;
                                 _tempFilterQuantity = null;
                                 _tempFilterBrand = null;
-                                _tempPriceRange = const RangeValues(0, 1000);
+                                _tempFilterProductType = null;
+                                _tempFilterPart = null;
+                                _tempPriceRange = widget.priceBounds;
                               });
                               widget.onClearAllFilters();
                             },

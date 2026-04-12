@@ -24,6 +24,11 @@ import 'package:zadana_user_v3/feature/profile/data/models/profile_response_mode
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_request_model.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/data/models/delivery_otp_response_model.dart';
+import 'package:zadana_user_v3/feature/favorites/data/models/add_favorite_request_dto.dart';
+import 'package:zadana_user_v3/feature/favorites/data/models/add_favorite_response_dto.dart';
+import 'package:zadana_user_v3/feature/favorites/data/models/clear_favorites_response_dto.dart';
+import 'package:zadana_user_v3/feature/favorites/data/models/favorites_response_dto.dart';
+import 'package:zadana_user_v3/feature/favorites/data/models/remove_favorite_response_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_brands_response_model_dto.dart';
@@ -33,7 +38,9 @@ import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_m
 import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/brand_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/brand_products_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_products_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
@@ -75,6 +82,17 @@ abstract class ApiServices {
   @GET(EndPoints.brandProducts)
   Future<BrandProductsResponseModelDto> getBrandProducts(
     @Path('brandId') String brandId,
+    @Query('category_id') String? categoryId,
+    @Query('subcategory_id') String? subcategoryId,
+    @Query('unit_id') String? unitId,
+    @Query('min_price') double? minPrice,
+    @Query('max_price') double? maxPrice,
+    @Query('sort') String? sort,
+  );
+
+  @GET(EndPoints.brandFilters)
+  Future<BrandFiltersResponseModelDto> getBrandFilters(
+    @Path('brandId') String brandId,
   );
 
   @GET(EndPoints.categorySubcategories)
@@ -82,9 +100,22 @@ abstract class ApiServices {
     @Path('categoryId') String categoryId,
   );
 
+  @GET(EndPoints.categoryFilters)
+  Future<CategoryFiltersResponseModelDto> getCategoryFilters(
+    @Path('categoryId') String categoryId,
+  );
+
   @GET(EndPoints.categoryProducts)
   Future<CategoryProductsResponseModelDto> getCategoryProducts(
     @Path('categoryId') String categoryId,
+    @Query('subcategory_id') String? subcategoryId,
+    @Query('product_type_id') String? productTypeId,
+    @Query('part_id') String? partId,
+    @Query('quantity_id') String? quantityId,
+    @Query('brand_id') String? brandId,
+    @Query('min_price') double? minPrice,
+    @Query('max_price') double? maxPrice,
+    @Query('sort') String? sort,
   );
 
   @GET(EndPoints.productDetails)
@@ -135,6 +166,22 @@ abstract class ApiServices {
   @POST(EndPoints.resendDeliveryOtp)
   Future<void> resendDeliveryOtp(@Body() DeliveryOtpRequestModel request);
 
+  @GET(EndPoints.favorites)
+  Future<FavoritesResponseDto> getFavorites();
+
+  @POST(EndPoints.favorites)
+  Future<AddFavoriteResponseDto> addFavorite(
+    @Body() AddFavoriteRequestDto request,
+  );
+
+  @DELETE(EndPoints.favorites)
+  Future<ClearFavoritesResponseDto> clearFavorites();
+
+  @DELETE('${EndPoints.favorites}/{productId}')
+  Future<RemoveFavoriteResponseDto> removeFavorite(
+    @Path('productId') String productId,
+  );
+
   @GET(EndPoints.cartVendors)
   Future<CartVendorsResponseDto> getCartVendors();
 
@@ -157,6 +204,7 @@ abstract class ApiServices {
   @PUT('${EndPoints.cartItems}/{itemId}')
   Future<AddCartItemResponseDto> updateCartItemQuantity(
     @Path('itemId') String itemId,
+    @Query('vendor_id') String? vendorId,
     @Body() UpdateCartItemQuantityRequestDto request,
   );
 }

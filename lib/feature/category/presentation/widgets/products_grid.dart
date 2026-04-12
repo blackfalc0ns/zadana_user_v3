@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -78,8 +80,8 @@ class ProductsGrid extends StatelessWidget {
           return Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-              child: Text(
-                emptyStateMessage ?? 'لا توجد منتجات متاحة حاليًا',
+              child: Text(style: getSemiBoldStyle(fontFamily: FontConstant.cairo, fontSize: FontSize.size15),
+                emptyStateMessage ?? 'لا توجد منتجات في هذا القسم',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -124,20 +126,12 @@ class ProductsGrid extends StatelessWidget {
               },
               onAddTap: () {},
               showFavorite: true,
-              onFavoriteTap: () {},
               enableHeroAnimation: true,
             );
           },
         );
       },
     );
-  }
-
-  List<ProductModel> _getProductsForSubCategory(
-    List<ProductModel> products,
-    String subCategory,
-  ) {
-    return products;
   }
 
   List<ProductModel> _applySorting(
@@ -148,29 +142,16 @@ class ProductsGrid extends StatelessWidget {
 
     switch (sortOption) {
       case 'newest':
-        return sortedProducts..sort((a, b) {
-          final aId = int.tryParse(a.id) ?? 0;
-          final bId = int.tryParse(b.id) ?? 0;
-          return bId.compareTo(aId);
-        });
+        return sortedProducts..sort((a, b) => b.id.compareTo(a.id));
       case 'price_low_high':
         return sortedProducts..sort((a, b) => a.price.compareTo(b.price));
       case 'price_high_low':
         return sortedProducts..sort((a, b) => b.price.compareTo(a.price));
       case 'best_selling':
         return sortedProducts..sort((a, b) {
-          if (a.isFavorite && !b.isFavorite) return -1;
-          if (!a.isFavorite && b.isFavorite) return 1;
-          final aHasDiscount =
-              (a.discount?.isNotEmpty ?? false) || a.oldPrice != null;
-          final bHasDiscount =
-              (b.discount?.isNotEmpty ?? false) || b.oldPrice != null;
-          if (aHasDiscount && !bHasDiscount) return -1;
-          if (!aHasDiscount && bHasDiscount) return 1;
           final aRating = a.rating ?? 0;
           final bRating = b.rating ?? 0;
-          if (aRating != bRating) return bRating.compareTo(aRating);
-          return 0;
+          return bRating.compareTo(aRating);
         });
       case 'highest_rated':
         return sortedProducts..sort((a, b) {
