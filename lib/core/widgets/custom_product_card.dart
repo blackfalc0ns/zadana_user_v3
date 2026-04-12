@@ -108,8 +108,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
         final horizontalPadding = (cardWidth * 0.06).clamp(4.0, 8.0).toDouble();
         final verticalPadding = (cardHeight * 0.05).clamp(4.0, 8.0).toDouble();
         final titleFontSize = (12 * scale).clamp(9.5, 12.5).toDouble();
-        final cartSize = (30 * scale).clamp(24.0, 32.0).toDouble();
-        final cartIconSize = (14 * scale).clamp(10.0, 14.0).toDouble();
+        final cartSize = (28 * scale).clamp(22.0, 28.0).toDouble();
+        final cartIconSize = (13 * scale).clamp(10.0, 13.0).toDouble();
         final favoriteSize = (30 * scale).clamp(24.0, 30.0).toDouble();
         final favoriteIconSize = (16 * scale).clamp(12.0, 16.0).toDouble();
         final badgeTriangleSize = (cardWidth * 0.38)
@@ -139,14 +139,15 @@ class _CustomProductCardState extends State<CustomProductCard> {
                             padding: EdgeInsets.only(
                               top: (imageSectionHeight - imageHeight) * 0.35,
                             ),
-                              child: ProductImage(
+                            child: ProductImage(
                               emoji: widget.product.emoji,
                               url: widget.product.imageUrl,
                               width: double.infinity,
                               height: imageHeight,
                               borderRadius: Spacing.cardRadius,
                               heroTag: widget.enableHeroAnimation
-                                  ? (widget.heroTag ?? productHeroTag(widget.product.id))
+                                  ? (widget.heroTag ??
+                                        productHeroTag(widget.product.id))
                                   : null,
                             ),
                           ),
@@ -167,7 +168,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 children: [
                                   Text(
                                     widget.product.name,
-                                    style: getSemiBoldStyle(color: color.onSurface,
+                                    style: getSemiBoldStyle(
+                                      color: color.onSurface,
                                       fontFamily: FontConstant.cairo,
                                       fontSize: titleFontSize,
                                     ),
@@ -175,8 +177,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   SizedBox(
-                                    height: (cardHeight * 0.025)
-                                        .clamp(1.0, 2.0)
+                                    height: (cardHeight * 0.05)
+                                        .clamp(4.0, 8.0)
                                         .toDouble(),
                                   ),
                                   Row(

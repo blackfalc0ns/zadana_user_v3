@@ -78,7 +78,8 @@ extension HomeCategoryItemModelDtoMapper on HomeCategoryItemModelDto {
   }
 }
 
-extension HomeCategoriesResponseModelDtoMapper on HomeCategoriesResponseModelDto {
+extension HomeCategoriesResponseModelDtoMapper
+    on HomeCategoriesResponseModelDto {
   HomeCategoriesEntity toEntity() {
     return HomeCategoriesEntity(
       key: key ?? '',
