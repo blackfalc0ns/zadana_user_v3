@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_chips.dart';
@@ -33,6 +34,8 @@ class CategoryContent extends StatelessWidget {
     this.activeHeroProductId,
     this.onProductTap,
     this.isLoading = false,
+    this.errorFailure,
+    this.onRetryError,
   });
 
   final List<CategoryEntity> categories;
@@ -56,6 +59,8 @@ class CategoryContent extends StatelessWidget {
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
   final bool isLoading;
+  final Failure? errorFailure;
+  final VoidCallback? onRetryError;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +109,8 @@ class CategoryContent extends StatelessWidget {
               onProductTap: onProductTap,
               isLoading: isLoading,
               emptyStateMessage: emptyStateMessage,
+              errorFailure: errorFailure,
+              onRetryError: onRetryError,
             ),
           ),
         ),

@@ -4,6 +4,8 @@ import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
@@ -24,6 +26,8 @@ class ProductsGrid extends StatelessWidget {
     this.onProductTap,
     this.isLoading = false,
     this.emptyStateMessage,
+    this.errorFailure,
+    this.onRetryError,
   });
 
   final List<ProductModel> products;
@@ -37,6 +41,8 @@ class ProductsGrid extends StatelessWidget {
   final Future<void> Function(ProductModel product)? onProductTap;
   final bool isLoading;
   final String? emptyStateMessage;
+  final Failure? errorFailure;
+  final VoidCallback? onRetryError;
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +83,24 @@ class ProductsGrid extends StatelessWidget {
         }
 
         if (filteredProducts.isEmpty) {
+          // Show full error widget when we have a Failure object
+          if (errorFailure != null) {
+            return ApiErrorWidget.fromFailure(
+              errorFailure!,
+              onRetry: onRetryError,
+            );
+          }
+
+          // Show simple text for non-error empty states
           return Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-              child: Text(style: getSemiBoldStyle(fontFamily: FontConstant.cairo, fontSize: FontSize.size15),
+              child: Text(
                 emptyStateMessage ?? 'لا توجد منتجات في هذا القسم',
+                style: getSemiBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size15,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),

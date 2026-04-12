@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_app_bar_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_banner_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_best_selling_section_state.dart';
@@ -30,6 +31,38 @@ class HomeState {
     this.specialOffersSection = const HomeSpecialOffersSectionState(),
     this.exploreMoreSection = const HomeExploreMoreSectionState(),
   });
+
+  bool get isLoading =>
+      bannerSection.isLoading ||
+      categoriesSection.isLoading ||
+      bestSellingSection.isLoading ||
+      brandsSection.isLoading ||
+      recommendedSection.isLoading ||
+      featuredSection.isLoading ||
+      specialOffersSection.isLoading ||
+      exploreMoreSection.isLoading;
+
+  bool get hasAnyData {
+    return (bannerSection.data?.items.isNotEmpty ?? false) ||
+        (categoriesSection.data?.items.isNotEmpty ?? false) ||
+        (bestSellingSection.data?.items.isNotEmpty ?? false) ||
+        (brandsSection.data?.items.isNotEmpty ?? false) ||
+        (recommendedSection.data?.items.isNotEmpty ?? false) ||
+        (featuredSection.data?.items.isNotEmpty ?? false) ||
+        (specialOffersSection.data?.items.isNotEmpty ?? false) ||
+        (exploreMoreSection.data?.items.isNotEmpty ?? false);
+  }
+
+  Failure? get firstFailure {
+    return bannerSection.failure ??
+        categoriesSection.failure ??
+        bestSellingSection.failure ??
+        brandsSection.failure ??
+        recommendedSection.failure ??
+        featuredSection.failure ??
+        specialOffersSection.failure ??
+        exploreMoreSection.failure;
+  }
 
   HomeState copyWith({
     HomeAppBarSectionState? appBarSection,

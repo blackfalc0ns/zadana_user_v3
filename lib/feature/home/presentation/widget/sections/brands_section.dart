@@ -42,22 +42,7 @@ class BrandsSection extends StatelessWidget {
 
         if (state.brandsSection.failure != null &&
             state.brandsSection.data == null) {
-          return _BrandsSectionContainer(
-            child: Column(
-              children: [
-                SectionHeader(
-                  actionColor: Colors.white,
-                  title: locale.section_brands,
-                  actionLabel: locale.see_all,
-                  isActionBold: true,
-                  titleColor: AppColors.white,
-                  horizontalPadding: 16,
-                ),
-                const SizedBox(height: Spacing.md),
-                const _OfflineBrandsSection(),
-              ],
-            ),
-          );
+          return const SizedBox.shrink();
         }
 
         final items = section?.items ?? const <BrandModel>[];
@@ -182,47 +167,6 @@ class _BrandsGridSkeleton extends StatelessWidget {
             Bone(width: 45, height: 45, radius: 999),
             SizedBox(height: 8),
             Bone(width: 50, height: 10, radius: 999),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _OfflineBrandsSection extends StatelessWidget {
-  const _OfflineBrandsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
-          vertical: Spacing.lg,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.wifi_off_rounded, size: 34, color: color.primary),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              locale.brands_unavailable,
-              style: getSemiBoldStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
           ],
         ),
       ),

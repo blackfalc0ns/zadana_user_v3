@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manger.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
@@ -51,16 +49,7 @@ class FeaturedProductsSection extends StatelessWidget {
 
         if (state.featuredSection.failure != null &&
             state.featuredSection.data == null) {
-          return Column(
-            children: [
-              SectionHeader(
-                title: locale.section_featured,
-                actionLabel: locale.see_all,
-              ),
-              const SizedBox(height: Spacing.md),
-              const _OfflineFeaturedSection(),
-            ],
-          );
+          return const SizedBox.shrink();
         }
 
         final items = section?.items ?? const <ProductModel>[];
@@ -78,7 +67,9 @@ class FeaturedProductsSection extends StatelessWidget {
             SizedBox(
               height: 285,
               child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.screenH,
+                ),
                 scrollDirection: Axis.horizontal,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -103,8 +94,8 @@ class FeaturedProductsSection extends StatelessWidget {
                       context,
                       product,
                     ),
-                    onCardTap: () => ProductNavigationHelper
-                        .navigateToProductDetails(
+                    onCardTap: () =>
+                        ProductNavigationHelper.navigateToProductDetails(
                           context,
                           product,
                           heroTag: heroTag,
@@ -136,48 +127,6 @@ class _FeaturedGridSkeleton extends StatelessWidget {
       ),
       itemCount: 4,
       itemBuilder: (_, _) => const ProductCardSkeleton(),
-    );
-  }
-}
-
-class _OfflineFeaturedSection extends StatelessWidget {
-  const _OfflineFeaturedSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
-          vertical: Spacing.lg,
-        ),
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.outline.withValues(alpha: 0.15)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.wifi_off_rounded, size: 34, color: color.primary),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              locale.featured_unavailable,
-              style: getSemiBoldStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

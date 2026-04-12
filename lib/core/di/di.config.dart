@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i361;
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart' as _i695;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -176,6 +177,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i367.LocationPermissionService>(
       () => _i367.LocationPermissionService(),
     );
+    await gh.factoryAsync<_i695.CacheStore>(
+      () => externalModules.provideCacheStore,
+      preResolve: true,
+    );
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => externalModules.provideSharedPreferences,
       preResolve: true,
@@ -230,6 +235,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1056.TokenInterceptor>(),
         gh<_i930.DeviceIdInterceptor>(),
         gh<_i32.LanguageInterceptor>(),
+        gh<_i695.CacheStore>(),
       ),
     );
     gh.factory<_i912.LocationRepository>(

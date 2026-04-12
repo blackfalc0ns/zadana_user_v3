@@ -51,16 +51,7 @@ class SpecialOffersSection extends StatelessWidget {
 
         if (state.specialOffersSection.failure != null &&
             state.specialOffersSection.data == null) {
-          return Column(
-            children: [
-              SectionHeader(
-                title: locale.section_special_offers,
-                actionLabel: locale.see_all,
-              ),
-              const SizedBox(height: Spacing.md),
-              const _OfflineSpecialOffersSection(),
-            ],
-          );
+          return const SizedBox.shrink();
         }
 
         final items = section?.items ?? const <ProductModel>[];
@@ -129,48 +120,6 @@ class _SpecialOffersItemsSkeleton extends StatelessWidget {
       itemCount: 3,
       separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
       itemBuilder: (_, _) => const ProductCardSkeleton(),
-    );
-  }
-}
-
-class _OfflineSpecialOffersSection extends StatelessWidget {
-  const _OfflineSpecialOffersSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
-          vertical: Spacing.lg,
-        ),
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.outline.withValues(alpha: 0.15)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.wifi_off_rounded, size: 34, color: color.primary),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              locale.special_offers_unavailable,
-              style: getSemiBoldStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -79,7 +79,7 @@ final  RegisterUseCase _registerUseCase;
       case ApiErrorResult():
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: result.failure.errorMessage,
+          errorMessage: result.failure.code,
         ));
     }
   }

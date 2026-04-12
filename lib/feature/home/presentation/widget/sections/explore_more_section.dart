@@ -48,16 +48,7 @@ class ExploreMoreSection extends StatelessWidget {
 
         if (state.exploreMoreSection.failure != null &&
             state.exploreMoreSection.data == null) {
-          return Column(
-            children: [
-              SectionHeader(
-                title: locale.section_explore,
-                actionLabel: locale.see_all,
-              ),
-              const SizedBox(height: Spacing.sm),
-              const _OfflineExploreMoreSection(),
-            ],
-          );
+          return const SizedBox.shrink();
         }
 
         final items = section?.items ?? const <ProductModel>[];
@@ -159,48 +150,6 @@ class _ExploreMoreTileSkeleton extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _OfflineExploreMoreSection extends StatelessWidget {
-  const _OfflineExploreMoreSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
-          vertical: Spacing.lg,
-        ),
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.outline.withValues(alpha: 0.15)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.wifi_off_rounded, size: 34, color: color.primary),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              locale.explore_more_unavailable,
-              style: getSemiBoldStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }

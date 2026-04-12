@@ -28,13 +28,7 @@ class HomeBannerSection extends StatelessWidget {
 
         if (state.bannerSection.failure != null &&
             (bannerSection == null || bannerSection.items.isEmpty)) {
-          return const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _OfflineBannerSection(),
-              SizedBox(height: Spacing.lg),
-            ],
-          );
+          return const SizedBox.shrink();
         }
 
         if (bannerSection == null || bannerSection.items.isEmpty) {
@@ -64,42 +58,6 @@ class _HomeBannerLoadingSection extends StatelessWidget {
         ShimmerEffect(child: BannerSkeleton()),
         SizedBox(height: Spacing.lg),
       ],
-    );
-  }
-}
-
-class _OfflineBannerSection extends StatelessWidget {
-  const _OfflineBannerSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final locale = context.localization;
-    return BannerContainer(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0B7B8E), Color(0xFF1393A8)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.wifi_off_rounded, color: Colors.white, size: 38),
-            const SizedBox(height: 8),
-            Text(
-              locale.error_no_internet,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

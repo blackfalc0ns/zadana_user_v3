@@ -23,44 +23,44 @@ class ServerFailure extends Failure {
       case DioExceptionType.connectionTimeout:
         return const ServerFailure(
           errorMessage: 'Connection timeout with API server.',
-          code: 'connection_timeout',
+          code: 'error_connection_timeout',
         );
 
       case DioExceptionType.sendTimeout:
         return const ServerFailure(
           errorMessage: 'Send timeout with API server.',
-          code: 'send_timeout',
+          code: 'error_send_timeout',
         );
 
       case DioExceptionType.receiveTimeout:
         return const ServerFailure(
           errorMessage: 'Receive timeout with API server.',
-          code: 'receive_timeout',
+          code: 'error_receive_timeout',
         );
 
       case DioExceptionType.badCertificate:
         return const ServerFailure(
           errorMessage:
               'Connection failed because of an invalid certificate.',
-          code: 'bad_certificate',
+          code: 'error_bad_certificate',
         );
 
       case DioExceptionType.cancel:
         return const ServerFailure(
           errorMessage: 'Request to API server was cancelled.',
-          code: 'request_cancelled',
+          code: 'error_request_cancelled',
         );
 
       case DioExceptionType.connectionError:
         return const ServerFailure(
           errorMessage: 'No internet connection.',
-          code: 'connection_error',
+          code: 'error_no_internet',
         );
 
       case DioExceptionType.unknown:
         return const ServerFailure(
           errorMessage: 'Unexpected error occurred. Please try again later.',
-          code: 'unknown',
+          code: 'error_unknown',
         );
 
       case DioExceptionType.badResponse:
@@ -72,7 +72,7 @@ class ServerFailure extends Failure {
     if (response == null) {
       return const ServerFailure(
         errorMessage: 'No response received from server.',
-        code: 'no_response',
+        code: 'error_no_response',
       );
     }
 
@@ -84,49 +84,49 @@ class ServerFailure extends Failure {
       case 400:
         return ServerFailure(
           errorMessage: message ?? 'Bad request.',
-          code: '400',
+          code: 'error_bad_request',
         );
 
       case 401:
         return ServerFailure(
           errorMessage: message ?? 'Unauthorized.',
-          code: '401',
+          code: 'error_unauthorized',
         );
 
       case 403:
         return ServerFailure(
           errorMessage: message ?? 'Forbidden.',
-          code: '403',
+          code: 'error_forbidden',
         );
 
       case 404:
         return ServerFailure(
           errorMessage: message ?? 'Resource not found.',
-          code: '404',
+          code: 'error_not_found',
         );
 
       case 409:
         return ServerFailure(
           errorMessage: message ?? 'Conflict occurred.',
-          code: '409',
+          code: 'error_conflict',
         );
 
       case 422:
         return ServerFailure(
           errorMessage: message ?? 'Validation error.',
-          code: '422',
+          code: 'error_validation',
         );
 
       case 500:
         return ServerFailure(
           errorMessage: message ?? 'Server error. Please try again later.',
-          code: '500',
+          code: 'error_server',
         );
 
       default:
         return ServerFailure(
           errorMessage: message ?? 'Unexpected server error.',
-          code: statusCode?.toString() ?? 'unknown',
+          code: 'error_unknown',
         );
     }
   }

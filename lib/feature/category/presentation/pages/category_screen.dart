@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
@@ -57,6 +59,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   bool _isSubCategoriesLoading = false;
   String? _activeHeroProductId;
   String? _errorMessage;
+  Failure? _failure;
   RangeValues _priceRange = const RangeValues(0, 1000);
   RangeValues _priceBounds = const RangeValues(0, 1000);
 
@@ -153,7 +156,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       });
 
       final selectedFromHome = _navigationService.selectedCategory;
-      final initialCategory = _resolveRequestedCategory(selectedFromHome) ??
+      final initialCategory =
+          _resolveRequestedCategory(selectedFromHome) ??
           (categories.isNotEmpty ? categories.first : null);
 
       if (initialCategory == null) {
@@ -174,9 +178,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     } catch (error) {
       if (!mounted) return;
+      final failure = error is DioException
+          ? ServerFailure.fromDioError(dioException: error)
+          : Failure(errorMessage: error.toString(), code: 'error_unknown');
       setState(() {
         _isLoading = false;
-        _errorMessage = error.toString();
+        _errorMessage = failure.code;
+        _failure = failure;
       });
     }
   }
@@ -237,13 +245,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
 
     try {
-      final filters = await getIt<ApiServices>().getCategoryFilters(category.id);
+      final filters = await getIt<ApiServices>().getCategoryFilters(
+        category.id,
+      );
       if (!mounted) return;
 
       _applyCategoryFilters(filters);
       await _loadCategoryProducts();
     } catch (error) {
       if (!mounted) return;
+      final failure = error is DioException
+          ? ServerFailure.fromDioError(dioException: error)
+          : Failure(errorMessage: error.toString(), code: 'error_unknown');
       setState(() {
         _subCategories = const [];
         _products = const [];
@@ -256,7 +269,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _selectedSubCategoryId = null;
         _isLoading = false;
         _isSubCategoriesLoading = false;
-        _errorMessage = error.toString();
+        _errorMessage = failure.code;
+        _failure = failure;
       });
     }
   }
@@ -351,13 +365,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _products = products;
         _isLoading = false;
         _errorMessage = null;
+        _failure = null;
       });
     } catch (error) {
       if (!mounted) return;
+      final failure = error is DioException
+          ? ServerFailure.fromDioError(dioException: error)
+          : Failure(errorMessage: error.toString(), code: 'error_unknown');
       setState(() {
         _products = const [];
         _isLoading = false;
-        _errorMessage = error.toString();
+        _errorMessage = failure.code;
+        _failure = failure;
       });
     }
   }
@@ -466,6 +485,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       subCategories: _subCategories,
       isSubCategoriesLoading: _isSubCategoriesLoading,
       emptyStateMessage: _errorMessage,
+      errorFailure: _failure,
+      onRetryError: () => unawaited(_loadCategoryProducts()),
       onCategorySelected: _onCategorySelected,
       onSubCategorySelected: (subCategory) {
         final isSameSubCategory = _selectedSubCategoryId == subCategory.id;

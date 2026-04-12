@@ -63,7 +63,7 @@ class ProfileViewModel extends Cubit<ProfileState> {
         emit(state.copyWith(
           isLoading: false,
           isSuccess: false,
-          errorMessage: result.failure.errorMessage,
+          errorMessage: result.failure.code,
         ));
     }
   }

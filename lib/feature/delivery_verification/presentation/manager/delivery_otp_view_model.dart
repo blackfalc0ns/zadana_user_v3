@@ -69,7 +69,7 @@ class DeliveryOtpViewModel extends Cubit<DeliveryOtpState> {
         );
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: result.failure.errorMessage,
+          errorMessage: result.failure.code,
         ));
     }
   }
@@ -154,7 +154,7 @@ class DeliveryOtpViewModel extends Cubit<DeliveryOtpState> {
         );
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: result.failure.errorMessage,
+          errorMessage: result.failure.code,
         ));
     }
   }

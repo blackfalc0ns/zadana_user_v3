@@ -796,7 +796,9 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<AddFavoriteResponseDto> addFavorite(AddFavoriteRequestDto request) async {
+  Future<AddFavoriteResponseDto> addFavorite(
+    AddFavoriteRequestDto request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

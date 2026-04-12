@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manger.dart';
 import 'package:zadana_user_v3/config/theme/styles_manger.dart';
+import 'package:zadana_user_v3/core/network/failuer_mapper.dart';
 
 class CustomSnackbar {
   static void showSuccess({
@@ -68,6 +69,7 @@ class CustomSnackbar {
     required Duration duration,
   }) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final localizedMessage = mapFailureMessage(context, message);
 
     final snackBar = SnackBar(
       duration: duration,
@@ -101,7 +103,7 @@ class CustomSnackbar {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                message,
+                localizedMessage,
                 style: getBoldStyle(
                   color: Colors.white,
                   fontSize: 14,

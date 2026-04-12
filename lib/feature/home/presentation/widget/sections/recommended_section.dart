@@ -51,16 +51,7 @@ class RecommendedSection extends StatelessWidget {
 
         if (state.recommendedSection.failure != null &&
             state.recommendedSection.data == null) {
-          return Column(
-            children: [
-              SectionHeader(
-                title: locale.section_recommended,
-                actionLabel: locale.refresh,
-              ),
-              const SizedBox(height: Spacing.sm),
-              const _OfflineRecommendedSection(),
-            ],
-          );
+          return const SizedBox.shrink();
         }
 
         final items = section?.items ?? const <ProductModel>[];
@@ -78,7 +69,9 @@ class RecommendedSection extends StatelessWidget {
             SizedBox(
               height: 66,
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.screenH,
+                ),
                 scrollDirection: Axis.horizontal,
                 itemCount: items.length,
                 separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
@@ -91,8 +84,8 @@ class RecommendedSection extends StatelessWidget {
                   return RecommendedCard(
                     product: product,
                     heroTag: heroTag,
-                    onTap: () => ProductNavigationHelper
-                        .navigateToProductDetails(
+                    onTap: () =>
+                        ProductNavigationHelper.navigateToProductDetails(
                           context,
                           product,
                           heroTag: heroTag,
@@ -143,7 +136,9 @@ class _RecommendedCardSkeleton extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: context.colorScheme.outline.withValues(alpha: .2)),
+        border: Border.all(
+          color: context.colorScheme.outline.withValues(alpha: .2),
+        ),
       ),
       child: const Row(
         children: [
@@ -163,48 +158,6 @@ class _RecommendedCardSkeleton extends StatelessWidget {
           SizedBox(width: 8),
           Bone(width: 24, height: 24, radius: 6),
         ],
-      ),
-    );
-  }
-}
-
-class _OfflineRecommendedSection extends StatelessWidget {
-  const _OfflineRecommendedSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final locale = context.localization;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
-          vertical: Spacing.lg,
-        ),
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.outline.withValues(alpha: 0.15)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.wifi_off_rounded, size: 34, color: color.primary),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              locale.recommended_unavailable,
-              style: getSemiBoldStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -61,38 +63,61 @@ class _HomeScreenView extends StatelessWidget {
             ..doIntent(const HomeSpecialOffersRetryEvent())
             ..doIntent(const HomeExploreMoreRetryEvent());
         },
-        child: CustomScrollView(
-          key: const PageStorageKey<String>('home_scroll_view'),
-          slivers: [
-            SliverToBoxAdapter(child: const SizedBox(height: Spacing.sm)),
-            SliverToBoxAdapter(child: const HomeBannerSection()),
+        child: BlocBuilder<HomeViewModel, HomeState>(
+          builder: (context, state) {
+            final showGlobalError =
+                !state.isLoading &&
+                !state.hasAnyData &&
+                state.firstFailure != null;
 
-            SliverToBoxAdapter(child: const CategoriesSection()),
+            return CustomScrollView(
+              key: const PageStorageKey<String>('home_scroll_view'),
+              slivers: [
+                const SliverToBoxAdapter(child: SizedBox(height: Spacing.sm)),
 
-            SliverToBoxAdapter(child: const SpecialOffersSection()),
-
-            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-            SliverToBoxAdapter(child: const RecommendedSection()),
-
-            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-            SliverToBoxAdapter(child: const BestSellingSection()),
-
-            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-            SliverToBoxAdapter(child: const BrandsSection()),
-
-            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-            SliverToBoxAdapter(child: const FeaturedProductsSection()),
-
-            SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-
-            SliverToBoxAdapter(child: const ExploreMoreSection()),
-
-            SliverToBoxAdapter(child: const SizedBox(height: 100)),
-          ],
+                if (showGlobalError)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Center(
+                        child: ApiErrorWidget.fromFailure(
+                          state.firstFailure!,
+                          onRetry: () {
+                            context.read<HomeViewModel>()
+                              ..doIntent(const HomeLoadEvent())
+                              ..doIntent(const HomeBannerLoadEvent())
+                              ..doIntent(const HomeCategoriesLoadEvent())
+                              ..doIntent(const HomeBestSellingLoadEvent())
+                              ..doIntent(const HomeBrandsLoadEvent())
+                              ..doIntent(const HomeRecommendedLoadEvent())
+                              ..doIntent(const HomeFeaturedLoadEvent())
+                              ..doIntent(const HomeSpecialOffersLoadEvent())
+                              ..doIntent(const HomeExploreMoreLoadEvent());
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                else ...[
+                  const SliverToBoxAdapter(child: HomeBannerSection()),
+                  const SliverToBoxAdapter(child: CategoriesSection()),
+                  const SliverToBoxAdapter(child: SpecialOffersSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+                  const SliverToBoxAdapter(child: RecommendedSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+                  const SliverToBoxAdapter(child: BestSellingSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+                  const SliverToBoxAdapter(child: BrandsSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+                  const SliverToBoxAdapter(child: FeaturedProductsSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
+                  const SliverToBoxAdapter(child: ExploreMoreSection()),
+                  const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                ],
+              ],
+            );
+          },
         ),
       ),
     );

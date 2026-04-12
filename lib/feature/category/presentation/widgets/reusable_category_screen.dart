@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
@@ -47,6 +48,8 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.activeHeroProductId,
     this.onProductTap,
     this.isLoading = false,
+    this.errorFailure,
+    this.onRetryError,
   });
 
   final List<CategoryEntity> categories;
@@ -84,6 +87,8 @@ class ReusableCategoryScreen extends StatefulWidget {
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
   final bool isLoading;
+  final Failure? errorFailure;
+  final VoidCallback? onRetryError;
 
   @override
   State<ReusableCategoryScreen> createState() => _ReusableCategoryScreenState();
@@ -177,6 +182,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               activeHeroProductId: widget.activeHeroProductId,
               onProductTap: widget.onProductTap,
               isLoading: widget.isLoading,
+              errorFailure: widget.errorFailure,
+              onRetryError: widget.onRetryError,
             ),
             if (!widget.isLoading)
               Positioned(

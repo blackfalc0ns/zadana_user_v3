@@ -112,7 +112,7 @@ class CartViewModel extends Cubit<CartState> {
           state.copyWith(
             isLoadingVendors: false,
             isVendorsSuccess: false,
-            vendorsErrorMessage: result.failure.errorMessage,
+            vendorsErrorMessage: result.failure.code,
           ),
         );
     }
@@ -153,7 +153,7 @@ class CartViewModel extends Cubit<CartState> {
           state.copyWith(
             isLoadingItems: false,
             isItemsSuccess: false,
-            itemsErrorMessage: result.failure.errorMessage,
+            itemsErrorMessage: result.failure.code,
           ),
         );
     }
@@ -197,7 +197,7 @@ class CartViewModel extends Cubit<CartState> {
         emit(
           state.copyWith(
             isClearingCart: false,
-            clearCartErrorMessage: result.failure.errorMessage,
+            clearCartErrorMessage: result.failure.code,
             clearClearCartSuccessMessage: true,
           ),
         );
@@ -243,7 +243,7 @@ class CartViewModel extends Cubit<CartState> {
         emit(
           state.copyWith(
             isRemovingItem: false,
-            removeItemErrorMessage: result.failure.errorMessage,
+            removeItemErrorMessage: result.failure.code,
             clearRemoveItemSuccessMessage: true,
             clearRemovedItemId: true,
           ),
@@ -294,7 +294,7 @@ class CartViewModel extends Cubit<CartState> {
         emit(
           state.copyWith(
             items: revertedItems,
-            updateQuantityErrorMessage: result.failure.errorMessage,
+            updateQuantityErrorMessage: result.failure.code,
             updatedQuantityItemId: event.itemId,
           ),
         );

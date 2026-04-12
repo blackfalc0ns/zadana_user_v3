@@ -9,6 +9,223 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get error_no_internet_connection => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get error_no_internet_connection_desc =>
+      'يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى';
+
+  @override
+  String get error_connection_timeout => 'انتهت مهلة الاتصال بالسيرفر';
+
+  @override
+  String get error_connection_timeout_desc =>
+      'استغرق الاتصال وقتاً طويلاً. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get error_receive_timeout => 'انتهت مهلة استلام الرد من السيرفر';
+
+  @override
+  String get error_receive_timeout_desc =>
+      'استغرق الخادم وقتاً طويلاً للرد. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get error_send_timeout => 'انتهت مهلة إرسال الطلب للسيرفر';
+
+  @override
+  String get error_send_timeout_desc =>
+      'فشل في إرسال البيانات إلى الخادم. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get error_server_error => 'خطأ في الخادم';
+
+  @override
+  String get error_server_error_desc =>
+      'حدث خطأ في الخادم. يرجى المحاولة لاحقاً';
+
+  @override
+  String get error_internal_server_error => 'خطأ داخلي في الخادم';
+
+  @override
+  String get error_internal_server_error_desc =>
+      'واجه الخادم خطأ داخلي. يرجى المحاولة لاحقاً';
+
+  @override
+  String get error_bad_gateway => 'بوابة سيئة';
+
+  @override
+  String get error_bad_gateway_desc =>
+      'تلقى الخادم استجابة غير صالحة. يرجى المحاولة لاحقاً';
+
+  @override
+  String get error_service_unavailable => 'الخدمة غير متاحة';
+
+  @override
+  String get error_service_unavailable_desc =>
+      'الخدمة غير متاحة مؤقتاً. يرجى المحاولة لاحقاً';
+
+  @override
+  String get error_gateway_timeout => 'انتهت مهلة البوابة';
+
+  @override
+  String get error_gateway_timeout_desc =>
+      'انتهت مهلة البوابة. يرجى المحاولة لاحقاً';
+
+  @override
+  String get error_bad_request => 'الطلب غير صحيح';
+
+  @override
+  String get properties_empty_message_favourite =>
+      'You have not added any properties to your favorites.';
+
+  @override
+  String get error_bad_request_desc =>
+      'يحتوي الطلب على بيانات غير صالحة. يرجى التحقق من المدخلات';
+
+  @override
+  String get error_unauthorized => 'غير مصرح، سجّل دخولك من جديد';
+
+  @override
+  String get error_unauthorized_desc =>
+      'أنت غير مصرح للوصول إلى هذا المورد. يرجى تسجيل الدخول مرة أخرى';
+
+  @override
+  String get error_forbidden => 'ما عندك صلاحية';
+
+  @override
+  String get error_forbidden_desc => 'ليس لديك إذن للوصول إلى هذا المورد';
+
+  @override
+  String get error_not_found => 'المورد غير موجود';
+
+  @override
+  String get error_not_found_desc => 'المورد المطلوب غير موجود';
+
+  @override
+  String get error_method_not_allowed => 'الطريقة غير مسموحة';
+
+  @override
+  String get error_method_not_allowed_desc =>
+      'هذه الطريقة غير مسموحة لهذا المورد';
+
+  @override
+  String get error_not_acceptable => 'غير مقبول';
+
+  @override
+  String get error_not_acceptable_desc => 'الطلب غير مقبول';
+
+  @override
+  String get error_request_timeout => 'انتهت مهلة الطلب';
+
+  @override
+  String get error_request_timeout_desc =>
+      'انتهت مهلة الطلب. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get error_conflict => 'صار تعارض في البيانات';
+
+  @override
+  String get error_conflict_desc => 'يوجد تعارض مع الحالة الحالية للمورد';
+
+  @override
+  String get error_gone => 'المورد غير متاح';
+
+  @override
+  String get error_gone_desc => 'المورد المطلوب لم يعد متاحاً';
+
+  @override
+  String get error_length_required => 'الطول مطلوب';
+
+  @override
+  String get error_length_required_desc => 'يجب أن يحدد الطلب طول المحتوى';
+
+  @override
+  String get error_precondition_failed => 'فشل الشرط المسبق';
+
+  @override
+  String get error_precondition_failed_desc => 'فشل شرط مسبق واحد أو أكثر';
+
+  @override
+  String get error_payload_too_large => 'الحمولة كبيرة جداً';
+
+  @override
+  String get error_payload_too_large_desc => 'حمولة الطلب كبيرة جداً';
+
+  @override
+  String get error_uri_too_long => 'الرابط طويل جداً';
+
+  @override
+  String get error_uri_too_long_desc => 'رابط الطلب طويل جداً';
+
+  @override
+  String get lead_send_error => 'حدث خطأ أثناء إرسال طلب التواصل';
+
+  @override
+  String get lead_info_collected => 'تم جمع معلومات العميل المحتمل بنجاح';
+
+  @override
+  String get lead_offline_mode => 'تم حفظ معلومات التواصل محلياً';
+
+  @override
+  String get error_unsupported_media_type => 'نوع الوسائط غير مدعوم';
+
+  @override
+  String get error_unsupported_media_type_desc => 'نوع الوسائط غير مدعوم';
+
+  @override
+  String get error_range_not_satisfiable => 'النطاق غير قابل للتحقيق';
+
+  @override
+  String get error_range_not_satisfiable_desc => 'لا يمكن تحقيق النطاق المطلوب';
+
+  @override
+  String get error_expectation_failed => 'فشل التوقع';
+
+  @override
+  String get error_expectation_failed_desc =>
+      'لا يمكن تلبية التوقع المحدد في حقل رأس الطلب';
+
+  @override
+  String get error_too_many_requests => 'طلبات كثيرة جداً';
+
+  @override
+  String get error_too_many_requests_desc =>
+      'لقد أرسلت طلبات كثيرة جداً. يرجى المحاولة لاحقاً';
+
+  @override
+  String get error_unknown => 'صار خطأ غير متوقع';
+
+  @override
+  String get error_unknown_desc => 'حدث خطأ غير معروف. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get error_cancelled => 'تم إلغاء الطلب';
+
+  @override
+  String get error_cancelled_desc => 'تم إلغاء الطلب';
+
+  @override
+  String get error_other => 'حدث خطأ';
+
+  @override
+  String get error_other_desc => 'حدث خطأ. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get contact_support => 'تواصل مع الدعم';
+
+  @override
+  String get go_back => 'العودة';
+
+  @override
+  String get refresh => 'تحديث';
+
+  @override
+  String get check_connection => 'فحص الاتصال';
+
+  @override
   String get login => 'تسجيل دخول';
 
   @override
@@ -270,9 +487,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get see_all => 'عرض الكل';
 
   @override
-  String get refresh => 'تحديث';
-
-  @override
   String get add_to_cart => 'أضف للسلة';
 
   @override
@@ -493,15 +707,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quantity => 'الكمية';
 
   @override
-  String get error_connection_timeout => 'انتهت مهلة الاتصال بالسيرفر';
-
-  @override
-  String get error_send_timeout => 'انتهت مهلة إرسال الطلب للسيرفر';
-
-  @override
-  String get error_receive_timeout => 'انتهت مهلة استلام الرد من السيرفر';
-
-  @override
   String get error_bad_certificate => 'شهادة الأمان غير صالحة';
 
   @override
@@ -518,25 +723,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تحقق من الانترنت وحاول مره اخري';
 
   @override
-  String get error_unknown => 'صار خطأ غير متوقع';
-
-  @override
   String get error_no_response => 'ما وصل رد من السيرفر';
-
-  @override
-  String get error_bad_request => 'الطلب غير صحيح';
-
-  @override
-  String get error_unauthorized => 'غير مصرح، سجّل دخولك من جديد';
-
-  @override
-  String get error_forbidden => 'ما عندك صلاحية';
-
-  @override
-  String get error_not_found => 'المورد غير موجود';
-
-  @override
-  String get error_conflict => 'صار تعارض في البيانات';
 
   @override
   String get error_validation => 'البيانات المدخلة غير صحيحة';

@@ -190,8 +190,9 @@ class LocationViewModel extends Cubit<LocationState> {
 
       case ApiErrorResult():
         // Handle rate limiting for search
-        if (result.failure.errorMessage.contains('429') || 
-            result.failure.errorMessage.contains('Too many requests')) {
+        if (result.failure.code == 'error_unknown' &&
+            (result.failure.errorMessage.contains('429') ||
+             result.failure.errorMessage.contains('Too many requests'))) {
           emit(
             state.copyWith(
               isSearchLoading: false,
@@ -203,7 +204,7 @@ class LocationViewModel extends Cubit<LocationState> {
           emit(
             state.copyWith(
               isSearchLoading: false,
-              errorMessage: result.failure.errorMessage,
+              errorMessage: result.failure.code,
             ),
           );
         }
@@ -339,8 +340,9 @@ class LocationViewModel extends Cubit<LocationState> {
 
     case ApiErrorResult():
       // Handle rate limiting error specifically
-      if (result.failure.errorMessage.contains('429') || 
-          result.failure.errorMessage.contains('Too many requests')) {
+      if (result.failure.code == 'error_unknown' &&
+          (result.failure.errorMessage.contains('429') ||
+           result.failure.errorMessage.contains('Too many requests'))) {
         developer.log('Rate limited - backing off', name: 'LocationViewModel');
         emit(
           state.copyWith(
@@ -352,7 +354,7 @@ class LocationViewModel extends Cubit<LocationState> {
         emit(
           state.copyWith(
             isLoading: false,
-            errorMessage: result.failure.errorMessage,
+            errorMessage: result.failure.code,
           ),
         );
       }

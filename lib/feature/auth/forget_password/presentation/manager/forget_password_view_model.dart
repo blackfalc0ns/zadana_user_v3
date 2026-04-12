@@ -54,7 +54,7 @@ class ForgetPasswordViewModel extends Cubit<ForgetPasswordState> {
       case ApiErrorResult():
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: result.failure.errorMessage,
+          errorMessage: result.failure.code,
         ));
     }
   }
