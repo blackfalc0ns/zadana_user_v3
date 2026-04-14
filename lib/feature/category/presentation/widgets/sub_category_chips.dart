@@ -3,7 +3,8 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_chip.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/shimmer_wrapper.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart'
+    show ShimmerEffect;
 
 class SubCategoryChips extends StatelessWidget {
   const SubCategoryChips({
@@ -21,28 +22,12 @@ class SubCategoryChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ShimmerWrapper(
-      isLoading: isLoading,
-      child: _buildContent(),
-    );
+    return _buildContent();
   }
 
   Widget _buildContent() {
     if (isLoading) {
-      return SizedBox(
-        height: 40,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
-          itemCount: 4,
-          separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-          itemBuilder: (_, index) => _Bone(
-            width: index == 0 ? 96 : 74,
-            height: 36,
-            radius: 999,
-          ),
-        ),
-      );
+      return const _SubCategoryChipsSkeleton();
     }
 
     return SizedBox(
@@ -66,21 +51,27 @@ class SubCategoryChips extends StatelessWidget {
   }
 }
 
-class _Bone extends StatelessWidget {
-  const _Bone({this.width, required this.height, required this.radius});
-
-  final double? width;
-  final double height;
-  final double radius;
+class _SubCategoryChipsSkeleton extends StatelessWidget {
+  const _SubCategoryChipsSkeleton();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: AppColors.shimmerBase,
-        borderRadius: BorderRadius.circular(radius),
+    return SizedBox(
+      height: 40,
+      child: ShimmerEffect(
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
+          itemCount: 7,
+          separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
+          itemBuilder: (_, index) => Container(
+            width: 64 + ((index % 4) * 10),
+            decoration: BoxDecoration(
+              color: AppColors.shimmerBase,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+        ),
       ),
     );
   }

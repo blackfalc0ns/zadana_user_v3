@@ -14,7 +14,7 @@ ProfileResponseModelDto _$ProfileResponseModelDtoFromJson(
   email: json['email'] as String,
   phone: json['phone'] as String,
   role: json['role'] as String,
-  favoritesCount: (json['favoritesCount'] as num?)?.toInt() ?? 0,
+  favoritesCount: (json['favoritesCount'] as num).toInt(),
 );
 
 Map<String, dynamic> _$ProfileResponseModelDtoToJson(

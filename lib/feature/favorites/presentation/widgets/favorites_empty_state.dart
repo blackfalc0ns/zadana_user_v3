@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
@@ -13,7 +12,6 @@ class FavoritesEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final color = context.colorScheme;
 
     return Center(
       child: Padding(
@@ -21,50 +19,19 @@ class FavoritesEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: color.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.favorite_border_rounded,
-                size: 48,
-                color: color.primary,
-              ),
-            ),
-            const SizedBox(height: Spacing.lg),
-            Text(
-              locale.favorites_empty,
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size18,
-                color: color.onSurface,
-              ),
-            ),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              locale.favorites_empty_message,
-              style: getRegularStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size12,
-                color: color.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
+            EmptyStateWidget(
+              title: locale.favorites_empty,
+              description: locale.favorites_empty_message,
+              icon: Icons.favorite_border_rounded,
             ),
             const SizedBox(height: Spacing.xl),
-           Padding(
-             padding: const EdgeInsets.symmetric(horizontal: Spacing.xxxl),
-             child: AppButton(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.xxxl),
+              child: AppButton(
                 onPressed: onStartShopping,
-                
-                text:
-                  locale.start_shopping,
-                
-                
+                text: locale.start_shopping,
               ),
-           )
+            ),
           ],
         ),
       ),

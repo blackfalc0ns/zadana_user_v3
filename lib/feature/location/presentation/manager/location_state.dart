@@ -6,6 +6,7 @@ class LocationState {
   final bool isLoading;
   final bool isSearchLoading;
   final bool isSuccess;
+  final bool isAddressSaved;
   final String? errorMessage;
   final Failure? failure;
   final List<LocationSearchResultEntity> searchResults;
@@ -23,6 +24,7 @@ class LocationState {
     this.isLoading = false,
     this.isSearchLoading = false,
     this.isSuccess = false,
+    this.isAddressSaved = false,
     this.errorMessage,
     this.failure,
     this.searchResults = const [],
@@ -41,6 +43,7 @@ class LocationState {
     bool? isLoading,
     bool? isSearchLoading,
     bool? isSuccess,
+    bool? isAddressSaved,
     String? errorMessage,
     Failure? failure,
     List<LocationSearchResultEntity>? searchResults,
@@ -58,6 +61,7 @@ class LocationState {
       isLoading: isLoading ?? this.isLoading,
       isSearchLoading: isSearchLoading ?? this.isSearchLoading,
       isSuccess: isSuccess ?? this.isSuccess,
+      isAddressSaved: isAddressSaved ?? this.isAddressSaved,
       errorMessage: errorMessage,
       failure: failure,
       searchResults: searchResults ?? this.searchResults,
@@ -92,6 +96,7 @@ class LocationState {
         other.isLoading == isLoading &&
         other.isSearchLoading == isSearchLoading &&
         other.isSuccess == isSuccess &&
+        other.isAddressSaved == isAddressSaved &&
         other.errorMessage == errorMessage &&
         other.failure == failure &&
         other.searchResults == searchResults &&
@@ -112,6 +117,7 @@ class LocationState {
       isLoading,
       isSearchLoading,
       isSuccess,
+      isAddressSaved,
       errorMessage,
       failure,
       searchResults,

@@ -32,13 +32,18 @@ class CustomVerticalFilterChip extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final itemWidth = constraints.maxWidth;
+        final itemHeight = constraints.maxHeight;
         final compact = itemWidth < 84;
-        final iconSize = compact ? 18.0 : 22.0;
-        final labelFontSize = compact ? FontSize.size11 : FontSize.size12;
+        final ultraCompact = itemHeight.isFinite && itemHeight < 68;
+        final iconSize = ultraCompact ? 16.0 : (compact ? 18.0 : 22.0);
+        final labelFontSize = ultraCompact
+            ? FontSize.size10
+            : (compact ? FontSize.size11 : FontSize.size12);
         final contentPadding = EdgeInsets.symmetric(
-          horizontal: compact ? 4 : 6,
-          vertical: compact ? 6 : 8,
+          horizontal: ultraCompact ? 3 : (compact ? 4 : 6),
+          vertical: ultraCompact ? 4 : (compact ? 6 : 8),
         );
+        final spacing = ultraCompact ? 2.0 : (compact ? 4.0 : 6.0);
 
         return GestureDetector(
           onTap: onTap,
@@ -54,7 +59,6 @@ class CustomVerticalFilterChip extends StatelessWidget {
                 color: isSelected
                     ? (selectedColor ?? AppColors.primary)
                     : (color.outline.withValues(alpha: 0.2)),
-                width: 1,
               ),
             ),
             child: Column(
@@ -63,18 +67,20 @@ class CustomVerticalFilterChip extends StatelessWidget {
               children: [
                 if (icon != null) ...[
                   Text(icon!, style: TextStyle(fontSize: iconSize)),
+                  SizedBox(height: spacing),
                 ],
-                SizedBox(height: compact ? 4 : 6),
-                Text(
-                  label,
-                  style: getSemiBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: labelFontSize,
-                    color: isSelected ? color.onPrimary : color.onSurface,
+                Flexible(
+                  child: Text(
+                    label,
+                    style: getSemiBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: labelFontSize,
+                      color: isSelected ? color.onPrimary : color.onSurface,
+                    ).copyWith(height: ultraCompact ? 1.15 : 1.25),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -84,4 +90,3 @@ class CustomVerticalFilterChip extends StatelessWidget {
     );
   }
 }
-

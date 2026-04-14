@@ -93,6 +93,12 @@
   "auth_title": "ابدأ معنا الحين",
   "auth_subtitle_login": "هلا فيك! سجّل دخولك",
   "auth_subtitle_signup": "سو حساب جديد وابدأ",
+  "login_hero_badge": "مرحبا بعودتك",
+  "login_hero_title": "تسجيل الدخول",
+  "login_hero_subtitle": "سجل الدخول للمتابعة واستعراض المنتجات",
+  "login_section_badge": "عضو",
+  "login_section_title": "تسجيل دخول",
+  "login_section_description": "أدخل بريدك الإلكتروني أو رقم الجوال وكلمة المرور للوصول إلى حسابك.",
   "register_hero_badge": "ابدأ التسوق",
   "register_screen_title": "إنشاء حساب",
   "register_hero_subtitle": "أنشئ حسابك بخطوات بسيطة وابدأ التسوق بسهولة.",
@@ -115,8 +121,8 @@
   "hint_phone": "05xxxxxxxx",
   "hint_password": "********",
 
-  "btn_login": "دخول",
-  "btn_signup": "تسجيل",
+  "btn_login": "تسجيل دخول",
+  "btn_signup": "انشاء حساب",
   "btn_forgot_password": "نسيت كلمة المرور؟",
 
   "forget_password_title": "نسيت كلمة المرور",
@@ -130,7 +136,7 @@
   "hint_verification_code": "اكتب الكود",
   "label_new_password": "كلمة مرور جديدة",
   "hint_new_password": "اكتب كلمة المرور الجديدة",
-  "btn_confirm": "تأكيد",
+  "btn_confirm": "تم التغير بنجاح",
   "msg_password_reset_success": "تم تغيير كلمة المرور",
   "verification_code_required": "اكتب كود التحقق",
   "verification_code_invalid": "الكود غلط",
@@ -490,6 +496,105 @@
   "profile_guest_subtitle": "سجّل الدخول أو أنشئ حسابًا للوصول إلى الطلبات والمفضلة وبياناتك الشخصية.",
   "profile_guest_explore_title": "متاح لك الآن",
   "profile_guest_addresses_subtitle": "يمكنك إضافة عنوان، لكن مزامنة البيانات تحتاج إلى تسجيل الدخول",
+  "location_building_details_page_title": "تفاصيل المبنى",
+  "location_save_address": "حفظ العنوان",
+  "location_building_details_heading": "أدخل تفاصيل المبنى",
+  "location_building_details_subtitle": "أضف تفاصيل المبنى والشقة لإكمال عنوانك",
+  "location_address_label_title": "تسمية العنوان *",
+  "location_address_label_hint": "اختر تسمية العنوان",
+  "location_address_label_required": "يرجى اختيار تسمية العنوان",
+  "location_address_label_home": "المنزل",
+  "location_address_label_work": "العمل",
+  "location_address_label_other": "أخرى",
+  "location_building_number_label": "رقم المبنى *",
+  "location_building_number_hint": "مثال: 15",
+  "location_building_number_required": "رقم المبنى مطلوب",
+  "location_floor_number_label": "رقم الطابق",
+  "location_floor_number_hint": "مثال: 3",
+  "location_apartment_number_label": "رقم الشقة",
+  "location_apartment_number_hint": "مثال: 5",
+  "location_manual_address_page_title": "إدخال العنوان يدويًا",
+  "location_confirm_address": "تأكيد العنوان",
+  "location_manual_address_heading": "أدخل تفاصيل عنوانك",
+  "location_manual_address_subtitle": "املأ البيانات التالية لإضافة عنوانك الجديد",
+  "location_edit_address_page_title": "تعديل العنوان",
+  "location_update_address": "تحديث العنوان",
+  "location_edit_address_heading": "عدّل تفاصيل عنوانك",
+  "location_edit_address_subtitle": "حدّث البيانات التالية ثم احفظ التغييرات",
+  "location_address_details_label": "العنوان التفصيلي *",
+  "location_address_details_hint": "مثال: شارع الجمهورية، بجوار مسجد النور",
+  "location_address_details_required": "العنوان التفصيلي مطلوب",
+  "location_city_label": "المدينة *",
+  "location_city_hint": "مثال: القاهرة",
+  "location_city_required": "المدينة مطلوبة",
+  "location_area_label": "المنطقة *",
+  "location_area_hint": "مثال: المعادي",
+  "location_area_required": "المنطقة مطلوبة",
+  "addresses_summary_count": "عندك {count} عنوان",
+  "@addresses_summary_count": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "addresses_summary_default": "الافتراضي الحالي: {label}",
+  "@addresses_summary_default": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_primary_label": "العنوان الرئيسي",
+  "addresses_default": "افتراضي",
+  "addresses_current": "العنوان الحالي",
+  "addresses_set_default": "اجعله افتراضي",
+  "addresses_edit": "تعديل",
+  "addresses_delete": "حذف",
+  "addresses_delete_title": "حذف العنوان",
+  "addresses_delete_confirm": "هل تريد حذف عنوان \"{label}\"؟",
+  "@addresses_delete_confirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_delete_success": "تم حذف العنوان بنجاح",
+  "addresses_set_default_success": "تم تحديد \"{label}\" كعنوان افتراضي",
+  "@addresses_set_default_success": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_edit_success": "تم تحديث العنوان بنجاح",
+  "addresses_meta_building": "مبنى {value}",
+  "@addresses_meta_building": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_meta_floor": "دور {value}",
+  "@addresses_meta_floor": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_meta_apartment": "شقة {value}",
+  "@addresses_meta_apartment": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "profile_role_label": "الدور",
   "profile_status_label": "الحالة",
   "profile_status_active": "نشط",

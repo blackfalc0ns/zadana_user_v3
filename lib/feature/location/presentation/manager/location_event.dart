@@ -39,6 +39,11 @@ class SetSelectedLocationEvent extends LocationEvent {
   const SetSelectedLocationEvent(this.location);
 }
 
+class SaveSelectedAddressEvent extends LocationEvent {
+  final LocationEntity location;
+  const SaveSelectedAddressEvent(this.location);
+}
+
 class UpdateManualAddressEvent extends LocationEvent {
   final String addressLine;
   const UpdateManualAddressEvent(this.addressLine);

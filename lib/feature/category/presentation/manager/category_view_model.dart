@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/feature/category/data/mapper/category_products_mapper.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_state.dart';
 
@@ -77,6 +78,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await selectCategory(
         initialCategory,
         fromOutside: selectedFromHome != null,
+        showAllSubCategories: selectedFromHome == null,
       );
 
       if (selectedFromHome != null) {
@@ -98,6 +100,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
   Future<void> selectCategory(
     CategoryEntity category, {
     bool fromOutside = false,
+    bool showAllSubCategories = false,
   }) async {
     emit(
       state.copyWith(
@@ -106,6 +109,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
         selectedSubCategory: null,
         selectedSubCategoryId: null,
         subCategories: const [],
+        subCategoryCategoryMap: const {},
         products: const [],
         quantityOptions: const [],
         brandOptions: const [],
@@ -124,6 +128,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
         priceBounds: const RangeValues(0, 1000),
         priceRange: const RangeValues(0, 1000),
         isCategoryPreselectedFromOutside: fromOutside,
+        showAllSubCategories: showAllSubCategories,
         isLoading: true,
         isSubCategoriesLoading: true,
         errorMessage: null,
@@ -133,8 +138,41 @@ class CategoryViewModel extends Cubit<CategoryState> {
     );
 
     try {
-      final filters = await _apiServices.getCategoryFilters(category.id);
-      _applyCategoryFilters(filters);
+      if (showAllSubCategories) {
+        final categoryFilters = await Future.wait(
+          state.categories
+              .map((item) => _apiServices.getCategoryFilters(item.id))
+              .toList(growable: false),
+        );
+        final selectedFilters = categoryFilters.firstWhere(
+          (filters) => filters.category?.id == category.id,
+          orElse: () => categoryFilters.first,
+        );
+        final shoppingSubCategories = _buildShoppingSubCategories(
+          categories: state.categories,
+          categoryFilters: categoryFilters,
+        );
+        _applyCategoryFilters(
+          selectedFilters,
+          subCategories: shoppingSubCategories.subCategories,
+          subCategoryCategoryMap: shoppingSubCategories.categoryMap,
+        );
+      } else {
+        final results = await Future.wait<dynamic>([
+          _apiServices.getCategoryFilters(category.id),
+          _apiServices.getCategorySubcategories(category.id),
+        ]);
+        final filters = results[0] as CategoryFiltersResponseModelDto;
+        final subCategories = results[1] as List<CategorySubcategoryItemDto>;
+        _applyCategoryFilters(
+          filters,
+          subCategories: subCategories,
+          subCategoryCategoryMap: {
+            for (final item in subCategories)
+              if ((item.id ?? '').isNotEmpty) item.id!: category.id,
+          },
+        );
+      }
       await loadCategoryProducts();
     } catch (error) {
       final failure = _mapFailure(error);
@@ -159,9 +197,21 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
   }
 
-  Future<void> loadCategoryProducts() async {
-    final targetId = state.selectedCategoryId;
-    if (targetId == null || targetId.isEmpty) return;
+  Future<void> loadCategoryProducts({
+    String? overrideSubCategoryId,
+    String? overrideCategoryId,
+  }) async {
+    final effectiveSubCategoryId =
+        overrideSubCategoryId ?? state.selectedSubCategoryId;
+    final fallbackCategoryId =
+        overrideCategoryId ??
+        _resolveCategoryIdForSubCategory(effectiveSubCategoryId) ??
+        state.selectedCategoryId;
+    final requestCategoryId = (effectiveSubCategoryId != null &&
+            effectiveSubCategoryId.isNotEmpty)
+        ? effectiveSubCategoryId
+        : fallbackCategoryId;
+    if (requestCategoryId == null || requestCategoryId.isEmpty) return;
 
     emit(
       state.copyWith(
@@ -174,8 +224,8 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     try {
       final response = await _apiServices.getCategoryProducts(
-        targetId,
-        state.selectedSubCategoryId,
+        requestCategoryId,
+        effectiveSubCategoryId,
         state.selectedProductTypeId,
         state.selectedPartId,
         state.selectedQuantityId,
@@ -221,17 +271,35 @@ class CategoryViewModel extends Cubit<CategoryState> {
     unawaited(selectCategory(category));
   }
 
-  void selectSubCategory(String? subCategoryId, String? subCategoryName) {
+  void selectSubCategory(CategorySubcategoryItemDto? subCategory) {
+    final subCategoryId = subCategory?.id;
+    final subCategoryName = subCategory?.name;
     final isSameSubCategory = state.selectedSubCategoryId == subCategoryId;
+    final nextSubCategoryId = isSameSubCategory ? null : subCategoryId;
+    final nextSubCategoryName = isSameSubCategory ? null : subCategoryName;
+
+    if (state.showAllSubCategories && nextSubCategoryId != null) {
+      unawaited(
+        _selectShoppingSubCategory(
+          subCategoryId: nextSubCategoryId,
+          subCategoryName: nextSubCategoryName,
+        ),
+      );
+      return;
+    }
 
     emit(
       state.copyWith(
-        selectedSubCategoryId: isSameSubCategory ? null : subCategoryId,
-        selectedSubCategory: isSameSubCategory ? null : subCategoryName,
+        selectedSubCategoryId: nextSubCategoryId,
+        selectedSubCategory: nextSubCategoryName,
       ),
     );
 
-    unawaited(loadCategoryProducts());
+    unawaited(
+      loadCategoryProducts(
+        overrideSubCategoryId: nextSubCategoryId,
+      ),
+    );
   }
 
   void applySort(String? sortValue) {
@@ -243,8 +311,16 @@ class CategoryViewModel extends Cubit<CategoryState> {
     if (result == null) return;
 
     final categoryName = result['category'] as String?;
+    final subCategoryId = result['subCategoryId'] as String?;
+    final subCategoryName = result['subCategoryName'] as String?;
     if (categoryName != null && categoryName != state.selectedCategory) {
-      selectCategoryByName(categoryName);
+      unawaited(
+        _applyCategoryChangeFromFilters(
+          categoryName: categoryName,
+          subCategoryId: subCategoryId,
+          subCategoryName: subCategoryName,
+        ),
+      );
       return;
     }
 
@@ -261,6 +337,8 @@ class CategoryViewModel extends Cubit<CategoryState> {
         filterSelectedBrand: brand,
         filterSelectedProductType: productType,
         filterSelectedPart: part,
+        selectedSubCategoryId: subCategoryId,
+        selectedSubCategory: subCategoryName,
         selectedQuantityId: _findOptionId(state.quantityOptions, quantity),
         selectedBrandId: _findBrandId(brand),
         selectedProductTypeId:
@@ -271,6 +349,39 @@ class CategoryViewModel extends Cubit<CategoryState> {
     );
 
     unawaited(loadCategoryProducts());
+  }
+
+  Future<void> _applyCategoryChangeFromFilters({
+    required String categoryName,
+    String? subCategoryId,
+    String? subCategoryName,
+  }) async {
+    final category = state.categories
+        .where((item) => item.name == categoryName)
+        .firstWhere(
+          (_) => true,
+          orElse: () => const CategoryEntity(
+            id: '',
+            name: '',
+            imageAsset: '',
+            emoji: '',
+          ),
+        );
+    if (category.id.isEmpty) return;
+
+    await selectCategory(category);
+
+    if (subCategoryId == null || subCategoryId.isEmpty) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        selectedSubCategoryId: subCategoryId,
+        selectedSubCategory: subCategoryName,
+      ),
+    );
+    await loadCategoryProducts(overrideSubCategoryId: subCategoryId);
   }
 
   void clearAllFilters() {
@@ -317,6 +428,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
           selectCategory(
             category,
             fromOutside: state.isCategoryPreselectedFromOutside,
+            showAllSubCategories: state.showAllSubCategories,
           ),
         );
       case CategoryRetryAction.loadProducts:
@@ -324,8 +436,13 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
   }
 
-  void _applyCategoryFilters(CategoryFiltersResponseModelDto filters) {
-    final subCategories = (filters.subcategories ?? const [])
+  void _applyCategoryFilters(
+    CategoryFiltersResponseModelDto filters, {
+    List<CategorySubcategoryItemDto>? subCategories,
+    Map<String, String>? subCategoryCategoryMap,
+  }) {
+    final resolvedSubCategories =
+        (subCategories ?? filters.subcategories ?? const [])
         .where(
           (item) =>
               (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
@@ -363,7 +480,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     emit(
       state.copyWith(
-        subCategories: subCategories,
+        subCategories: resolvedSubCategories,
         quantityOptions: quantityOptions,
         brandOptions: brandOptions,
         productTypeOptions: productTypeOptions,
@@ -380,8 +497,129 @@ class CategoryViewModel extends Cubit<CategoryState> {
             .toList(),
         priceBounds: priceBounds,
         priceRange: priceBounds,
+        subCategoryCategoryMap:
+            subCategoryCategoryMap ?? state.subCategoryCategoryMap,
         isSubCategoriesLoading: false,
       ),
+    );
+  }
+
+  Future<void> _selectShoppingSubCategory({
+    required String subCategoryId,
+    required String? subCategoryName,
+  }) async {
+    final targetCategoryId = _resolveCategoryIdForSubCategory(subCategoryId);
+    if (targetCategoryId == null || targetCategoryId.isEmpty) {
+      emit(
+        state.copyWith(
+          selectedSubCategoryId: subCategoryId,
+          selectedSubCategory: subCategoryName,
+        ),
+      );
+      await loadCategoryProducts(overrideSubCategoryId: subCategoryId);
+      return;
+    }
+
+    final category = state.categories.firstWhere(
+      (item) => item.id == targetCategoryId,
+      orElse: () => CategoryEntity(
+        id: targetCategoryId,
+        name: state.selectedCategory,
+        imageAsset: '',
+        emoji: '',
+      ),
+    );
+
+    emit(
+      state.copyWith(
+        selectedCategory: category.name,
+        selectedCategoryId: category.id,
+        filterSelectedCategory: category.name,
+        selectedSubCategoryId: subCategoryId,
+        selectedSubCategory: subCategoryName,
+        filterSelectedQuantity: null,
+        filterSelectedBrand: null,
+        filterSelectedProductType: null,
+        filterSelectedPart: null,
+        selectedQuantityId: null,
+        selectedBrandId: null,
+        selectedProductTypeId: null,
+        selectedPartId: null,
+        isLoading: true,
+        errorMessage: null,
+        failure: null,
+        retryAction: CategoryRetryAction.loadFiltersAndProducts,
+      ),
+    );
+
+    try {
+      final filters = await _apiServices.getCategoryFilters(targetCategoryId);
+      _applyCategoryFilters(
+        filters,
+        subCategories: state.subCategories,
+        subCategoryCategoryMap: state.subCategoryCategoryMap,
+      );
+      emit(
+        state.copyWith(
+          selectedSubCategoryId: subCategoryId,
+          selectedSubCategory: subCategoryName,
+        ),
+      );
+      await loadCategoryProducts(
+        overrideSubCategoryId: subCategoryId,
+        overrideCategoryId: targetCategoryId,
+      );
+    } catch (error) {
+      final failure = _mapFailure(error);
+      emit(
+        state.copyWith(
+          products: const [],
+          isLoading: false,
+          errorMessage: failure.code,
+          failure: failure,
+          retryAction: CategoryRetryAction.loadFiltersAndProducts,
+        ),
+      );
+    }
+  }
+
+  String? _resolveCategoryIdForSubCategory(String? subCategoryId) {
+    if (subCategoryId == null || subCategoryId.isEmpty) {
+      return state.selectedCategoryId;
+    }
+
+    return state.showAllSubCategories
+        ? state.subCategoryCategoryMap[subCategoryId] ?? state.selectedCategoryId
+        : state.selectedCategoryId;
+  }
+
+  _ShoppingSubCategoriesData _buildShoppingSubCategories({
+    required List<CategoryEntity> categories,
+    required List<CategoryFiltersResponseModelDto> categoryFilters,
+  }) {
+    final items = <CategorySubcategoryItemDto>[];
+    final categoryMap = <String, String>{};
+
+    for (var i = 0; i < categoryFilters.length; i++) {
+      final categoryId = i < categories.length
+          ? categories[i].id
+          : (categoryFilters[i].category?.id ?? '');
+      if (categoryId.isEmpty) continue;
+
+      for (final item in categoryFilters[i].subcategories ?? const []) {
+        final id = item.id ?? '';
+        final name = item.name?.trim() ?? '';
+        if (id.isEmpty || name.isEmpty || categoryMap.containsKey(id)) {
+          continue;
+        }
+        items.add(item);
+        categoryMap[id] = categoryId;
+      }
+    }
+
+    return _ShoppingSubCategoriesData(
+      subCategories: items,
+      categoryMap: categoryMap,
     );
   }
 
@@ -399,7 +637,21 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
   void _checkSelectedCategory() {
     final requested = _resolveRequestedCategory(_navigationService.selectedCategory);
-    if (requested == null) return;
+    if (requested == null) {
+      if (_navigationService.consumeResetToDefault()) {
+        if (state.categories.isEmpty) {
+          unawaited(loadInitialData());
+          return;
+        }
+        unawaited(
+          selectCategory(
+            state.categories.first,
+            showAllSubCategories: true,
+          ),
+        );
+      }
+      return;
+    }
 
     unawaited(selectCategory(requested, fromOutside: true));
     _navigationService.clearSelectedCategory();
@@ -466,4 +718,14 @@ class CategoryViewModel extends Cubit<CategoryState> {
     _navigationService.removeListener(_checkSelectedCategory);
     return super.close();
   }
+}
+
+class _ShoppingSubCategoriesData {
+  const _ShoppingSubCategoriesData({
+    required this.subCategories,
+    required this.categoryMap,
+  });
+
+  final List<CategorySubcategoryItemDto> subCategories;
+  final Map<String, String> categoryMap;
 }

@@ -307,6 +307,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auth_subtitle_signup => 'Create an account to explore our app';
 
   @override
+  String get login_hero_badge => 'Welcome Back';
+
+  @override
+  String get login_hero_title => 'Sign In';
+
+  @override
+  String get login_hero_subtitle => 'Log in to continue and browse products';
+
+  @override
+  String get login_section_badge => 'Member';
+
+  @override
+  String get login_section_title => 'Log In';
+
+  @override
+  String get login_section_description =>
+      'Enter your email or mobile number and password to access your account.';
+
+  @override
   String get register_hero_badge => 'Start shopping';
 
   @override
@@ -627,7 +646,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_language => 'Select Language';
 
   @override
-  String get arabic => 'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©';
+  String get arabic => 'Arabic';
 
   @override
   String get english => 'English';
@@ -1368,6 +1387,176 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_guest_addresses_subtitle =>
       'You can add an address, but syncing your data requires signing in';
+
+  @override
+  String get location_building_details_page_title => 'Building details';
+
+  @override
+  String get location_save_address => 'Save address';
+
+  @override
+  String get location_building_details_heading => 'Enter building details';
+
+  @override
+  String get location_building_details_subtitle =>
+      'Add the building and apartment details to complete your address';
+
+  @override
+  String get location_address_label_title => 'Address label *';
+
+  @override
+  String get location_address_label_hint => 'Choose an address label';
+
+  @override
+  String get location_address_label_required =>
+      'Please choose an address label';
+
+  @override
+  String get location_address_label_home => 'Home';
+
+  @override
+  String get location_address_label_work => 'Work';
+
+  @override
+  String get location_address_label_other => 'Other';
+
+  @override
+  String get location_building_number_label => 'Building number *';
+
+  @override
+  String get location_building_number_hint => 'Example: 15';
+
+  @override
+  String get location_building_number_required => 'Building number is required';
+
+  @override
+  String get location_floor_number_label => 'Floor number';
+
+  @override
+  String get location_floor_number_hint => 'Example: 3';
+
+  @override
+  String get location_apartment_number_label => 'Apartment number';
+
+  @override
+  String get location_apartment_number_hint => 'Example: 5';
+
+  @override
+  String get location_manual_address_page_title => 'Enter address manually';
+
+  @override
+  String get location_confirm_address => 'Confirm address';
+
+  @override
+  String get location_manual_address_heading => 'Enter your address details';
+
+  @override
+  String get location_manual_address_subtitle =>
+      'Fill in the following details to add your new address';
+
+  @override
+  String get location_edit_address_page_title => 'Edit address';
+
+  @override
+  String get location_update_address => 'Update address';
+
+  @override
+  String get location_edit_address_heading => 'Edit your address details';
+
+  @override
+  String get location_edit_address_subtitle =>
+      'Update the following details and save your changes';
+
+  @override
+  String get location_address_details_label => 'Detailed address *';
+
+  @override
+  String get location_address_details_hint =>
+      'Example: Al Gomhoria Street, next to Al Noor Mosque';
+
+  @override
+  String get location_address_details_required =>
+      'Detailed address is required';
+
+  @override
+  String get location_city_label => 'City *';
+
+  @override
+  String get location_city_hint => 'Example: Cairo';
+
+  @override
+  String get location_city_required => 'City is required';
+
+  @override
+  String get location_area_label => 'Area *';
+
+  @override
+  String get location_area_hint => 'Example: Maadi';
+
+  @override
+  String get location_area_required => 'Area is required';
+
+  @override
+  String addresses_summary_count(Object count) {
+    return 'You have $count address';
+  }
+
+  @override
+  String addresses_summary_default(String label) {
+    return 'Current default: $label';
+  }
+
+  @override
+  String get addresses_primary_label => 'Primary address';
+
+  @override
+  String get addresses_default => 'Default';
+
+  @override
+  String get addresses_current => 'Current address';
+
+  @override
+  String get addresses_set_default => 'Set as default';
+
+  @override
+  String get addresses_edit => 'Edit';
+
+  @override
+  String get addresses_delete => 'Delete';
+
+  @override
+  String get addresses_delete_title => 'Delete address';
+
+  @override
+  String addresses_delete_confirm(String label) {
+    return 'Do you want to delete \"$label\"?';
+  }
+
+  @override
+  String get addresses_delete_success => 'Address deleted successfully';
+
+  @override
+  String addresses_set_default_success(String label) {
+    return '\"$label\" was set as the default address';
+  }
+
+  @override
+  String get addresses_edit_success => 'Address updated successfully';
+
+  @override
+  String addresses_meta_building(String value) {
+    return 'Building $value';
+  }
+
+  @override
+  String addresses_meta_floor(String value) {
+    return 'Floor $value';
+  }
+
+  @override
+  String addresses_meta_apartment(String value) {
+    return 'Apartment $value';
+  }
 
   @override
   String get profile_role_label => 'Role';

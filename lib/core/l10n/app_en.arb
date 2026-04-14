@@ -90,6 +90,12 @@
 "auth_title"           : "Get Started Now",
 "auth_subtitle_login"  : "Welcome back! Log in to your account",
 "auth_subtitle_signup" : "Create an account to explore our app",
+"login_hero_badge"     : "Welcome Back",
+"login_hero_title"     : "Sign In",
+"login_hero_subtitle"  : "Log in to continue and browse products",
+"login_section_badge"  : "Member",
+"login_section_title"  : "Log In",
+"login_section_description": "Enter your email or mobile number and password to access your account.",
 "register_hero_badge": "Start shopping",
 "register_screen_title": "Create account",
 "register_hero_subtitle": "Create your account in a few steps and start shopping with ease.",
@@ -218,7 +224,7 @@
   "version": "Version",
   "contact_us": "Contact Us",
   "select_language": "Select Language",
-  "arabic": "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©",
+  "arabic": "Arabic",
   "english": "English",
   "about_app_title": "About App",
   "app_name": "Zadana Smart Shopping App",
@@ -489,6 +495,105 @@
   "profile_guest_subtitle": "Log in or create an account to access your orders, favorites, and personal details.",
   "profile_guest_explore_title": "Available for now",
   "profile_guest_addresses_subtitle": "You can add an address, but syncing your data requires signing in",
+  "location_building_details_page_title": "Building details",
+  "location_save_address": "Save address",
+  "location_building_details_heading": "Enter building details",
+  "location_building_details_subtitle": "Add the building and apartment details to complete your address",
+  "location_address_label_title": "Address label *",
+  "location_address_label_hint": "Choose an address label",
+  "location_address_label_required": "Please choose an address label",
+  "location_address_label_home": "Home",
+  "location_address_label_work": "Work",
+  "location_address_label_other": "Other",
+  "location_building_number_label": "Building number *",
+  "location_building_number_hint": "Example: 15",
+  "location_building_number_required": "Building number is required",
+  "location_floor_number_label": "Floor number",
+  "location_floor_number_hint": "Example: 3",
+  "location_apartment_number_label": "Apartment number",
+  "location_apartment_number_hint": "Example: 5",
+  "location_manual_address_page_title": "Enter address manually",
+  "location_confirm_address": "Confirm address",
+  "location_manual_address_heading": "Enter your address details",
+  "location_manual_address_subtitle": "Fill in the following details to add your new address",
+  "location_edit_address_page_title": "Edit address",
+  "location_update_address": "Update address",
+  "location_edit_address_heading": "Edit your address details",
+  "location_edit_address_subtitle": "Update the following details and save your changes",
+  "location_address_details_label": "Detailed address *",
+  "location_address_details_hint": "Example: Al Gomhoria Street, next to Al Noor Mosque",
+  "location_address_details_required": "Detailed address is required",
+  "location_city_label": "City *",
+  "location_city_hint": "Example: Cairo",
+  "location_city_required": "City is required",
+  "location_area_label": "Area *",
+  "location_area_hint": "Example: Maadi",
+  "location_area_required": "Area is required",
+  "addresses_summary_count": "You have {count} address",
+  "@addresses_summary_count": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "addresses_summary_default": "Current default: {label}",
+  "@addresses_summary_default": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_primary_label": "Primary address",
+  "addresses_default": "Default",
+  "addresses_current": "Current address",
+  "addresses_set_default": "Set as default",
+  "addresses_edit": "Edit",
+  "addresses_delete": "Delete",
+  "addresses_delete_title": "Delete address",
+  "addresses_delete_confirm": "Do you want to delete \"{label}\"?",
+  "@addresses_delete_confirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_delete_success": "Address deleted successfully",
+  "addresses_set_default_success": "\"{label}\" was set as the default address",
+  "@addresses_set_default_success": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_edit_success": "Address updated successfully",
+  "addresses_meta_building": "Building {value}",
+  "@addresses_meta_building": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_meta_floor": "Floor {value}",
+  "@addresses_meta_floor": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addresses_meta_apartment": "Apartment {value}",
+  "@addresses_meta_apartment": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "profile_role_label": "Role",
   "profile_status_label": "Status",
   "profile_status_active": "Active",

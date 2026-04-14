@@ -9,16 +9,45 @@ import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity
 import 'package:zadana_user_v3/feature/home/domain/entities/home_recommended_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
-import 'package:zadana_user_v3/feature/home/domain/usecase/home_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_app_bar_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_banners_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_best_selling_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_brands_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_categories_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_dynamic_sections_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_featured_products_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_recommended_usecase.dart';
+import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_special_offers_usecase.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 
 @injectable
 class HomeViewModel extends Cubit<HomeState> {
-  final HomeUseCase _homeUseCase;
+  static const int _homeSectionPreviewTake = 5;
+  static const int _homeBrandsPreviewTake = 8;
+
+  final GetHomeAppBarUseCase _getHomeAppBarUseCase;
+  final GetHomeBannersUseCase _getHomeBannersUseCase;
+  final GetHomeCategoriesUseCase _getHomeCategoriesUseCase;
+  final GetHomeBestSellingUseCase _getHomeBestSellingUseCase;
+  final GetHomeBrandsUseCase _getHomeBrandsUseCase;
+  final GetHomeRecommendedUseCase _getHomeRecommendedUseCase;
+  final GetHomeFeaturedProductsUseCase _getHomeFeaturedProductsUseCase;
+  final GetHomeSpecialOffersUseCase _getHomeSpecialOffersUseCase;
+  final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
   final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
 
-  HomeViewModel(this._homeUseCase) : super(const HomeState()) {
+  HomeViewModel(
+    this._getHomeAppBarUseCase,
+    this._getHomeBannersUseCase,
+    this._getHomeCategoriesUseCase,
+    this._getHomeBestSellingUseCase,
+    this._getHomeBrandsUseCase,
+    this._getHomeRecommendedUseCase,
+    this._getHomeFeaturedProductsUseCase,
+    this._getHomeSpecialOffersUseCase,
+    this._getHomeDynamicSectionsUseCase,
+  ) : super(const HomeState()) {
     _favoriteSyncService.addListener(_syncFavoriteState);
   }
 
@@ -40,8 +69,8 @@ class HomeViewModel extends Cubit<HomeState> {
         _getHomeFeatured();
       case HomeSpecialOffersLoadEvent():
         _getHomeSpecialOffers();
-      case HomeExploreMoreLoadEvent():
-        _getHomeExploreMore();
+      case HomeDynamicSectionLoadEvent():
+        _getHomeDynamicSections();
       case HomeRetryEvent():
         _getHomeAppBar();
       case HomeBannerRetryEvent():
@@ -58,8 +87,8 @@ class HomeViewModel extends Cubit<HomeState> {
         _getHomeFeatured();
       case HomeSpecialOffersRetryEvent():
         _getHomeSpecialOffers();
-      case HomeExploreMoreRetryEvent():
-        _getHomeExploreMore();
+      case HomeDynamicSectionRetryEvent():
+        _getHomeDynamicSections();
       case HomeResetEvent():
         emit(const HomeState());
     }
@@ -78,7 +107,7 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home top section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeAppBar();
+    final result = await _getHomeAppBarUseCase();
 
     switch (result) {
       case ApiSuccessResult():
@@ -123,7 +152,7 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home banners section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeBanners();
+    final result = await _getHomeBannersUseCase();
 
     switch (result) {
       case ApiSuccessResult():
@@ -168,7 +197,7 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home categories section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeCategories();
+    final result = await _getHomeCategoriesUseCase();
 
     switch (result) {
       case ApiSuccessResult():
@@ -214,7 +243,9 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home best selling section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeBestSelling();
+    final result = await _getHomeBestSellingUseCase(
+      take: _homeSectionPreviewTake,
+    );
 
     switch (result) {
       case ApiSuccessResult():
@@ -260,7 +291,9 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home brands section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeBrands();
+    final result = await _getHomeBrandsUseCase(
+      take: _homeBrandsPreviewTake,
+    );
 
     switch (result) {
       case ApiSuccessResult():
@@ -306,7 +339,9 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home recommended section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeRecommended();
+    final result = await _getHomeRecommendedUseCase(
+      take: _homeSectionPreviewTake,
+    );
 
     switch (result) {
       case ApiSuccessResult():
@@ -352,7 +387,7 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home featured section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeFeaturedProducts();
+    final result = await _getHomeFeaturedProductsUseCase();
 
     switch (result) {
       case ApiSuccessResult():
@@ -398,7 +433,9 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home special offers section', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeSpecialOffers();
+    final result = await _getHomeSpecialOffersUseCase(
+      take: _homeSectionPreviewTake,
+    );
 
     switch (result) {
       case ApiSuccessResult():
@@ -431,10 +468,10 @@ class HomeViewModel extends Cubit<HomeState> {
     }
   }
 
-  Future<void> _getHomeExploreMore() async {
+  Future<void> _getHomeDynamicSections() async {
     emit(
       state.copyWith(
-        exploreMoreSection: state.exploreMoreSection.copyWith(
+        dynamicSection: state.dynamicSection.copyWith(
           isLoading: true,
           isSuccess: false,
           clearFailure: true,
@@ -442,16 +479,16 @@ class HomeViewModel extends Cubit<HomeState> {
       ),
     );
 
-    developer.log('Loading home explore more section', name: 'HomeViewModel');
+    developer.log('Loading home dynamic sections', name: 'HomeViewModel');
 
-    final result = await _homeUseCase.getHomeExploreMore();
+    final result = await _getHomeDynamicSectionsUseCase();
 
     switch (result) {
       case ApiSuccessResult():
-        developer.log('Home explore more loaded', name: 'HomeViewModel');
+        developer.log('Home dynamic sections loaded', name: 'HomeViewModel');
         emit(
           state.copyWith(
-            exploreMoreSection: state.exploreMoreSection.copyWith(
+            dynamicSection: state.dynamicSection.copyWith(
               isLoading: false,
               isSuccess: true,
               clearFailure: true,
@@ -461,12 +498,12 @@ class HomeViewModel extends Cubit<HomeState> {
         );
       case ApiErrorResult():
         developer.log(
-          'Home explore more failed: ${result.failure.errorMessage}',
+          'Home dynamic sections failed: ${result.failure.errorMessage}',
           name: 'HomeViewModel',
         );
         emit(
           state.copyWith(
-            exploreMoreSection: state.exploreMoreSection.copyWith(
+            dynamicSection: state.dynamicSection.copyWith(
               isLoading: false,
               isSuccess: false,
               clearData: true,
@@ -513,9 +550,9 @@ class HomeViewModel extends Cubit<HomeState> {
             isFavorite,
           ),
         ),
-        exploreMoreSection: state.exploreMoreSection.copyWith(
-          data: _updateExploreMoreFavorites(
-            state.exploreMoreSection.data,
+        dynamicSection: state.dynamicSection.copyWith(
+          data: _updateDynamicSectionFavorites(
+            state.dynamicSection.data,
             productId,
             isFavorite,
           ),
@@ -602,20 +639,24 @@ class HomeViewModel extends Cubit<HomeState> {
     );
   }
 
-  HomeExploreMoreEntity? _updateExploreMoreFavorites(
-    HomeExploreMoreEntity? section,
+  List<HomeExploreMoreEntity>? _updateDynamicSectionFavorites(
+    List<HomeExploreMoreEntity>? sections,
     String productId,
     bool isFavorite,
   ) {
-    if (section == null) return null;
-    return HomeExploreMoreEntity(
-      key: section.key,
-      title: section.title,
-      isActive: section.isActive,
-      theme: section.theme,
-      itemsCount: section.itemsCount,
-      items: _updateProductFavorites(section.items, productId, isFavorite),
-    );
+    if (sections == null) return null;
+    return sections
+        .map(
+          (section) => HomeExploreMoreEntity(
+            key: section.key,
+            title: section.title,
+            isActive: section.isActive,
+            theme: section.theme,
+            itemsCount: section.itemsCount,
+            items: _updateProductFavorites(section.items, productId, isFavorite),
+          ),
+        )
+        .toList();
   }
 
   @override

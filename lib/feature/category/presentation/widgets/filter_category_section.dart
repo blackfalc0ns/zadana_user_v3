@@ -55,7 +55,7 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
         LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
-            final childAspectRatio = width < 360 ? 0.92 : 1.08;
+            final childAspectRatio = width < 360 ? 0.72 : 0.86;
 
             return GridView.builder(
               shrinkWrap: true,

@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart'
     as error_widgets;
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -17,7 +18,9 @@ import 'package:zadana_user_v3/feature/home/presentation/widget/sections/dynamic
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/featured_products_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/home_banner_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/recommended_section.dart';
-import 'package:zadana_user_v3/feature/home/presentation/widget/sections/special_offers_section.dart';
+import 'package:zadana_user_v3/feature/search/domain/entities/product_search_params.dart';
+import 'package:zadana_user_v3/feature/search/presentation/pages/product_search_page.dart';
+import 'package:zadana_user_v3/feature/special_offers/presentation/widgets/special_offers_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.onMenuTap});
@@ -37,7 +40,8 @@ class HomeScreen extends StatelessWidget {
         ..doIntent(const HomeBrandsLoadEvent())
         ..doIntent(const HomeRecommendedLoadEvent())
         ..doIntent(const HomeFeaturedLoadEvent())
-        ..doIntent(const HomeSpecialOffersLoadEvent()),
+        ..doIntent(const HomeSpecialOffersLoadEvent())
+        ..doIntent(const HomeDynamicSectionLoadEvent()),
       child: _HomeScreenView(onMenuTap: onMenuTap),
     );
   }
@@ -50,8 +54,13 @@ class _HomeScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomReservedSpace = mainShellBottomNavReservedSpace(context);
+
     return Scaffold(
-      appBar: HomeAppBar(onMenuTap: onMenuTap),
+      appBar: HomeAppBar(
+        onMenuTap: onMenuTap,
+        onSearchTap: () => _openShoppingSearch(context),
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           _reloadAllSections(context);
@@ -110,10 +119,10 @@ class _HomeScreenView extends StatelessWidget {
                   const SliverToBoxAdapter(child: BrandsSection()),
                   const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
                   const SliverToBoxAdapter(child: FeaturedProductsSection()),
-                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.xl)),
                   const SliverToBoxAdapter(child: DynamicHomePreviewSection()),
-                  const SliverToBoxAdapter(child: SizedBox(height: 100)),
-                
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: bottomReservedSpace),
+                  ),
                 ],
               ],
             );
@@ -132,7 +141,8 @@ class _HomeScreenView extends StatelessWidget {
       ..doIntent(const HomeBrandsRetryEvent())
       ..doIntent(const HomeRecommendedRetryEvent())
       ..doIntent(const HomeFeaturedRetryEvent())
-      ..doIntent(const HomeSpecialOffersRetryEvent());
+      ..doIntent(const HomeSpecialOffersRetryEvent())
+      ..doIntent(const HomeDynamicSectionRetryEvent());
   }
 
   void _loadAllSections(BuildContext context) {
@@ -144,6 +154,22 @@ class _HomeScreenView extends StatelessWidget {
       ..doIntent(const HomeBrandsLoadEvent())
       ..doIntent(const HomeRecommendedLoadEvent())
       ..doIntent(const HomeFeaturedLoadEvent())
-      ..doIntent(const HomeSpecialOffersLoadEvent());
+      ..doIntent(const HomeSpecialOffersLoadEvent())
+      ..doIntent(const HomeDynamicSectionLoadEvent());
+  }
+
+  void _openShoppingSearch(BuildContext context) {
+    mainShellKey.currentState?.jumpToTab(1);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ProductSearchPage(
+          params: ProductSearchParams(
+            title: 'البحث في التسوق',
+            hintText: 'ابحث عن منتجات أو متاجر...',
+            autofocus: true,
+          ),
+        ),
+      ),
+    );
   }
 }

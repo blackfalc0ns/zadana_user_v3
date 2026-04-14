@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/shimmer_wrapper.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart'
+    show ShimmerEffect;
 
 class ProductsGrid extends StatelessWidget {
   const ProductsGrid({
@@ -45,43 +47,17 @@ class ProductsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var filteredProducts = _applyFilters(
-      products,
-      filters,
-      selectedQuantity: selectedQuantity,
-      selectedBrand: selectedBrand,
-      priceRange: priceRange,
-    );
-    filteredProducts = _applySorting(filteredProducts, sortOption);
+    final visibleProducts = products;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final layout = ProductGridLayout.resolve(constraints.maxWidth);
 
         if (isLoading) {
-          return ShimmerWrapper(
-            isLoading: true,
-            child: GridView.builder(
-              padding: const EdgeInsets.only(
-                top: 4,
-                left: Spacing.md,
-                right: Spacing.md,
-                bottom: 85,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: layout.crossAxisCount,
-                childAspectRatio: layout.childAspectRatio,
-                crossAxisSpacing: Spacing.xss,
-                mainAxisSpacing: Spacing.xss,
-              ),
-              itemCount: 15,
-              itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
-            ),
-          );
+          return _ProductsGridSkeleton(layout: layout);
         }
 
-        if (filteredProducts.isEmpty) {
+        if (visibleProducts.isEmpty) {
           // Show full error widget when we have a Failure object
           if (errorFailure != null) {
             return ApiErrorWidget.fromFailure(
@@ -108,7 +84,7 @@ class ProductsGrid extends StatelessWidget {
 
         return GridView.builder(
           key: PageStorageKey<String>(
-            'products_grid_${filteredProducts.length}_$subCategory',
+            'products_grid_${visibleProducts.length}_$subCategory',
           ),
           padding: const EdgeInsets.only(
             top: 4,
@@ -122,9 +98,9 @@ class ProductsGrid extends StatelessWidget {
             crossAxisSpacing: Spacing.xss,
             mainAxisSpacing: Spacing.xss,
           ),
-          itemCount: filteredProducts.length,
+          itemCount: visibleProducts.length,
           itemBuilder: (context, index) {
-            final product = filteredProducts[index];
+            final product = visibleProducts[index];
             final heroTag = productHeroTag(product.id, source: 'category-grid');
             return CustomProductCard(
               discountPercentage: product.discountPercentage,
@@ -145,76 +121,40 @@ class ProductsGrid extends StatelessWidget {
               onAddTap: () =>
                   HomeProductCartHelper.addProductToCart(context, product),
               showFavorite: true,
-              enableHeroAnimation: true,
             );
           },
         );
       },
     );
   }
+}
 
-  List<ProductModel> _applySorting(
-    List<ProductModel> products,
-    String sortOption,
-  ) {
-    final sortedProducts = List<ProductModel>.from(products);
+class _ProductsGridSkeleton extends StatelessWidget {
+  const _ProductsGridSkeleton({required this.layout});
 
-    switch (sortOption) {
-      case 'newest':
-        return sortedProducts..sort((a, b) => b.id.compareTo(a.id));
-      case 'price_low_high':
-        return sortedProducts..sort((a, b) => a.price.compareTo(b.price));
-      case 'price_high_low':
-        return sortedProducts..sort((a, b) => b.price.compareTo(a.price));
-      case 'best_selling':
-        return sortedProducts..sort((a, b) {
-          final aRating = a.rating ?? 0;
-          final bRating = b.rating ?? 0;
-          return bRating.compareTo(aRating);
-        });
-      case 'highest_rated':
-        return sortedProducts..sort((a, b) {
-          final ratingCompare = (b.rating ?? 0).compareTo(a.rating ?? 0);
-          if (ratingCompare != 0) return ratingCompare;
-          return (b.reviewCount ?? 0).compareTo(a.reviewCount ?? 0);
-        });
-      case 'alphabetical':
-        return sortedProducts..sort((a, b) => a.name.compareTo(b.name));
-      default:
-        return sortedProducts;
-    }
-  }
+  final ProductGridLayout layout;
 
-  List<ProductModel> _applyFilters(
-    List<ProductModel> products,
-    List<String> filters, {
-    required String? selectedQuantity,
-    required String? selectedBrand,
-    required RangeValues priceRange,
-  }) {
-    return products.where((product) {
-      if (product.price < priceRange.start || product.price > priceRange.end) {
-        return false;
-      }
-
-      if (selectedQuantity != null &&
-          (product.unit == null || product.unit != selectedQuantity)) {
-        return false;
-      }
-
-      if (selectedBrand != null && product.store != selectedBrand) {
-        return false;
-      }
-
-      if (filters.isEmpty) {
-        return true;
-      }
-
-      return filters.every(
-        (filter) =>
-            product.name.contains(filter) || product.store.contains(filter),
-      );
-    }).toList();
+  @override
+  Widget build(BuildContext context) {
+    return ShimmerEffect(
+      child: GridView.builder(
+        padding: const EdgeInsets.only(
+          top: 4,
+          left: Spacing.md,
+          right: Spacing.md,
+          bottom: 85,
+        ),
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: layout.crossAxisCount,
+          childAspectRatio: layout.childAspectRatio,
+          crossAxisSpacing: Spacing.xss,
+          mainAxisSpacing: Spacing.xss,
+        ),
+        itemCount: 15,
+        itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
+      ),
+    );
   }
 }
 
@@ -254,9 +194,9 @@ class _ProductCardSkeleton extends StatelessWidget {
                         radius: 999,
                       ),
                       const Spacer(),
-                      Row(
+                      const Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: const [
+                        children: [
                           Expanded(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,

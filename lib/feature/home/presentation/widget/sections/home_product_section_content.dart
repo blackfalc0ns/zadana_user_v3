@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
+import 'package:zadana_user_v3/core/utils/home_product_section_theme.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
@@ -8,31 +9,6 @@ import 'package:zadana_user_v3/core/widgets/recommended_product_card.dart';
 import 'package:zadana_user_v3/core/widgets/showcase_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
-
-enum HomeProductSectionTheme { classic, compact, showcase }
-
-HomeProductSectionTheme parseHomeProductSectionTheme(String? value) {
-  final normalized = value?.trim().toLowerCase() ?? '';
-  if (normalized.isEmpty) return HomeProductSectionTheme.classic;
-
-  if (normalized == '3' ||
-      normalized.contains('theme3') ||
-      normalized.contains('theme_3') ||
-      normalized.contains('showcase') ||
-      normalized.contains('grid')) {
-    return HomeProductSectionTheme.showcase;
-  }
-
-  if (normalized == '2' ||
-      normalized.contains('theme2') ||
-      normalized.contains('theme_2') ||
-      normalized.contains('recommended') ||
-      normalized.contains('compact')) {
-    return HomeProductSectionTheme.compact;
-  }
-
-  return HomeProductSectionTheme.classic;
-}
 
 class HomeProductSectionContent extends StatelessWidget {
   const HomeProductSectionContent({
@@ -123,25 +99,20 @@ class HomeProductSectionContent extends StatelessWidget {
                       width: itemWidth,
                       child: ShowcaseProductCard(
                         product: product,
-                        heroTag: productHeroTag(
-                          product.id,
-                          source: heroSource,
-                        ),
-                        onTap:
-                            () => ProductNavigationHelper
-                                .navigateToProductDetails(
-                                  context,
-                                  product,
-                                  heroTag: productHeroTag(
-                                    product.id,
-                                    source: heroSource,
-                                  ),
-                                ),
-                        onAddTap:
-                            () => HomeProductCartHelper.addProductToCart(
+                        heroTag: productHeroTag(product.id, source: heroSource),
+                        onTap: () =>
+                            ProductNavigationHelper.navigateToProductDetails(
                               context,
                               product,
+                              heroTag: productHeroTag(
+                                product.id,
+                                source: heroSource,
+                              ),
                             ),
+                        onAddTap: () => HomeProductCartHelper.addProductToCart(
+                          context,
+                          product,
+                        ),
                       ),
                     ),
                 ],
@@ -224,7 +195,9 @@ class _CompactSectionSkeleton extends StatelessWidget {
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(Spacing.cardRadius),
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline.withValues(alpha: .2),
+              color: Theme.of(
+                context,
+              ).colorScheme.outline.withValues(alpha: .2),
             ),
           ),
           child: const Row(
@@ -274,7 +247,9 @@ class _ShowcaseSectionSkeleton extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 padding: const EdgeInsets.all(4),
                 child: const Row(

@@ -4,7 +4,6 @@ import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
@@ -59,7 +58,7 @@ class StartPage extends StatelessWidget {
                   Expanded(
                     child: Center(
                       child: Image.asset(
-                        AppConstants.onboarding,
+                        Assets.onboarding,
                         height: 300,
                         fit: BoxFit.contain,
                       ),

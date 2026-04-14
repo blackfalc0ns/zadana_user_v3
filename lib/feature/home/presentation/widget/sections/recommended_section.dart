@@ -11,6 +11,7 @@ import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.dart';
+import 'package:zadana_user_v3/feature/recommended/presentation/pages/recommended_products_page.dart';
 
 class RecommendedSection extends StatelessWidget {
   const RecommendedSection({super.key});
@@ -28,7 +29,16 @@ class RecommendedSection extends StatelessWidget {
             children: [
               SectionHeader(
                 title: locale.section_recommended,
-                actionLabel: locale.refresh,
+                actionLabel: locale.see_all,
+                onActionTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => RecommendedProductsPage(
+                        title: locale.section_recommended,
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: Spacing.sm),
               const SizedBox(
@@ -56,12 +66,22 @@ class RecommendedSection extends StatelessWidget {
         if (items.isEmpty) {
           return const SizedBox.shrink();
         }
+        final visibleItems = items.take(5).toList(growable: false);
 
         return Column(
           children: [
             SectionHeader(
               title: locale.section_recommended,
-              actionLabel: locale.refresh,
+              actionLabel: locale.see_all,
+              onActionTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => RecommendedProductsPage(
+                      title: locale.section_recommended,
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: Spacing.sm),
             SizedBox(
@@ -71,10 +91,10 @@ class RecommendedSection extends StatelessWidget {
                   horizontal: Spacing.screenH,
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: items.length,
+                itemCount: visibleItems.length,
                 separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
                 itemBuilder: (_, i) {
-                  final product = items[i];
+                  final product = visibleItems[i];
                   final heroTag = productHeroTag(
                     product.id,
                     source: 'home-recommended',

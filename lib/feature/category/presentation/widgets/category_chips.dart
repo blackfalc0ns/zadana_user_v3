@@ -3,7 +3,8 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_chip.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/shimmer_wrapper.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart'
+    show ShimmerEffect;
 
 class CategoryChips extends StatelessWidget {
   const CategoryChips({
@@ -21,24 +22,12 @@ class CategoryChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ShimmerWrapper(
-      isLoading: isLoading,
-      child: _buildContent(context),
-    );
+    return _buildContent(context);
   }
 
   Widget _buildContent(BuildContext context) {
     if (isLoading) {
-      return SizedBox(
-        height: 40,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
-          itemCount: 4,
-          separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-          itemBuilder: (_, index) => _Bone(width: index == 0 ? 88 : 78, height: 36, radius: 999),
-        ),
-      );
+      return const _CategoryChipsSkeleton();
     }
 
     return SizedBox(
@@ -64,21 +53,27 @@ class CategoryChips extends StatelessWidget {
   }
 }
 
-class _Bone extends StatelessWidget {
-  const _Bone({this.width, required this.height, required this.radius});
-
-  final double? width;
-  final double height;
-  final double radius;
+class _CategoryChipsSkeleton extends StatelessWidget {
+  const _CategoryChipsSkeleton();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: AppColors.shimmerBase,
-        borderRadius: BorderRadius.circular(radius),
+    return SizedBox(
+      height: 40,
+      child: ShimmerEffect(
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
+          itemCount: 6,
+          separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
+          itemBuilder: (_, index) => Container(
+            width: 72 + ((index % 3) * 12),
+            decoration: BoxDecoration(
+              color: AppColors.shimmerBase,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+        ),
       ),
     );
   }

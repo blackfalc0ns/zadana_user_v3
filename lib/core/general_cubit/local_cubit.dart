@@ -1,45 +1,37 @@
-// import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/services/language_service.dart';
+import 'package:zadana_user_v3/core/utils/constants.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:injectable/injectable.dart';
-// import '../di/di.dart';
-// import '../helpers/shared_pref.dart';
-// import '../utils/constants.dart';
+import 'general_state.dart';
 
-// @injectable
-// class LocaleThemeCubit extends Cubit<LocaleThemeState> {
-//   LocaleThemeCubit()
-//       : super(
-//           LocaleThemeState(
-//             locale: Locale(
-//               getIt<SharedPrefHelper>()
-//                       .getData(key: AppConstants.languageCode) as String? ??
-//                   AppConstants.enKey,
-//             ),
-//             isDark: getIt<SharedPrefHelper>()
-//                     .getData(key: AppConstants.isDark) as bool? ??
-//                 false,
-//           ),
-//         );
+@lazySingleton
+class LocaleThemeCubit extends Cubit<LocaleThemeState> {
+  LocaleThemeCubit(this._languageService)
+    : super(
+        LocaleThemeState(
+          locale: Locale(_languageService.getLanguageCode()),
+          isDark: false,
+        ),
+      );
 
-//   void changeLocale() {
-//     final lanCode = state.locale.languageCode;
-//     if (lanCode == AppConstants.enKey) {
-//       getIt<SharedPrefHelper>()
-//           .saveData(key: AppConstants.languageCode, val: AppConstants.arKey);
-//       emit(state.copyWith(locale: const Locale(AppConstants.arKey)));
-//     } else {
-//       getIt<SharedPrefHelper>()
-//           .saveData(key: AppConstants.languageCode, val: AppConstants.enKey);
-//       emit(state.copyWith(locale: const Locale(AppConstants.enKey)));
-//     }
-//   }
+  final LanguageService _languageService;
 
-//   void toggleTheme() {
-//     final newTheme = !state.isDark;
-//     getIt<SharedPrefHelper>()
-//         .saveData(key: AppConstants.isDark, val: newTheme);
-//     emit(state.copyWith(isDark: newTheme));
-//   }
-// }
+  Future<void> setLocale(String languageCode) async {
+    if (state.locale.languageCode == languageCode) {
+      return;
+    }
+
+    await _languageService.saveLanguageCode(languageCode);
+    emit(state.copyWith(locale: Locale(languageCode)));
+  }
+
+  Future<void> setArabic() => setLocale(AppConstants.arKey);
+
+  Future<void> setEnglish() => setLocale(AppConstants.enKey);
+
+  void toggleTheme() {
+    emit(state.copyWith(isDark: !state.isDark));
+  }
+}

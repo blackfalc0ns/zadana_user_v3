@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -11,8 +12,8 @@ import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
-import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
+import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_cubit.dart';
@@ -25,7 +26,6 @@ import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.
 import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
-import 'package:dio/dio.dart';
 
 final GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
 const double kMainShellBottomNavHeight = 75.0;
@@ -55,9 +55,6 @@ class MainShellState extends State<MainShell> {
   late final List<Widget?> _loadedScreens;
   late final NavBadgeCubit _navBadgeCubit;
 
-  final List<NavBarItem> _navItems = [];
-  bool _isInitialized = false;
-
   @override
   void initState() {
     super.initState();
@@ -85,18 +82,9 @@ class MainShellState extends State<MainShell> {
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      _initializeNavItems();
-      _isInitialized = true;
-    }
-  }
-
-  void _initializeNavItems() {
+  List<NavBarItem> _buildNavItems(BuildContext context) {
     final locale = context.localization;
-    _navItems.addAll([
+    return [
       NavBarItem(
         icon: Iconsax.home,
         activeIcon: Iconsax.home_15,
@@ -105,7 +93,7 @@ class MainShellState extends State<MainShell> {
       NavBarItem(
         icon: Iconsax.shopping_bag,
         activeIcon: Iconsax.shopping_bag5,
-        title: 'تسوق',
+        title: locale.shopping,
       ),
       NavBarItem(
         icon: Iconsax.shopping_cart,
@@ -122,12 +110,16 @@ class MainShellState extends State<MainShell> {
         activeIcon: Iconsax.profile_circle5,
         title: locale.nav_profile,
       ),
-    ]);
+    ];
   }
 
   void _onItemTapped(int index) {
-    if (index == 1 && _selectedIndex != 1) {
-      CategoryNavigationService().notifyTabChanged();
+    if (index == 1) {
+      final isExternalCategorySelection =
+          CategoryNavigationService().consumePendingExternalSelection();
+      if (!isExternalCategorySelection) {
+        CategoryNavigationService().notifyTabChanged();
+      }
     }
     if (index == 2 && _selectedIndex != 2) {
       CartNavigationService().notifyTabChanged();
@@ -136,10 +128,15 @@ class MainShellState extends State<MainShell> {
       FavoritesNavigationService().notifyTabChanged();
     }
 
-    setState(() {
-      _ensureScreenLoaded(index);
-      _selectedIndex = index;
-    });
+    if (_selectedIndex != index) {
+      setState(() {
+        _ensureScreenLoaded(index);
+        _selectedIndex = index;
+      });
+      return;
+    }
+
+    _ensureScreenLoaded(index);
   }
 
   void jumpToTab(int index) {
@@ -162,6 +159,7 @@ class MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final bottomSafeInset = MediaQuery.paddingOf(context).bottom;
+    final navItems = _buildNavItems(context);
 
     return BlocProvider.value(
       value: _navBadgeCubit,
@@ -193,7 +191,7 @@ class MainShellState extends State<MainShell> {
                 builder: (context, state) {
                   return CustomBottomNavBar(
                     selectedIndex: _selectedIndex,
-                    navItems: _navItems,
+                    navItems: navItems,
                     cartCount: state.cartCount,
                     favoritesCount: state.favoritesCount,
                     onItemSelected: _onItemTapped,
@@ -209,24 +207,18 @@ class MainShellState extends State<MainShell> {
 }
 
 class NavBarItem {
-  final IconData icon;
-  final String title;
-  final IconData activeIcon;
-
   NavBarItem({
     required this.icon,
     required this.title,
     required this.activeIcon,
   });
+
+  final IconData icon;
+  final String title;
+  final IconData activeIcon;
 }
 
 class CustomBottomNavBar extends StatefulWidget {
-  final int selectedIndex;
-  final List<NavBarItem> navItems;
-  final int cartCount;
-  final int favoritesCount;
-  final Function(int) onItemSelected;
-
   const CustomBottomNavBar({
     super.key,
     required this.selectedIndex,
@@ -235,6 +227,12 @@ class CustomBottomNavBar extends StatefulWidget {
     required this.favoritesCount,
     required this.onItemSelected,
   });
+
+  final int selectedIndex;
+  final List<NavBarItem> navItems;
+  final int cartCount;
+  final int favoritesCount;
+  final Function(int) onItemSelected;
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
@@ -248,11 +246,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       margin: const EdgeInsets.only(top: kMainShellBottomNavTopMargin),
       decoration: BoxDecoration(
         color: AppColors.card,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadow,
             blurRadius: 12,
-            offset: const Offset(0, -2),
+            offset: Offset(0, -2),
           ),
         ],
         borderRadius: BorderRadius.circular(25),
@@ -296,7 +294,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                             duration: const Duration(milliseconds: 200),
                             child: Icon(
                               active ? item.activeIcon : item.icon,
-                              key: ValueKey(active ? item.activeIcon : item.icon),
+                              key: ValueKey(
+                                active ? item.activeIcon : item.icon,
+                              ),
                               size: 24,
                               color: active
                                   ? AppColors.white
@@ -371,4 +371,3 @@ class _NavBadge extends StatelessWidget {
     );
   }
 }
-

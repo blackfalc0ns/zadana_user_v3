@@ -18,12 +18,14 @@ import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/edit_profile_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/about_app_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/faq_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/help_support_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/privacy_policy_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/terms_conditions_screen.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/pages/verify_otp_screen.dart';
+import 'package:zadana_user_v3/feature/addresses/presentation/pages/customer_addresses_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/building_details_page.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
@@ -73,7 +75,14 @@ class RouteGenerator {
       case AppRoutes.profileDetails:
         final profile = settings.arguments as ProfileResponseEntity;
         return MaterialPageRoute(
-          builder: (_) => ProfileDetailsScreen(profile: profile),
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<ProfileViewModel>(),
+            child: ProfileDetailsScreen(profile: profile),
+          ),
+        );
+      case AppRoutes.customerAddresses:
+        return MaterialPageRoute(
+          builder: (_) => const CustomerAddressesPage(),
         );
       case AppRoutes.editProfile:
         return MaterialPageRoute(builder: (_) => EditProfileScreen());
@@ -96,8 +105,9 @@ class RouteGenerator {
           builder: (_) => VerifyOtpScreen(identifier: identifier),
         );
       case AppRoutes.manualAddressEntry:
+        final locationEntity = settings.arguments as LocationEntity?;
         return MaterialPageRoute(
-          builder: (_) => const ManualAddressEntryPage(),
+          builder: (_) => ManualAddressEntryPage(initialLocation: locationEntity),
         );
       case AppRoutes.buildingDetails:
         final locationEntity = settings.arguments as LocationEntity?;

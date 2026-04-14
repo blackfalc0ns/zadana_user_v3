@@ -1,28 +1,28 @@
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
 
-class HomeExploreMoreSectionState {
+class HomeDynamicSectionState {
   final bool isLoading;
   final bool isSuccess;
   final Failure? failure;
-  final HomeExploreMoreEntity? data;
+  final List<HomeExploreMoreEntity>? data;
 
-  const HomeExploreMoreSectionState({
+  const HomeDynamicSectionState({
     this.isLoading = false,
     this.isSuccess = false,
     this.failure,
     this.data,
   });
 
-  HomeExploreMoreSectionState copyWith({
+  HomeDynamicSectionState copyWith({
     bool? isLoading,
     bool? isSuccess,
     Failure? failure,
     bool clearFailure = false,
-    HomeExploreMoreEntity? data,
+    List<HomeExploreMoreEntity>? data,
     bool clearData = false,
   }) {
-    return HomeExploreMoreSectionState(
+    return HomeDynamicSectionState(
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       failure: clearFailure ? null : (failure ?? this.failure),

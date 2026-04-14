@@ -13,17 +13,6 @@ class AppConstants {
   static const String developerWhatsapp = '966500000000';
   static const String developerPhone = '966500000000';
 
-
-  static const String logoLight = 'assets/images/logo_dark.png';
-  static const String logoDark = 'assets/images/logo_light.png';
-  static const String onboarding = 'assets/images/onboarding.png';
-  static const String startPageBackground =
-      'assets/images/start_page_background.png';
-  static const String locationPageBackground =
-      'assets/images/location_background.png';
-  static const String locationImage = 'assets/images/location_image.png';
-  static const String imageLocation = 'assets/images/image_location.png';
-
   // ── Network ──
   static const int connectTimeout = 30; // seconds
   static const int receiveTimeout = 30;

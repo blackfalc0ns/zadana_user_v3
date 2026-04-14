@@ -4,7 +4,7 @@ import 'package:zadana_user_v3/feature/home/presentation/manager/home_banner_sec
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_best_selling_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_brands_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_categories_section_state.dart';
-import 'package:zadana_user_v3/feature/home/presentation/manager/home_explore_more_section_state.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_dynamic_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_featured_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_recommended_section_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_special_offers_section_state.dart';
@@ -18,7 +18,7 @@ class HomeState {
   final HomeRecommendedSectionState recommendedSection;
   final HomeFeaturedSectionState featuredSection;
   final HomeSpecialOffersSectionState specialOffersSection;
-  final HomeExploreMoreSectionState exploreMoreSection;
+  final HomeDynamicSectionState dynamicSection;
 
   const HomeState({
     this.appBarSection = const HomeAppBarSectionState(),
@@ -29,7 +29,7 @@ class HomeState {
     this.recommendedSection = const HomeRecommendedSectionState(),
     this.featuredSection = const HomeFeaturedSectionState(),
     this.specialOffersSection = const HomeSpecialOffersSectionState(),
-    this.exploreMoreSection = const HomeExploreMoreSectionState(),
+    this.dynamicSection = const HomeDynamicSectionState(),
   });
 
   bool get isLoading =>
@@ -40,7 +40,7 @@ class HomeState {
       recommendedSection.isLoading ||
       featuredSection.isLoading ||
       specialOffersSection.isLoading ||
-      exploreMoreSection.isLoading;
+      dynamicSection.isLoading;
 
   bool get hasAnyData {
     return (bannerSection.data?.items.isNotEmpty ?? false) ||
@@ -50,7 +50,8 @@ class HomeState {
         (recommendedSection.data?.items.isNotEmpty ?? false) ||
         (featuredSection.data?.items.isNotEmpty ?? false) ||
         (specialOffersSection.data?.items.isNotEmpty ?? false) ||
-        (exploreMoreSection.data?.items.isNotEmpty ?? false);
+        (dynamicSection.data?.any((section) => section.items.isNotEmpty) ??
+            false);
   }
 
   Failure? get firstFailure {
@@ -61,7 +62,7 @@ class HomeState {
         recommendedSection.failure ??
         featuredSection.failure ??
         specialOffersSection.failure ??
-        exploreMoreSection.failure;
+        dynamicSection.failure;
   }
 
   HomeState copyWith({
@@ -73,7 +74,7 @@ class HomeState {
     HomeRecommendedSectionState? recommendedSection,
     HomeFeaturedSectionState? featuredSection,
     HomeSpecialOffersSectionState? specialOffersSection,
-    HomeExploreMoreSectionState? exploreMoreSection,
+    HomeDynamicSectionState? dynamicSection,
   }) {
     return HomeState(
       appBarSection: appBarSection ?? this.appBarSection,
@@ -84,7 +85,7 @@ class HomeState {
       recommendedSection: recommendedSection ?? this.recommendedSection,
       featuredSection: featuredSection ?? this.featuredSection,
       specialOffersSection: specialOffersSection ?? this.specialOffersSection,
-      exploreMoreSection: exploreMoreSection ?? this.exploreMoreSection,
+      dynamicSection: dynamicSection ?? this.dynamicSection,
     );
   }
 }

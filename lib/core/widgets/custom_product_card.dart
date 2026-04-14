@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
@@ -100,17 +102,19 @@ class _CustomProductCardState extends State<CustomProductCard> {
         final cardHeight = constraints.maxHeight.isFinite
             ? constraints.maxHeight
             : 140.0;
-        final scale = (cardWidth / 110).clamp(0.82, 1.12).toDouble();
+        final widthScale = (cardWidth / 110).clamp(0.82, 1.12).toDouble();
+        final heightScale = (cardHeight / 145).clamp(0.76, 1.0).toDouble();
+        final scale = math.min(widthScale, heightScale);
         final imageHeight = (cardHeight * 0.34).clamp(38.0, 60.0).toDouble();
-        final imageSectionHeight = (cardHeight * 0.5)
-            .clamp(imageHeight + 14, 84.0)
+        final imageSectionHeight = (cardHeight * 0.46)
+            .clamp(imageHeight + 10, 80.0)
             .toDouble();
         final horizontalPadding = (cardWidth * 0.06).clamp(4.0, 8.0).toDouble();
-        final verticalPadding = (cardHeight * 0.05).clamp(4.0, 7.0).toDouble();
-        final contentSpacing = (cardHeight * 0.045).clamp(2.0, 6.0).toDouble();
-        final titleFontSize = (12 * scale).clamp(9.5, 12.5).toDouble();
-        final cartSize = (28 * scale).clamp(22.0, 28.0).toDouble();
-        final cartIconSize = (13 * scale).clamp(10.0, 13.0).toDouble();
+        final verticalPadding = (cardHeight * 0.042).clamp(3.0, 6.0).toDouble();
+        final contentSpacing = (cardHeight * 0.028).clamp(1.0, 4.0).toDouble();
+        final titleFontSize = (12 * scale).clamp(9.0, 12.0).toDouble();
+        final cartSize = (28 * scale).clamp(20.0, 27.0).toDouble();
+        final cartIconSize = (13 * scale).clamp(9.0, 12.0).toDouble();
         final favoriteSize = (30 * scale).clamp(24.0, 30.0).toDouble();
         final favoriteIconSize = (16 * scale).clamp(12.0, 16.0).toDouble();
         final badgeTriangleSize = (cardWidth * 0.38)
@@ -181,11 +185,12 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Expanded(
-                                      child: PriceText(
+                              child: PriceText(
                                         price: widget.product.price,
                                         oldPrice: widget.product.oldPrice,
                                         compact:
-                                            scale < 1.02 ||
+                                            scale < 1.04 ||
+                                            cardHeight < 142 ||
                                             widget.product.oldPrice != null,
                                         fontScale: scale,
                                       ),

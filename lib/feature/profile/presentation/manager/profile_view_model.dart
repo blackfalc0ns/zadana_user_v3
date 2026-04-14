@@ -3,8 +3,10 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/feature/profile/domain/entities/update_profile_request_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_state.dart';
 import '../../domain/usecase/profile_usecase.dart';
+import '../../domain/usecase/update_profile_usecase.dart';
 import 'profile_event.dart';
 
 /// Profile ViewModel
@@ -12,9 +14,11 @@ import 'profile_event.dart';
 @injectable
 class ProfileViewModel extends Cubit<ProfileState> {
   final ProfileUseCase _profileUseCase;
+  final UpdateProfileUseCase _updateProfileUseCase;
 
   ProfileViewModel(
     this._profileUseCase,
+    this._updateProfileUseCase,
   ) : super(const ProfileState());
 
   /// Main intent handler
@@ -23,6 +27,16 @@ class ProfileViewModel extends Cubit<ProfileState> {
     switch (event) {
       case ProfileLoadEvent():
         _loadProfile();
+      case ProfileUpdateEvent():
+        _updateProfile(event.request);
+      case ProfileSetLocalDataEvent():
+        emit(
+          state.copyWith(
+            profileResponse: event.profile,
+            isUpdateSuccess: false,
+            updateFailure: null,
+          ),
+        );
     }
   }
 
@@ -65,6 +79,45 @@ class ProfileViewModel extends Cubit<ProfileState> {
           isSuccess: false,
           failure: result.failure,
         ));
+    }
+  }
+
+  Future<void> _updateProfile(UpdateProfileRequestEntity request) async {
+    emit(
+      state.copyWith(
+        isUpdating: true,
+        isUpdateSuccess: false,
+        updateFailure: null,
+      ),
+    );
+
+    developer.log('Updating profile data', name: 'ProfileViewModel');
+
+    final result = await _updateProfileUseCase.call(request);
+
+    switch (result) {
+      case ApiSuccessResult():
+        developer.log('Profile updated successfully', name: 'ProfileViewModel');
+        emit(
+          state.copyWith(
+            isUpdating: false,
+            isUpdateSuccess: true,
+            profileResponse: result.data,
+            updateFailure: null,
+          ),
+        );
+      case ApiErrorResult():
+        developer.log(
+          'Profile update failed: ${result.failure.errorMessage}',
+          name: 'ProfileViewModel',
+        );
+        emit(
+          state.copyWith(
+            isUpdating: false,
+            isUpdateSuccess: false,
+            updateFailure: result.failure,
+          ),
+        );
     }
   }
 }

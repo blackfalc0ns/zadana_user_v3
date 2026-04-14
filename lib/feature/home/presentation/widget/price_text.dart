@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 
 class PriceText extends StatelessWidget {
@@ -25,6 +26,7 @@ class PriceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
     final priceStyle =
         style ??
         getBoldStyle(
@@ -44,7 +46,7 @@ class PriceText extends StatelessWidget {
       fontSize: (compact ? 8 : 9.5) * fontScale,
       height: 0.95,
     );
-    final currencyLabel = unit ?? 'ريال';
+    final currencyLabel = unit ?? locale.currency;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

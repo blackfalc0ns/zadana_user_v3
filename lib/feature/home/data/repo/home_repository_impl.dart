@@ -44,25 +44,29 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<ApiResult<HomeBestSellingEntity>> getHomeBestSelling() async {
+  Future<ApiResult<HomeBestSellingEntity>> getHomeBestSelling({
+    int? take,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getHomeBestSelling();
+      final response = await _remoteDataSource.getHomeBestSelling(take: take);
       return response.toEntity();
     });
   }
 
   @override
-  Future<ApiResult<HomeBrandsEntity>> getHomeBrands() async {
+  Future<ApiResult<HomeBrandsEntity>> getHomeBrands({int? take}) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getHomeBrands();
+      final response = await _remoteDataSource.getHomeBrands(take: take);
       return response.toEntity();
     });
   }
 
   @override
-  Future<ApiResult<HomeRecommendedEntity>> getHomeRecommended() async {
+  Future<ApiResult<HomeRecommendedEntity>> getHomeRecommended({
+    int? take,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getHomeRecommended();
+      final response = await _remoteDataSource.getHomeRecommended(take: take);
       return response.toEntity();
     });
   }
@@ -76,18 +80,22 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<ApiResult<HomeSpecialOffersEntity>> getHomeSpecialOffers() async {
+  Future<ApiResult<HomeSpecialOffersEntity>> getHomeSpecialOffers({
+    int? take,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getHomeSpecialOffers();
+      final response = await _remoteDataSource.getHomeSpecialOffers(
+        take: take,
+      );
       return response.toEntity();
     });
   }
 
   @override
-  Future<ApiResult<HomeExploreMoreEntity>> getHomeExploreMore() async {
+  Future<ApiResult<List<HomeExploreMoreEntity>>> getHomeExploreMore() async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getHomeExploreMore();
-      return response.toEntity();
+      return response.map((section) => section.toEntity()).toList();
     });
   }
 }

@@ -183,86 +183,9 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<AddCartItemResponseDto> updateCartItemQuantity(
     String itemId,
-    String? vendorId,
+    String? _,
     UpdateCartItemQuantityRequestDto request,
   ) async {
-    try {
-      final options = await _buildCartRequestOptions();
-      final response = await _sendUpdateCartItemQuantityRequest(
-        itemId: itemId,
-        vendorId: vendorId,
-        request: request,
-        options: options,
-      );
-      return AddCartItemResponseDto.fromJson(response.data ?? {});
-    } on DioException catch (error) {
-      final token = await _tokenService.getToken();
-      final shouldFallbackToGuest =
-          error.response?.statusCode == 401 &&
-          token != null &&
-          token.isNotEmpty;
-
-      if (!shouldFallbackToGuest) rethrow;
-
-      final guestOptions = await _buildCartRequestOptions(forceGuest: true);
-      final response = await _sendUpdateCartItemQuantityRequest(
-        itemId: itemId,
-        vendorId: vendorId,
-        request: request,
-        options: guestOptions,
-      );
-
-      return AddCartItemResponseDto.fromJson(response.data ?? {});
-    }
-  }
-
-  Future<Options> _buildCartRequestOptions({bool forceGuest = false}) async {
-    final token = forceGuest ? null : await _tokenService.getToken();
-    if (token != null && token.isNotEmpty) {
-      return Options(
-        headers: {
-          NetworkConstants.authorization: '${NetworkConstants.bearer} $token',
-        },
-        extra: {TokenInterceptor.skipAuthKey: true},
-      );
-    }
-
-    final deviceId = await _deviceIdService.getOrCreateDeviceId();
-    return Options(
-      headers: {NetworkConstants.deviceIdHeader: deviceId},
-      extra: {
-        TokenInterceptor.skipAuthKey: true,
-        DeviceIdInterceptor.forceDeviceIdKey: true,
-      },
-    );
-  }
-
-  Future<Response<Map<String, dynamic>>> _sendUpdateCartItemQuantityRequest({
-    required String itemId,
-    required String? vendorId,
-    required UpdateCartItemQuantityRequestDto request,
-    required Options options,
-  }) async {
-    try {
-      return await _dio.patch<Map<String, dynamic>>(
-        '${EndPoints.cartItems}/$itemId',
-        queryParameters: {
-          if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
-        },
-        data: request.toJson(),
-        options: options,
-      );
-    } on DioException catch (error) {
-      if (error.response?.statusCode != 405) rethrow;
-
-      return _dio.put<Map<String, dynamic>>(
-        '${EndPoints.cartItems}/$itemId',
-        queryParameters: {
-          if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
-        },
-        data: request.toJson(),
-        options: options,
-      );
-    }
+    return _apiServices.updateCartItemQuantity(itemId, null, request);
   }
 }

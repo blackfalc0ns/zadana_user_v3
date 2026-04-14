@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/pages/brand_page.dart';
+import 'package:zadana_user_v3/feature/brands_listing/presentation/pages/brands_listing_page.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/brand_card.dart';
@@ -47,6 +48,7 @@ class BrandsSection extends StatelessWidget {
         if (items.isEmpty) {
           return const SizedBox.shrink();
         }
+        final visibleItems = items.take(8).toList(growable: false);
 
         return _BrandsSectionContainer(
           child: Column(
@@ -55,6 +57,14 @@ class BrandsSection extends StatelessWidget {
                 actionColor: Colors.white,
                 title: locale.section_brands,
                 actionLabel: locale.see_all,
+                onActionTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          BrandsListingPage(title: locale.section_brands),
+                    ),
+                  );
+                },
                 isActionBold: true,
                 titleColor: AppColors.white,
                 horizontalPadding: 16,
@@ -71,9 +81,9 @@ class BrandsSection extends StatelessWidget {
                     mainAxisSpacing: Spacing.sm,
                     childAspectRatio: 0.9,
                   ),
-                  itemCount: items.length,
+                  itemCount: visibleItems.length,
                   itemBuilder: (context, index) {
-                    final brand = items[index];
+                    final brand = visibleItems[index];
                     return BrandCard(
                       name: brand.name,
                       emoji: brand.emoji ?? brand.name.substring(0, 1),
@@ -120,6 +130,13 @@ class _BrandsLoadingSection extends StatelessWidget {
             actionColor: Colors.white,
             title: locale.section_brands,
             actionLabel: locale.see_all,
+            onActionTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BrandsListingPage(title: locale.section_brands),
+                ),
+              );
+            },
             isActionBold: true,
             titleColor: AppColors.white,
             horizontalPadding: 16,

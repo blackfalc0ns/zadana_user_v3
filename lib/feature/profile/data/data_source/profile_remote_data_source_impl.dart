@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import '../models/profile_response_model_dto.dart';
+import '../models/update_profile_request_dto.dart';
 import 'profile_remote_data_source.dart';
 
 /// Profile remote data source implementation
@@ -14,5 +15,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   @override
   Future<ProfileResponseModelDto> getProfile() {
     return _apiServices.getProfile();
+  }
+
+  @override
+  Future<ProfileResponseModelDto> updateProfile(UpdateProfileRequestDto request) {
+    return _apiServices.updateProfile(request);
   }
 }

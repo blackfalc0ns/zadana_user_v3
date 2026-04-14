@@ -10,6 +10,8 @@ import 'package:zadana_user_v3/feature/category/presentation/manager/category_st
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/reusable_category_screen.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/search/domain/entities/product_search_params.dart';
+import 'package:zadana_user_v3/feature/search/presentation/pages/product_search_page.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -35,6 +37,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     if (!mounted) return;
     setState(() => _activeHeroProductId = null);
+  }
+
+  void _openSearch(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ProductSearchPage(
+          params: ProductSearchParams(
+            title: 'البحث في التسوق',
+            hintText: 'ابحث عن منتجات أو متاجر...',
+            autofocus: true,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -67,7 +83,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             filterSelectedBrand: state.filterSelectedBrand,
             priceRange: state.priceRange,
             priceBounds: state.priceBounds,
-            showCategoryFilterSection: !state.isCategoryPreselectedFromOutside,
             isLoading: state.isLoading,
             subCategories: state.subCategories,
             isSubCategoriesLoading: state.isSubCategoriesLoading,
@@ -75,12 +90,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             errorFailure: state.failure,
             onRetryError: context.read<CategoryViewModel>().retry,
             onCategorySelected: context.read<CategoryViewModel>().selectCategoryByName,
-            onSubCategorySelected: (subCategory) {
-              context.read<CategoryViewModel>().selectSubCategory(
-                subCategory.id,
-                subCategory.name,
-              );
-            },
+            onSubCategorySelected:
+                context.read<CategoryViewModel>().selectSubCategory,
             onFilterApplied: context.read<CategoryViewModel>().applyFilters,
             onSortChanged: context.read<CategoryViewModel>().applySort,
             onFilterChanged: context.read<CategoryViewModel>().applyFilters,
@@ -90,6 +101,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             bottomNavHeight: 60,
             activeHeroProductId: _activeHeroProductId,
             onProductTap: _openProductDetails,
+            onSearchTap: () => _openSearch(context),
           );
         },
       ),

@@ -1,9 +1,9 @@
 class CheckoutFlowService {
-  static final CheckoutFlowService _instance = CheckoutFlowService._internal();
 
   factory CheckoutFlowService() => _instance;
 
   CheckoutFlowService._internal();
+  static final CheckoutFlowService _instance = CheckoutFlowService._internal();
 
   bool _pendingCheckout = false;
 

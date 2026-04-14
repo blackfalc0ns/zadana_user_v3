@@ -1,21 +1,35 @@
-/// ─────────────────────────────────────────────────────────────
-/// Centralised asset paths — autocomplete‑friendly, typo‑proof.
-/// ─────────────────────────────────────────────────────────────
+/// Centralized asset paths to avoid typos and ease autocomplete.
 class Assets {
   Assets._();
 
-  // ── Base paths ──
+  static const String _root = 'assets';
   static const String _images = 'assets/images';
   static const String _icons = 'assets/icons';
   static const String _fonts = 'assets/fonts';
+  static const String _lottie = 'assets/lottie_animation';
 
-  // ── Images ──
+  // Images
+  static const String banner = '$_root/banner.png';
+  static const String jobTest = '$_root/job_test.png';
+  static const String appLogoLight = '$_images/app_logo_removebg-preview 1.png';
+  static const String appLogoDark =
+      '$_images/app_logo-dark_removebg-preview 1.png';
+  static const String google = '$_images/google.png';
+  static const String facebook = '$_images/facebook.png';
+  static const String blackFalconsLogo = '$_images/black_falcons_logo.png';
   static const String logoLight = '$_images/logo_light.png';
   static const String logoDark = '$_images/logo_dark.png';
+  static const String onboarding = '$_images/onboarding.png';
   static const String placeholder = '$_images/placeholder.png';
   static const String noInternet = '$_images/no_internet.png';
   static const String empty = '$_images/empty.png';
   static const String error = '$_images/error.png';
+  static const String startPageBackground =
+      '$_images/start_page_background.png';
+  static const String locationPageBackground =
+      '$_images/location_background.png';
+  static const String locationImage = '$_images/location_image.png';
+  static const String imageLocation = '$_images/image_location.png';
   static const String onboarding1 = '$_images/onboarding1.png';
   static const String onboarding2 = '$_images/onboarding2.png';
   static const String onboarding3 = '$_images/onboarding3.png';
@@ -27,7 +41,10 @@ class Assets {
       '$_images/success_order_animation.gif';
   static const String notFound = '$_images/image_not_found.png';
 
-  // ── Icons (SVG) ──
+  // Lottie
+  static const String emptyCart = '$_lottie/empty_cart.json';
+
+  // Icons (SVG)
   static const String icHome = '$_icons/ic_home.svg';
   static const String icProfile = '$_icons/ic_profile.svg';
   static const String icSettings = '$_icons/ic_settings.svg';
@@ -39,10 +56,10 @@ class Assets {
   static const String icLocation = '$_icons/ic_location.svg';
   static const String icWallet = '$_icons/ic_wallet.svg';
 
-  // ── Search Icon ──
+  // Other assets
   static const String searchNormal = '$_images/search-normal.svg';
 
-  // ── Fonts ──
+  // Fonts
   static const String cairoRegular = '$_fonts/Cairo-Regular.ttf';
   static const String cairoMedium = '$_fonts/Cairo-Medium.ttf';
   static const String cairoSemiBold = '$_fonts/Cairo-SemiBold.ttf';

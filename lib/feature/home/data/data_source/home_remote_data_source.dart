@@ -12,10 +12,10 @@ abstract class HomeRemoteDataSource {
   Future<HomeAppBarModelDto> getHomeAppBar();
   Future<HomeBannerResponseModelDto> getHomeBanners();
   Future<HomeCategoriesResponseModelDto> getHomeCategories();
-  Future<HomeBestSellingResponseModelDto> getHomeBestSelling();
-  Future<HomeBrandsResponseModelDto> getHomeBrands();
-  Future<HomeRecommendedResponseModelDto> getHomeRecommended();
+  Future<HomeBestSellingResponseModelDto> getHomeBestSelling({int? take});
+  Future<HomeBrandsResponseModelDto> getHomeBrands({int? take});
+  Future<HomeRecommendedResponseModelDto> getHomeRecommended({int? take});
   Future<HomeFeaturedResponseModelDto> getHomeFeaturedProducts();
-  Future<HomeSpecialOffersResponseModelDto> getHomeSpecialOffers();
-  Future<HomeExploreMoreResponseModelDto> getHomeExploreMore();
+  Future<HomeSpecialOffersResponseModelDto> getHomeSpecialOffers({int? take});
+  Future<List<HomeExploreMoreResponseModelDto>> getHomeExploreMore();
 }

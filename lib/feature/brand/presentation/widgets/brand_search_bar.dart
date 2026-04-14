@@ -6,13 +6,15 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
-  final String brandName;
-  final VoidCallback onFilterPressed;
-
   BrandSearchBarDelegate({
     required this.brandName,
     required this.onFilterPressed,
+    required this.onSearchTap,
   });
+
+  final String brandName;
+  final VoidCallback onFilterPressed;
+  final VoidCallback onSearchTap;
 
   @override
   double get minExtent => 80;
@@ -42,6 +44,8 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
               children: [
                 Expanded(
                   child: TextField(
+                    readOnly: true,
+                    onTap: onSearchTap,
                     decoration: InputDecoration(
                       hintText: 'ابحث في منتجات $brandName',
                       hintStyle: getRegularStyle(
@@ -73,9 +77,6 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.textPrimary,
                     ),
-                    onChanged: (value) {
-                      // TODO: Implement search functionality
-                    },
                   ),
                 ),
                 Container(
@@ -87,7 +88,11 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.tune, color: AppColors.white, size: 20),
+                    icon: const Icon(
+                      Icons.tune,
+                      color: AppColors.white,
+                      size: 20,
+                    ),
                     onPressed: onFilterPressed,
                     padding: EdgeInsets.zero,
                   ),

@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/general_cubit/local_cubit.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class DrawerDialogs {
   static void showLanguageDialog(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
+    final selectedLanguage = context
+        .read<LocaleThemeCubit>()
+        .state
+        .locale
+        .languageCode;
 
     showModalBottomSheet(
       context: context,
@@ -16,7 +23,7 @@ class DrawerDialogs {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Container(
+      builder: (sheetContext) => Container(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -30,49 +37,37 @@ class DrawerDialogs {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-
             Text(
               locale.select_language,
               style: getBoldStyle(
-                fontSize: FontSize.size20,
+                fontSize: FontSize.size17,
                 fontFamily: FontConstant.cairo,
                 color: color.onSurface,
               ),
             ),
             const SizedBox(height: Spacing.lg),
-
-            ListTile(
-              title: Text(
-                locale.arabic,
-                style: getMediumStyle(
-                  fontSize: FontSize.size16,
-                  fontFamily: FontConstant.cairo,
-                  color: color.onSurface,
-                ),
-              ),
-              leading: const Text('🇸🇦', style: TextStyle(fontSize: 24)),
-              trailing: Icon(Icons.check, color: color.primary),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Change language to Arabic
+            _LanguageTile(
+              label: locale.arabic,
+              code: 'ar',
+              selectedLanguage: selectedLanguage,
+              onTap: () async {
+                await context.read<LocaleThemeCubit>().setArabic();
+                if (sheetContext.mounted) {
+                  Navigator.pop(sheetContext);
+                }
               },
             ),
-            ListTile(
-              title: Text(
-                locale.english,
-                style: getMediumStyle(
-                  fontSize: FontSize.size16,
-                  fontFamily: FontConstant.cairo,
-                  color: color.onSurface,
-                ),
-              ),
-              leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Change language to English
+            _LanguageTile(
+              label: locale.english,
+              code: 'en',
+              selectedLanguage: selectedLanguage,
+              onTap: () async {
+                await context.read<LocaleThemeCubit>().setEnglish();
+                if (sheetContext.mounted) {
+                  Navigator.pop(sheetContext);
+                }
               },
             ),
-
             const SizedBox(height: Spacing.md),
           ],
         ),
@@ -105,7 +100,6 @@ class DrawerDialogs {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-
             Text(
               locale.about_app_title,
               style: getBoldStyle(
@@ -115,7 +109,6 @@ class DrawerDialogs {
               ),
             ),
             const SizedBox(height: Spacing.lg),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -155,18 +148,14 @@ class DrawerDialogs {
                 ),
               ],
             ),
-
             const SizedBox(height: Spacing.lg),
-
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 onPressed: () => Navigator.pop(context),
-
                 text: locale.ok,
               ),
             ),
-
             const SizedBox(height: Spacing.md),
           ],
         ),
@@ -175,3 +164,49 @@ class DrawerDialogs {
   }
 }
 
+class _LanguageTile extends StatelessWidget {
+  const _LanguageTile({
+    required this.label,
+    required this.code,
+    required this.selectedLanguage,
+    required this.onTap,
+  });
+
+  final String label;
+  final String code;
+  final String selectedLanguage;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final isSelected = selectedLanguage == code;
+
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        label,
+        style: getMediumStyle(
+          fontSize: FontSize.size16,
+          fontFamily: FontConstant.cairo,
+          color: color.onSurface,
+        ),
+      ),
+      leading: CircleAvatar(
+        radius: 16,
+        backgroundColor: color.primary.withValues(alpha: 0.1),
+        child: Text(
+          code.toUpperCase(),
+          style: getBoldStyle(
+            fontFamily: FontConstant.cairo,
+            color: color.primary,
+          ),
+        ),
+      ),
+      trailing: isSelected
+          ? Icon(Icons.check_circle, color: color.primary)
+          : null,
+      onTap: onTap,
+    );
+  }
+}

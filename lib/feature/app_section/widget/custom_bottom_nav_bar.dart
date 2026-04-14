@@ -52,7 +52,9 @@ class CustomBottomNavBar extends StatelessWidget {
                   height: 56,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: navBarConfig.selectedIndex == 4 ? color.primary : color.primary,
+                    color: navBarConfig.selectedIndex == 4
+                        ? color.primary
+                        : color.primary,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -93,7 +95,9 @@ class CustomBottomNavBar extends StatelessWidget {
               Icon(
                 (item.icon as Icon).icon,
                 size: 22,
-                color: active ? color.primary : color.onSurface.withValues(alpha: 0.6),
+                color: active
+                    ? color.primary
+                    : color.onSurface.withValues(alpha: 0.6),
               ),
               const SizedBox(height: 3),
               Text(
@@ -101,7 +105,9 @@ class CustomBottomNavBar extends StatelessWidget {
                 style: getMediumStyle(
                   fontSize: FontSize.size10,
                   fontFamily: FontConstant.cairo,
-                  color: active ? color.primary : color.onSurface.withValues(alpha: 0.6),
+                  color: active
+                      ? color.primary
+                      : color.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -111,4 +117,3 @@ class CustomBottomNavBar extends StatelessWidget {
     });
   }
 }
-

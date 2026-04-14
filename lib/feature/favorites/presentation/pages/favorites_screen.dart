@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
@@ -102,6 +103,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           builder: (context, state) {
             final color = context.colorScheme;
             final isEmpty = state.items.isEmpty;
+            final hasBlockingError = state.failure != null && isEmpty;
 
             return Directionality(
               textDirection: TextDirection.rtl,
@@ -113,6 +115,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ),
                 body: state.isLoading
                     ? const FavoritesLoadingSkeleton()
+                    : hasBlockingError
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: ApiErrorWidget.fromFailure(
+                            state.failure!,
+                            onRetry: () {
+                              context.read<FavoritesViewModel>().clearFailure();
+                              context.read<FavoritesViewModel>().loadFavorites();
+                            },
+                          ),
+                        ),
+                      )
                     : isEmpty
                     ? FavoritesEmptyState(
                         onStartShopping: () =>

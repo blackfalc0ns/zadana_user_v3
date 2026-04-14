@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class ProfileActionTile extends StatelessWidget {
@@ -25,6 +27,8 @@ class ProfileActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -55,9 +59,9 @@ class ProfileActionTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.labelLarge.copyWith(
+                    style: getSemiBoldStyle(
+                      fontFamily: FontConstant.cairo,
                       color: titleColor ?? AppColors.textPrimary,
-                      fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
                   ),
@@ -74,8 +78,10 @@ class ProfileActionTile extends StatelessWidget {
             ),
             const SizedBox(width: Spacing.sm),
             trailing ??
-                const Icon(
-                  Icons.keyboard_arrow_left_rounded,
+                Icon(
+                  isRtl
+                      ? Icons.keyboard_arrow_left_rounded
+                      : Icons.keyboard_arrow_right_rounded,
                   color: AppColors.textSecondary,
                 ),
           ],

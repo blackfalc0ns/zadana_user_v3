@@ -34,8 +34,8 @@ class HomeSpecialOffersLoadEvent extends HomeEvent {
   const HomeSpecialOffersLoadEvent();
 }
 
-class HomeExploreMoreLoadEvent extends HomeEvent {
-  const HomeExploreMoreLoadEvent();
+class HomeDynamicSectionLoadEvent extends HomeEvent {
+  const HomeDynamicSectionLoadEvent();
 }
 
 class HomeRetryEvent extends HomeEvent {
@@ -70,8 +70,8 @@ class HomeSpecialOffersRetryEvent extends HomeEvent {
   const HomeSpecialOffersRetryEvent();
 }
 
-class HomeExploreMoreRetryEvent extends HomeEvent {
-  const HomeExploreMoreRetryEvent();
+class HomeDynamicSectionRetryEvent extends HomeEvent {
+  const HomeDynamicSectionRetryEvent();
 }
 
 class HomeResetEvent extends HomeEvent {

@@ -3,8 +3,8 @@ import 'package:lottie/lottie.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/utils/assets.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class CartEmptyState extends StatelessWidget {
@@ -26,7 +26,7 @@ class CartEmptyState extends StatelessWidget {
               width: 200,
               height: 200,
               child: Lottie.asset(
-                AppAssets.emptyCart,
+                Assets.emptyCart,
                 repeat: true,
                 fit: BoxFit.contain,
               ),

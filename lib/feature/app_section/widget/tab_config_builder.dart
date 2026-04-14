@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
 
 class TabConfigBuilder {
   static List<PersistentTabConfig> buildTabs(BuildContext context) {

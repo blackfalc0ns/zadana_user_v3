@@ -33,18 +33,18 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<HomeBestSellingResponseModelDto> getHomeBestSelling() {
-    return _apiServices.getHomeBestSelling();
+  Future<HomeBestSellingResponseModelDto> getHomeBestSelling({int? take}) {
+    return _apiServices.getHomeBestSelling(take);
   }
 
   @override
-  Future<HomeBrandsResponseModelDto> getHomeBrands() {
-    return _apiServices.getHomeBrands();
+  Future<HomeBrandsResponseModelDto> getHomeBrands({int? take}) {
+    return _apiServices.getHomeBrands(take);
   }
 
   @override
-  Future<HomeRecommendedResponseModelDto> getHomeRecommended() {
-    return _apiServices.getHomeRecommended();
+  Future<HomeRecommendedResponseModelDto> getHomeRecommended({int? take}) {
+    return _apiServices.getHomeRecommended(take);
   }
 
   @override
@@ -53,12 +53,12 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<HomeSpecialOffersResponseModelDto> getHomeSpecialOffers() {
-    return _apiServices.getHomeSpecialOffers();
+  Future<HomeSpecialOffersResponseModelDto> getHomeSpecialOffers({int? take}) {
+    return _apiServices.getHomeSpecialOffers(take);
   }
 
   @override
-  Future<HomeExploreMoreResponseModelDto> getHomeExploreMore() {
+  Future<List<HomeExploreMoreResponseModelDto>> getHomeExploreMore() {
     return _apiServices.getHomeExploreMore();
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class AddressFormWidgets {
   static Widget buildFieldLabel(String label) {
@@ -32,7 +33,10 @@ class AddressFormWidgets {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: selectedLabel,
-          hint: const Text('اختر تسمية العنوان'),
+          hint: Builder(
+            builder: (context) =>
+                Text(context.localization.location_address_label_hint),
+          ),
           isExpanded: true,
           items: labelOptions.keys.map((String label) {
             return DropdownMenuItem<String>(

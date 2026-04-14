@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
+import 'package:zadana_user_v3/feature/best_selling/presentation/pages/best_selling_products_page.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -29,6 +30,15 @@ class BestSellingSection extends StatelessWidget {
               SectionHeader(
                 title: locale.section_best_selling,
                 actionLabel: locale.see_all,
+                onActionTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => BestSellingProductsPage(
+                        title: locale.section_best_selling,
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: Spacing.md),
               const SizedBox(
@@ -56,12 +66,22 @@ class BestSellingSection extends StatelessWidget {
         if (items.isEmpty) {
           return const SizedBox.shrink();
         }
+        final visibleItems = items.take(5).toList(growable: false);
 
         return Column(
           children: [
             SectionHeader(
               title: locale.section_best_selling,
               actionLabel: locale.see_all,
+              onActionTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BestSellingProductsPage(
+                      title: locale.section_best_selling,
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(
@@ -71,10 +91,10 @@ class BestSellingSection extends StatelessWidget {
                   horizontal: Spacing.screenH,
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: items.length,
+                itemCount: visibleItems.length,
                 separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
                 itemBuilder: (_, i) {
-                  final product = items[i];
+                  final product = visibleItems[i];
                   final heroTag = productHeroTag(
                     product.id,
                     source: 'home-best-selling',

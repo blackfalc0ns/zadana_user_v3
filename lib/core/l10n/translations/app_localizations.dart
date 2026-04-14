@@ -638,6 +638,42 @@ abstract class AppLocalizations {
   /// **'Create an account to explore our app'**
   String get auth_subtitle_signup;
 
+  /// No description provided for @login_hero_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get login_hero_badge;
+
+  /// No description provided for @login_hero_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get login_hero_title;
+
+  /// No description provided for @login_hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in to continue and browse products'**
+  String get login_hero_subtitle;
+
+  /// No description provided for @login_section_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get login_section_badge;
+
+  /// No description provided for @login_section_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get login_section_title;
+
+  /// No description provided for @login_section_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email or mobile number and password to access your account.'**
+  String get login_section_description;
+
   /// No description provided for @register_hero_badge.
   ///
   /// In en, this message translates to:
@@ -1265,7 +1301,7 @@ abstract class AppLocalizations {
   /// No description provided for @arabic.
   ///
   /// In en, this message translates to:
-  /// **'Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©'**
+  /// **'Arabic'**
   String get arabic;
 
   /// No description provided for @english.
@@ -2677,6 +2713,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can add an address, but syncing your data requires signing in'**
   String get profile_guest_addresses_subtitle;
+
+  /// No description provided for @location_building_details_page_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Building details'**
+  String get location_building_details_page_title;
+
+  /// No description provided for @location_save_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Save address'**
+  String get location_save_address;
+
+  /// No description provided for @location_building_details_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter building details'**
+  String get location_building_details_heading;
+
+  /// No description provided for @location_building_details_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the building and apartment details to complete your address'**
+  String get location_building_details_subtitle;
+
+  /// No description provided for @location_address_label_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Address label *'**
+  String get location_address_label_title;
+
+  /// No description provided for @location_address_label_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an address label'**
+  String get location_address_label_hint;
+
+  /// No description provided for @location_address_label_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose an address label'**
+  String get location_address_label_required;
+
+  /// No description provided for @location_address_label_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get location_address_label_home;
+
+  /// No description provided for @location_address_label_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get location_address_label_work;
+
+  /// No description provided for @location_address_label_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get location_address_label_other;
+
+  /// No description provided for @location_building_number_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Building number *'**
+  String get location_building_number_label;
+
+  /// No description provided for @location_building_number_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 15'**
+  String get location_building_number_hint;
+
+  /// No description provided for @location_building_number_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Building number is required'**
+  String get location_building_number_required;
+
+  /// No description provided for @location_floor_number_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor number'**
+  String get location_floor_number_label;
+
+  /// No description provided for @location_floor_number_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 3'**
+  String get location_floor_number_hint;
+
+  /// No description provided for @location_apartment_number_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment number'**
+  String get location_apartment_number_label;
+
+  /// No description provided for @location_apartment_number_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 5'**
+  String get location_apartment_number_hint;
+
+  /// No description provided for @location_manual_address_page_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter address manually'**
+  String get location_manual_address_page_title;
+
+  /// No description provided for @location_confirm_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm address'**
+  String get location_confirm_address;
+
+  /// No description provided for @location_manual_address_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your address details'**
+  String get location_manual_address_heading;
+
+  /// No description provided for @location_manual_address_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the following details to add your new address'**
+  String get location_manual_address_subtitle;
+
+  /// No description provided for @location_edit_address_page_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit address'**
+  String get location_edit_address_page_title;
+
+  /// No description provided for @location_update_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Update address'**
+  String get location_update_address;
+
+  /// No description provided for @location_edit_address_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your address details'**
+  String get location_edit_address_heading;
+
+  /// No description provided for @location_edit_address_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the following details and save your changes'**
+  String get location_edit_address_subtitle;
+
+  /// No description provided for @location_address_details_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed address *'**
+  String get location_address_details_label;
+
+  /// No description provided for @location_address_details_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Al Gomhoria Street, next to Al Noor Mosque'**
+  String get location_address_details_hint;
+
+  /// No description provided for @location_address_details_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed address is required'**
+  String get location_address_details_required;
+
+  /// No description provided for @location_city_label.
+  ///
+  /// In en, this message translates to:
+  /// **'City *'**
+  String get location_city_label;
+
+  /// No description provided for @location_city_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Cairo'**
+  String get location_city_hint;
+
+  /// No description provided for @location_city_required.
+  ///
+  /// In en, this message translates to:
+  /// **'City is required'**
+  String get location_city_required;
+
+  /// No description provided for @location_area_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Area *'**
+  String get location_area_label;
+
+  /// No description provided for @location_area_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Maadi'**
+  String get location_area_hint;
+
+  /// No description provided for @location_area_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Area is required'**
+  String get location_area_required;
+
+  /// No description provided for @addresses_summary_count.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} address'**
+  String addresses_summary_count(Object count);
+
+  /// No description provided for @addresses_summary_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Current default: {label}'**
+  String addresses_summary_default(String label);
+
+  /// No description provided for @addresses_primary_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary address'**
+  String get addresses_primary_label;
+
+  /// No description provided for @addresses_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get addresses_default;
+
+  /// No description provided for @addresses_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current address'**
+  String get addresses_current;
+
+  /// No description provided for @addresses_set_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as default'**
+  String get addresses_set_default;
+
+  /// No description provided for @addresses_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get addresses_edit;
+
+  /// No description provided for @addresses_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get addresses_delete;
+
+  /// No description provided for @addresses_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete address'**
+  String get addresses_delete_title;
+
+  /// No description provided for @addresses_delete_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete \"{label}\"?'**
+  String addresses_delete_confirm(String label);
+
+  /// No description provided for @addresses_delete_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Address deleted successfully'**
+  String get addresses_delete_success;
+
+  /// No description provided for @addresses_set_default_success.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{label}\" was set as the default address'**
+  String addresses_set_default_success(String label);
+
+  /// No description provided for @addresses_edit_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Address updated successfully'**
+  String get addresses_edit_success;
+
+  /// No description provided for @addresses_meta_building.
+  ///
+  /// In en, this message translates to:
+  /// **'Building {value}'**
+  String addresses_meta_building(String value);
+
+  /// No description provided for @addresses_meta_floor.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor {value}'**
+  String addresses_meta_floor(String value);
+
+  /// No description provided for @addresses_meta_apartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment {value}'**
+  String addresses_meta_apartment(String value);
 
   /// No description provided for @profile_role_label.
   ///

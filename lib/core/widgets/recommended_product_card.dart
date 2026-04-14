@@ -97,10 +97,9 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
               border: Border.all(color: AppColors.border),
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: Spacing.sm),
+                  padding: const EdgeInsetsDirectional.only(end: Spacing.sm),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(Spacing.cardRadius),
                     child: ProductImage(
@@ -114,48 +113,48 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                   ),
                 ),
                 Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.product.name,
-                              style: AppTextStyles.labelMedium.copyWith(
-                                fontSize: 12,
-                                height: 1.15,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: Spacing.xs),
-                            PriceText(
+                      Text(
+                        widget.product.name,
+                        style: AppTextStyles.labelMedium.copyWith(
+                          fontSize: 12.5,
+                          height: 1.15,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: Spacing.xs),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: PriceText(
                               price: widget.product.price,
                               oldPrice: widget.product.oldPrice,
                               compact: true,
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: Spacing.sm),
-                      GestureDetector(
-                        onTap: widget.onAddTap,
-                        child: Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.cartPlus,
-                            color: AppColors.white,
-                            size: 14,
+                          const SizedBox(width: Spacing.sm),
+                          GestureDetector(
+                            onTap: widget.onAddTap,
+                            child: Container(
+                              padding: const EdgeInsets.all(7),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: const FaIcon(
+                                FontAwesomeIcons.cartPlus,
+                                color: AppColors.white,
+                                size: 14,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
@@ -163,9 +162,9 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
               ],
             ),
           ),
-          Positioned(
+          PositionedDirectional(
             top: 4,
-            right: 4,
+            start: 4,
             child: GestureDetector(
               onTap: _handleFavoriteTap,
               child: Container(

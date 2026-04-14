@@ -1,16 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
-import 'package:flutter/material.dart';
-
 class BaseErrorWidget extends StatelessWidget {
-  final String title;
-  final String description;
-  final IconData icon;
-  final VoidCallback? onRetry;
-  final VoidCallback? onSecondaryAction;
-  final String? secondaryActionText;
-  final Color? primaryColor;
 
   const BaseErrorWidget({
     super.key,
@@ -22,6 +14,13 @@ class BaseErrorWidget extends StatelessWidget {
     this.secondaryActionText,
     this.primaryColor,
   });
+  final String title;
+  final String description;
+  final IconData icon;
+  final VoidCallback? onRetry;
+  final VoidCallback? onSecondaryAction;
+  final String? secondaryActionText;
+  final Color? primaryColor;
 
   @override
   Widget build(BuildContext context) {

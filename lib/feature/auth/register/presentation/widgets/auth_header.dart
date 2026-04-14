@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class AuthHeader extends StatelessWidget {
@@ -18,7 +18,7 @@ class AuthHeader extends StatelessWidget {
       children: [
         Center(
           child: Image.asset(
-            AppConstants.logoLight,
+            Assets.logoLight,
             height: 80,
             fit: BoxFit.contain,
           ),

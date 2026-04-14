@@ -14,6 +14,7 @@ abstract class AppRoutes {
   static const String verifyResetOtp = '/verify-reset-otp';
   static const String resetPassword = '/reset-password';
   static const String profileDetails = '/profile-details';
+  static const String customerAddresses = '/customer-addresses';
   static const String editProfile = '/edit-profile';
   static const String verifyOtp = '/verify-otp';
   static const String manualAddressEntry = '/manual-address-entry';

@@ -11,6 +11,7 @@ import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.dart';
+import 'package:zadana_user_v3/feature/special_offers/presentation/pages/special_offers_products_page.dart';
 
 class SpecialOffersSection extends StatelessWidget {
   const SpecialOffersSection({super.key});
@@ -29,6 +30,15 @@ class SpecialOffersSection extends StatelessWidget {
               SectionHeader(
                 title: locale.section_special_offers,
                 actionLabel: locale.see_all,
+                onActionTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => SpecialOffersProductsPage(
+                        title: locale.section_special_offers,
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: Spacing.md),
               const SizedBox(
@@ -56,12 +66,22 @@ class SpecialOffersSection extends StatelessWidget {
         if (items.isEmpty) {
           return const SizedBox.shrink();
         }
+        final visibleItems = items.take(5).toList(growable: false);
 
         return Column(
           children: [
             SectionHeader(
               title: locale.section_special_offers,
               actionLabel: locale.see_all,
+              onActionTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => SpecialOffersProductsPage(
+                      title: locale.section_special_offers,
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(
@@ -69,10 +89,10 @@ class SpecialOffersSection extends StatelessWidget {
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
                 scrollDirection: Axis.horizontal,
-                itemCount: items.length,
+                itemCount: visibleItems.length,
                 separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
                 itemBuilder: (_, i) {
-                  final product = items[i];
+                  final product = visibleItems[i];
                   final heroTag = productHeroTag(
                     product.id,
                     source: 'home-special-offers',
@@ -89,8 +109,8 @@ class SpecialOffersSection extends StatelessWidget {
                         context,
                         product,
                       ),
-                      onCardTap: () => ProductNavigationHelper
-                          .navigateToProductDetails(
+                      onCardTap: () =>
+                          ProductNavigationHelper.navigateToProductDetails(
                             context,
                             product,
                             heroTag: heroTag,
@@ -121,4 +141,3 @@ class _SpecialOffersItemsSkeleton extends StatelessWidget {
     );
   }
 }
-

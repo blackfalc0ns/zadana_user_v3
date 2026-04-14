@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
+import 'package:zadana_user_v3/core/utils/main_shell_navigation.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_category_item_entity.dart';
@@ -49,7 +50,7 @@ class CategoriesSection extends StatelessWidget {
             SectionHeader(
               title: locale.categ,
               actionLabel: locale.see_all,
-              onActionTap: () {},
+              onActionTap: openShoppingTab,
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(

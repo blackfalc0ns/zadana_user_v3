@@ -15,6 +15,8 @@ import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_loading_
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_products_grid.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_search_bar.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/filter_chip_row.dart';
+import 'package:zadana_user_v3/feature/search/domain/entities/product_search_params.dart';
+import 'package:zadana_user_v3/feature/search/presentation/pages/product_search_page.dart';
 
 class BrandPage extends StatefulWidget {
   const BrandPage({super.key, required this.brand});
@@ -227,6 +229,25 @@ class _BrandPageState extends State<BrandPage> {
       _priceRange.start != _priceBounds.start ||
       _priceRange.end != _priceBounds.end;
 
+  void _openSearchPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ProductSearchPage(
+          params: ProductSearchParams(
+            title: widget.brand.name,
+            hintText: 'ابحث في منتجات ${widget.brand.name}',
+            brandId: widget.brand.id,
+            categoryId: _selectedSubcategoryId ?? _selectedCategoryId,
+            minPrice: _priceRange.start,
+            maxPrice: _priceRange.end,
+            sort: _selectedSortOption.isEmpty ? null : _selectedSortOption,
+            autofocus: true,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,6 +260,7 @@ class _BrandPageState extends State<BrandPage> {
             delegate: BrandSearchBarDelegate(
               brandName: widget.brand.name,
               onFilterPressed: _showFilterBottomSheet,
+              onSearchTap: _openSearchPage,
             ),
           ),
           if (_categoryNames.isNotEmpty)

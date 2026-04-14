@@ -10,22 +10,14 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 class SearchBarWidget extends StatelessWidget {
   const SearchBarWidget({
     super.key,
-    this.onFilterApplied,
     required this.locale,
+    this.onTap,
+    this.onFilterTap,
   });
 
-  final Function(Map<String, dynamic>)? onFilterApplied;
   final AppLocalizations locale;
-
-  void _showFilterBottomSheet(BuildContext context) {
-    // TODO: Implement filter functionality or remove if not needed
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Filter functionality will be implemented'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
+  final VoidCallback? onTap;
+  final VoidCallback? onFilterTap;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +32,8 @@ class SearchBarWidget extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
+              readOnly: true,
+              onTap: onTap,
               textAlign: TextAlign.right,
               style: getRegularStyle(
                 fontSize: FontSize.size16,
@@ -72,21 +66,22 @@ class SearchBarWidget extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            width: 42,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.primary,
-              border: Border.all(color: color.primary),
-              borderRadius: BorderRadius.circular(8),
+          if (onFilterTap != null)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              width: 42,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.primary,
+                border: Border.all(color: color.primary),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                onPressed: onFilterTap,
+                icon: Icon(Icons.tune, color: color.onPrimary, size: 24),
+                padding: EdgeInsets.zero,
+              ),
             ),
-            child: IconButton(
-              onPressed: () => _showFilterBottomSheet(context),
-              icon: Icon(Icons.tune, color: color.onPrimary, size: 24),
-              padding: EdgeInsets.zero,
-            ),
-          ),
         ],
       ),
     );

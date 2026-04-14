@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_brand_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_category_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_price_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_quantity_section.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/sub_category_chips.dart';
 
 class CategoryFilterSection extends StatelessWidget {
   final bool showCategorySection;
   final List<CategoryEntity> categories;
+  final List<CategorySubcategoryItemDto> subCategories;
   final List<String> quantities;
   final List<String> brands;
   final List<String> productTypes;
   final List<String> parts;
   final String? selectedCategory;
+  final String? selectedSubCategoryId;
   final String? selectedQuantity;
   final String? selectedBrand;
   final String? selectedProductType;
@@ -22,6 +26,7 @@ class CategoryFilterSection extends StatelessWidget {
   final RangeValues priceRange;
   final RangeValues priceBounds;
   final Function(String?) onCategorySelected;
+  final Function(CategorySubcategoryItemDto) onSubCategorySelected;
   final Function(String?) onQuantitySelected;
   final Function(String?) onBrandSelected;
   final Function(String?) onProductTypeSelected;
@@ -32,11 +37,13 @@ class CategoryFilterSection extends StatelessWidget {
     super.key,
     this.showCategorySection = true,
     this.categories = const [],
+    this.subCategories = const [],
     this.quantities = const [],
     this.brands = const [],
     this.productTypes = const [],
     this.parts = const [],
     this.selectedCategory,
+    this.selectedSubCategoryId,
     this.selectedQuantity,
     this.selectedBrand,
     this.selectedProductType,
@@ -44,6 +51,7 @@ class CategoryFilterSection extends StatelessWidget {
     required this.priceRange,
     required this.priceBounds,
     required this.onCategorySelected,
+    required this.onSubCategorySelected,
     required this.onQuantitySelected,
     required this.onBrandSelected,
     required this.onProductTypeSelected,
@@ -102,6 +110,14 @@ class CategoryFilterSection extends StatelessWidget {
               onPartSelected(null);
             },
           ),
+          if (subCategories.isNotEmpty) ...[
+            const SizedBox(height: Spacing.sm),
+            _FilterSubCategorySection(
+              subCategories: subCategories,
+              selectedSubCategoryId: selectedSubCategoryId,
+              onSubCategorySelected: onSubCategorySelected,
+            ),
+          ],
         ],
         ..._withSpacing(detailSections),
       ],
@@ -117,5 +133,36 @@ class CategoryFilterSection extends StatelessWidget {
       }
     }
     return widgets;
+  }
+}
+
+class _FilterSubCategorySection extends StatelessWidget {
+  const _FilterSubCategorySection({
+    required this.subCategories,
+    required this.selectedSubCategoryId,
+    required this.onSubCategorySelected,
+  });
+
+  final List<CategorySubcategoryItemDto> subCategories;
+  final String? selectedSubCategoryId;
+  final ValueChanged<CategorySubcategoryItemDto> onSubCategorySelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'الفئة الفرعية',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: Spacing.sm),
+        SubCategoryChips(
+          subCategories: subCategories,
+          selectedSubCategoryId: selectedSubCategoryId,
+          onSubCategorySelected: onSubCategorySelected,
+        ),
+      ],
+    );
   }
 }

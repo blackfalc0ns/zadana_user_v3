@@ -14,13 +14,14 @@ abstract class EndPoints {
   static const String homeRecommended = '/home/recommended';
   static const String homeFeaturedProducts = '/home/featured-products';
   static const String homeSpecialOffers = '/home/special-offers';
-  static const String homeExploreMore = '/home/explore-more';
+  static const String homeExploreMore = '/home/dynamic-sections';
   static const String brandProducts = '/brands/{brandId}/products';
   static const String brandFilters = '/brands/{brandId}/filters';
   static const String categorySubcategories =
       '/categories/{categoryId}/subcategories';
   static const String categoryFilters = '/categories/{categoryId}/filters';
   static const String categoryProducts = '/categories/{categoryId}/products';
+  static const String productsSearch = '/products/search';
   static const String productDetails = '/products/{productId}';
   static const String register = "/customers/auth/register";
   static const String login = '/customers/auth/login';
@@ -29,6 +30,8 @@ abstract class EndPoints {
   static const String resetPassword = '/customers/auth/reset-password';
   static const String verifyOtp = '/customers/auth/verify-otp';
   static const String getProfile = '/customers/auth/me';
+  static const String updateProfile = '/customers/auth/me';
+  static const String customerAddresses = '/customers/addresses';
   static const String getAddress = '/location/address';
   static const String searchLocations = '/location/search';
   static const String sendDeliveryOtp = '/delivery/otp/send';

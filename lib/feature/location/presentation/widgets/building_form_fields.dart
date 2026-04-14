@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
@@ -35,17 +36,19 @@ class BuildingFormFields extends StatelessWidget {
   }
 
   Widget _buildBuildingField(BuildContext context, Color color) {
+    final l10n = context.localization;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel('رقم المبنى *'),
+        AddressFormWidgets.buildFieldLabel(l10n.location_building_number_label),
         AppTextField(
           controller: buildingController,
-          hint: 'مثال: 15',
+          hint: l10n.location_building_number_hint,
           prefixIcon: Icon(Iconsax.building, color: color),
-          validator: (value) =>
-              value?.trim().isEmpty == true ? 'رقم المبنى مطلوب' : null,
+          validator: (value) => value?.trim().isEmpty == true
+              ? l10n.location_building_number_required
+              : null,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(
             UpdateBuildingNoEvent(value),
           ),
@@ -54,15 +57,16 @@ class BuildingFormFields extends StatelessWidget {
     );
   }
 
-  Widget _buildFloorField(BuildContext context, Color color ) {
+  Widget _buildFloorField(BuildContext context, Color color) {
+    final l10n = context.localization;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel('رقم الطابق'),
+        AddressFormWidgets.buildFieldLabel(l10n.location_floor_number_label),
         AppTextField(
           controller: floorController,
-          hint: 'مثال: 3',
+          hint: l10n.location_floor_number_hint,
           prefixIcon: Icon(Iconsax.buildings, color: color),
           keyboardType: TextInputType.number,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(
@@ -74,13 +78,15 @@ class BuildingFormFields extends StatelessWidget {
   }
 
   Widget _buildApartmentField(BuildContext context, Color color) {
+    final l10n = context.localization;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel('رقم الشقة'),
+        AddressFormWidgets.buildFieldLabel(l10n.location_apartment_number_label),
         AppTextField(
           controller: apartmentController,
-          hint: 'مثال: 5',
+          hint: l10n.location_apartment_number_hint,
           prefixIcon: Icon(Iconsax.home, color: color),
           keyboardType: TextInputType.number,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(

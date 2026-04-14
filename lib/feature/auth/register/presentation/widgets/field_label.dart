@@ -11,13 +11,17 @@ class FieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
-      child: Align(
-        alignment: Alignment.centerRight,
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeInOut,
+        alignment: isRtl ? Alignment.centerRight : Alignment.centerLeft,
         child: Text(
           text,
+          textAlign: TextAlign.start,
           style: getMediumStyle(
             fontSize: FontSize.size14,
             fontFamily: FontConstant.cairo,

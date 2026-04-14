@@ -5,7 +5,8 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
-import 'package:zadana_user_v3/core/services/saved_location_service.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
@@ -16,29 +17,36 @@ import 'package:zadana_user_v3/feature/location/presentation/widgets/address_for
 import 'package:zadana_user_v3/feature/location/presentation/widgets/building_form_fields.dart';
 
 class BuildingDetailsPage extends StatelessWidget {
-  final LocationEntity? initialLocation;
   const BuildingDetailsPage({super.key, this.initialLocation});
+
+  final LocationEntity? initialLocation;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
         final vm = getIt<LocationViewModel>();
-        if (initialLocation != null) vm.doIntent(SetSelectedLocationEvent(initialLocation!));
+        if (initialLocation != null) {
+          vm.doIntent(SetSelectedLocationEvent(initialLocation!));
+        }
         return vm;
       },
-      child: const _BuildingDetailsView(),
+      child: _BuildingDetailsView(initialLocation: initialLocation),
     );
   }
 }
 
 class _BuildingDetailsView extends StatefulWidget {
-  const _BuildingDetailsView();
+  const _BuildingDetailsView({this.initialLocation});
+
+  final LocationEntity? initialLocation;
+
   @override
   State<_BuildingDetailsView> createState() => _BuildingDetailsViewState();
 }
 
-class _BuildingDetailsViewState extends State<_BuildingDetailsView> with AddressFormMixin {
+class _BuildingDetailsViewState extends State<_BuildingDetailsView>
+    with AddressFormMixin {
   final _formKey = GlobalKey<FormState>();
   final _buildingController = TextEditingController();
   final _floorController = TextEditingController();
@@ -64,23 +72,56 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView> with Address
     super.dispose();
   }
 
-  Future<void> _onConfirm() async {
+  void _onConfirm() {
     if (!_formKey.currentState!.validate() || !validateLabel()) {
-      if (!validateLabel()) showLabelError();
+      if (!validateLabel()) {
+        showLabelError();
+      }
       return;
     }
+
     final viewModel = context.read<LocationViewModel>();
-    final currentState = viewModel.state;
     final completeLocation = LocationEntity(
-      addressLine: currentState.addressLine, city: currentState.city, area: currentState.area,
-      latitude: currentState.selectedLocation?.latitude ?? 0.0,
-      longitude: currentState.selectedLocation?.longitude ?? 0.0,
-      buildingNo: currentState.buildingNo, floorNo: currentState.floorNo,
-      apartmentNo: currentState.apartmentNo, label: currentState.label,
+      addressLine: _resolveAddressLine(viewModel),
+      city: _resolveCity(viewModel),
+      area: _resolveArea(viewModel),
+      latitude: viewModel.state.selectedLocation?.latitude ?? 0.0,
+      longitude: viewModel.state.selectedLocation?.longitude ?? 0.0,
+      buildingNo: _buildingController.text.trim(),
+      floorNo: _floorController.text.trim(),
+      apartmentNo: _apartmentController.text.trim(),
+      label: viewModel.state.label,
     );
-    viewModel.doIntent(SetSelectedLocationEvent(completeLocation));
-    await SavedLocationService.saveLocation(completeLocation);
-    if (!mounted) return;
+
+    viewModel.doIntent(SaveSelectedAddressEvent(completeLocation));
+  }
+
+  String _resolveAddressLine(LocationViewModel viewModel) {
+    final current = viewModel.state.addressLine.trim();
+    if (current.isNotEmpty) return current;
+    return widget.initialLocation?.addressLine ?? '';
+  }
+
+  String _resolveCity(LocationViewModel viewModel) {
+    final current = viewModel.state.city.trim();
+    if (current.isNotEmpty) return current;
+    return widget.initialLocation?.city ?? '';
+  }
+
+  String _resolveArea(LocationViewModel viewModel) {
+    final current = viewModel.state.area.trim();
+    if (current.isNotEmpty) return current;
+    return widget.initialLocation?.area ?? '';
+  }
+
+  void _returnToMainShell() {
+    if (mainShellKey.currentState != null) {
+      Navigator.of(context).popUntil((route) {
+        return route.settings.name == AppRoutes.mainShell || route.isFirst;
+      });
+      return;
+    }
+
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.mainShell,
@@ -90,37 +131,64 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView> with Address
 
   @override
   Widget build(BuildContext context) {
-    return AddressFormPage(
-      title: 'تفاصيل المبنى', confirmButtonText: 'حفظ العنوان',
-      isLoading: false, onConfirm: _onConfirm,
-      formContent: Form(
-        key: _formKey,
-        child: BlocBuilder<LocationViewModel, LocationState>(
-          builder: (context, state) => SingleChildScrollView(
-            padding: const EdgeInsets.all(Spacing.screenH),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('أدخل تفاصيل المبنى', style: AppTextStyles.h2),
-                const SizedBox(height: Spacing.sm),
-                Text('أضف تفاصيل المبنى والشقة لإكمال عنوانك', 
-                     style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
-                const SizedBox(height: Spacing.lg),
-                if (state.selectedLocation != null) ...[
-                  AddressFormWidgets.buildLocationDisplay(state.selectedLocation!.addressLine),
-                  const SizedBox(height: Spacing.xl),
+    final l10n = context.localization;
+
+    return BlocListener<LocationViewModel, LocationState>(
+      listenWhen: (previous, current) =>
+          previous.isAddressSaved != current.isAddressSaved,
+      listener: (context, state) {
+        if (state.isAddressSaved && !state.isLoading) {
+          _returnToMainShell();
+        }
+      },
+      child: AddressFormPage(
+        title: l10n.location_building_details_page_title,
+        confirmButtonText: l10n.location_save_address,
+        isLoading: false,
+        onConfirm: _onConfirm,
+        formContent: Form(
+          key: _formKey,
+          child: BlocBuilder<LocationViewModel, LocationState>(
+            builder: (context, state) => SingleChildScrollView(
+              padding: const EdgeInsets.all(Spacing.screenH),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.location_building_details_heading,
+                    style: AppTextStyles.h2,
+                  ),
+                  const SizedBox(height: Spacing.sm),
+                  Text(
+                    l10n.location_building_details_subtitle,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.lg),
+                  if (state.selectedLocation != null) ...[
+                    AddressFormWidgets.buildLocationDisplay(
+                      state.selectedLocation!.addressLine,
+                    ),
+                    const SizedBox(height: Spacing.xl),
+                  ],
+                  BuildingFormFields(
+                    buildingController: _buildingController,
+                    floorController: _floorController,
+                    apartmentController: _apartmentController,
+                  ),
+                  const SizedBox(height: Spacing.lg),
+                  AddressFormWidgets.buildFieldLabel(
+                    l10n.location_address_label_title,
+                  ),
+                  AddressFormWidgets.buildLabelDropdown(
+                    selectedLabel: selectedLabel,
+                    labelOptions: labelOptions,
+                    onChanged: onLabelChanged,
+                  ),
+                  const SizedBox(height: Spacing.xxl),
                 ],
-                BuildingFormFields(
-                  buildingController: _buildingController, floorController: _floorController,
-                  apartmentController: _apartmentController,
-                ),
-                const SizedBox(height: Spacing.lg),
-                AddressFormWidgets.buildFieldLabel('تسمية العنوان *'),
-                AddressFormWidgets.buildLabelDropdown(
-                  selectedLabel: selectedLabel, labelOptions: labelOptions, onChanged: onLabelChanged,
-                ),
-                const SizedBox(height: Spacing.xxl),
-              ],
+              ),
             ),
           ),
         ),

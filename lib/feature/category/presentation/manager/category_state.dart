@@ -34,6 +34,8 @@ class CategoryState {
     this.selectedProductTypeId,
     this.selectedPartId,
     this.isCategoryPreselectedFromOutside = false,
+    this.showAllSubCategories = false,
+    this.subCategoryCategoryMap = const {},
     this.isLoading = true,
     this.isSubCategoriesLoading = false,
     this.errorMessage,
@@ -66,6 +68,8 @@ class CategoryState {
   final String? selectedProductTypeId;
   final String? selectedPartId;
   final bool isCategoryPreselectedFromOutside;
+  final bool showAllSubCategories;
+  final Map<String, String> subCategoryCategoryMap;
   final bool isLoading;
   final bool isSubCategoriesLoading;
   final String? errorMessage;
@@ -142,6 +146,8 @@ class CategoryState {
     Object? selectedProductTypeId = const Object(),
     Object? selectedPartId = const Object(),
     bool? isCategoryPreselectedFromOutside,
+    bool? showAllSubCategories,
+    Map<String, String>? subCategoryCategoryMap,
     bool? isLoading,
     bool? isSubCategoriesLoading,
     Object? errorMessage = const Object(),
@@ -200,6 +206,10 @@ class CategoryState {
           : selectedPartId as String?,
       isCategoryPreselectedFromOutside: isCategoryPreselectedFromOutside ??
           this.isCategoryPreselectedFromOutside,
+      showAllSubCategories:
+          showAllSubCategories ?? this.showAllSubCategories,
+      subCategoryCategoryMap:
+          subCategoryCategoryMap ?? this.subCategoryCategoryMap,
       isLoading: isLoading ?? this.isLoading,
       isSubCategoriesLoading:
           isSubCategoriesLoading ?? this.isSubCategoriesLoading,

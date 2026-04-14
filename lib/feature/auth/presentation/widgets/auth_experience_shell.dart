@@ -348,7 +348,6 @@ class _FormCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset("assets/images/logo_dark.png", width: 100, height: 100),
 

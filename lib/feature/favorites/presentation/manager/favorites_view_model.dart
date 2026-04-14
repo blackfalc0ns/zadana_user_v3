@@ -17,6 +17,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
       state.copyWith(
         isLoading: true,
         isSuccess: false,
+        clearFailure: true,
         clearErrorMessage: true,
       ),
     );
@@ -33,6 +34,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             isSuccess: true,
             items: result.data.items,
             itemsCount: result.data.itemsCount,
+            clearFailure: true,
             clearErrorMessage: true,
           ),
         );
@@ -41,7 +43,9 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
           state.copyWith(
             isLoading: false,
             isSuccess: false,
-            errorMessage: result.failure.code,
+            failure: result.failure,
+            errorMessage: result.failure.errorMessage,
+            clearSuccessMessage: true,
           ),
         );
     }
@@ -76,13 +80,15 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             items: updatedItems,
             itemsCount: result.data.itemsCount,
             successMessage: result.data.message,
+            clearFailure: true,
             clearErrorMessage: true,
           ),
         );
       case ApiErrorResult():
         emit(
           state.copyWith(
-            errorMessage: result.failure.code,
+            failure: result.failure,
+            errorMessage: result.failure.errorMessage,
             clearSuccessMessage: true,
           ),
         );
@@ -103,6 +109,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
     emit(
       state.copyWith(
         isClearing: true,
+        clearFailure: true,
         clearErrorMessage: true,
         clearSuccessMessage: true,
       ),
@@ -124,6 +131,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             items: const [],
             itemsCount: 0,
             successMessage: result.data.message,
+            clearFailure: true,
             clearErrorMessage: true,
           ),
         );
@@ -131,11 +139,16 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
         emit(
           state.copyWith(
             isClearing: false,
-            errorMessage: result.failure.code,
+            failure: result.failure,
+            errorMessage: result.failure.errorMessage,
             clearSuccessMessage: true,
           ),
         );
     }
+  }
+
+  void clearFailure() {
+    emit(state.copyWith(clearFailure: true));
   }
 
   void clearError() {

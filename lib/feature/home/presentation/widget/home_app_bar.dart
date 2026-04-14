@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/app_constants.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -224,7 +225,7 @@ class _LocationCard extends StatelessWidget {
         child: Row(
           children: [
             Image.asset(
-              AppConstants.logoDark,
+              Assets.logoLight,
               fit: BoxFit.contain,
               width: 80,
               height: 50,

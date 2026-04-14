@@ -5,30 +5,59 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/core/services/saved_location_service.dart';
+import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/feature/addresses/data/models/add_customer_address_request_dto.dart';
+import 'package:zadana_user_v3/feature/addresses/domain/usecase/add_customer_address_usecase.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/get_address_from_coordinates_use_case.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/get_current_location_with_address_use_case.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/search_locations_usecase.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
+import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
+import 'package:zadana_user_v3/feature/profile/domain/usecase/profile_usecase.dart';
 
 @injectable
 class LocationViewModel extends Cubit<LocationState> {
+  static const String _searchTemporarilyUnavailableMessage =
+      'البحث مؤقتًا غير متاح، يرجى المحاولة لاحقًا';
+  static const String _locationServiceDisabledSnippet =
+      'خدمة الموقع غير مفعلة';
+  static const String _locationServiceDisabledMessage =
+      'خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات ثم المحاولة مرة أخرى.';
+  static const String _locationPermissionDeniedForeverSnippet =
+      'تم رفض إذن الوصول للموقع نهائيًا';
+  static const String _locationPermissionDeniedForeverMessage =
+      'تم رفض إذن الوصول للموقع نهائيًا. يرجى الذهاب لإعدادات التطبيق وتفعيل إذن الموقع.';
+  static const String _locationPermissionDeniedSnippet =
+      'تم رفض إذن الوصول للموقع';
+  static const String _locationPermissionDeniedMessage =
+      'يحتاج التطبيق إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.';
+  static const String _rateLimitRetryMessage =
+      'يرجى الانتظار قليلًا قبل المحاولة مرة أخرى';
+
   LocationViewModel(
     this._searchLocationsUseCase,
     this._getCurrentLocationWithAddressUseCase,
     this._getAddressFromCoordinatesUseCase,
+    this._addCustomerAddressUseCase,
+    this._profileUseCase,
+    this._tokenService,
   ) : super(const LocationState());
 
   final SearchLocationsUseCase _searchLocationsUseCase;
   final GetCurrentLocationWithAddressUseCase
       _getCurrentLocationWithAddressUseCase;
   final GetAddressFromCoordinatesUseCase _getAddressFromCoordinatesUseCase;
+  final AddCustomerAddressUseCase _addCustomerAddressUseCase;
+  final ProfileUseCase _profileUseCase;
+  final TokenService _tokenService;
+
   double? _lastReverseLat;
   double? _lastReverseLon;
   Timer? _debounce;
-  
-  // Rate limiting
+
   DateTime? _lastApiCall;
   static const Duration _minApiInterval = Duration(seconds: 2);
 
@@ -36,97 +65,94 @@ class LocationViewModel extends Cubit<LocationState> {
     switch (event) {
       case SearchLocationQueryChangedEvent():
         _onSearchQueryChanged(event);
-
       case SearchLocationSubmitEvent():
         _searchLocations(event);
-
       case SelectSearchedLocationEvent():
         _selectSearchedLocation(event);
-
       case GetCurrentLocationEvent():
         _getCurrentLocation();
-
       case GetAddressFromCoordinatesEvent():
         _getAddressFromCoordinates(event);
-
       case SetSelectedLocationEvent():
         _setSelectedLocation(event);
-
+      case SaveSelectedAddressEvent():
+        _saveSelectedAddress(event);
       case UpdateManualAddressEvent():
         emit(
           state.copyWith(
             addressLine: event.addressLine,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case UpdateCityEvent():
         emit(
           state.copyWith(
             city: event.city,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case UpdateAreaEvent():
         emit(
           state.copyWith(
             area: event.area,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case UpdateBuildingNoEvent():
         emit(
           state.copyWith(
             buildingNo: event.buildingNo,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case UpdateFloorNoEvent():
         emit(
           state.copyWith(
             floorNo: event.floorNo,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case UpdateApartmentNoEvent():
         emit(
           state.copyWith(
             apartmentNo: event.apartmentNo,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case UpdateLabelEvent():
         emit(
           state.copyWith(
             label: event.label,
+            isAddressSaved: false,
             errorMessage: null,
             failure: null,
           ),
         );
-
       case ClearLocationErrorEvent():
         emit(
           state.copyWith(
             errorMessage: null,
             failure: null,
+            isAddressSaved: false,
           ),
         );
-
       case ClearLocationSuccessEvent():
         emit(
           state.copyWith(
             isSuccess: false,
+            isAddressSaved: false,
           ),
         );
     }
@@ -136,6 +162,7 @@ class LocationViewModel extends Cubit<LocationState> {
     emit(
       state.copyWith(
         query: event.query,
+        isAddressSaved: false,
         errorMessage: null,
         failure: null,
       ),
@@ -144,7 +171,6 @@ class LocationViewModel extends Cubit<LocationState> {
     _debounce?.cancel();
 
     final query = event.query.trim();
-
     if (query.isEmpty) {
       emit(
         state.copyWith(
@@ -162,7 +188,6 @@ class LocationViewModel extends Cubit<LocationState> {
 
   Future<void> _searchLocations(SearchLocationSubmitEvent event) async {
     final query = event.query.trim();
-
     if (query.isEmpty) {
       emit(
         state.copyWith(
@@ -176,18 +201,15 @@ class LocationViewModel extends Cubit<LocationState> {
     emit(
       state.copyWith(
         isSearchLoading: true,
+        isAddressSaved: false,
         errorMessage: null,
         failure: null,
       ),
     );
 
-    developer.log(
-      'Searching locations: $query',
-      name: 'LocationViewModel',
-    );
+    developer.log('Searching locations: $query', name: 'LocationViewModel');
 
     final result = await _searchLocationsUseCase.call(query);
-
     if (isClosed) return;
 
     switch (result) {
@@ -199,18 +221,16 @@ class LocationViewModel extends Cubit<LocationState> {
             failure: null,
           ),
         );
-
       case ApiErrorResult():
-        // Handle rate limiting for search
         if (result.failure.code == 'error_unknown' &&
             (result.failure.errorMessage.contains('429') ||
-             result.failure.errorMessage.contains('Too many requests'))) {
+                result.failure.errorMessage.contains('Too many requests'))) {
           emit(
             state.copyWith(
               isSearchLoading: false,
-              errorMessage: 'البحث مؤقتاً غير متاح، يرجى المحاولة لاحقاً',
+              errorMessage: _searchTemporarilyUnavailableMessage,
               failure: const Failure(
-                errorMessage: 'البحث مؤقتاً غير متاح، يرجى المحاولة لاحقاً',
+                errorMessage: _searchTemporarilyUnavailableMessage,
                 code: 'error_unknown',
               ),
               searchResults: const [],
@@ -233,6 +253,7 @@ class LocationViewModel extends Cubit<LocationState> {
       state.copyWith(
         query: event.location.addressLine,
         searchResults: const [],
+        isAddressSaved: false,
         errorMessage: null,
         failure: null,
       ),
@@ -250,18 +271,15 @@ class LocationViewModel extends Cubit<LocationState> {
     emit(
       state.copyWith(
         isLoading: true,
+        isAddressSaved: false,
         errorMessage: null,
         failure: null,
       ),
     );
 
-    developer.log(
-      'Getting current location',
-      name: 'LocationViewModel',
-    );
+    developer.log('Getting current location', name: 'LocationViewModel');
 
     final result = await _getCurrentLocationWithAddressUseCase.call();
-
     if (isClosed) return;
 
     switch (result) {
@@ -270,6 +288,7 @@ class LocationViewModel extends Cubit<LocationState> {
           state.copyWith(
             isLoading: false,
             isSuccess: true,
+            isAddressSaved: false,
             selectedLocation: result.data,
             addressLine: result.data.addressLine,
             city: result.data.city,
@@ -277,20 +296,20 @@ class LocationViewModel extends Cubit<LocationState> {
             failure: null,
           ),
         );
-
       case ApiErrorResult():
         String errorMessage = result.failure.errorMessage;
         Failure failure = result.failure;
-        
-        // Handle specific location permission errors
-        if (errorMessage.contains('خدمة الموقع غير مفعلة')) {
-          errorMessage = 'خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات ثم المحاولة مرة أخرى.';
-        } else if (errorMessage.contains('تم رفض إذن الوصول للموقع نهائياً')) {
-          errorMessage = 'تم رفض إذن الوصول للموقع نهائياً. يرجى الذهاب لإعدادات التطبيق وتفعيل إذن الموقع.';
-        } else if (errorMessage.contains('تم رفض إذن الوصول للموقع')) {
-          errorMessage = 'يحتاج التطبيق إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.';
+
+        if (errorMessage.contains(_locationServiceDisabledSnippet)) {
+          errorMessage = _locationServiceDisabledMessage;
+        } else if (errorMessage.contains(
+          _locationPermissionDeniedForeverSnippet,
+        )) {
+          errorMessage = _locationPermissionDeniedForeverMessage;
+        } else if (errorMessage.contains(_locationPermissionDeniedSnippet)) {
+          errorMessage = _locationPermissionDeniedMessage;
         }
-        
+
         failure = Failure(
           errorMessage: errorMessage,
           code: result.failure.code,
@@ -307,89 +326,89 @@ class LocationViewModel extends Cubit<LocationState> {
   }
 
   Future<void> _getAddressFromCoordinates(
-  GetAddressFromCoordinatesEvent event,
-) async {
-  // Rate limiting check
-  final now = DateTime.now();
-  if (_lastApiCall != null && 
-      now.difference(_lastApiCall!) < _minApiInterval) {
-    developer.log('API call skipped due to rate limiting', name: 'LocationViewModel');
-    return;
-  }
-
-  final lastLat = _lastReverseLat;
-  final lastLon = _lastReverseLon;
-
-  if (lastLat != null && lastLon != null) {
-    final latDiff = (event.latitude - lastLat).abs();
-    final lonDiff = (event.longitude - lastLon).abs();
-
-    if (latDiff < 0.002 && lonDiff < 0.002) {
+    GetAddressFromCoordinatesEvent event,
+  ) async {
+    final now = DateTime.now();
+    if (_lastApiCall != null &&
+        now.difference(_lastApiCall!) < _minApiInterval) {
+      developer.log(
+        'API call skipped due to rate limiting',
+        name: 'LocationViewModel',
+      );
       return;
+    }
+
+    final lastLat = _lastReverseLat;
+    final lastLon = _lastReverseLon;
+    if (lastLat != null && lastLon != null) {
+      final latDiff = (event.latitude - lastLat).abs();
+      final lonDiff = (event.longitude - lastLon).abs();
+      if (latDiff < 0.002 && lonDiff < 0.002) {
+        return;
+      }
+    }
+
+    _lastReverseLat = event.latitude;
+    _lastReverseLon = event.longitude;
+    _lastApiCall = now;
+
+    emit(
+      state.copyWith(
+        isLoading: true,
+        isAddressSaved: false,
+        errorMessage: null,
+        failure: null,
+      ),
+    );
+
+    developer.log(
+      'Getting address for: ${event.latitude}, ${event.longitude}',
+      name: 'LocationViewModel',
+    );
+
+    final result = await _getAddressFromCoordinatesUseCase.call(
+      event.latitude,
+      event.longitude,
+    );
+    if (isClosed) return;
+
+    switch (result) {
+      case ApiSuccessResult():
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            isAddressSaved: false,
+            selectedLocation: result.data,
+            addressLine: result.data.addressLine,
+            city: result.data.city,
+            area: result.data.area,
+            failure: null,
+          ),
+        );
+      case ApiErrorResult():
+        if (result.failure.code == 'error_unknown' &&
+            (result.failure.errorMessage.contains('429') ||
+                result.failure.errorMessage.contains('Too many requests'))) {
+          developer.log('Rate limited - backing off', name: 'LocationViewModel');
+          emit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage: _rateLimitRetryMessage,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage: result.failure.errorMessage,
+              failure: result.failure,
+            ),
+          );
+        }
     }
   }
 
-  _lastReverseLat = event.latitude;
-  _lastReverseLon = event.longitude;
-  _lastApiCall = now;
-
-  emit(
-    state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-      failure: null,
-    ),
-  );
-
-  developer.log(
-    'Getting address for: ${event.latitude}, ${event.longitude}',
-    name: 'LocationViewModel',
-  );
-
-  final result = await _getAddressFromCoordinatesUseCase.call(
-    event.latitude,
-    event.longitude,
-  );
-
-  if (isClosed) return;
-
-  switch (result) {
-    case ApiSuccessResult():
-      emit(
-        state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          selectedLocation: result.data,
-          addressLine: result.data.addressLine,
-          city: result.data.city,
-          area: result.data.area,
-          failure: null,
-        ),
-      );
-
-    case ApiErrorResult():
-      // Handle rate limiting error specifically
-      if (result.failure.code == 'error_unknown' &&
-          (result.failure.errorMessage.contains('429') ||
-           result.failure.errorMessage.contains('Too many requests'))) {
-        developer.log('Rate limited - backing off', name: 'LocationViewModel');
-        emit(
-          state.copyWith(
-            isLoading: false,
-            errorMessage: 'يرجى الانتظار قليلاً قبل المحاولة مرة أخرى',
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            errorMessage: result.failure.errorMessage,
-            failure: result.failure,
-          ),
-        );
-      }
-  }
-}
   void _setSelectedLocation(SetSelectedLocationEvent event) {
     emit(
       state.copyWith(
@@ -397,11 +416,112 @@ class LocationViewModel extends Cubit<LocationState> {
         addressLine: event.location.addressLine,
         city: event.location.city,
         area: event.location.area,
+        buildingNo: event.location.buildingNo,
+        floorNo: event.location.floorNo,
+        apartmentNo: event.location.apartmentNo,
+        label: event.location.label,
         errorMessage: null,
         failure: null,
         isSuccess: true,
+        isAddressSaved: false,
       ),
     );
+  }
+
+  Future<void> _saveSelectedAddress(SaveSelectedAddressEvent event) async {
+    emit(
+      state.copyWith(
+        isLoading: true,
+        isSuccess: false,
+        isAddressSaved: false,
+        selectedLocation: event.location,
+        addressLine: event.location.addressLine,
+        city: event.location.city,
+        area: event.location.area,
+        buildingNo: event.location.buildingNo,
+        floorNo: event.location.floorNo,
+        apartmentNo: event.location.apartmentNo,
+        label: event.location.label,
+        errorMessage: null,
+        failure: null,
+      ),
+    );
+
+    await SavedLocationService.saveLocation(event.location);
+
+    final token = await _tokenService.getToken();
+    if (token == null || token.isEmpty) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          isAddressSaved: true,
+          errorMessage: null,
+          failure: null,
+        ),
+      );
+      return;
+    }
+
+    final profileResult = await _profileUseCase.call();
+    if (isClosed) return;
+
+    switch (profileResult) {
+      case ApiSuccessResult<ProfileResponseEntity>():
+        final request = AddCustomerAddressRequestDto(
+          contactName: profileResult.data.fullName.trim(),
+          contactPhone: profileResult.data.phone.trim(),
+          addressLine: event.location.addressLine.trim(),
+          label: event.location.label.trim().isEmpty
+              ? 'Home'
+              : event.location.label.trim(),
+          buildingNo: _nullIfEmpty(event.location.buildingNo),
+          floorNo: event.location.floorNo.trim(),
+          apartmentNo: event.location.apartmentNo.trim(),
+          city: event.location.city.trim(),
+          area: _nullIfEmpty(event.location.area),
+          latitude: event.location.latitude,
+          longitude: event.location.longitude,
+          isDefault: true,
+        );
+
+        final saveResult = await _addCustomerAddressUseCase.call(request);
+        if (isClosed) return;
+
+        switch (saveResult) {
+          case ApiSuccessResult():
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isAddressSaved: true,
+                errorMessage: null,
+                failure: null,
+              ),
+            );
+          case ApiErrorResult():
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isAddressSaved: false,
+                errorMessage: saveResult.failure.errorMessage,
+                failure: saveResult.failure,
+              ),
+            );
+        }
+      case ApiErrorResult<ProfileResponseEntity>():
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isAddressSaved: false,
+            errorMessage: profileResult.failure.errorMessage,
+            failure: profileResult.failure,
+          ),
+        );
+    }
+  }
+
+  String? _nullIfEmpty(String value) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 
   void clearFeedback() {
@@ -410,6 +530,7 @@ class LocationViewModel extends Cubit<LocationState> {
         errorMessage: null,
         failure: null,
         isSuccess: false,
+        isAddressSaved: false,
       ),
     );
   }

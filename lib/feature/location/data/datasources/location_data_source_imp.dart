@@ -9,10 +9,10 @@ import 'package:zadana_user_v3/feature/location/data/models/reverse_location_dto
 
 @Injectable(as: LocationDataSource)
 class LocationDataSourceImpl implements LocationDataSource {
-  final OsmApiServices api;
-  final LocationPermissionService permissionService;
 
   LocationDataSourceImpl(this.api, this.permissionService);
+  final OsmApiServices api;
+  final LocationPermissionService permissionService;
 
   /// 🔎 Search locations by name
   @override

@@ -18,7 +18,7 @@ class CustomSnackbar {
     _showSnackbar(
       context: context,
       message: message,
-      backgroundColor: const Color(0xFF1F9D67),
+      backgroundColor: const Color(0xFF49C98B),
       icon: Icons.check_circle_outline,
       duration: duration,
     );
@@ -98,20 +98,18 @@ class CustomSnackbar {
           curve: Curves.easeOut,
           reverseCurve: Curves.easeIn,
         );
-        final slideAnimation = Tween<Offset>(
-          begin: const Offset(0, 1.05),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: controller,
-            curve: Curves.easeOutCubic,
-            reverseCurve: Curves.easeInCubic,
-          ),
-        );
-        final scaleAnimation = Tween<double>(
-          begin: 0.98,
-          end: 1,
-        ).animate(
+        final slideAnimation =
+            Tween<Offset>(
+              begin: const Offset(0, 1.05),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: controller,
+                curve: Curves.easeOutCubic,
+                reverseCurve: Curves.easeInCubic,
+              ),
+            );
+        final scaleAnimation = Tween<double>(begin: 0.98, end: 1).animate(
           CurvedAnimation(
             parent: controller,
             curve: Curves.easeOutCubic,
@@ -285,16 +283,10 @@ class _SnackbarCard extends StatelessWidget {
               builder: (context, value, child) {
                 return Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: FractionallySizedBox(
-                    widthFactor: value,
-                    child: child,
-                  ),
+                  child: FractionallySizedBox(widthFactor: value, child: child),
                 );
               },
-              child: Container(
-                height: 2.5,
-                color: progressColor,
-              ),
+              child: Container(height: 2.5, color: progressColor),
             ),
           ],
         ),

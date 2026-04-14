@@ -207,9 +207,9 @@ class _ProductVisual extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
+          PositionedDirectional(
             top: 4,
-            left: 4,
+            end: 4,
             child: _FavoritePill(isFavorite: isFavorite, onTap: onFavoriteTap),
           ),
         ],
@@ -235,10 +235,7 @@ class _FavoritePill extends StatelessWidget {
           color: AppColors.white.withValues(alpha: 0.85),
           shape: BoxShape.circle,
           boxShadow: const [
-            BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 0.5,
-            ),
+            BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
           ],
         ),
         child: Icon(

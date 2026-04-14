@@ -4,7 +4,7 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
@@ -89,7 +89,7 @@ class _StartSelectLocationView extends StatelessWidget {
                   const SizedBox(height: Spacing.lg),
                   Center(
                     child: Image.asset(
-                      AppConstants.logoLight,
+                      Assets.logoDark,
                       height: 52,
                     ),
                   ),
@@ -106,7 +106,7 @@ class _StartSelectLocationView extends StatelessWidget {
                   ),
                   const Spacer(),
                   Center(
-                    child: Image.asset(AppConstants.locationImage),
+                    child: Image.asset(Assets.locationImage),
                   ),
                   const Spacer(),
                   SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
@@ -33,46 +34,62 @@ class ManualAddressFields extends StatelessWidget {
   }
 
   Widget _buildAddressField(BuildContext context) {
+    final l10n = context.localization;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel('العنوان التفصيلي *'),
+        AddressFormWidgets.buildFieldLabel(l10n.location_address_details_label),
         AppTextField(
           controller: addressController,
-          hint: 'مثال: شارع الجمهورية، بجوار مسجد النور',
+          hint: l10n.location_address_details_hint,
           keyboardType: TextInputType.streetAddress,
-          validator: (value) => value?.trim().isEmpty == true ? 'العنوان التفصيلي مطلوب' : null,
-          onChanged: (value) => context.read<LocationViewModel>().doIntent(UpdateManualAddressEvent(value)),
+          validator: (value) => value?.trim().isEmpty == true
+              ? l10n.location_address_details_required
+              : null,
+          onChanged: (value) => context.read<LocationViewModel>().doIntent(
+            UpdateManualAddressEvent(value),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildCityField(BuildContext context) {
+    final l10n = context.localization;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel('المدينة *'),
+        AddressFormWidgets.buildFieldLabel(l10n.location_city_label),
         AppTextField(
           controller: cityController,
-          hint: 'مثال: القاهرة',
-          validator: (value) => value?.trim().isEmpty == true ? 'المدينة مطلوبة' : null,
-          onChanged: (value) => context.read<LocationViewModel>().doIntent(UpdateCityEvent(value)),
+          hint: l10n.location_city_hint,
+          validator: (value) =>
+              value?.trim().isEmpty == true ? l10n.location_city_required : null,
+          onChanged: (value) => context.read<LocationViewModel>().doIntent(
+            UpdateCityEvent(value),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildAreaField(BuildContext context) {
+    final l10n = context.localization;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel('المنطقة *'),
+        AddressFormWidgets.buildFieldLabel(l10n.location_area_label),
         AppTextField(
           controller: areaController,
-          hint: 'مثال: المعادي',
-          validator: (value) => value?.trim().isEmpty == true ? 'المنطقة مطلوبة' : null,
-          onChanged: (value) => context.read<LocationViewModel>().doIntent(UpdateAreaEvent(value)),
+          hint: l10n.location_area_hint,
+          validator: (value) =>
+              value?.trim().isEmpty == true ? l10n.location_area_required : null,
+          onChanged: (value) => context.read<LocationViewModel>().doIntent(
+            UpdateAreaEvent(value),
+          ),
         ),
       ],
     );

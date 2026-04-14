@@ -36,6 +36,7 @@ class CategoryContent extends StatelessWidget {
     this.isLoading = false,
     this.errorFailure,
     this.onRetryError,
+    this.onSearchTap,
   });
 
   final List<CategoryEntity> categories;
@@ -61,6 +62,7 @@ class CategoryContent extends StatelessWidget {
   final bool isLoading;
   final Failure? errorFailure;
   final VoidCallback? onRetryError;
+  final VoidCallback? onSearchTap;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +76,7 @@ class CategoryContent extends StatelessWidget {
           color: color.surface,
           child: SearchBarWidget(
             locale: locale,
-            onFilterApplied: onFilterApplied,
+            onTap: onSearchTap,
           ),
         ),
         if (showCategoryChips)

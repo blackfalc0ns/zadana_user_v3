@@ -297,6 +297,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get auth_subtitle_signup => 'سو حساب جديد وابدأ';
 
   @override
+  String get login_hero_badge => 'مرحبا بعودتك';
+
+  @override
+  String get login_hero_title => 'تسجيل الدخول';
+
+  @override
+  String get login_hero_subtitle => 'سجل الدخول للمتابعة واستعراض المنتجات';
+
+  @override
+  String get login_section_badge => 'عضو';
+
+  @override
+  String get login_section_title => 'تسجيل دخول';
+
+  @override
+  String get login_section_description =>
+      'أدخل بريدك الإلكتروني أو رقم الجوال وكلمة المرور للوصول إلى حسابك.';
+
+  @override
   String get register_hero_badge => 'ابدأ التسوق';
 
   @override
@@ -352,10 +371,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hint_password => '********';
 
   @override
-  String get btn_login => 'دخول';
+  String get btn_login => 'تسجيل دخول';
 
   @override
-  String get btn_signup => 'تسجيل';
+  String get btn_signup => 'انشاء حساب';
 
   @override
   String get btn_forgot_password => 'نسيت كلمة المرور؟';
@@ -392,7 +411,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hint_new_password => 'اكتب كلمة المرور الجديدة';
 
   @override
-  String get btn_confirm => 'تأكيد';
+  String get btn_confirm => 'تم التغير بنجاح';
 
   @override
   String get msg_password_reset_success => 'تم تغيير كلمة المرور';
@@ -1334,6 +1353,174 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_guest_addresses_subtitle =>
       'يمكنك إضافة عنوان، لكن مزامنة البيانات تحتاج إلى تسجيل الدخول';
+
+  @override
+  String get location_building_details_page_title => 'تفاصيل المبنى';
+
+  @override
+  String get location_save_address => 'حفظ العنوان';
+
+  @override
+  String get location_building_details_heading => 'أدخل تفاصيل المبنى';
+
+  @override
+  String get location_building_details_subtitle =>
+      'أضف تفاصيل المبنى والشقة لإكمال عنوانك';
+
+  @override
+  String get location_address_label_title => 'تسمية العنوان *';
+
+  @override
+  String get location_address_label_hint => 'اختر تسمية العنوان';
+
+  @override
+  String get location_address_label_required => 'يرجى اختيار تسمية العنوان';
+
+  @override
+  String get location_address_label_home => 'المنزل';
+
+  @override
+  String get location_address_label_work => 'العمل';
+
+  @override
+  String get location_address_label_other => 'أخرى';
+
+  @override
+  String get location_building_number_label => 'رقم المبنى *';
+
+  @override
+  String get location_building_number_hint => 'مثال: 15';
+
+  @override
+  String get location_building_number_required => 'رقم المبنى مطلوب';
+
+  @override
+  String get location_floor_number_label => 'رقم الطابق';
+
+  @override
+  String get location_floor_number_hint => 'مثال: 3';
+
+  @override
+  String get location_apartment_number_label => 'رقم الشقة';
+
+  @override
+  String get location_apartment_number_hint => 'مثال: 5';
+
+  @override
+  String get location_manual_address_page_title => 'إدخال العنوان يدويًا';
+
+  @override
+  String get location_confirm_address => 'تأكيد العنوان';
+
+  @override
+  String get location_manual_address_heading => 'أدخل تفاصيل عنوانك';
+
+  @override
+  String get location_manual_address_subtitle =>
+      'املأ البيانات التالية لإضافة عنوانك الجديد';
+
+  @override
+  String get location_edit_address_page_title => 'تعديل العنوان';
+
+  @override
+  String get location_update_address => 'تحديث العنوان';
+
+  @override
+  String get location_edit_address_heading => 'عدّل تفاصيل عنوانك';
+
+  @override
+  String get location_edit_address_subtitle =>
+      'حدّث البيانات التالية ثم احفظ التغييرات';
+
+  @override
+  String get location_address_details_label => 'العنوان التفصيلي *';
+
+  @override
+  String get location_address_details_hint =>
+      'مثال: شارع الجمهورية، بجوار مسجد النور';
+
+  @override
+  String get location_address_details_required => 'العنوان التفصيلي مطلوب';
+
+  @override
+  String get location_city_label => 'المدينة *';
+
+  @override
+  String get location_city_hint => 'مثال: القاهرة';
+
+  @override
+  String get location_city_required => 'المدينة مطلوبة';
+
+  @override
+  String get location_area_label => 'المنطقة *';
+
+  @override
+  String get location_area_hint => 'مثال: المعادي';
+
+  @override
+  String get location_area_required => 'المنطقة مطلوبة';
+
+  @override
+  String addresses_summary_count(Object count) {
+    return 'عندك $count عنوان';
+  }
+
+  @override
+  String addresses_summary_default(String label) {
+    return 'الافتراضي الحالي: $label';
+  }
+
+  @override
+  String get addresses_primary_label => 'العنوان الرئيسي';
+
+  @override
+  String get addresses_default => 'افتراضي';
+
+  @override
+  String get addresses_current => 'العنوان الحالي';
+
+  @override
+  String get addresses_set_default => 'اجعله افتراضي';
+
+  @override
+  String get addresses_edit => 'تعديل';
+
+  @override
+  String get addresses_delete => 'حذف';
+
+  @override
+  String get addresses_delete_title => 'حذف العنوان';
+
+  @override
+  String addresses_delete_confirm(String label) {
+    return 'هل تريد حذف عنوان \"$label\"؟';
+  }
+
+  @override
+  String get addresses_delete_success => 'تم حذف العنوان بنجاح';
+
+  @override
+  String addresses_set_default_success(String label) {
+    return 'تم تحديد \"$label\" كعنوان افتراضي';
+  }
+
+  @override
+  String get addresses_edit_success => 'تم تحديث العنوان بنجاح';
+
+  @override
+  String addresses_meta_building(String value) {
+    return 'مبنى $value';
+  }
+
+  @override
+  String addresses_meta_floor(String value) {
+    return 'دور $value';
+  }
+
+  @override
+  String addresses_meta_apartment(String value) {
+    return 'شقة $value';
+  }
 
   @override
   String get profile_role_label => 'الدور';

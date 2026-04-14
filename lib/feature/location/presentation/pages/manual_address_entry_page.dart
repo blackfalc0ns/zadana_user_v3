@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
@@ -14,20 +15,36 @@ import 'package:zadana_user_v3/feature/location/presentation/widgets/building_fo
 import 'package:zadana_user_v3/feature/location/presentation/widgets/manual_address_fields.dart';
 
 class ManualAddressEntryPage extends StatelessWidget {
-  const ManualAddressEntryPage({super.key});
+  const ManualAddressEntryPage({super.key, this.initialLocation});
+
+  final LocationEntity? initialLocation;
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => getIt<LocationViewModel>(), child: const _ManualAddressEntryView());
+    return BlocProvider(
+      create: (_) {
+        final vm = getIt<LocationViewModel>();
+        if (initialLocation != null) {
+          vm.doIntent(SetSelectedLocationEvent(initialLocation!));
+        }
+        return vm;
+      },
+      child: _ManualAddressEntryView(initialLocation: initialLocation),
+    );
   }
 }
 
 class _ManualAddressEntryView extends StatefulWidget {
-  const _ManualAddressEntryView();
+  const _ManualAddressEntryView({this.initialLocation});
+
+  final LocationEntity? initialLocation;
+
   @override
   State<_ManualAddressEntryView> createState() => _ManualAddressEntryViewState();
 }
 
-class _ManualAddressEntryViewState extends State<_ManualAddressEntryView> with AddressFormMixin {
+class _ManualAddressEntryViewState extends State<_ManualAddressEntryView>
+    with AddressFormMixin {
   final _formKey = GlobalKey<FormState>();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
@@ -53,8 +70,14 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView> with A
 
   @override
   void dispose() {
-    for (var controller in [_addressController, _cityController, _areaController, 
-     _buildingController, _floorController, _apartmentController]) {
+    for (final controller in [
+      _addressController,
+      _cityController,
+      _areaController,
+      _buildingController,
+      _floorController,
+      _apartmentController,
+    ]) {
       controller.dispose();
     }
     super.dispose();
@@ -67,20 +90,39 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView> with A
     }
     final viewModel = context.read<LocationViewModel>();
     final manualLocation = LocationEntity(
-      addressLine: _addressController.text.trim(), city: _cityController.text.trim(),
-      area: _areaController.text.trim(), latitude: 0.0, longitude: 0.0,
-      buildingNo: _buildingController.text.trim(), floorNo: _floorController.text.trim(),
-      apartmentNo: _apartmentController.text.trim(), label: viewModel.state.label,
+      addressLine: _addressController.text.trim(),
+      city: _cityController.text.trim(),
+      area: _areaController.text.trim(),
+      latitude: 0.0,
+      longitude: 0.0,
+      buildingNo: _buildingController.text.trim(),
+      floorNo: _floorController.text.trim(),
+      apartmentNo: _apartmentController.text.trim(),
+      label: viewModel.state.label,
     );
     viewModel.doIntent(SetSelectedLocationEvent(manualLocation));
+    if (widget.initialLocation != null) {
+      Navigator.pop<LocationEntity>(context, manualLocation);
+      return;
+    }
+
     Navigator.pop<LocationEntity>(context, manualLocation);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.localization;
+    final isEditMode = widget.initialLocation != null;
+
     return AddressFormPage(
-      title: 'إدخال العنوان يدوياً', confirmButtonText: 'تأكيد العنوان',
-      isLoading: false, onConfirm: _onConfirm,
+      title: isEditMode
+          ? l10n.location_edit_address_page_title
+          : l10n.location_manual_address_page_title,
+      confirmButtonText: isEditMode
+          ? l10n.location_update_address
+          : l10n.location_confirm_address,
+      isLoading: false,
+      onConfirm: _onConfirm,
       formContent: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -88,24 +130,41 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView> with A
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('أدخل تفاصيل عنوانك', style: AppTextStyles.h2),
+              Text(
+                isEditMode
+                    ? l10n.location_edit_address_heading
+                    : l10n.location_manual_address_heading,
+                style: AppTextStyles.h2,
+              ),
               const SizedBox(height: Spacing.sm),
-              Text('املأ البيانات التالية لإضافة عنوانك الجديد',
-                   style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+              Text(
+                isEditMode
+                    ? l10n.location_edit_address_subtitle
+                    : l10n.location_manual_address_subtitle,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
               const SizedBox(height: Spacing.xl),
               ManualAddressFields(
-                addressController: _addressController, cityController: _cityController,
+                addressController: _addressController,
+                cityController: _cityController,
                 areaController: _areaController,
               ),
               const SizedBox(height: Spacing.lg),
               BuildingFormFields(
-                buildingController: _buildingController, floorController: _floorController,
+                buildingController: _buildingController,
+                floorController: _floorController,
                 apartmentController: _apartmentController,
               ),
               const SizedBox(height: Spacing.lg),
-              AddressFormWidgets.buildFieldLabel('تسمية العنوان *'),
+              AddressFormWidgets.buildFieldLabel(
+                l10n.location_address_label_title,
+              ),
               AddressFormWidgets.buildLabelDropdown(
-                selectedLabel: selectedLabel, labelOptions: labelOptions, onChanged: onLabelChanged,
+                selectedLabel: selectedLabel,
+                labelOptions: labelOptions,
+                onChanged: onLabelChanged,
               ),
               const SizedBox(height: Spacing.xxl),
             ],

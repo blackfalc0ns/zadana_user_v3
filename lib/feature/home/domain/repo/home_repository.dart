@@ -13,10 +13,10 @@ abstract class HomeRepository {
   Future<ApiResult<HomeAppBarEntity>> getHomeAppBar();
   Future<ApiResult<HomeBannerEntity>> getHomeBanners();
   Future<ApiResult<HomeCategoriesEntity>> getHomeCategories();
-  Future<ApiResult<HomeBestSellingEntity>> getHomeBestSelling();
-  Future<ApiResult<HomeBrandsEntity>> getHomeBrands();
-  Future<ApiResult<HomeRecommendedEntity>> getHomeRecommended();
+  Future<ApiResult<HomeBestSellingEntity>> getHomeBestSelling({int? take});
+  Future<ApiResult<HomeBrandsEntity>> getHomeBrands({int? take});
+  Future<ApiResult<HomeRecommendedEntity>> getHomeRecommended({int? take});
   Future<ApiResult<HomeFeaturedEntity>> getHomeFeaturedProducts();
-  Future<ApiResult<HomeSpecialOffersEntity>> getHomeSpecialOffers();
-  Future<ApiResult<HomeExploreMoreEntity>> getHomeExploreMore();
+  Future<ApiResult<HomeSpecialOffersEntity>> getHomeSpecialOffers({int? take});
+  Future<ApiResult<List<HomeExploreMoreEntity>>> getHomeExploreMore();
 }

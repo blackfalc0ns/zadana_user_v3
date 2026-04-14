@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_part_item_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_content.dart';
@@ -50,6 +56,7 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.isLoading = false,
     this.errorFailure,
     this.onRetryError,
+    this.onSearchTap,
   });
 
   final List<CategoryEntity> categories;
@@ -89,6 +96,7 @@ class ReusableCategoryScreen extends StatefulWidget {
   final bool isLoading;
   final Failure? errorFailure;
   final VoidCallback? onRetryError;
+  final VoidCallback? onSearchTap;
 
   @override
   State<ReusableCategoryScreen> createState() => _ReusableCategoryScreenState();
@@ -96,11 +104,19 @@ class ReusableCategoryScreen extends StatefulWidget {
 
 class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   late String? _tempFilterCategory;
+  late String? _tempSubCategoryName;
+  late String? _tempSubCategoryId;
   late String? _tempFilterQuantity;
   late String? _tempFilterBrand;
   late String? _tempFilterProductType;
   late String? _tempFilterPart;
   late RangeValues _tempPriceRange;
+  late RangeValues _tempPriceBounds;
+  late List<CategorySubcategoryItemDto> _tempSubCategories;
+  late List<CategoryFilterOptionDto> _tempQuantityOptions;
+  late List<CategoryFilterBrandItemDto> _tempBrandOptions;
+  late List<CategoryFilterOptionDto> _tempProductTypeOptions;
+  late List<CategoryFilterPartItemDto> _tempPartOptions;
 
   @override
   void initState() {
@@ -108,15 +124,174 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     _resetTempFilters();
   }
 
+  @override
+  void didUpdateWidget(covariant ReusableCategoryScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedCategory != oldWidget.selectedCategory ||
+        widget.filterSelectedCategory != oldWidget.filterSelectedCategory ||
+        widget.filterSelectedQuantity != oldWidget.filterSelectedQuantity ||
+        widget.filterSelectedBrand != oldWidget.filterSelectedBrand ||
+        widget.selectedProductType != oldWidget.selectedProductType ||
+        widget.selectedPart != oldWidget.selectedPart ||
+        widget.selectedSubCategory != oldWidget.selectedSubCategory ||
+        widget.selectedSubCategoryId != oldWidget.selectedSubCategoryId ||
+        widget.subCategories != oldWidget.subCategories ||
+        widget.priceRange != oldWidget.priceRange ||
+        widget.priceBounds != oldWidget.priceBounds ||
+        widget.availableQuantities != oldWidget.availableQuantities ||
+        widget.availableBrands != oldWidget.availableBrands ||
+        widget.availableProductTypes != oldWidget.availableProductTypes ||
+        widget.availableParts != oldWidget.availableParts) {
+      _resetTempFilters();
+    }
+  }
+
   void _resetTempFilters() {
     _tempFilterCategory =
         widget.filterSelectedCategory ??
         (widget.showCategoryFilterSection ? null : widget.selectedCategory);
+    _tempSubCategoryName = widget.selectedSubCategory.isEmpty
+        ? null
+        : widget.selectedSubCategory;
+    _tempSubCategoryId = widget.selectedSubCategoryId;
     _tempFilterQuantity = widget.filterSelectedQuantity;
     _tempFilterBrand = widget.filterSelectedBrand;
     _tempFilterProductType = widget.selectedProductType;
     _tempFilterPart = widget.selectedPart;
     _tempPriceRange = widget.priceRange;
+    _tempPriceBounds = widget.priceBounds;
+    _tempSubCategories = List<CategorySubcategoryItemDto>.from(
+      widget.subCategories,
+    );
+    _tempQuantityOptions = widget.availableQuantities
+        .map((item) => CategoryFilterOptionDto(name: item))
+        .toList(growable: false);
+    _tempBrandOptions = widget.availableBrands
+        .map((item) => CategoryFilterBrandItemDto(name: item))
+        .toList(growable: false);
+    _tempProductTypeOptions = widget.availableProductTypes
+        .map((item) => CategoryFilterOptionDto(name: item))
+        .toList(growable: false);
+    _tempPartOptions = widget.availableParts
+        .map((item) => CategoryFilterPartItemDto(name: item))
+        .toList(growable: false);
+  }
+
+  CategoryEntity? _findCategoryByName(String? categoryName) {
+    if (categoryName == null || categoryName.isEmpty) return null;
+
+    for (final category in widget.categories) {
+      if (category.name == categoryName) {
+        return category;
+      }
+    }
+
+    return null;
+  }
+
+  String? _findProductTypeIdByName(String? productTypeName) {
+    if (productTypeName == null || productTypeName.isEmpty) return null;
+
+    for (final option in _tempProductTypeOptions) {
+      if (option.name == productTypeName) {
+        return option.id;
+      }
+    }
+
+    return null;
+  }
+
+  List<String> _visibleTempParts() {
+    final selectedProductTypeId = _findProductTypeIdByName(_tempFilterProductType);
+
+    return _tempPartOptions
+        .where(
+          (item) =>
+              selectedProductTypeId == null ||
+              selectedProductTypeId.isEmpty ||
+              item.productTypeId == null ||
+              item.productTypeId == selectedProductTypeId,
+        )
+        .map((item) => item.name?.trim() ?? '')
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  Future<void> _loadTempCategoryFilters(
+    String? categoryName,
+    StateSetter setSheetState,
+  ) async {
+    final category = _findCategoryByName(categoryName);
+
+    if (category == null) {
+      setSheetState(_resetTempFilters);
+      return;
+    }
+
+    setSheetState(() {
+      _tempSubCategoryName = null;
+      _tempSubCategoryId = null;
+      _tempFilterQuantity = null;
+      _tempFilterBrand = null;
+      _tempFilterProductType = null;
+      _tempFilterPart = null;
+    });
+
+    try {
+      final results = await Future.wait<dynamic>([
+        getIt<ApiServices>().getCategoryFilters(category.id),
+        getIt<ApiServices>().getCategorySubcategories(category.id),
+      ]);
+      if (!mounted) return;
+
+      setSheetState(() {
+        _applyTempCategoryFilters(
+          results[0] as CategoryFiltersResponseModelDto,
+          subCategories: results[1] as List<CategorySubcategoryItemDto>,
+        );
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setSheetState(() {
+        _tempSubCategories = const [];
+        _tempQuantityOptions = const [];
+        _tempBrandOptions = const [];
+        _tempProductTypeOptions = const [];
+        _tempPartOptions = const [];
+        _tempPriceBounds = widget.priceBounds;
+        _tempPriceRange = widget.priceBounds;
+      });
+    }
+  }
+
+  void _applyTempCategoryFilters(
+    CategoryFiltersResponseModelDto filters, {
+    List<CategorySubcategoryItemDto>? subCategories,
+  }) {
+    _tempSubCategories = (subCategories ?? filters.subcategories ?? const [])
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
+        .toList(growable: false);
+    _tempQuantityOptions = (filters.quantities ?? const [])
+        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .toList(growable: false);
+    _tempBrandOptions = (filters.brands ?? const [])
+        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .toList(growable: false);
+    _tempProductTypeOptions = (filters.productTypes ?? const [])
+        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .toList(growable: false);
+    _tempPartOptions = (filters.parts ?? const [])
+        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .toList(growable: false);
+
+    final minPrice = filters.priceRange?.min ?? 0;
+    final maxPrice = filters.priceRange?.max ?? minPrice;
+    final normalizedMax = maxPrice >= minPrice ? maxPrice : minPrice;
+    _tempPriceBounds = RangeValues(minPrice, normalizedMax);
+    _tempPriceRange = _tempPriceBounds;
   }
 
   void _showBottomSheet(
@@ -185,6 +360,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               isLoading: widget.isLoading,
               errorFailure: widget.errorFailure,
               onRetryError: widget.onRetryError,
+              onSearchTap: widget.onSearchTap,
             ),
             if (!widget.isLoading)
               Positioned(
@@ -223,18 +399,29 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                 showCategorySection:
                                     widget.showCategoryFilterSection,
                                 categories: widget.categories,
-                                quantities: widget.availableQuantities,
-                                brands: widget.availableBrands,
-                                productTypes: widget.availableProductTypes,
-                                parts: widget.availableParts,
+                                subCategories: _tempSubCategories,
+                                quantities: _tempQuantityOptions
+                                    .map((item) => item.name?.trim() ?? '')
+                                    .where((item) => item.isNotEmpty)
+                                    .toList(),
+                                brands: _tempBrandOptions
+                                    .map((item) => item.name?.trim() ?? '')
+                                    .where((item) => item.isNotEmpty)
+                                    .toList(growable: false),
+                                productTypes: _tempProductTypeOptions
+                                    .map((item) => item.name?.trim() ?? '')
+                                    .where((item) => item.isNotEmpty)
+                                    .toList(growable: false),
+                                parts: _visibleTempParts(),
                                 selectedCategory: _tempFilterCategory,
+                                selectedSubCategoryId: _tempSubCategoryId,
                                 selectedQuantity: _tempFilterQuantity,
                                 selectedBrand: _tempFilterBrand,
                                 selectedProductType: _tempFilterProductType,
                                 selectedPart: _tempFilterPart,
                                 priceRange: _tempPriceRange,
-                                priceBounds: widget.priceBounds,
-                                onCategorySelected: (category) {
+                                priceBounds: _tempPriceBounds,
+                                onCategorySelected: (category) async {
                                   setSheetState(() {
                                     _tempFilterCategory = category;
                                     _tempFilterQuantity = null;
@@ -242,9 +429,25 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                     _tempFilterProductType = null;
                                     _tempFilterPart = null;
                                   });
+                                  await _loadTempCategoryFilters(
+                                    category,
+                                    setSheetState,
+                                  );
                                   if (category != null) {
                                     _scrollSheetTo(sheetScrollController, 170);
                                   }
+                                },
+                                onSubCategorySelected: (subCategory) {
+                                  setSheetState(() {
+                                    final isSame =
+                                        _tempSubCategoryId == subCategory.id;
+                                    _tempSubCategoryId = isSame
+                                        ? null
+                                        : subCategory.id;
+                                    _tempSubCategoryName = isSame
+                                        ? null
+                                        : subCategory.name;
+                                  });
                                 },
                                 onQuantitySelected: (quantity) {
                                   setSheetState(
@@ -271,6 +474,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                             ],
                             onApply: () => Navigator.pop(sheetContext, {
                               'category': _tempFilterCategory,
+                              'subCategoryId': _tempSubCategoryId,
+                              'subCategoryName': _tempSubCategoryName,
                               'quantity': _tempFilterQuantity,
                               'brand': _tempFilterBrand,
                               'productType': _tempFilterProductType,
@@ -287,6 +492,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                 _tempFilterBrand = null;
                                 _tempFilterProductType = null;
                                 _tempFilterPart = null;
+                                _tempSubCategoryId = null;
+                                _tempSubCategoryName = null;
                                 _tempPriceRange = widget.priceBounds;
                               });
                               widget.onClearAllFilters();

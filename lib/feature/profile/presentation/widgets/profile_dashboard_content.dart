@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
@@ -17,14 +15,18 @@ class ProfileDashboardContent extends StatelessWidget {
     required this.profile,
     required this.notificationsEnabled,
     required this.onNotificationsChanged,
+    required this.onLanguageTap,
     required this.onLogout,
+    required this.onEditTap,
   });
 
   final AppLocalizations l10n;
   final ProfileResponseEntity profile;
   final bool notificationsEnabled;
   final ValueChanged<bool> onNotificationsChanged;
+  final VoidCallback onLanguageTap;
   final VoidCallback onLogout;
+  final Future<void> Function() onEditTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,153 +38,101 @@ class ProfileDashboardContent extends StatelessWidget {
             name: profile.fullName,
             phone: profile.phone,
             email: profile.email,
-            onEditTap: () =>
-                Navigator.of(context).pushNamed(AppRoutes.editProfile),
+            onEditTap: onEditTap,
           ),
         ),
-        SliverToBoxAdapter(child: const SizedBox(height: Spacing.lg)),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    iconColor: AppColors.primary,
-                    icon: Icons.favorite_border_rounded,
-                    value: profile.favoritesCount.toString(),
-                    label: l10n.favorites,
-                  ),
-                ),
-                const SizedBox(width: Spacing.sm),
-                Expanded(
-                  child: _StatCard(
-                    iconColor: AppColors.secondary,
-                    icon: Icons.badge_outlined,
-                    value: profile.role,
-                    label: l10n.profile_role_label,
-                  ),
-                ),
-                const SizedBox(width: Spacing.sm),
-                Expanded(
-                  child: _StatCard(
-                    iconColor: AppColors.success,
-                    icon: Icons.verified_user_outlined,
-                    value: l10n.profile_status_active,
-                    label: l10n.profile_status_label,
-                  ),
-                ),
-              ],
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
+        _ProfileSectionSliver(
+          title: l10n.account,
+          items: [
+            _ProfileActionItem(
+              icon: Icons.person_outline_rounded,
+              title: l10n.personal_info,
+              subtitle: l10n.profile_edit_subtitle,
+              onTap: onEditTap,
             ),
-          ),
-        ),
-        SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
-        SliverToBoxAdapter(
-          child: _ProfileSection(
-            title: l10n.account,
-            child: Column(
-              children: [
-                ProfileActionTile(
-                  icon: Icons.person_outline_rounded,
-                  title: l10n.personal_info,
-                  subtitle: l10n.profile_edit_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.editProfile),
-                ),
-                ProfileActionTile(
-                  icon: Icons.location_on_outlined,
-                  title: l10n.addresses,
-                  subtitle: l10n.profile_addresses_subtitle,
-                  onTap: () => Navigator.of(
-                    context,
-                  ).pushNamed(AppRoutes.startSelectLocationPage),
-                ),
-                ProfileActionTile(
-                  icon: Icons.receipt_long_outlined,
-                  title: l10n.nav_orders,
-                  subtitle: l10n.profile_orders_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.myOrdersPage),
-                ),
-              ],
+            _ProfileActionItem(
+              icon: Icons.location_on_outlined,
+              title: l10n.addresses,
+              subtitle: l10n.profile_addresses_subtitle,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.customerAddresses),
             ),
-          ),
-        ),
-        SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
-        SliverToBoxAdapter(
-          child: _ProfileSection(
-            title: l10n.settings,
-            child: Column(
-              children: [
-                ProfileActionTile(
-                  icon: Icons.language_rounded,
-                  title: l10n.language,
-                  subtitle: l10n.profile_language_subtitle,
-                  onTap: () {},
-                ),
-                ProfileActionTile(
-                  icon: Icons.notifications_none_rounded,
-                  title: l10n.notifications,
-                  subtitle: l10n.profile_notifications_subtitle,
-                  trailing: Switch(
-                    value: notificationsEnabled,
-                    onChanged: onNotificationsChanged,
-                  ),
-                  onTap: () => onNotificationsChanged(!notificationsEnabled),
-                ),
-                ProfileActionTile(
-                  icon: Icons.lock_outline_rounded,
-                  title: l10n.change_password,
-                  subtitle: l10n.profile_password_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.forgetPassword),
-                ),
-              ],
+            _ProfileActionItem(
+              icon: Icons.receipt_long_outlined,
+              title: l10n.nav_orders,
+              subtitle: l10n.profile_orders_subtitle,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.myOrdersPage),
             ),
-          ),
+          ],
         ),
-        SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
-        SliverToBoxAdapter(
-          child: _ProfileSection(
-            title: l10n.help_support,
-            child: Column(
-              children: [
-                ProfileActionTile(
-                  icon: Icons.support_agent_rounded,
-                  title: l10n.help_support,
-                  subtitle: l10n.profile_help_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.helpSupport),
-                ),
-                ProfileActionTile(
-                  icon: Icons.quiz_outlined,
-                  title: l10n.faq,
-                  subtitle: l10n.profile_faq_subtitle,
-                  onTap: () => Navigator.of(context).pushNamed(AppRoutes.faq),
-                ),
-                ProfileActionTile(
-                  icon: Icons.info_outline_rounded,
-                  title: l10n.about_app,
-                  subtitle: l10n.profile_about_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.aboutApp),
-                ),
-                ProfileActionTile(
-                  icon: Icons.privacy_tip_outlined,
-                  title: l10n.privacy_policy,
-                  subtitle: l10n.profile_privacy_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.privacyPolicy),
-                ),
-              ],
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
+        _ProfileSectionSliver(
+          title: l10n.settings,
+          items: [
+            _ProfileActionItem(
+              icon: Icons.language_rounded,
+              title: l10n.language,
+              subtitle: l10n.profile_language_subtitle,
+              onTap: onLanguageTap,
             ),
-          ),
+            _ProfileActionItem(
+              icon: Icons.notifications_none_rounded,
+              title: l10n.notifications,
+              subtitle: l10n.profile_notifications_subtitle,
+              trailing: Switch(
+                value: notificationsEnabled,
+                onChanged: onNotificationsChanged,
+              ),
+              onTap: () => onNotificationsChanged(!notificationsEnabled),
+            ),
+            _ProfileActionItem(
+              icon: Icons.lock_outline_rounded,
+              title: l10n.change_password,
+              subtitle: l10n.profile_password_subtitle,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.forgetPassword),
+            ),
+          ],
         ),
-        SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
-        SliverToBoxAdapter(
-          child: _ProfileSection(
-            title: l10n.account,
-            child: ProfileActionTile(
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
+        _ProfileSectionSliver(
+          title: l10n.help_support,
+          items: [
+            _ProfileActionItem(
+              icon: Icons.support_agent_rounded,
+              title: l10n.help_support,
+              subtitle: l10n.profile_help_subtitle,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.helpSupport),
+            ),
+            _ProfileActionItem(
+              icon: Icons.quiz_outlined,
+              title: l10n.faq,
+              subtitle: l10n.profile_faq_subtitle,
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.faq),
+            ),
+            _ProfileActionItem(
+              icon: Icons.info_outline_rounded,
+              title: l10n.about_app,
+              subtitle: l10n.profile_about_subtitle,
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.aboutApp),
+            ),
+            _ProfileActionItem(
+              icon: Icons.privacy_tip_outlined,
+              title: l10n.privacy_policy,
+              subtitle: l10n.profile_privacy_subtitle,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.privacyPolicy),
+            ),
+          ],
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
+        _ProfileSectionSliver(
+          title: l10n.account,
+          items: [
+            _ProfileActionItem(
               icon: Icons.logout_rounded,
               title: l10n.logout,
               subtitle: l10n.profile_logout_subtitle,
@@ -190,7 +140,7 @@ class ProfileDashboardContent extends StatelessWidget {
               titleColor: AppColors.error,
               onTap: onLogout,
             ),
-          ),
+          ],
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 120)),
       ],
@@ -204,11 +154,13 @@ class GuestProfileDashboardContent extends StatelessWidget {
     required this.l10n,
     required this.onLogin,
     required this.onSignUp,
+    required this.onLanguageTap,
   });
 
   final AppLocalizations l10n;
   final VoidCallback onLogin;
   final VoidCallback onSignUp;
+  final VoidCallback onLanguageTap;
 
   @override
   Widget build(BuildContext context) {
@@ -221,43 +173,30 @@ class GuestProfileDashboardContent extends StatelessWidget {
             onSignUp: onSignUp,
           ),
         ),
-        SliverToBoxAdapter(child: const SizedBox(height: Spacing.base)),
-        SliverToBoxAdapter(
-          child: _ProfileSection(
-            title: l10n.profile_guest_explore_title,
-            child: Column(
-              children: [
-                ProfileActionTile(
-                  icon: Icons.language_rounded,
-                  title: l10n.language,
-                  subtitle: l10n.profile_language_subtitle,
-                  onTap: () {},
-                ),
-                ProfileActionTile(
-                  icon: Icons.location_on_outlined,
-                  title: l10n.addresses,
-                  subtitle: l10n.profile_guest_addresses_subtitle,
-                  onTap: () => Navigator.of(
-                    context,
-                  ).pushNamed(AppRoutes.startSelectLocationPage),
-                ),
-                ProfileActionTile(
-                  icon: Icons.support_agent_rounded,
-                  title: l10n.help_support,
-                  subtitle: l10n.profile_help_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.helpSupport),
-                ),
-                ProfileActionTile(
-                  icon: Icons.info_outline_rounded,
-                  title: l10n.about_app,
-                  subtitle: l10n.profile_about_subtitle,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.aboutApp),
-                ),
-              ],
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
+        _ProfileSectionSliver(
+          title: l10n.profile_guest_explore_title,
+          items: [
+            _ProfileActionItem(
+              icon: Icons.language_rounded,
+              title: l10n.language,
+              subtitle: l10n.profile_language_subtitle,
+              onTap: onLanguageTap,
             ),
-          ),
+            _ProfileActionItem(
+              icon: Icons.support_agent_rounded,
+              title: l10n.help_support,
+              subtitle: l10n.profile_help_subtitle,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.helpSupport),
+            ),
+            _ProfileActionItem(
+              icon: Icons.info_outline_rounded,
+              title: l10n.about_app,
+              subtitle: l10n.profile_about_subtitle,
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.aboutApp),
+            ),
+          ],
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 120)),
       ],
@@ -421,54 +360,63 @@ class _ProfileSection extends StatelessWidget {
   }
 }
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.iconColor,
-  });
+class _ProfileSectionSliver extends StatelessWidget {
+  const _ProfileSectionSliver({required this.title, required this.items});
 
-  final IconData icon;
-  final Color iconColor;
-  final String value;
-  final String label;
+  final String title;
+  final List<_ProfileActionItem> items;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.sm,
-        vertical: Spacing.md,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: iconColor.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: iconColor, size: 20),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: getSemiBoldStyle(
-              color: iconColor,
-              fontSize: 14,
-              fontFamily: FontConstant.cairo,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: getMediumStyle(fontSize: 12, fontFamily: FontConstant.cairo),
-          ),
-        ],
+    return SliverToBoxAdapter(
+      child: _ProfileSection(
+        title: title,
+        child: _ProfileActionList(items: items),
       ),
     );
   }
+}
+
+class _ProfileActionList extends StatelessWidget {
+  const _ProfileActionList({required this.items});
+
+  final List<_ProfileActionItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (final item in items)
+          ProfileActionTile(
+            icon: item.icon,
+            title: item.title,
+            subtitle: item.subtitle,
+            trailing: item.trailing,
+            iconColor: item.iconColor,
+            titleColor: item.titleColor,
+            onTap: item.onTap,
+          ),
+      ],
+    );
+  }
+}
+
+class _ProfileActionItem {
+  const _ProfileActionItem({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.trailing,
+    this.iconColor,
+    this.titleColor,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final Widget? trailing;
+  final Color? iconColor;
+  final Color? titleColor;
 }
