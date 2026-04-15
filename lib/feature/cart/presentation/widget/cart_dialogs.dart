@@ -13,7 +13,6 @@ void showDeleteItemDialog({
 
   showDialog(
     context: context,
-    barrierDismissible: true,
     builder: (_) => _CartActionDialog(
       icon: Icons.delete_outline_rounded,
       title: locale.delete_item,
@@ -32,7 +31,6 @@ void showClearCartDialog({
 
   showDialog(
     context: context,
-    barrierDismissible: true,
     builder: (_) => _CartActionDialog(
       icon: Icons.remove_shopping_cart_outlined,
       title: locale.clear_cart,
@@ -235,4 +233,3 @@ class _CartActionDialog extends StatelessWidget {
     );
   }
 }
-

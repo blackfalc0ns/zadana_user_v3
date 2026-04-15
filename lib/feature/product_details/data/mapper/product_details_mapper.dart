@@ -38,7 +38,8 @@ extension SimilarProductModelDtoMapper on SimilarProductModelDto {
   }
 }
 
-extension ProductDetailsResponseModelDtoMapper on ProductDetailsResponseModelDto {
+extension ProductDetailsResponseModelDtoMapper
+    on ProductDetailsResponseModelDto {
   ProductDetailsEntity toEntity() {
     final resolvedImageUrl = _resolveImageUrl(imageUrl);
     final galleryImages = (images ?? const <String>[])
@@ -57,7 +58,9 @@ extension ProductDetailsResponseModelDtoMapper on ProductDetailsResponseModelDto
       imageUrl: resolvedImageUrl,
       images: galleryImages.isNotEmpty
           ? galleryImages
-          : (resolvedImageUrl.isNotEmpty ? <String>[resolvedImageUrl] : const []),
+          : (resolvedImageUrl.isNotEmpty
+                ? <String>[resolvedImageUrl]
+                : const []),
       rating: rating,
       reviewCount: reviewCount,
       discount: discount,

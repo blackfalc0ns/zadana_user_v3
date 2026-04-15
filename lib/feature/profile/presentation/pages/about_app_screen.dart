@@ -18,9 +18,7 @@ class AboutAppScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: color.surfaceContainerLowest,
-      appBar: CustomAppBar(
-        title: l10n.about_app_title,
-      ),
+      appBar: CustomAppBar(title: l10n.about_app_title),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
           Spacing.lg,
@@ -64,7 +62,7 @@ class AboutAppScreen extends StatelessWidget {
                   fontSize: FontSize.size14,
                   fontFamily: FontConstant.cairo,
                   color: color.onSurfaceVariant,
-                //  height: 1.7,
+                  //  height: 1.7,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -76,4 +74,3 @@ class AboutAppScreen extends StatelessWidget {
     );
   }
 }
-

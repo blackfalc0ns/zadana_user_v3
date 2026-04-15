@@ -61,7 +61,9 @@ class CustomVerticalFilterChip extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: color.shadow.withValues(alpha: isSelected ? 0.12 : 0.06),
+                  color: color.shadow.withValues(
+                    alpha: isSelected ? 0.12 : 0.06,
+                  ),
                   blurRadius: isSelected ? 8 : 4,
                   offset: const Offset(0, 2),
                 ),

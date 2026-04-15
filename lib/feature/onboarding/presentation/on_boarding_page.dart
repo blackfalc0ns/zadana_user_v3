@@ -23,10 +23,7 @@ class StartPage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color.primary,
-                  color.primary.withOpacity(0.8),
-                ],
+                colors: [color.primary, color.primary.withOpacity(0.8)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -48,7 +45,6 @@ class StartPage extends StatelessWidget {
                       Assets.logoLight,
                       height: 40,
                       fit: BoxFit.contain,
-                     
                     ),
                   ),
 
@@ -131,4 +127,3 @@ class StartPage extends StatelessWidget {
     );
   }
 }
-

@@ -22,14 +22,7 @@ class LoginViewModel extends Cubit<LoginState> {
   }
 
   Future<void> _loginUser(LoginRequestEntity requestEntity) async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, isSuccess: false));
 
     developer.log(
       'Logging in user: ${requestEntity.identifier}',
@@ -45,7 +38,6 @@ class LoginViewModel extends Cubit<LoginState> {
             isLoading: false,
             isSuccess: true,
             loginResponse: result.data,
-            failure: null,
           ),
         );
       case ApiErrorResult():
@@ -61,12 +53,6 @@ class LoginViewModel extends Cubit<LoginState> {
   }
 
   void clearFeedback() {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isSuccess: false));
   }
 }

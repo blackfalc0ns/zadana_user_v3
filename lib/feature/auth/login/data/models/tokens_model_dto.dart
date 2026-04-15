@@ -7,24 +7,17 @@ part 'tokens_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class TokensModelDto {
-  final String accessToken;
-  final String? refreshToken;
-
-  const TokensModelDto({
-    required this.accessToken,
-    this.refreshToken,
-  });
+  const TokensModelDto({required this.accessToken, this.refreshToken});
 
   factory TokensModelDto.fromJson(Map<String, dynamic> json) =>
       _$TokensModelDtoFromJson(json);
+  final String accessToken;
+  final String? refreshToken;
 
   Map<String, dynamic> toJson() => _$TokensModelDtoToJson(this);
 
   /// Convert to entity
   TokensEntity toEntity() {
-    return TokensEntity(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    );
+    return TokensEntity(accessToken: accessToken, refreshToken: refreshToken);
   }
 }

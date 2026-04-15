@@ -10,28 +10,21 @@ import 'package:zadana_user_v3/feature/payment/presentation/widgets/price_breakd
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/promo_code_card.dart';
 
 class PaymentCardsSection extends StatelessWidget {
-  final String selectedPaymentMethod;
-  final ValueChanged<String> onPaymentMethodChanged;
-
   const PaymentCardsSection({
     super.key,
     required this.selectedPaymentMethod,
     required this.onPaymentMethodChanged,
   });
+  final String selectedPaymentMethod;
+  final ValueChanged<String> onPaymentMethodChanged;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AnimatedCardWrapper(
-          delay: 100,
-          child: const OrderSummaryCard(),
-        ),
+        const AnimatedCardWrapper(delay: 100, child: OrderSummaryCard()),
         const SizedBox(height: Spacing.md),
-        AnimatedCardWrapper(
-          delay: 200,
-          child: const DeliveryInfoCard(),
-        ),
+        const AnimatedCardWrapper(delay: 200, child: DeliveryInfoCard()),
         const SizedBox(height: Spacing.md),
         AnimatedCardWrapper(
           delay: 250,
@@ -54,14 +47,11 @@ class PaymentCardsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: Spacing.md),
-        AnimatedCardWrapper(
-          delay: 400,
-          child: const PromoCodeCard(),
-        ),
+        const AnimatedCardWrapper(delay: 400, child: PromoCodeCard()),
         const SizedBox(height: Spacing.md),
-        AnimatedCardWrapper(
+        const AnimatedCardWrapper(
           delay: 500,
-          child: const PriceBreakdownCard(
+          child: PriceBreakdownCard(
             subtotal: '125.50',
             shipping: 'مجاني',
             discount: '-15.50',

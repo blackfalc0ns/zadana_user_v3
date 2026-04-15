@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
@@ -65,11 +65,11 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
       if (!mounted || _isConfirmingLocation) return;
 
       context.read<LocationViewModel>().doIntent(
-            GetAddressFromCoordinatesEvent(
-              latitude: center.latitude,
-              longitude: center.longitude,
-            ),
-          );
+        GetAddressFromCoordinatesEvent(
+          latitude: center.latitude,
+          longitude: center.longitude,
+        ),
+      );
     });
   }
 
@@ -85,11 +85,11 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
       if (!mounted) return;
 
       context.read<LocationViewModel>().doIntent(
-            GetAddressFromCoordinatesEvent(
-              latitude: center.latitude,
-              longitude: center.longitude,
-            ),
-          );
+        GetAddressFromCoordinatesEvent(
+          latitude: center.latitude,
+          longitude: center.longitude,
+        ),
+      );
     });
   }
 
@@ -114,6 +114,8 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return Scaffold(
       body: BlocConsumer<LocationViewModel, LocationState>(
         listener: (context, state) {
@@ -158,7 +160,6 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                 mapController: _mapController,
                 options: MapOptions(
                   initialCenter: _initialPosition,
-                  initialZoom: 13,
                   onPositionChanged: (camera, hasGesture) {
                     if (!hasGesture) return;
                     _debouncedReverseLookup(camera.center);
@@ -166,18 +167,19 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.zadana.user',
                   ),
                 ],
               ),
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 36),
+                  padding: const EdgeInsets.only(bottom: 36),
                   child: Icon(
                     Icons.location_on,
                     size: 48,
-                    color: AppColors.primary,
+                    color: color.primary,
                   ),
                 ),
               ),
@@ -232,14 +234,12 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                 ),
               ),
               if (state.isLoading || state.isSearchLoading)
-                const Positioned(
+                Positioned(
                   top: 120,
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
+                    child: CircularProgressIndicator(color: color.primary),
                   ),
                 ),
               Positioned(

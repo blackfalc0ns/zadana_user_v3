@@ -96,9 +96,21 @@ class _AddressCardSkeleton extends StatelessWidget {
           SizedBox(height: Spacing.md),
           Row(
             children: [
-              Expanded(child: _SkeletonBox(width: double.infinity, height: 42, radius: 12)),
+              Expanded(
+                child: _SkeletonBox(
+                  width: double.infinity,
+                  height: 42,
+                  radius: 12,
+                ),
+              ),
               SizedBox(width: Spacing.sm),
-              Expanded(child: _SkeletonBox(width: double.infinity, height: 42, radius: 12)),
+              Expanded(
+                child: _SkeletonBox(
+                  width: double.infinity,
+                  height: 42,
+                  radius: 12,
+                ),
+              ),
             ],
           ),
         ],

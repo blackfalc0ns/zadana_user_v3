@@ -1,12 +1,6 @@
 /// User entity
 /// Domain layer - Pure Dart
 class UserModelVerifyEntity {
-  final String id;
-  final String fullName;
-  final String email;
-  final String phone;
-  final String role;
-
   const UserModelVerifyEntity({
     required this.id,
     required this.fullName,
@@ -14,4 +8,9 @@ class UserModelVerifyEntity {
     required this.phone,
     required this.role,
   });
+  final String id;
+  final String fullName;
+  final String email;
+  final String phone;
+  final String role;
 }

@@ -98,8 +98,9 @@ class ProductImage extends StatelessWidget {
     }
 
     final resolvedFit = fit;
-    final imagePadding =
-        whiteBackground && resolvedFit == BoxFit.contain ? 8.0 : 0.0;
+    final imagePadding = whiteBackground && resolvedFit == BoxFit.contain
+        ? 8.0
+        : 0.0;
 
     return Padding(
       padding: EdgeInsets.all(imagePadding),
@@ -110,7 +111,7 @@ class ProductImage extends StatelessWidget {
                   imageUrl,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                 // fit: resolvedFit,
+                  // fit: resolvedFit,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
                 )
@@ -118,7 +119,7 @@ class ProductImage extends StatelessWidget {
                   imageUrl,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-               //   fit: resolvedFit,
+                  //   fit: resolvedFit,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
                 );

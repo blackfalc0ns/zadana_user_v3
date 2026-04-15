@@ -5,12 +5,8 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class ResetPasswordHeader extends StatelessWidget {
+  const ResetPasswordHeader({super.key, required this.identifier});
   final String identifier;
-
-  const ResetPasswordHeader({
-    super.key,
-    required this.identifier,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,4 +38,3 @@ class ResetPasswordHeader extends StatelessWidget {
     );
   }
 }
-

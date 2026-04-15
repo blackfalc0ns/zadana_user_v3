@@ -11,9 +11,8 @@ import 'package:zadana_user_v3/feature/profile/presentation/widgets/contact_butt
 
 /// Contact section widget
 class ContactSection extends StatelessWidget {
-  final AppLocalizations l10n;
-
   const ContactSection({super.key, required this.l10n});
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {

@@ -1,11 +1,5 @@
 class CategoryFilterSortOptionDto {
-  final String? label;
-  final String? value;
-
-  const CategoryFilterSortOptionDto({
-    this.label,
-    this.value,
-  });
+  const CategoryFilterSortOptionDto({this.label, this.value});
 
   factory CategoryFilterSortOptionDto.fromJson(Map<String, dynamic> json) {
     return CategoryFilterSortOptionDto(
@@ -13,4 +7,6 @@ class CategoryFilterSortOptionDto {
       value: json['value'] as String?,
     );
   }
+  final String? label;
+  final String? value;
 }

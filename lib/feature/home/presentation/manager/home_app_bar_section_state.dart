@@ -2,17 +2,16 @@ import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_response_entity.dart';
 
 class HomeAppBarSectionState {
-  final bool isLoading;
-  final bool isSuccess;
-  final Failure? failure;
-  final HomeAppBarEntity? data;
-
   const HomeAppBarSectionState({
     this.isLoading = false,
     this.isSuccess = false,
     this.failure,
     this.data,
   });
+  final bool isLoading;
+  final bool isSuccess;
+  final Failure? failure;
+  final HomeAppBarEntity? data;
 
   HomeAppBarSectionState copyWith({
     bool? isLoading,

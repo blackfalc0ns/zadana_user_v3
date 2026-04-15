@@ -13,7 +13,7 @@ import 'package:zadana_user_v3/core/services/language_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
-  runApp(DevicePreview(enabled: true, builder: (context) => const MyApp()));
+  runApp(DevicePreview(builder: (context) => const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,11 +30,10 @@ class MyApp extends StatelessWidget {
             builder: DevicePreview.appBuilder,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            theme: AppTheme.dark,
-            locale: const Locale("en"),
-            //state.locale,
+            theme: AppTheme.light,
+            locale: state.locale,
             onGenerateRoute: RouteGenerator.getRoute,
-            initialRoute: AppRoutes.signUp,
+            initialRoute: AppRoutes.splash,
           );
         },
       ),

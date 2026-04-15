@@ -37,9 +37,7 @@ class _ForgetPasswordView extends StatelessWidget {
     return BlocBuilder<ForgetPasswordViewModel, ForgetPasswordState>(
       builder: (context, state) {
         final showGlobalError =
-            !state.isLoading &&
-            !state.isSuccess &&
-            state.failure != null;
+            !state.isLoading && !state.isSuccess && state.failure != null;
 
         return AuthExperienceShell(
           showBackButton: true,
@@ -58,7 +56,9 @@ class _ForgetPasswordView extends StatelessWidget {
                   ),
                   child: ApiErrorWidget.fromFailure(
                     state.failure!,
-                    onRetry: context.read<ForgetPasswordViewModel>().clearFeedback,
+                    onRetry: context
+                        .read<ForgetPasswordViewModel>()
+                        .clearFeedback,
                   ),
                 )
               : ForgetPasswordForm(

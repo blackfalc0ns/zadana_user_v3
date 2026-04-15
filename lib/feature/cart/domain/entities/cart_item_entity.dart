@@ -1,10 +1,4 @@
 class VendorPrice {
-  final String id;
-  final String name;
-  final double price;
-  final double? oldPrice;
-  final bool isDiscounted;
-
   const VendorPrice({
     required this.id,
     required this.name,
@@ -12,17 +6,14 @@ class VendorPrice {
     this.oldPrice,
     this.isDiscounted = false,
   });
+  final String id;
+  final String name;
+  final double price;
+  final double? oldPrice;
+  final bool isDiscounted;
 }
 
 class CartItemModel {
-  final String id;
-  final String productId;
-  final String name;
-  final String? imageUrl;
-  final String unit;
-  final List<VendorPrice> vendorPrices;
-  int quantity;
-
   CartItemModel({
     required this.id,
     required this.productId,
@@ -32,6 +23,13 @@ class CartItemModel {
     required this.vendorPrices,
     this.quantity = 1,
   });
+  final String id;
+  final String productId;
+  final String name;
+  final String? imageUrl;
+  final String unit;
+  final List<VendorPrice> vendorPrices;
+  int quantity;
 
   CartItemModel copyWith({
     String? id,

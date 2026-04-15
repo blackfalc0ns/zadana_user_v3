@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 
 class ProfileMenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String? subtitle;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-  final Color? iconColor;
-  final Color? textColor;
-
   const ProfileMenuItem({
     super.key,
     required this.icon,
@@ -20,6 +12,13 @@ class ProfileMenuItem extends StatelessWidget {
     this.iconColor,
     this.textColor,
   });
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final Color? iconColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {

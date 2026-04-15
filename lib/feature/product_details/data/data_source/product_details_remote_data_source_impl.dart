@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/feature/product_details/data/models/product_detai
 @Injectable(as: ProductDetailsRemoteDataSource)
 class ProductDetailsRemoteDataSourceImpl
     implements ProductDetailsRemoteDataSource {
-  final ApiServices _apiServices;
-
   const ProductDetailsRemoteDataSourceImpl(this._apiServices);
+  final ApiServices _apiServices;
 
   @override
   Future<ProductDetailsResponseModelDto> getProductDetails(String productId) {

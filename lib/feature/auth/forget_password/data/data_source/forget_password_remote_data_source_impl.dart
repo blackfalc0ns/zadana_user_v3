@@ -7,11 +7,8 @@ import 'package:zadana_user_v3/feature/auth/forget_password/data/models/response
 @Injectable(as: ForgetPasswordRemoteDataSource)
 class ForgetPasswordRemoteDataSourceImpl
     implements ForgetPasswordRemoteDataSource {
+  ForgetPasswordRemoteDataSourceImpl({required this.apiServices});
   final ApiServices apiServices;
-
-  ForgetPasswordRemoteDataSourceImpl({
-    required this.apiServices,
-  });
 
   @override
   Future<ForgetPasswordResponseDto> forgetPassword(

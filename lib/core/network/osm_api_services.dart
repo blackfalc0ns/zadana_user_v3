@@ -9,7 +9,6 @@ part 'osm_api_services.g.dart';
 @RestApi(baseUrl: 'https://nominatim.openstreetmap.org')
 @injectable
 abstract class OsmApiServices {
-
   @factoryMethod
   factory OsmApiServices(@Named('osmDio') Dio dio) = _OsmApiServices;
 

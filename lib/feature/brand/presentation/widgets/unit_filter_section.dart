@@ -62,8 +62,9 @@ class _UnitFilterSectionState extends State<UnitFilterSection> {
           options: sortedUnits
               .map((value) => localizeBrandFilterLabel(context, value))
               .toList(),
-          selectedValue:
-              localSelectedUnit == null ? null : localizeBrandFilterLabel(context, localSelectedUnit!),
+          selectedValue: localSelectedUnit == null
+              ? null
+              : localizeBrandFilterLabel(context, localSelectedUnit!),
           onOptionTap: (unit) {
             final rawUnit = sortedUnits.firstWhere(
               (value) => localizeBrandFilterLabel(context, value) == unit,

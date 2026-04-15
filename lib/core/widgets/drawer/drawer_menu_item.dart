@@ -29,10 +29,7 @@ class DrawerMenuItem extends StatelessWidget {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.sm,
-        vertical: 3,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: 3),
       child: Material(
         color: color.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16),
@@ -47,9 +44,7 @@ class DrawerMenuItem extends StatelessWidget {
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(
-                color: color.outline.withValues(alpha: 0.08),
-              ),
+              side: BorderSide(color: color.outline.withValues(alpha: 0.08)),
             ),
             leading: Container(
               width: 34,
@@ -59,11 +54,7 @@ class DrawerMenuItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: FaIcon(
-                  icon,
-                  color: color.primary,
-                  size: 16,
-                ),
+                child: FaIcon(icon, color: color.primary, size: 16),
               ),
             ),
             title: Text(
@@ -88,7 +79,8 @@ class DrawerMenuItem extends StatelessWidget {
                     ),
                   )
                 : null,
-            trailing: trailing ??
+            trailing:
+                trailing ??
                 Container(
                   width: 24,
                   height: 24,
@@ -112,4 +104,3 @@ class DrawerMenuItem extends StatelessWidget {
     );
   }
 }
-

@@ -7,9 +7,6 @@ part 'verify_otp_request_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class VerifyOtpRequestModelDto {
-  final String identifier;
-  final String otpCode;
-
   const VerifyOtpRequestModelDto({
     required this.identifier,
     required this.otpCode,
@@ -18,8 +15,6 @@ class VerifyOtpRequestModelDto {
   factory VerifyOtpRequestModelDto.fromJson(Map<String, dynamic> json) =>
       _$VerifyOtpRequestModelDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$VerifyOtpRequestModelDtoToJson(this);
-
   /// Convert from entity
   factory VerifyOtpRequestModelDto.fromEntity(VerifyOtpRequestEntity entity) {
     return VerifyOtpRequestModelDto(
@@ -27,4 +22,8 @@ class VerifyOtpRequestModelDto {
       otpCode: entity.otpCode,
     );
   }
+  final String identifier;
+  final String otpCode;
+
+  Map<String, dynamic> toJson() => _$VerifyOtpRequestModelDtoToJson(this);
 }

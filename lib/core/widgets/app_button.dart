@@ -9,19 +9,6 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 enum AppButtonVariant { filled, outlined, text }
 
 class AppButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
-  final AppButtonVariant variant;
-  final bool isLoading;
-  final bool isExpanded;
-  final IconData? icon;
-  final double? height;
-  final double? borderRadius;
-  final Color? color;
-  final Color? textColor;
-  final FontWeight? fontWeight;
-  final EdgeInsets? padding;
-
   const AppButton({
     super.key,
     required this.text,
@@ -34,7 +21,8 @@ class AppButton extends StatelessWidget {
     this.borderRadius,
     this.color,
     this.textColor,
-    this.fontWeight, this.padding,
+    this.fontWeight,
+    this.padding,
   });
 
   /// Named factories for convenience.
@@ -49,7 +37,8 @@ class AppButton extends StatelessWidget {
     this.borderRadius,
     this.color,
     this.textColor,
-    this.fontWeight, this.padding,
+    this.fontWeight,
+    this.padding,
   }) : variant = AppButtonVariant.filled;
 
   const AppButton.outlined({
@@ -64,7 +53,7 @@ class AppButton extends StatelessWidget {
     this.color,
     this.textColor,
     this.fontWeight,
-     this.padding,
+    this.padding,
   }) : variant = AppButtonVariant.outlined;
 
   const AppButton.text({
@@ -78,8 +67,21 @@ class AppButton extends StatelessWidget {
     this.borderRadius,
     this.color,
     this.textColor,
-    this.fontWeight, this.padding,
+    this.fontWeight,
+    this.padding,
   }) : variant = AppButtonVariant.text;
+  final String text;
+  final VoidCallback? onPressed;
+  final AppButtonVariant variant;
+  final bool isLoading;
+  final bool isExpanded;
+  final IconData? icon;
+  final double? height;
+  final double? borderRadius;
+  final Color? color;
+  final Color? textColor;
+  final FontWeight? fontWeight;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +107,8 @@ class AppButton extends StatelessWidget {
     switch (variant) {
       case AppButtonVariant.filled:
         button = Padding(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: Spacing.sm),
+          padding:
+              padding ?? const EdgeInsets.symmetric(horizontal: Spacing.sm),
           child: ElevatedButton(
             onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
@@ -123,10 +126,10 @@ class AppButton extends StatelessWidget {
         break;
       case AppButtonVariant.outlined:
         button = OutlinedButton(
-          
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            padding:  padding ?? const EdgeInsets.symmetric(horizontal: Spacing.sm),
+            padding:
+                padding ?? const EdgeInsets.symmetric(horizontal: Spacing.sm),
             foregroundColor: textColor ?? effectiveColor,
             minimumSize: Size(isExpanded ? double.infinity : 0, h),
             shape: RoundedRectangleBorder(
@@ -153,7 +156,7 @@ class AppButton extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, Color effectiveColor) {
     final colors = Theme.of(context).colorScheme;
-    
+
     final style = getBoldStyle(
       fontSize: FontSize.size16,
       fontFamily: FontConstant.cairo,
@@ -176,4 +179,3 @@ class AppButton extends StatelessWidget {
     return Text(text, style: style);
   }
 }
-

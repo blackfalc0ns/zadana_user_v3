@@ -8,9 +8,8 @@ import 'package:zadana_user_v3/feature/profile/presentation/widgets/faq_item.dar
 
 /// FAQ section widget
 class FAQSection extends StatelessWidget {
-  final AppLocalizations l10n;
-
   const FAQSection({super.key, required this.l10n});
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,4 @@
-
 class DeliveryOtpState {
-  final bool isLoading;
-  final bool isSuccess;
-  final bool showSuccessDialog;
-  final String? errorMessage;
-  final int remainingAttempts;
-  final bool canResend;
-  final int resendTimer;
-
   const DeliveryOtpState({
     this.isLoading = false,
     this.isSuccess = false,
@@ -17,6 +8,13 @@ class DeliveryOtpState {
     this.canResend = false,
     this.resendTimer = 30,
   });
+  final bool isLoading;
+  final bool isSuccess;
+  final bool showSuccessDialog;
+  final String? errorMessage;
+  final int remainingAttempts;
+  final bool canResend;
+  final int resendTimer;
 
   DeliveryOtpState copyWith({
     bool? isLoading,

@@ -180,4 +180,3 @@ class _RecommendedCardSkeleton extends StatelessWidget {
     );
   }
 }
-

@@ -5,12 +5,6 @@ part 'user_model_verify_dto.g.dart';
 
 @JsonSerializable()
 class UserModelVerifyDto {
-  final String? id;
-  final String? fullName;
-  final String ?email;
-  final String ?phone;
-  final String ?role;
-
   UserModelVerifyDto({
     required this.id,
     required this.fullName,
@@ -21,16 +15,21 @@ class UserModelVerifyDto {
 
   factory UserModelVerifyDto.fromJson(Map<String, dynamic> json) =>
       _$UserModelVerifyDtoFromJson(json);
+  final String? id;
+  final String? fullName;
+  final String? email;
+  final String? phone;
+  final String? role;
 
   Map<String, dynamic> toJson() => _$UserModelVerifyDtoToJson(this);
 
   UserModelVerifyEntity toEntity() {
     return UserModelVerifyEntity(
-      id: id??'',
-      fullName: fullName??'',
-      email: email??'',
-      phone: phone??'',
-      role: role??'',
+      id: id ?? '',
+      fullName: fullName ?? '',
+      email: email ?? '',
+      phone: phone ?? '',
+      role: role ?? '',
     );
   }
 }

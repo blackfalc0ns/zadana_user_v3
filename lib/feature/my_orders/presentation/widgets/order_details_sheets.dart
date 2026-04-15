@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
@@ -13,7 +13,10 @@ class OrderCancelResult {
 }
 
 class OrderComplaintResult {
-  const OrderComplaintResult({required this.message, required this.attachments});
+  const OrderComplaintResult({
+    required this.message,
+    required this.attachments,
+  });
 
   final String message;
   final List<PlatformFile> attachments;
@@ -74,12 +77,12 @@ Future<OrderCancelResult?> showOrderCancelSheet({
         onPrimaryTap: selectedReason == null
             ? null
             : () => Navigator.pop(
-                  context,
-                  OrderCancelResult(
-                    reason: selectedReason!,
-                    note: noteController.text.trim(),
-                  ),
+                context,
+                OrderCancelResult(
+                  reason: selectedReason!,
+                  note: noteController.text.trim(),
                 ),
+              ),
       ),
     ),
   );

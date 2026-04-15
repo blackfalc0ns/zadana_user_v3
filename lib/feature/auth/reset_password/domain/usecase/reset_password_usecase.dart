@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/feature/auth/reset_password/domain/repo/reset_pas
 
 @injectable
 class ResetPasswordUseCase {
-  final ResetPasswordRepository repository;
-
   ResetPasswordUseCase({required this.repository});
+  final ResetPasswordRepository repository;
 
   Future<ApiResult<ResetPasswordResponseEntity>> call(
     ResetPasswordRequestEntity entity,

@@ -4,12 +4,6 @@ import '../../domain/entities/login_response_entity.dart';
 /// State for login feature
 /// Handles loading, success, error states
 class LoginState {
-  final bool isLoading;
-  final String? errorMessage;
-  final bool isSuccess;
-  final LoginResponseEntity? loginResponse;
-  final Failure? failure;
-
   const LoginState({
     this.isLoading = false,
     this.errorMessage,
@@ -17,6 +11,11 @@ class LoginState {
     this.loginResponse,
     this.failure,
   });
+  final bool isLoading;
+  final String? errorMessage;
+  final bool isSuccess;
+  final LoginResponseEntity? loginResponse;
+  final Failure? failure;
 
   LoginState copyWith({
     bool? isLoading,
@@ -46,11 +45,6 @@ class LoginState {
   }
 
   @override
-  int get hashCode => Object.hash(
-        isLoading,
-        errorMessage,
-        isSuccess,
-        loginResponse,
-        failure,
-      );
+  int get hashCode =>
+      Object.hash(isLoading, errorMessage, isSuccess, loginResponse, failure);
 }

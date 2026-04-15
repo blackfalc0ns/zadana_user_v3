@@ -19,7 +19,6 @@ class BrandProductsGrid extends StatelessWidget {
       builder: (context, constraints) {
         final layout = ProductGridLayout.resolve(
           constraints.crossAxisExtent,
-          horizontalPadding: Spacing.md * 2,
           crossAxisSpacing: Spacing.xs,
         );
 

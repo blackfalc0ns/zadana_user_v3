@@ -34,10 +34,7 @@ class SubCategoryChips extends StatelessWidget {
       height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(
-          left: Spacing.xs,
-          right: Spacing.md,
-        ),
+        padding: const EdgeInsets.only(left: Spacing.xs, right: Spacing.md),
         itemCount: subCategories.length,
         separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
         itemBuilder: (context, index) {
@@ -65,10 +62,7 @@ class _SubCategoryChipsSkeleton extends StatelessWidget {
       child: ShimmerEffect(
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(
-            left: Spacing.xs,
-            right: Spacing.md,
-          ),
+          padding: const EdgeInsets.only(left: Spacing.xs, right: Spacing.md),
           itemCount: 7,
           separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
           itemBuilder: (_, index) => Container(

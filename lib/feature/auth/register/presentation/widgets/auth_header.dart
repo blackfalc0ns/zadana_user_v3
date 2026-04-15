@@ -17,11 +17,7 @@ class AuthHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Center(
-          child: Image.asset(
-            Assets.logoLight,
-            height: 80,
-            fit: BoxFit.contain,
-          ),
+          child: Image.asset(Assets.logoLight, height: 80, fit: BoxFit.contain),
         ),
         const SizedBox(height: Spacing.xl),
 
@@ -47,4 +43,3 @@ class AuthHeader extends StatelessWidget {
     );
   }
 }
-

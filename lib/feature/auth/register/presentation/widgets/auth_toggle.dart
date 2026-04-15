@@ -163,4 +163,3 @@ class _TabLabel extends StatelessWidget {
     );
   }
 }
-

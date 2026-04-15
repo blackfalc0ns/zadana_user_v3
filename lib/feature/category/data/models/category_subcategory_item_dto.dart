@@ -1,13 +1,5 @@
 class CategorySubcategoryItemDto {
-  final String? id;
-  final String? name;
-  final String? imageUrl;
-
-  const CategorySubcategoryItemDto({
-    this.id,
-    this.name,
-    this.imageUrl,
-  });
+  const CategorySubcategoryItemDto({this.id, this.name, this.imageUrl});
 
   factory CategorySubcategoryItemDto.fromJson(Map<String, dynamic> json) {
     return CategorySubcategoryItemDto(
@@ -16,4 +8,7 @@ class CategorySubcategoryItemDto {
       imageUrl: json['image_url'] as String?,
     );
   }
+  final String? id;
+  final String? name;
+  final String? imageUrl;
 }

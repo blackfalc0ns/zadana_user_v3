@@ -1,11 +1,10 @@
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'base_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/api_error_type.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+
+import 'base_error_widget.dart';
 
 class TimeoutErrorWidget extends BaseErrorWidget {
-  final ApiErrorType timeoutType;
-
   const TimeoutErrorWidget({
     super.key,
     required this.timeoutType,
@@ -16,6 +15,7 @@ class TimeoutErrorWidget extends BaseErrorWidget {
          icon: Icons.access_time,
          primaryColor: Colors.amber,
        );
+  final ApiErrorType timeoutType;
 
   @override
   Widget build(BuildContext context) {

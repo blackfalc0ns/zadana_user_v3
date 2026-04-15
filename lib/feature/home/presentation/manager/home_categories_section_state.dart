@@ -2,17 +2,16 @@ import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_categories_entity.dart';
 
 class HomeCategoriesSectionState {
-  final bool isLoading;
-  final bool isSuccess;
-  final Failure? failure;
-  final HomeCategoriesEntity? data;
-
   const HomeCategoriesSectionState({
     this.isLoading = false,
     this.isSuccess = false,
     this.failure,
     this.data,
   });
+  final bool isLoading;
+  final bool isSuccess;
+  final Failure? failure;
+  final HomeCategoriesEntity? data;
 
   HomeCategoriesSectionState copyWith({
     bool? isLoading,

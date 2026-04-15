@@ -5,14 +5,6 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 
 class VendorResultCard extends StatelessWidget {
-  final CartVendorEntity vendor;
-  final double total;
-  final int rank;
-  final bool isCheapest;
-  final bool isCurrent;
-  final double savings;
-  final VoidCallback onSelect;
-
   const VendorResultCard({
     super.key,
     required this.vendor,
@@ -23,6 +15,13 @@ class VendorResultCard extends StatelessWidget {
     required this.savings,
     required this.onSelect,
   });
+  final CartVendorEntity vendor;
+  final double total;
+  final int rank;
+  final bool isCheapest;
+  final bool isCurrent;
+  final double savings;
+  final VoidCallback onSelect;
 
   @override
   Widget build(BuildContext context) {

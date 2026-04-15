@@ -5,10 +5,7 @@ import 'package:zadana_user_v3/feature/auth/verify_otp/domain/entities/verify_ot
 
 extension VerifyOtpRequestEntityMapper on VerifyOtpRequestEntity {
   VerifyOtpRequestModelDto toDto() {
-    return VerifyOtpRequestModelDto(
-      identifier: identifier,
-      otpCode: otpCode,
-    );
+    return VerifyOtpRequestModelDto(identifier: identifier, otpCode: otpCode);
   }
 }
 

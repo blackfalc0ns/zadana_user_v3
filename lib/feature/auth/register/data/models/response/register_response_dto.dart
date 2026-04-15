@@ -5,13 +5,13 @@ part 'register_response_dto.g.dart';
 
 @JsonSerializable()
 class RegisterResponseDto {
-  final UserModelRegisterDto? user;
-  final bool? isVerified;
-  final String? message;
   RegisterResponseDto({this.user, this.isVerified, this.message});
 
   factory RegisterResponseDto.fromJson(Map<String, dynamic> json) =>
       _$RegisterResponseDtoFromJson(json);
+  final UserModelRegisterDto? user;
+  final bool? isVerified;
+  final String? message;
 
   Map<String, dynamic> toJson() => _$RegisterResponseDtoToJson(this);
 }

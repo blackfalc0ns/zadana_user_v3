@@ -197,7 +197,7 @@ class _OrdersOverviewChip extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
-            padding: EdgeInsets.all(3),
+            padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: .10),
               borderRadius: BorderRadius.circular(10),
@@ -205,7 +205,6 @@ class _OrdersOverviewChip extends StatelessWidget {
             child: Icon(icon, color: accentColor, size: 22),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 '$count',
@@ -218,7 +217,6 @@ class _OrdersOverviewChip extends StatelessWidget {
               Text(
                 label,
                 style: getRegularStyle(
-                  fontSize: FontSize.size12,
                   fontFamily: FontConstant.cairo,
                   color: colors.onSurfaceVariant,
                 ),
@@ -230,4 +228,3 @@ class _OrdersOverviewChip extends StatelessWidget {
     );
   }
 }
-

@@ -4,14 +4,6 @@ import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_
 /// State for profile feature
 /// Follows register pattern with minimal fields
 class ProfileState {
-  final bool isLoading;
-  final bool isUpdating;
-  final bool isSuccess;
-  final bool isUpdateSuccess;
-  final ProfileResponseEntity? profileResponse;
-  final Failure? failure;
-  final Failure? updateFailure;
-
   const ProfileState({
     this.isLoading = false,
     this.isUpdating = false,
@@ -21,6 +13,13 @@ class ProfileState {
     this.failure,
     this.updateFailure,
   });
+  final bool isLoading;
+  final bool isUpdating;
+  final bool isSuccess;
+  final bool isUpdateSuccess;
+  final ProfileResponseEntity? profileResponse;
+  final Failure? failure;
+  final Failure? updateFailure;
 
   ProfileState copyWith({
     bool? isLoading,
@@ -57,12 +56,12 @@ class ProfileState {
 
   @override
   int get hashCode => Object.hash(
-        isLoading,
-        isUpdating,
-        isSuccess,
-        isUpdateSuccess,
-        profileResponse,
-        failure,
-        updateFailure,
-      );
+    isLoading,
+    isUpdating,
+    isSuccess,
+    isUpdateSuccess,
+    profileResponse,
+    failure,
+    updateFailure,
+  );
 }

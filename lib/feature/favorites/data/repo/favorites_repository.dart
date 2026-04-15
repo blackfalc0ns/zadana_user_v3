@@ -24,7 +24,9 @@ class FavoritesRepository {
     });
   }
 
-  Future<ApiResult<AddFavoriteResponseEntity>> addFavorite(String productId) async {
+  Future<ApiResult<AddFavoriteResponseEntity>> addFavorite(
+    String productId,
+  ) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.addFavorite(
         AddFavoriteRequestDto(productId: productId),

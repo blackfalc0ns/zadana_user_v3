@@ -9,15 +9,6 @@ import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.
 import 'package:zadana_user_v3/feature/cart/presentation/widget/select_vendor_bar.dart';
 
 class CartBottomBar extends StatelessWidget {
-  final String? selectedVendorId;
-  final List<CartItemModel> items;
-  final double totalPrice;
-  final double totalOldPrice;
-  final bool hasDiscounts;
-  final String selectedVendorName;
-  final CartAnimations animations;
-  final VoidCallback onCheckout;
-
   const CartBottomBar({
     super.key,
     required this.selectedVendorId,
@@ -29,6 +20,14 @@ class CartBottomBar extends StatelessWidget {
     required this.animations,
     required this.onCheckout,
   });
+  final String? selectedVendorId;
+  final List<CartItemModel> items;
+  final double totalPrice;
+  final double totalOldPrice;
+  final bool hasDiscounts;
+  final String selectedVendorName;
+  final CartAnimations animations;
+  final VoidCallback onCheckout;
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +176,6 @@ class _SelectedVendorBar extends StatelessWidget {
                               style: getBoldStyle(
                                 fontFamily: FontConstant.cairo,
                                 color: AppColors.primary,
-                                fontSize: FontSize.size12,
                               ),
                             ),
                             if (hasDiscounts && totalOldPrice > totalPrice) ...[
@@ -269,7 +267,6 @@ class _CartCheckoutButton extends StatelessWidget {
                 label,
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size12,
                   color: AppColors.white,
                 ),
               ),
@@ -280,4 +277,3 @@ class _CartCheckoutButton extends StatelessWidget {
     );
   }
 }
-

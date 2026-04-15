@@ -28,7 +28,7 @@ class SearchBarWidget extends StatelessWidget {
       height: 40,
       decoration: BoxDecoration(
         color: color.surfaceContainerLowest,
-        border: Border.all(color: AppColors.border,width: .1),
+        border: Border.all(color: AppColors.border, width: .1),
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
       ),
       child: Row(
@@ -79,7 +79,7 @@ class SearchBarWidget extends StatelessWidget {
               width: 42,
               height: 48,
               decoration: BoxDecoration(
-              //  color: color.primary,
+                //  color: color.primary,
                 border: Border.all(color: color.primary),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -94,4 +94,3 @@ class SearchBarWidget extends StatelessWidget {
     );
   }
 }
-

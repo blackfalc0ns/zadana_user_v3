@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';

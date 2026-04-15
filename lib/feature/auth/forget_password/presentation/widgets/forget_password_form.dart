@@ -18,12 +18,8 @@ import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_
 /// - Uses ColorScheme
 /// - Reuses existing widgets
 class ForgetPasswordForm extends StatefulWidget {
+  const ForgetPasswordForm({super.key, required this.onSuccess});
   final void Function(String identifier) onSuccess;
-
-  const ForgetPasswordForm({
-    super.key,
-    required this.onSuccess,
-  });
 
   @override
   State<ForgetPasswordForm> createState() => _ForgetPasswordFormState();

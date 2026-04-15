@@ -8,14 +8,13 @@ import 'package:zadana_user_v3/feature/home/data/models/home_categories_response
 import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 
 @Injectable(as: HomeRemoteDataSource)
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
-  final ApiServices _apiServices;
-
   const HomeRemoteDataSourceImpl(this._apiServices);
+  final ApiServices _apiServices;
 
   @override
   Future<HomeAppBarModelDto> getHomeAppBar() {

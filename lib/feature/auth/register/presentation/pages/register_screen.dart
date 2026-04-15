@@ -33,10 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         message: state.registerResponseEntity!.message,
       );
 
-      context.pushNamed(
-        AppRoutes.verifyOtp,
-        arguments: _submittedIdentifier,
-      );
+      context.pushNamed(AppRoutes.verifyOtp, arguments: _submittedIdentifier);
     }
   }
 
@@ -49,9 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: BlocBuilder<RegisterViewModel, RegisterState>(
         builder: (context, state) {
           final showGlobalError =
-              !state.isLoading &&
-              !state.isSuccess &&
-              state.failure != null;
+              !state.isLoading && !state.isSuccess && state.failure != null;
 
           return AuthExperienceShell(
             showBackButton: true,

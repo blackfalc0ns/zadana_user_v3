@@ -5,10 +5,7 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class DeliveryOtpHeader extends StatelessWidget {
-  const DeliveryOtpHeader({
-    super.key,
-    required this.phoneNumber,
-  });
+  const DeliveryOtpHeader({super.key, required this.phoneNumber});
 
   final String phoneNumber;
 
@@ -41,4 +38,3 @@ class DeliveryOtpHeader extends StatelessWidget {
     );
   }
 }
-

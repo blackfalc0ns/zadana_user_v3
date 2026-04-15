@@ -1,11 +1,5 @@
 class CategoryFilterOptionDto {
-  final String? id;
-  final String? name;
-
-  const CategoryFilterOptionDto({
-    this.id,
-    this.name,
-  });
+  const CategoryFilterOptionDto({this.id, this.name});
 
   factory CategoryFilterOptionDto.fromJson(Map<String, dynamic> json) {
     return CategoryFilterOptionDto(
@@ -13,4 +7,6 @@ class CategoryFilterOptionDto {
       name: json['name'] as String?,
     );
   }
+  final String? id;
+  final String? name;
 }

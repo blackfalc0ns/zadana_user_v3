@@ -4,20 +4,13 @@ import 'package:zadana_user_v3/feature/auth/register/data/data_source/register_r
 import 'package:zadana_user_v3/feature/auth/register/data/models/request/register_request_dto.dart';
 import 'package:zadana_user_v3/feature/auth/register/data/models/response/register_response_dto.dart';
 
-
 @Injectable(as: RegisterRemoteDataSource)
-class RegisterRemoteDataSourceImpl 
-    implements RegisterRemoteDataSource {
+class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
+  RegisterRemoteDataSourceImpl({required this.apiServices});
   final ApiServices apiServices;
 
-  RegisterRemoteDataSourceImpl({
-    required this.apiServices,
-  });
-
   @override
-  Future<RegisterResponseDto> register(
-    RegisterRequestDto requestDto,
-  ) async {
+  Future<RegisterResponseDto> register(RegisterRequestDto requestDto) async {
     return await apiServices.registerUser(requestDto);
   }
 }

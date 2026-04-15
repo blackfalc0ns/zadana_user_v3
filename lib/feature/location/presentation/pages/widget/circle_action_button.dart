@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CircleActionButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
   const CircleActionButton({
     super.key,
     required this.icon,
     required this.onTap,
   });
+  final IconData icon;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return Material(
-      color: AppColors.surface,
+      color: color.surfaceContainerLowest,
       elevation: 2,
-      shadowColor: AppColors.shadow,
+      shadowColor: color.shadow.withValues(alpha: 0.14),
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),
@@ -24,11 +25,7 @@ class CircleActionButton extends StatelessWidget {
         child: SizedBox(
           width: 44,
           height: 44,
-          child: Icon(
-            icon,
-            color: AppColors.textPrimary,
-            size: 22,
-          ),
+          child: Icon(icon, color: color.onSurface, size: 22),
         ),
       ),
     );

@@ -2,28 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
-import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 
 class CartItemCard extends StatelessWidget {
-  final CartItemModel item;
-  final String? selectedVendorId;
-  final String? loadedVendorId;
-  final bool isLoadingSelectedVendorPrices;
-  final int priceAnimationVersion;
-  final VoidCallback onTap;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
-  final VoidCallback onDelete;
-  final bool enableHeroAnimation;
-  final bool animatePrice;
-
   const CartItemCard({
     super.key,
     required this.item,
@@ -38,6 +25,17 @@ class CartItemCard extends StatelessWidget {
     this.enableHeroAnimation = false,
     this.animatePrice = false,
   });
+  final CartItemModel item;
+  final String? selectedVendorId;
+  final String? loadedVendorId;
+  final bool isLoadingSelectedVendorPrices;
+  final int priceAnimationVersion;
+  final VoidCallback onTap;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+  final VoidCallback onDelete;
+  final bool enableHeroAnimation;
+  final bool animatePrice;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +83,6 @@ class CartItemCard extends StatelessWidget {
                     url: item.imageUrl,
                     width: 68,
                     height: 68,
-                    borderRadius: Spacing.cardRadius,
                     heroTag: productHeroTag(
                       item.productId,
                       source: 'cart-item',
@@ -277,7 +274,7 @@ class CartItemCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.info_outline, size: 12, color: AppColors.error),
+          const Icon(Icons.info_outline, size: 12, color: AppColors.error),
           const SizedBox(width: 4),
           Text(
             'غير متوفر',
@@ -296,7 +293,7 @@ class CartItemCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
+        const SizedBox(
           width: 12,
           height: 12,
           child: CircularProgressIndicator(
@@ -376,7 +373,6 @@ class CartItemCard extends StatelessWidget {
           style:
               getRegularStyle(
                 fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size12,
                 color: color.onSurfaceVariant,
               ).copyWith(
                 decoration: TextDecoration.lineThrough,
@@ -400,7 +396,7 @@ class CartItemCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.local_offer, size: 11, color: AppColors.primary),
+        const Icon(Icons.local_offer, size: 11, color: AppColors.primary),
         const SizedBox(width: 3),
         Flexible(
           child: Text(
@@ -409,7 +405,6 @@ class CartItemCard extends StatelessWidget {
             style: getBoldStyle(
               color: AppColors.primary,
               fontFamily: FontConstant.cairo,
-              fontSize: FontSize.size12,
             ),
           ),
         ),
@@ -427,7 +422,7 @@ class CartItemCard extends StatelessWidget {
           width: 28,
           height: 28,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 1),
+            border: Border.all(color: Colors.grey.shade300),
             color: AppColors.white,
             borderRadius: BorderRadius.circular(6),
           ),

@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/core/services/token_service.dart';
 
 @injectable
 class DeviceIdInterceptor extends Interceptor {
-  static const String forceDeviceIdKey = 'forceDeviceId';
-
   DeviceIdInterceptor(this._tokenService, this._deviceIdService);
+  static const String forceDeviceIdKey = 'forceDeviceId';
 
   final TokenService _tokenService;
   final DeviceIdService _deviceIdService;

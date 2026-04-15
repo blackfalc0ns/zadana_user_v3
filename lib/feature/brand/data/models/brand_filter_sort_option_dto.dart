@@ -1,11 +1,5 @@
 class BrandFilterSortOptionDto {
-  final String? label;
-  final String? value;
-
-  const BrandFilterSortOptionDto({
-    this.label,
-    this.value,
-  });
+  const BrandFilterSortOptionDto({this.label, this.value});
 
   factory BrandFilterSortOptionDto.fromJson(Map<String, dynamic> json) {
     return BrandFilterSortOptionDto(
@@ -13,4 +7,6 @@ class BrandFilterSortOptionDto {
       value: json['value'] as String?,
     );
   }
+  final String? label;
+  final String? value;
 }

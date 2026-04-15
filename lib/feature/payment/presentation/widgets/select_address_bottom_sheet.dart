@@ -25,7 +25,11 @@ class SelectAddressBottomSheet extends StatelessWidget {
     // TODO: Replace with actual saved addresses from your state management
     final savedAddresses = [
       {'name': l10n.nav_home, 'address': l10n.location, 'isSelected': true},
-      {'name': 'العمل', 'address': 'شارع الملك فهد، الرياض', 'isSelected': false},
+      {
+        'name': 'العمل',
+        'address': 'شارع الملك فهد، الرياض',
+        'isSelected': false,
+      },
     ];
 
     return Container(
@@ -91,7 +95,8 @@ class SelectAddressBottomSheet extends StatelessWidget {
               shrinkWrap: true,
               padding: const EdgeInsets.all(Spacing.lg),
               itemCount: savedAddresses.length,
-              separatorBuilder: (context, index) => const SizedBox(height: Spacing.sm),
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: Spacing.sm),
               itemBuilder: (context, index) {
                 final address = savedAddresses[index];
                 final isSelected = address['isSelected'] as bool;
@@ -109,7 +114,9 @@ class SelectAddressBottomSheet extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? colors.primary.withValues(alpha: 0.08)
-                            : colors.surfaceContainerHighest.withValues(alpha: 0.3),
+                            : colors.surfaceContainerHighest.withValues(
+                                alpha: 0.3,
+                              ),
                         borderRadius: BorderRadius.circular(Spacing.md),
                         border: Border.all(
                           color: isSelected
@@ -129,8 +136,12 @@ class SelectAddressBottomSheet extends StatelessWidget {
                               borderRadius: BorderRadius.circular(Spacing.sm),
                             ),
                             child: Icon(
-                              isSelected ? Icons.location_on : Icons.location_on_outlined,
-                              color: isSelected ? colors.primary : colors.onSurfaceVariant,
+                              isSelected
+                                  ? Icons.location_on
+                                  : Icons.location_on_outlined,
+                              color: isSelected
+                                  ? colors.primary
+                                  : colors.onSurfaceVariant,
                               size: 20,
                             ),
                           ),
@@ -158,7 +169,9 @@ class SelectAddressBottomSheet extends StatelessWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: colors.primary,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                         child: Text(
                                           l10n.currently_selected,
@@ -176,7 +189,6 @@ class SelectAddressBottomSheet extends StatelessWidget {
                                 Text(
                                   address['address'] as String,
                                   style: getRegularStyle(
-                                    fontSize: FontSize.size12,
                                     fontFamily: FontConstant.cairo,
                                     color: colors.onSurfaceVariant,
                                   ),
@@ -207,10 +219,7 @@ class SelectAddressBottomSheet extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                icon: Icon(
-                  Icons.add_location_outlined,
-                  color: colors.primary,
-                ),
+                icon: Icon(Icons.add_location_outlined, color: colors.primary),
                 label: Text(
                   l10n.add_address,
                   style: getBoldStyle(
@@ -245,4 +254,3 @@ class SelectAddressBottomSheet extends StatelessWidget {
     );
   }
 }
-

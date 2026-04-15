@@ -19,37 +19,37 @@ class TermsConditionsScreen extends StatelessWidget {
         ? const [
             (
               'الاستخدام المقبول',
-              'يجب استخدام التطبيق بطريقة قانونية وعدم إساءة استخدام الخدمات أو محاولة الإضرار بالمنصة أو بالمستخدمين.'
+              'يجب استخدام التطبيق بطريقة قانونية وعدم إساءة استخدام الخدمات أو محاولة الإضرار بالمنصة أو بالمستخدمين.',
             ),
             (
               'الطلبات والدفع',
-              'تأكيد الطلب يعتمد على توفر المنتجات ونجاح عملية الدفع أو قبول الطلب حسب طريقة الدفع المختارة.'
+              'تأكيد الطلب يعتمد على توفر المنتجات ونجاح عملية الدفع أو قبول الطلب حسب طريقة الدفع المختارة.',
             ),
             (
               'الأسعار والتوافر',
-              'قد تختلف الأسعار والتوافر حسب المتجر أو المنطقة، ويحق للتطبيق تحديثها في أي وقت.'
+              'قد تختلف الأسعار والتوافر حسب المتجر أو المنطقة، ويحق للتطبيق تحديثها في أي وقت.',
             ),
             (
               'الإلغاء والاسترجاع',
-              'تخضع عمليات الإلغاء والاسترجاع لسياسات المتجر والحالات المسموح بها داخل التطبيق.'
+              'تخضع عمليات الإلغاء والاسترجاع لسياسات المتجر والحالات المسموح بها داخل التطبيق.',
             ),
           ]
         : const [
             (
               'Acceptable Use',
-              'The app must be used lawfully and without abusing services or attempting to harm the platform or other users.'
+              'The app must be used lawfully and without abusing services or attempting to harm the platform or other users.',
             ),
             (
               'Orders and Payments',
-              'Order confirmation depends on product availability and successful payment or merchant acceptance.'
+              'Order confirmation depends on product availability and successful payment or merchant acceptance.',
             ),
             (
               'Pricing and Availability',
-              'Prices and availability may vary by store or area and may be updated at any time.'
+              'Prices and availability may vary by store or area and may be updated at any time.',
             ),
             (
               'Cancellation and Returns',
-              'Cancellation and return requests are subject to store policy and the supported in-app cases.'
+              'Cancellation and return requests are subject to store policy and the supported in-app cases.',
             ),
           ];
 
@@ -67,9 +67,7 @@ class TermsConditionsScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(Spacing.md),
-              border: Border.all(
-                color: color.outline.withValues(alpha: 0.12),
-              ),
+              border: Border.all(color: color.outline.withValues(alpha: 0.12)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,4 +97,3 @@ class TermsConditionsScreen extends StatelessWidget {
     );
   }
 }
-

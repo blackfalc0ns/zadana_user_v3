@@ -1,9 +1,4 @@
 class HomeAppBarEntity {
-  final String deliverToLabel;
-  final String location;
-  final String addressLine;
-  final int notificationsCount;
-
   const HomeAppBarEntity({
     required this.deliverToLabel,
     required this.location,
@@ -12,8 +7,12 @@ class HomeAppBarEntity {
   });
 
   const HomeAppBarEntity.empty()
-      : deliverToLabel = '',
-        location = '',
-        addressLine = '',
-        notificationsCount = 0;
+    : deliverToLabel = '',
+      location = '',
+      addressLine = '',
+      notificationsCount = 0;
+  final String deliverToLabel;
+  final String location;
+  final String addressLine;
+  final int notificationsCount;
 }

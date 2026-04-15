@@ -5,7 +5,5 @@ import '../entities/login_response_entity.dart';
 /// Login repository contract
 /// Domain layer - Abstract interface
 abstract class LoginRepository {
-  Future<ApiResult<LoginResponseEntity>> login(
-    LoginRequestEntity request,
-  );
+  Future<ApiResult<LoginResponseEntity>> login(LoginRequestEntity request);
 }

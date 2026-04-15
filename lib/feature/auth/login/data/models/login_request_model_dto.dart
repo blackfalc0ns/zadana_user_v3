@@ -7,9 +7,6 @@ part 'login_request_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class LoginRequestModelDto {
-  final String identifier;
-  final String password;
-
   const LoginRequestModelDto({
     required this.identifier,
     required this.password,
@@ -18,8 +15,6 @@ class LoginRequestModelDto {
   factory LoginRequestModelDto.fromJson(Map<String, dynamic> json) =>
       _$LoginRequestModelDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$LoginRequestModelDtoToJson(this);
-
   /// Convert from entity
   factory LoginRequestModelDto.fromEntity(LoginRequestEntity entity) {
     return LoginRequestModelDto(
@@ -27,4 +22,8 @@ class LoginRequestModelDto {
       password: entity.password,
     );
   }
+  final String identifier;
+  final String password;
+
+  Map<String, dynamic> toJson() => _$LoginRequestModelDtoToJson(this);
 }

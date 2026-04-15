@@ -18,10 +18,7 @@ class BrandsListingPage extends StatelessWidget {
       child: BlocBuilder<BrandsListingCubit, PaginatedSectionState<BrandModel>>(
         builder: (context, state) {
           final cubit = context.read<BrandsListingCubit>();
-          return PaginatedBrandsGridPage(
-            cubit: cubit,
-            state: state,
-          );
+          return PaginatedBrandsGridPage(cubit: cubit, state: state);
         },
       ),
     );

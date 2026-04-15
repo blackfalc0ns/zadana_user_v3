@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
@@ -74,31 +73,48 @@ class _BrandPageState extends State<BrandPage> {
       final filters = await apiServices.getBrandFilters(widget.brand.id);
       final minPrice = filters.priceRange?.min ?? 0;
       final maxPrice = filters.priceRange?.max ?? minPrice;
-      final priceBounds = RangeValues(minPrice, maxPrice >= minPrice ? maxPrice : minPrice);
+      final priceBounds = RangeValues(
+        minPrice,
+        maxPrice >= minPrice ? maxPrice : minPrice,
+      );
 
       if (!mounted) return;
 
       setState(() {
         _categories = (filters.categories ?? const [])
-            .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+            .where(
+              (item) =>
+                  (item.id ?? '').isNotEmpty &&
+                  (item.name ?? '').trim().isNotEmpty,
+            )
             .toList();
         _subcategories = (filters.subcategories ?? const [])
-            .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+            .where(
+              (item) =>
+                  (item.id ?? '').isNotEmpty &&
+                  (item.name ?? '').trim().isNotEmpty,
+            )
             .toList();
         _units = (filters.units ?? const [])
-            .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+            .where(
+              (item) =>
+                  (item.id ?? '').isNotEmpty &&
+                  (item.name ?? '').trim().isNotEmpty,
+            )
             .toList();
         _sortOptions = (filters.sortOptions ?? const [])
-            .map((item) => {
-                  'value': item.value ?? '',
-                  'title': localizeBrandFilterLabel(
-                    context,
-                    (item.label?.trim().isNotEmpty ?? false)
-                        ? item.label!.trim()
-                        : (item.value ?? ''),
-                  ),
-                  'subtitle': null,
-                })
+            .map(
+              (item) => {
+                'value': item.value ?? '',
+                'title': localizeBrandFilterLabel(
+                  context,
+                  (item.label?.trim().isNotEmpty ?? false)
+                      ? item.label!.trim()
+                      : (item.value ?? ''),
+                ),
+                'subtitle': null,
+              },
+            )
             .where((item) => (item['value'] as String).isNotEmpty)
             .toList();
         _priceBounds = priceBounds;
@@ -242,7 +258,9 @@ class _BrandPageState extends State<BrandPage> {
         builder: (_) => ProductSearchPage(
           params: ProductSearchParams(
             title: widget.brand.name,
-            hintText: context.localization.search_in_brand_products(widget.brand.name),
+            hintText: context.localization.search_in_brand_products(
+              widget.brand.name,
+            ),
             brandId: widget.brand.id,
             categoryId: _selectedSubcategoryId ?? _selectedCategoryId,
             minPrice: _priceRange.start,
@@ -258,7 +276,6 @@ class _BrandPageState extends State<BrandPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       body: CustomScrollView(
         slivers: [
           BrandHeader(brand: widget.brand),
@@ -300,10 +317,7 @@ class _BrandPageState extends State<BrandPage> {
                     children: [
                       const Icon(Icons.error_outline, size: 48),
                       const SizedBox(height: 12),
-                      Text(
-                        _errorMessage!,
-                        textAlign: TextAlign.center,
-                      ),
+                      Text(_errorMessage!, textAlign: TextAlign.center),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _loadBrandData,

@@ -37,9 +37,9 @@ class CategoryChips extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
         itemCount: categories.length,
         separatorBuilder: (context, index) => const SizedBox(width: Spacing.sm),
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            final isSelected = category.name == selectedCategory;
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          final isSelected = category.name == selectedCategory;
 
           return CategoryChip(
             label: category.name,

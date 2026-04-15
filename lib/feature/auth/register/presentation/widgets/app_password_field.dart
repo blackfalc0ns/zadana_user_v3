@@ -44,9 +44,7 @@ class _AppPasswordFieldState extends State<AppPasswordField> {
       suffixIcon: IconButton(
         onPressed: () => setState(() => _obscure = !_obscure),
         icon: Icon(
-          _obscure
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+          _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
           color: color.onSurfaceVariant,
           size: Spacing.iconSm,
         ),

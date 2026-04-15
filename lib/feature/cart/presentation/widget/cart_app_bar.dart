@@ -4,15 +4,15 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 
 class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final int itemCount;
-  final int totalQuantity;
-  final VoidCallback? onClearAll;
   const CartAppBar({
     super.key,
     required this.itemCount,
     required this.totalQuantity,
     this.onClearAll,
   });
+  final int itemCount;
+  final int totalQuantity;
+  final VoidCallback? onClearAll;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
@@ -24,7 +24,7 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return CustomAppBar(
       showBackButton: false,
-     
+
       titleWidget: Column(
         mainAxisSize: MainAxisSize.min,
         children: [Text(locale.cart)],

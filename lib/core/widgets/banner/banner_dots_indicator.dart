@@ -33,7 +33,8 @@ class BannerDotsIndicator extends StatelessWidget {
           (index) => _BannerDot(
             isActive: currentPage == index,
             activeColor: activeColor ?? AppColors.white,
-            inactiveColor: inactiveColor ?? AppColors.white.withValues(alpha: 0.5),
+            inactiveColor:
+                inactiveColor ?? AppColors.white.withValues(alpha: 0.5),
             dotSize: dotSize,
             activeDotWidth: activeDotWidth,
           ),

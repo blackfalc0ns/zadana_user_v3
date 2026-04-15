@@ -29,10 +29,7 @@ class ResetPasswordScreen extends StatelessWidget {
 }
 
 class _ResetPasswordView extends StatelessWidget {
-  const _ResetPasswordView({
-    required this.identifier,
-    required this.otpCode,
-  });
+  const _ResetPasswordView({required this.identifier, required this.otpCode});
 
   final String identifier;
   final String otpCode;
@@ -44,9 +41,7 @@ class _ResetPasswordView extends StatelessWidget {
     return BlocBuilder<ResetPasswordViewModel, ResetPasswordState>(
       builder: (context, state) {
         final showGlobalError =
-            !state.isLoading &&
-            !state.isSuccess &&
-            state.failure != null;
+            !state.isLoading && !state.isSuccess && state.failure != null;
 
         return AuthExperienceShell(
           showBackButton: true,
@@ -66,7 +61,9 @@ class _ResetPasswordView extends StatelessWidget {
                   ),
                   child: ApiErrorWidget.fromFailure(
                     state.failure!,
-                    onRetry: context.read<ResetPasswordViewModel>().clearFeedback,
+                    onRetry: context
+                        .read<ResetPasswordViewModel>()
+                        .clearFeedback,
                   ),
                 )
               : ResetPasswordForm(

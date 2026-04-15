@@ -2,7 +2,7 @@ import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class FavoritesData {
   static final List<ProductModel> favoriteProducts = [
-    ProductModel(
+    const ProductModel(
       id: 'fav1',
       name: 'طماطم طازجة',
       price: 12.50,
@@ -11,20 +11,21 @@ class FavoritesData {
       emoji: '🍅',
       imageUrl: '',
       isFavorite: true,
-      store: 'كارفور', isDiscounted: false,
+      store: 'كارفور',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav2',
       name: 'خيار طازج',
       price: 8.00,
-      oldPrice: null,
       unit: 'كيلو',
       emoji: '🥒',
       imageUrl: '',
       isFavorite: true,
-      store: 'سبينس', isDiscounted: false,
+      store: 'سبينس',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav3',
       name: 'جزر طازج',
       price: 10.00,
@@ -33,20 +34,21 @@ class FavoritesData {
       emoji: '🥕',
       imageUrl: '',
       isFavorite: true,
-      store: 'هايبر وان', isDiscounted: false,
+      store: 'هايبر وان',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav4',
       name: 'بصل أحمر',
       price: 6.50,
-      oldPrice: null,
       unit: 'كيلو',
       emoji: '🧅',
       imageUrl: '',
       isFavorite: true,
-      store: 'بشاير', isDiscounted: false,
+      store: 'بشاير',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav5',
       name: 'فلفل أخضر',
       price: 14.00,
@@ -55,20 +57,21 @@ class FavoritesData {
       emoji: '🫑',
       imageUrl: '',
       isFavorite: true,
-      store: 'أونستوب', isDiscounted: false,
+      store: 'أونستوب',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav6',
       name: 'باذنجان طازج',
       price: 11.00,
-      oldPrice: null,
       unit: 'كيلو',
       emoji: '🍆',
       imageUrl: '',
       isFavorite: true,
-      store: 'فاتورة', isDiscounted: false,
+      store: 'فاتورة',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav7',
       name: 'كوسة طازجة',
       price: 9.50,
@@ -77,20 +80,21 @@ class FavoritesData {
       emoji: '🥒',
       imageUrl: '',
       isFavorite: true,
-      store: 'كارفور', isDiscounted: false,
+      store: 'كارفور',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav8',
       name: 'بطاطس بيضاء',
       price: 7.00,
-      oldPrice: null,
       unit: 'كيلو',
       emoji: '🥔',
       imageUrl: '',
       isFavorite: true,
-      store: 'سبينس', isDiscounted: false,
+      store: 'سبينس',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav9',
       name: 'فلفل رومي',
       price: 13.50,
@@ -99,31 +103,32 @@ class FavoritesData {
       emoji: '🌶️',
       imageUrl: '',
       isFavorite: true,
-      store: 'هايبر وان', isDiscounted: false,
+      store: 'هايبر وان',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav10',
       name: 'ثوم طازج',
       price: 18.00,
-      oldPrice: null,
       unit: 'كيلو',
       emoji: '🧄',
       imageUrl: '',
       isFavorite: true,
-      store: 'بشاير', isDiscounted: false,
+      store: 'بشاير',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav11',
       name: 'بقدونس طازج',
       price: 5.00,
-      oldPrice: null,
       unit: 'حزمة',
       emoji: '🌿',
       imageUrl: '',
       isFavorite: true,
-      store: 'أونستوب', isDiscounted: false,
+      store: 'أونستوب',
+      isDiscounted: false,
     ),
-    ProductModel(
+    const ProductModel(
       id: 'fav12',
       name: 'خس طازج',
       price: 6.00,
@@ -132,7 +137,8 @@ class FavoritesData {
       emoji: '🥬',
       imageUrl: '',
       isFavorite: true,
-      store: 'فاتورة', isDiscounted: false,
+      store: 'فاتورة',
+      isDiscounted: false,
     ),
   ];
 }

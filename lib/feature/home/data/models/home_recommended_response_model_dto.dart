@@ -1,13 +1,6 @@
 import 'package:zadana_user_v3/feature/home/data/models/home_recommended_item_model_dto.dart';
 
 class HomeRecommendedResponseModelDto {
-  final String? key;
-  final String? title;
-  final bool? isActive;
-  final String? theme;
-  final int? itemsCount;
-  final List<HomeRecommendedItemModelDto>? items;
-
   const HomeRecommendedResponseModelDto({
     this.key,
     this.title,
@@ -33,4 +26,10 @@ class HomeRecommendedResponseModelDto {
           .toList(),
     );
   }
+  final String? key;
+  final String? title;
+  final bool? isActive;
+  final String? theme;
+  final int? itemsCount;
+  final List<HomeRecommendedItemModelDto>? items;
 }

@@ -3,29 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 
 class CustomTextField extends StatelessWidget {
-  final TextEditingController? controller;
-  final String? label;
-  final String? hint;
-  final String? Function(String?)? validator;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final void Function(String)? onChanged;
-  final void Function(String)? onSubmitted;
-  final Widget? prefix;
-  final Widget? suffix;
-  final bool readOnly;
-  final VoidCallback? onTap;
-  final List<TextInputFormatter>? inputFormatters;
-  final int? maxLines;
-  final int? maxLength;
-  final TextDirection? textDirection;
-  final bool? enabled;
-  final TextAlign? textAlign;
-  final String? initialValue;
-  final FocusNode? focusNode;
-  final Color? fillColor;
-  final String? Function(String?)? onSaved;
-
   const CustomTextField({
     super.key,
     this.controller,
@@ -51,6 +28,28 @@ class CustomTextField extends StatelessWidget {
     this.fillColor,
     this.onSaved,
   });
+  final TextEditingController? controller;
+  final String? label;
+  final String? hint;
+  final String? Function(String?)? validator;
+  final bool obscureText;
+  final TextInputType? keyboardType;
+  final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
+  final Widget? prefix;
+  final Widget? suffix;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLines;
+  final int? maxLength;
+  final TextDirection? textDirection;
+  final bool? enabled;
+  final TextAlign? textAlign;
+  final String? initialValue;
+  final FocusNode? focusNode;
+  final Color? fillColor;
+  final String? Function(String?)? onSaved;
 
   @override
   Widget build(BuildContext context) {

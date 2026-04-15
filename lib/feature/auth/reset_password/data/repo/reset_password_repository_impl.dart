@@ -8,9 +8,8 @@ import 'package:zadana_user_v3/feature/auth/reset_password/domain/repo/reset_pas
 
 @Injectable(as: ResetPasswordRepository)
 class ResetPasswordRepositoryImpl implements ResetPasswordRepository {
-  final ResetPasswordRemoteDataSource remoteDataSource;
-
   ResetPasswordRepositoryImpl(this.remoteDataSource);
+  final ResetPasswordRemoteDataSource remoteDataSource;
 
   @override
   Future<ApiResult<ResetPasswordResponseEntity>> resetPassword(

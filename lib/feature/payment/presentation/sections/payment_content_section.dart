@@ -4,14 +4,13 @@ import 'package:zadana_user_v3/feature/payment/presentation/sections/payment_car
 import 'package:zadana_user_v3/feature/payment/presentation/sections/payment_progress_section.dart';
 
 class PaymentContentSection extends StatelessWidget {
-  final String selectedPaymentMethod;
-  final ValueChanged<String> onPaymentMethodChanged;
-
   const PaymentContentSection({
     super.key,
     required this.selectedPaymentMethod,
     required this.onPaymentMethodChanged,
   });
+  final String selectedPaymentMethod;
+  final ValueChanged<String> onPaymentMethodChanged;
 
   @override
   Widget build(BuildContext context) {

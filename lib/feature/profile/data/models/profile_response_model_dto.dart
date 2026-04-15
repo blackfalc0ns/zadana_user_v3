@@ -7,13 +7,6 @@ part 'profile_response_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class ProfileResponseModelDto {
-  final String id;
-  final String fullName;
-  final String email;
-  final String phone;
-  final String role;
-  final int favoritesCount;
-
   const ProfileResponseModelDto({
     required this.id,
     required this.fullName,
@@ -25,6 +18,12 @@ class ProfileResponseModelDto {
 
   factory ProfileResponseModelDto.fromJson(Map<String, dynamic> json) =>
       _$ProfileResponseModelDtoFromJson(json);
+  final String id;
+  final String fullName;
+  final String email;
+  final String phone;
+  final String role;
+  final int favoritesCount;
 
   Map<String, dynamic> toJson() => _$ProfileResponseModelDtoToJson(this);
 

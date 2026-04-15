@@ -8,13 +8,13 @@ import 'verify_otp_remote_data_source.dart';
 /// Data layer - API implementation using Retrofit
 @Injectable(as: VerifyOtpRemoteDataSource)
 class VerifyOtpRemoteDataSourceImpl implements VerifyOtpRemoteDataSource {
-  final ApiServices _apiServices;
-
   VerifyOtpRemoteDataSourceImpl(this._apiServices);
+  final ApiServices _apiServices;
 
   @override
   Future<VerifyOtpResponseModelDto> verifyOtp(
-      VerifyOtpRequestModelDto request) {
+    VerifyOtpRequestModelDto request,
+  ) {
     return _apiServices.verifyOtp(request);
   }
 }

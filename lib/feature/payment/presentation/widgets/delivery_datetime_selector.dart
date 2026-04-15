@@ -7,17 +7,17 @@ import 'package:zadana_user_v3/feature/payment/presentation/widgets/info_card_co
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/section_header.dart';
 
 class DeliveryDateTimeSelector extends StatefulWidget {
-  final DateTime? initialDateTime;
-  final ValueChanged<DateTime>? onDateTimeChanged;
-
   const DeliveryDateTimeSelector({
     super.key,
     this.initialDateTime,
     this.onDateTimeChanged,
   });
+  final DateTime? initialDateTime;
+  final ValueChanged<DateTime>? onDateTimeChanged;
 
   @override
-  State<DeliveryDateTimeSelector> createState() => _DeliveryDateTimeSelectorState();
+  State<DeliveryDateTimeSelector> createState() =>
+      _DeliveryDateTimeSelectorState();
 }
 
 class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
@@ -33,7 +33,7 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
     final now = DateTime.now();
     // Bir sonraki saati hesapla (örn: 14:32 -> 15:00)
     final nextHour = now.hour + 1;
-    return DateTime(now.year, now.month, now.day, nextHour, 0);
+    return DateTime(now.year, now.month, now.day, nextHour);
   }
 
   Future<void> _showDateTimePicker() async {
@@ -44,7 +44,8 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
     // Önce tarih seç
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDateTime ?? DateTime.now().add(const Duration(days: 1)),
+      initialDate:
+          _selectedDateTime ?? DateTime.now().add(const Duration(days: 1)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 30)),
       builder: (context, child) {
@@ -54,15 +55,12 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                 ? const ColorScheme.dark(
                     primary: Colors.blue,
                     onPrimary: Colors.white,
-                    surface: Color(0xFF121212),
-                    onSurface: Colors.white,
                   )
                 : const ColorScheme.light(
                     primary: Colors.blue,
-                    onPrimary: Colors.white,
-                    surface: Colors.white,
                     onSurface: Colors.black87,
-                  ), dialogTheme: DialogThemeData(backgroundColor: colors.surface),
+                  ),
+            dialogTheme: DialogThemeData(backgroundColor: colors.surface),
           ),
           child: child!,
         );
@@ -84,15 +82,12 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                 ? const ColorScheme.dark(
                     primary: Colors.blue,
                     onPrimary: Colors.white,
-                    surface: Color(0xFF121212),
-                    onSurface: Colors.white,
                   )
                 : const ColorScheme.light(
                     primary: Colors.blue,
-                    onPrimary: Colors.white,
-                    surface: Colors.white,
                     onSurface: Colors.black87,
-                  ), dialogTheme: DialogThemeData(backgroundColor: colors.surface),
+                  ),
+            dialogTheme: DialogThemeData(backgroundColor: colors.surface),
           ),
           child: child!,
         );
@@ -124,9 +119,13 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
 
     String dateText;
-    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
       dateText = 'اليوم';
-    } else if (date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day) {
+    } else if (date.year == tomorrow.year &&
+        date.month == tomorrow.month &&
+        date.day == tomorrow.day) {
       dateText = 'غداً';
     } else {
       dateText = '${date.day}/${date.month}/${date.year}';
@@ -171,7 +170,6 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                         child: Text(
                           'إعادة تعيين',
                           style: getBoldStyle(
-                            fontSize: FontSize.size12,
                             fontFamily: FontConstant.cairo,
                             color: colors.error,
                           ),
@@ -200,7 +198,6 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                     color: hasSelection
                         ? colors.primary.withValues(alpha: 0.3)
                         : colors.outline.withValues(alpha: 0.3),
-                    width: 1,
                   ),
                 ),
                 child: Row(
@@ -214,8 +211,12 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                         borderRadius: BorderRadius.circular(Spacing.sm),
                       ),
                       child: Icon(
-                        hasSelection ? Icons.event_available : Icons.event_outlined,
-                        color: hasSelection ? colors.primary : colors.onSurfaceVariant,
+                        hasSelection
+                            ? Icons.event_available
+                            : Icons.event_outlined,
+                        color: hasSelection
+                            ? colors.primary
+                            : colors.onSurfaceVariant,
                         size: 20,
                       ),
                     ),
@@ -225,9 +226,10 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            hasSelection ? 'تم تحديد وقت التسليم' : 'اختر وقت التسليم',
+                            hasSelection
+                                ? 'تم تحديد وقت التسليم'
+                                : 'اختر وقت التسليم',
                             style: getMediumStyle(
-                              fontSize: FontSize.size12,
                               fontFamily: FontConstant.cairo,
                               color: colors.onSurfaceVariant,
                             ),
@@ -238,7 +240,9 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
                             style: getBoldStyle(
                               fontSize: FontSize.size14,
                               fontFamily: FontConstant.cairo,
-                              color: hasSelection ? colors.primary : colors.onSurface,
+                              color: hasSelection
+                                  ? colors.primary
+                                  : colors.onSurface,
                             ),
                           ),
                         ],
@@ -269,11 +273,7 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 14,
-                    color: colors.secondary,
-                  ),
+                  Icon(Icons.info_outline, size: 14, color: colors.secondary),
                   const SizedBox(width: Spacing.xs),
                   Text(
                     'قد يختلف وقت التسليم حسب التوفر',
@@ -292,4 +292,3 @@ class _DeliveryDateTimeSelectorState extends State<DeliveryDateTimeSelector> {
     );
   }
 }
-

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
@@ -23,12 +22,7 @@ class PaginatedBrandsGridPage extends StatelessWidget {
     final locale = context.localization;
 
     return Scaffold(
-    
-      appBar: CustomAppBar(
-        title: locale.section_brands,
-       
-       
-      ),
+      appBar: CustomAppBar(title: locale.section_brands),
       body: RefreshIndicator(
         onRefresh: cubit.refresh,
         child: NotificationListener<ScrollNotification>(

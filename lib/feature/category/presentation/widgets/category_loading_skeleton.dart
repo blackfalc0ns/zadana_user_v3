@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 
 class CategoryLoadingSkeleton extends StatefulWidget {
   const CategoryLoadingSkeleton({super.key});
@@ -34,8 +34,8 @@ class _CategoryLoadingSkeletonState extends State<CategoryLoadingSkeleton>
   Widget build(BuildContext context) {
     return _ShimmerWrapper(
       controller: _controller,
-      child: Column(
-        children: const [
+      child: const Column(
+        children: [
           _SearchSkeleton(),
           SizedBox(height: Spacing.md),
           _ChipsSkeleton(),
@@ -66,11 +66,7 @@ class _ShimmerWrapper extends StatelessWidget {
             return LinearGradient(
               begin: Alignment(-2.0 + (controller.value * 4), -0.5),
               end: Alignment(0.0 + (controller.value * 4), 0.5),
-              colors: [
-                baseColor,
-                highlightColor,
-                baseColor,
-              ],
+              colors: [baseColor, highlightColor, baseColor],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
           },
@@ -87,10 +83,10 @@ class _SearchSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.md),
+    return const Padding(
+      padding: EdgeInsets.all(Spacing.md),
       child: Row(
-        children: const [
+        children: [
           Expanded(child: _Bone(height: 40, radius: Spacing.cardRadius)),
           SizedBox(width: 6),
           _Bone(width: 42, height: 40, radius: 8),
@@ -188,9 +184,9 @@ class _ProductCardSkeleton extends StatelessWidget {
                         radius: 999,
                       ),
                       const Spacer(),
-                      Row(
+                      const Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: const [
+                        children: [
                           Expanded(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,

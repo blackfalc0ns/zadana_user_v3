@@ -13,7 +13,6 @@ void showClearAllDialog({
 
   showDialog(
     context: context,
-    barrierDismissible: true,
     builder: (_) => Directionality(
       textDirection: TextDirection.rtl,
       child: Dialog(
@@ -160,4 +159,3 @@ void showClearAllDialog({
     ),
   );
 }
-

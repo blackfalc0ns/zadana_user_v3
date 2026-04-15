@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -9,17 +10,16 @@ import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
-import 'package:dio/dio.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/widgets/clear_all_dialog.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_app_bar.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_empty_state.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_grid.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_state.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/clear_all_dialog.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_app_bar.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_empty_state.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_grid.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -123,7 +123,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             state.failure!,
                             onRetry: () {
                               context.read<FavoritesViewModel>().clearFailure();
-                              context.read<FavoritesViewModel>().loadFavorites();
+                              context
+                                  .read<FavoritesViewModel>()
+                                  .loadFavorites();
                             },
                           ),
                         ),

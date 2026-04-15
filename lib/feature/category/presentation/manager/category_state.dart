@@ -105,7 +105,8 @@ class CategoryState {
       .toList();
 
   bool get hasActivePriceFilter =>
-      priceRange.start != priceBounds.start || priceRange.end != priceBounds.end;
+      priceRange.start != priceBounds.start ||
+      priceRange.end != priceBounds.end;
 
   bool get hasActiveCategoryFilter =>
       !isCategoryPreselectedFromOutside &&
@@ -204,10 +205,10 @@ class CategoryState {
       selectedPartId: identical(selectedPartId, const Object())
           ? this.selectedPartId
           : selectedPartId as String?,
-      isCategoryPreselectedFromOutside: isCategoryPreselectedFromOutside ??
+      isCategoryPreselectedFromOutside:
+          isCategoryPreselectedFromOutside ??
           this.isCategoryPreselectedFromOutside,
-      showAllSubCategories:
-          showAllSubCategories ?? this.showAllSubCategories,
+      showAllSubCategories: showAllSubCategories ?? this.showAllSubCategories,
       subCategoryCategoryMap:
           subCategoryCategoryMap ?? this.subCategoryCategoryMap,
       isLoading: isLoading ?? this.isLoading,

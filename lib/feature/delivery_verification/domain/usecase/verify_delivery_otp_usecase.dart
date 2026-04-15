@@ -4,9 +4,8 @@ import '../repo/delivery_verification_repo.dart';
 
 @injectable
 class VerifyDeliveryOtpUseCase {
-  final DeliveryVerificationRepo repository;
-
   VerifyDeliveryOtpUseCase(this.repository);
+  final DeliveryVerificationRepo repository;
 
   Future<ApiResult<bool>> call(String orderId, String otpCode) {
     return repository.verifyOtp(orderId, otpCode);

@@ -13,7 +13,12 @@ class FakeOrdersData {
         totalPrice: 285.0,
         status: OrderStatus.pending,
         items: const [
-          OrderItemUiModel(id: '1', name: 'طماطم طازجة', quantity: 2, price: 30),
+          OrderItemUiModel(
+            id: '1',
+            name: 'طماطم طازجة',
+            quantity: 2,
+            price: 30,
+          ),
           OrderItemUiModel(id: '2', name: 'حليب', quantity: 1, price: 25),
           OrderItemUiModel(id: '3', name: 'خبز', quantity: 3, price: 15),
         ],
@@ -35,7 +40,12 @@ class FakeOrdersData {
         status: OrderStatus.shipped,
         items: const [
           OrderItemUiModel(id: '6', name: 'سلمون', quantity: 2, price: 130),
-          OrderItemUiModel(id: '7', name: 'عصير برتقال', quantity: 3, price: 26.9),
+          OrderItemUiModel(
+            id: '7',
+            name: 'عصير برتقال',
+            quantity: 3,
+            price: 26.9,
+          ),
         ],
       ),
       OrderUiModel(
@@ -45,7 +55,12 @@ class FakeOrdersData {
         status: OrderStatus.delivered,
         items: const [
           OrderItemUiModel(id: '8', name: 'أفوكادو', quantity: 5, price: 24),
-          OrderItemUiModel(id: '9', name: 'زبادي يوناني', quantity: 4, price: 30),
+          OrderItemUiModel(
+            id: '9',
+            name: 'زبادي يوناني',
+            quantity: 4,
+            price: 30,
+          ),
         ],
       ),
       OrderUiModel(

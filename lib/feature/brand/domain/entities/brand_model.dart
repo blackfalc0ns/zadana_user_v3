@@ -1,12 +1,4 @@
 class BrandModel {
-  final String id;
-  final String name;
-  final String logo;
-  final String? coverImage;
-  final String? emoji;
-  final int productCount;
-  final String? description;
-
   const BrandModel({
     required this.id,
     required this.name,
@@ -16,6 +8,13 @@ class BrandModel {
     required this.productCount,
     this.description,
   });
+  final String id;
+  final String name;
+  final String logo;
+  final String? coverImage;
+  final String? emoji;
+  final int productCount;
+  final String? description;
 
   BrandModel copyWith({
     String? id,

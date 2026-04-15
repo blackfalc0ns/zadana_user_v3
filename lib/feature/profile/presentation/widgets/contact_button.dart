@@ -7,12 +7,6 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 /// Contact button widget
 class ContactButton extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final Color iconColor;
-
   const ContactButton({
     super.key,
     required this.icon,
@@ -21,6 +15,11 @@ class ContactButton extends StatelessWidget {
     required this.onTap,
     required this.iconColor,
   });
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +32,7 @@ class ContactButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.surface,
           borderRadius: BorderRadius.circular(Spacing.md),
-          border: Border.all(
-            color: color.outline.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: color.outline.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
@@ -65,7 +61,6 @@ class ContactButton extends StatelessWidget {
                   Text(
                     subtitle,
                     style: getMediumStyle(
-                      fontSize: FontSize.size12,
                       fontFamily: FontConstant.cairo,
                       color: color.onSurfaceVariant,
                     ),
@@ -82,4 +77,3 @@ class ContactButton extends StatelessWidget {
     );
   }
 }
-

@@ -24,10 +24,7 @@ class AppPhoneField extends StatelessWidget {
       hint: hint ?? locale.hint_phone,
       keyboardType: TextInputType.phone,
       validator: validator,
-      prefixIcon: Icon(
-        Icons.phone,
-        color: color.onSurfaceVariant,
-      ),
+      prefixIcon: Icon(Icons.phone, color: color.onSurfaceVariant),
     );
   }
 }

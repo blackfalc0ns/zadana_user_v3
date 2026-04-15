@@ -17,17 +17,14 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
-        onPrimary: AppColors.textOnPrimary,
         secondary: AppColors.secondary,
         onSecondary: AppColors.textPrimary,
-        surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
         outline: Color(0xFF9E9E9E),
         outlineVariant: Color(0xFFD6D6D6),
         surfaceContainerHighest: Color(0xFFF3F5F7),
         surfaceContainerHigh: Color(0xFFF7F8FA),
         error: AppColors.error,
-        onError: AppColors.textOnPrimary,
       ),
       // ── AppBar ──
       appBarTheme: const AppBarTheme(

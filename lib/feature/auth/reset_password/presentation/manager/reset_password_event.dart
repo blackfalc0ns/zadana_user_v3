@@ -7,9 +7,6 @@ abstract class ResetPasswordEvent {
 
 /// Event to submit reset password form
 class ResetPasswordSubmitEvent extends ResetPasswordEvent {
+  const ResetPasswordSubmitEvent({required this.requestEntity});
   final ResetPasswordRequestEntity requestEntity;
-
-  const ResetPasswordSubmitEvent({
-    required this.requestEntity,
-  });
 }

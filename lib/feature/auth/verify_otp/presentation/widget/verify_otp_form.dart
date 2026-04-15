@@ -23,7 +23,10 @@ class VerifyOtpForm extends StatefulWidget {
 }
 
 class _VerifyOtpFormState extends State<VerifyOtpForm> {
-  final List<TextEditingController> _controllers = List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
 
   @override
@@ -62,9 +65,9 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
   void _handleFocusChange(int index) {
     if (_focusNodes[index].hasFocus && _controllers[index].text.isEmpty) {
       _focusNodes[index].onKeyEvent = (node, event) {
-        if (event is KeyDownEvent && 
+        if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.backspace &&
-            index > 0 && 
+            index > 0 &&
             _controllers[index].text.isEmpty) {
           _focusNodes[index - 1].requestFocus();
           return KeyEventResult.handled;
@@ -81,7 +84,9 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
     if (!_isOtpComplete) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.otp_complete_code_required),
+          content: Text(
+            AppLocalizations.of(context)!.otp_complete_code_required,
+          ),
           backgroundColor: context.colorScheme.error,
         ),
       );
@@ -136,7 +141,9 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
                       nextFocusNode: index < 3 ? _focusNodes[index + 1] : null,
-                      previousFocusNode: index > 0 ? _focusNodes[index - 1] : null,
+                      previousFocusNode: index > 0
+                          ? _focusNodes[index - 1]
+                          : null,
                       onChanged: (_) => setState(() {}),
                     ),
                   ),

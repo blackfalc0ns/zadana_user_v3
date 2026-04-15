@@ -3,7 +3,6 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class BaseErrorWidget extends StatelessWidget {
-
   const BaseErrorWidget({
     super.key,
     required this.title,

@@ -74,10 +74,7 @@ class CategoryContent extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(Spacing.md),
           color: color.surface,
-          child: SearchBarWidget(
-            locale: locale,
-            onTap: onSearchTap,
-          ),
+          child: SearchBarWidget(locale: locale, onTap: onSearchTap),
         ),
         if (showCategoryChips)
           CategoryChips(

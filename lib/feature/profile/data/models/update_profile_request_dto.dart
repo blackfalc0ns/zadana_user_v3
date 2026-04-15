@@ -5,10 +5,6 @@ part 'update_profile_request_dto.g.dart';
 
 @JsonSerializable()
 class UpdateProfileRequestDto {
-  final String fullName;
-  final String email;
-  final String phone;
-
   const UpdateProfileRequestDto({
     required this.fullName,
     required this.email,
@@ -17,6 +13,9 @@ class UpdateProfileRequestDto {
 
   factory UpdateProfileRequestDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateProfileRequestDtoFromJson(json);
+  final String fullName;
+  final String email;
+  final String phone;
 
   Map<String, dynamic> toJson() => _$UpdateProfileRequestDtoToJson(this);
 }

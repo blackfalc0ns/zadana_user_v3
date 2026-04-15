@@ -1,17 +1,4 @@
 class CategoryProductsItemModelDto {
-  final String? id;
-  final String? name;
-  final String? store;
-  final double? price;
-  final double? oldPrice;
-  final String? imageUrl;
-  final double? rating;
-  final int? reviewCount;
-  final String? discount;
-  final bool? isFavorite;
-  final String? unit;
-  final bool? isDiscounted;
-
   const CategoryProductsItemModelDto({
     this.id,
     this.name,
@@ -43,4 +30,16 @@ class CategoryProductsItemModelDto {
       isDiscounted: json['is_discounted'] as bool?,
     );
   }
+  final String? id;
+  final String? name;
+  final String? store;
+  final double? price;
+  final double? oldPrice;
+  final String? imageUrl;
+  final double? rating;
+  final int? reviewCount;
+  final String? discount;
+  final bool? isFavorite;
+  final String? unit;
+  final bool? isDiscounted;
 }

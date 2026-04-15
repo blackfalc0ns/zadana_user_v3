@@ -7,11 +7,6 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 /// Language option tile for bottom sheet
 class LanguageOptionTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool isSelected;
-  final VoidCallback onTap;
-
   const LanguageOptionTile({
     super.key,
     required this.title,
@@ -19,6 +14,10 @@ class LanguageOptionTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
+  final String title;
+  final String subtitle;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +58,7 @@ class LanguageOptionTile extends StatelessWidget {
         ),
       ),
       trailing: isSelected
-          ? FaIcon(
-              FontAwesomeIcons.circleCheck,
-              color: color.primary,
-              size: 20,
-            )
+          ? FaIcon(FontAwesomeIcons.circleCheck, color: color.primary, size: 20)
           : null,
     );
   }
@@ -138,4 +133,3 @@ void showLanguageBottomSheet({
     ),
   );
 }
-

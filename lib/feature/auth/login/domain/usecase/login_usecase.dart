@@ -8,9 +8,8 @@ import '../repo/login_repository.dart';
 /// Domain layer - Business logic
 @injectable
 class LoginUseCase {
-  final LoginRepository _repository;
-
   const LoginUseCase(this._repository);
+  final LoginRepository _repository;
 
   Future<ApiResult<LoginResponseEntity>> call(
     LoginRequestEntity request,

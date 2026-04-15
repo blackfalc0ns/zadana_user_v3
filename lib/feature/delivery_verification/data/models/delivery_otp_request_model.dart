@@ -7,18 +7,10 @@ part 'delivery_otp_request_model.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class DeliveryOtpRequestModel {
-  final String orderId;
-  final String otpCode;
-
-  const DeliveryOtpRequestModel({
-    required this.orderId,
-    required this.otpCode,
-  });
+  const DeliveryOtpRequestModel({required this.orderId, required this.otpCode});
 
   factory DeliveryOtpRequestModel.fromJson(Map<String, dynamic> json) =>
       _$DeliveryOtpRequestModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$DeliveryOtpRequestModelToJson(this);
 
   /// Convert from entity
   factory DeliveryOtpRequestModel.fromEntity(DeliveryOtpEntity entity) {
@@ -27,4 +19,8 @@ class DeliveryOtpRequestModel {
       otpCode: entity.otpCode,
     );
   }
+  final String orderId;
+  final String otpCode;
+
+  Map<String, dynamic> toJson() => _$DeliveryOtpRequestModelToJson(this);
 }

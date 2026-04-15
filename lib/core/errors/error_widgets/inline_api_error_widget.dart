@@ -5,11 +5,7 @@ import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 
 class InlineApiErrorWidget extends StatelessWidget {
-  const InlineApiErrorWidget({
-    super.key,
-    required this.failure,
-    this.onRetry,
-  });
+  const InlineApiErrorWidget({super.key, required this.failure, this.onRetry});
 
   final Failure failure;
   final VoidCallback? onRetry;

@@ -4,9 +4,7 @@ import 'package:zadana_user_v3/feature/auth/reset_password/domain/entities/reset
 import 'package:zadana_user_v3/feature/auth/reset_password/domain/entities/reset_password_response_entity.dart';
 
 class ResetPasswordMapper {
-  static ResetPasswordRequestDto toDto(
-    ResetPasswordRequestEntity entity,
-  ) {
+  static ResetPasswordRequestDto toDto(ResetPasswordRequestEntity entity) {
     return ResetPasswordRequestDto(
       identifier: entity.identifier,
       otpCode: entity.otpCode,
@@ -14,11 +12,7 @@ class ResetPasswordMapper {
     );
   }
 
-  static ResetPasswordResponseEntity toEntity(
-    ResetPasswordResponseDto dto,
-  ) {
-    return ResetPasswordResponseEntity(
-      message: dto.message,
-    );
+  static ResetPasswordResponseEntity toEntity(ResetPasswordResponseDto dto) {
+    return ResetPasswordResponseEntity(message: dto.message);
   }
 }

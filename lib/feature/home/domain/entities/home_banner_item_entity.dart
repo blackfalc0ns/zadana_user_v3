@@ -1,11 +1,4 @@
 class HomeBannerItemEntity {
-  final String id;
-  final String tag;
-  final String title;
-  final String subtitle;
-  final String actionLabel;
-  final String imageUrl;
-
   const HomeBannerItemEntity({
     required this.id,
     required this.tag,
@@ -14,4 +7,10 @@ class HomeBannerItemEntity {
     required this.actionLabel,
     required this.imageUrl,
   });
+  final String id;
+  final String tag;
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final String imageUrl;
 }

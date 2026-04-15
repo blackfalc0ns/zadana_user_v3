@@ -36,7 +36,7 @@ class LocationViewModel extends Cubit<LocationState> {
 
   final SearchLocationsUseCase _searchLocationsUseCase;
   final GetCurrentLocationWithAddressUseCase
-      _getCurrentLocationWithAddressUseCase;
+  _getCurrentLocationWithAddressUseCase;
   final GetAddressFromCoordinatesUseCase _getAddressFromCoordinatesUseCase;
   final AddCustomerAddressUseCase _addCustomerAddressUseCase;
   final ProfileUseCase _profileUseCase;
@@ -72,105 +72,39 @@ class LocationViewModel extends Cubit<LocationState> {
         _saveSelectedAddress(event);
       case UpdateManualAddressEvent():
         emit(
-          state.copyWith(
-            addressLine: event.addressLine,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
+          state.copyWith(addressLine: event.addressLine, isAddressSaved: false),
         );
       case UpdateCityEvent():
-        emit(
-          state.copyWith(
-            city: event.city,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
-        );
+        emit(state.copyWith(city: event.city, isAddressSaved: false));
       case UpdateAreaEvent():
-        emit(
-          state.copyWith(
-            area: event.area,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
-        );
+        emit(state.copyWith(area: event.area, isAddressSaved: false));
       case UpdateBuildingNoEvent():
         emit(
-          state.copyWith(
-            buildingNo: event.buildingNo,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
+          state.copyWith(buildingNo: event.buildingNo, isAddressSaved: false),
         );
       case UpdateFloorNoEvent():
-        emit(
-          state.copyWith(
-            floorNo: event.floorNo,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
-        );
+        emit(state.copyWith(floorNo: event.floorNo, isAddressSaved: false));
       case UpdateApartmentNoEvent():
         emit(
-          state.copyWith(
-            apartmentNo: event.apartmentNo,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
+          state.copyWith(apartmentNo: event.apartmentNo, isAddressSaved: false),
         );
       case UpdateLabelEvent():
-        emit(
-          state.copyWith(
-            label: event.label,
-            isAddressSaved: false,
-            errorMessage: null,
-            failure: null,
-          ),
-        );
+        emit(state.copyWith(label: event.label, isAddressSaved: false));
       case ClearLocationErrorEvent():
-        emit(
-          state.copyWith(
-            errorMessage: null,
-            failure: null,
-            isAddressSaved: false,
-          ),
-        );
+        emit(state.copyWith(isAddressSaved: false));
       case ClearLocationSuccessEvent():
-        emit(
-          state.copyWith(
-            isSuccess: false,
-            isAddressSaved: false,
-          ),
-        );
+        emit(state.copyWith(isSuccess: false, isAddressSaved: false));
     }
   }
 
   void _onSearchQueryChanged(SearchLocationQueryChangedEvent event) {
-    emit(
-      state.copyWith(
-        query: event.query,
-        isAddressSaved: false,
-        errorMessage: null,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(query: event.query, isAddressSaved: false));
 
     _debounce?.cancel();
 
     final query = event.query.trim();
     if (query.isEmpty) {
-      emit(
-        state.copyWith(
-          searchResults: const [],
-          isSearchLoading: false,
-        ),
-      );
+      emit(state.copyWith(searchResults: const [], isSearchLoading: false));
       return;
     }
 
@@ -182,23 +116,11 @@ class LocationViewModel extends Cubit<LocationState> {
   Future<void> _searchLocations(SearchLocationSubmitEvent event) async {
     final query = event.query.trim();
     if (query.isEmpty) {
-      emit(
-        state.copyWith(
-          searchResults: const [],
-          isSearchLoading: false,
-        ),
-      );
+      emit(state.copyWith(searchResults: const [], isSearchLoading: false));
       return;
     }
 
-    emit(
-      state.copyWith(
-        isSearchLoading: true,
-        isAddressSaved: false,
-        errorMessage: null,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isSearchLoading: true, isAddressSaved: false));
 
     developer.log('Searching locations: $query', name: 'LocationViewModel');
 
@@ -208,11 +130,7 @@ class LocationViewModel extends Cubit<LocationState> {
     switch (result) {
       case ApiSuccessResult():
         emit(
-          state.copyWith(
-            isSearchLoading: false,
-            searchResults: result.data,
-            failure: null,
-          ),
+          state.copyWith(isSearchLoading: false, searchResults: result.data),
         );
       case ApiErrorResult():
         if (_isRateLimited(result.failure)) {
@@ -246,8 +164,6 @@ class LocationViewModel extends Cubit<LocationState> {
         query: event.location.addressLine,
         searchResults: const [],
         isAddressSaved: false,
-        errorMessage: null,
-        failure: null,
       ),
     );
 
@@ -260,14 +176,7 @@ class LocationViewModel extends Cubit<LocationState> {
   }
 
   Future<void> _getCurrentLocation() async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        isAddressSaved: false,
-        errorMessage: null,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, isAddressSaved: false));
 
     developer.log('Getting current location', name: 'LocationViewModel');
 
@@ -285,7 +194,6 @@ class LocationViewModel extends Cubit<LocationState> {
             addressLine: result.data.addressLine,
             city: result.data.city,
             area: result.data.area,
-            failure: null,
           ),
         );
       case ApiErrorResult():
@@ -327,14 +235,7 @@ class LocationViewModel extends Cubit<LocationState> {
     _lastReverseLon = event.longitude;
     _lastApiCall = now;
 
-    emit(
-      state.copyWith(
-        isLoading: true,
-        isAddressSaved: false,
-        errorMessage: null,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, isAddressSaved: false));
 
     developer.log(
       'Getting address for: ${event.latitude}, ${event.longitude}',
@@ -358,12 +259,14 @@ class LocationViewModel extends Cubit<LocationState> {
             addressLine: result.data.addressLine,
             city: result.data.city,
             area: result.data.area,
-            failure: null,
           ),
         );
       case ApiErrorResult():
         if (_isRateLimited(result.failure)) {
-          developer.log('Rate limited - backing off', name: 'LocationViewModel');
+          developer.log(
+            'Rate limited - backing off',
+            name: 'LocationViewModel',
+          );
           final message = _l10n.location_rate_limit_retry;
           emit(
             state.copyWith(
@@ -398,8 +301,6 @@ class LocationViewModel extends Cubit<LocationState> {
         floorNo: event.location.floorNo,
         apartmentNo: event.location.apartmentNo,
         label: event.location.label,
-        errorMessage: null,
-        failure: null,
         isSuccess: true,
         isAddressSaved: false,
       ),
@@ -420,8 +321,6 @@ class LocationViewModel extends Cubit<LocationState> {
         floorNo: event.location.floorNo,
         apartmentNo: event.location.apartmentNo,
         label: event.location.label,
-        errorMessage: null,
-        failure: null,
       ),
     );
 
@@ -429,14 +328,7 @@ class LocationViewModel extends Cubit<LocationState> {
 
     final token = await _tokenService.getToken();
     if (token == null || token.isEmpty) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          isAddressSaved: true,
-          errorMessage: null,
-          failure: null,
-        ),
-      );
+      emit(state.copyWith(isLoading: false, isAddressSaved: true));
       return;
     }
 
@@ -467,14 +359,7 @@ class LocationViewModel extends Cubit<LocationState> {
 
         switch (saveResult) {
           case ApiSuccessResult():
-            emit(
-              state.copyWith(
-                isLoading: false,
-                isAddressSaved: true,
-                errorMessage: null,
-                failure: null,
-              ),
-            );
+            emit(state.copyWith(isLoading: false, isAddressSaved: true));
           case ApiErrorResult():
             emit(
               state.copyWith(
@@ -523,8 +408,7 @@ class LocationViewModel extends Cubit<LocationState> {
       );
     }
 
-    if (message.contains('permission denied') ||
-        message.contains('denied')) {
+    if (message.contains('permission denied') || message.contains('denied')) {
       final localizedMessage = _l10n.location_permission_denied_message;
       return Failure(
         errorMessage: localizedMessage,
@@ -541,14 +425,7 @@ class LocationViewModel extends Cubit<LocationState> {
   }
 
   void clearFeedback() {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        failure: null,
-        isSuccess: false,
-        isAddressSaved: false,
-      ),
-    );
+    emit(state.copyWith(isSuccess: false, isAddressSaved: false));
   }
 
   LocationEntity? get selectedLocationData {

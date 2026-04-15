@@ -37,9 +37,7 @@ class _DeliveryRatingDialogState extends State<DeliveryRatingDialog> {
     final color = Theme.of(context).colorScheme;
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 400),
         padding: const EdgeInsets.all(24),
@@ -129,13 +127,12 @@ class _DeliveryRatingDialogState extends State<DeliveryRatingDialog> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: color.primary, width: 1),
+                        borderSide: BorderSide(color: color.primary),
                       ),
                       filled: true,
                       fillColor: const Color(0xFFF9FAFB),
                       contentPadding: const EdgeInsets.all(12),
                       counterStyle: getRegularStyle(
-                        fontSize: 12,
                         fontFamily: FontConstant.cairo,
                         color: const Color(0xFF6B7280),
                       ),
@@ -197,7 +194,6 @@ void showDeliveryRatingDialog(
 }) {
   showDialog(
     context: context,
-    barrierDismissible: true,
     builder: (context) => DeliveryRatingDialog(
       courierName: courierName,
       courierImage: courierImage,
@@ -205,4 +201,3 @@ void showDeliveryRatingDialog(
     ),
   );
 }
-

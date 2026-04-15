@@ -8,9 +8,8 @@ import 'profile_remote_data_source.dart';
 /// Data layer - API implementation using Retrofit
 @Injectable(as: ProfileRemoteDataSource)
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
-  final ApiServices _apiServices;
-
   ProfileRemoteDataSourceImpl(this._apiServices);
+  final ApiServices _apiServices;
 
   @override
   Future<ProfileResponseModelDto> getProfile() {
@@ -18,7 +17,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  Future<ProfileResponseModelDto> updateProfile(UpdateProfileRequestDto request) {
+  Future<ProfileResponseModelDto> updateProfile(
+    UpdateProfileRequestDto request,
+  ) {
     return _apiServices.updateProfile(request);
   }
 }

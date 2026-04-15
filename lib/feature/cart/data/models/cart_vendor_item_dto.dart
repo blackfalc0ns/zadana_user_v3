@@ -4,6 +4,8 @@ part 'cart_vendor_item_dto.g.dart';
 
 @JsonSerializable()
 class CartVendorItemDto {
+  factory CartVendorItemDto.fromJson(Map<String, dynamic> json) =>
+      _$CartVendorItemDtoFromJson(json);
   const CartVendorItemDto({
     required this.id,
     required this.name,
@@ -15,9 +17,6 @@ class CartVendorItemDto {
   final String name;
   final String? logoUrl;
   final int productsCount;
-
-  factory CartVendorItemDto.fromJson(Map<String, dynamic> json) =>
-      _$CartVendorItemDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$CartVendorItemDtoToJson(this);
 }

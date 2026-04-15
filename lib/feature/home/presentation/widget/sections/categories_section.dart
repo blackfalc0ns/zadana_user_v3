@@ -89,7 +89,9 @@ class _HomeCategoryItem extends StatelessWidget {
             id: category.id,
             name: category.name,
             imageAsset: category.imageUrl,
-            emoji: category.name.isNotEmpty ? category.name.substring(0, 1) : '',
+            emoji: category.name.isNotEmpty
+                ? category.name.substring(0, 1)
+                : '',
           ),
         );
         mainShellKey.currentState?.jumpToTab(1);
@@ -106,10 +108,7 @@ class _HomeCategoryItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color.surface,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: color.outline,
-                  width: .9,
-                ),
+                border: Border.all(color: color.outline, width: .9),
               ),
               padding: const EdgeInsets.all(10),
               child: ClipOval(
@@ -143,4 +142,3 @@ class _HomeCategoryItem extends StatelessWidget {
     );
   }
 }
-

@@ -4,6 +4,8 @@ part 'cart_summary_response_dto.g.dart';
 
 @JsonSerializable()
 class CartSummaryResponseDto {
+  factory CartSummaryResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$CartSummaryResponseDtoFromJson(json);
   const CartSummaryResponseDto({
     required this.itemsCount,
     required this.totalQuantity,
@@ -17,9 +19,6 @@ class CartSummaryResponseDto {
   final double? subtotal;
   final double? discountAmount;
   final double? totalAmount;
-
-  factory CartSummaryResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$CartSummaryResponseDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$CartSummaryResponseDtoToJson(this);
 }

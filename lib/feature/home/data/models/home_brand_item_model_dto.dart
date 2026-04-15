@@ -1,11 +1,4 @@
 class HomeBrandItemModelDto {
-  final String? id;
-  final String? name;
-  final String? logo;
-  final String? coverImage;
-  final int? productCount;
-  final String? description;
-
   const HomeBrandItemModelDto({
     this.id,
     this.name,
@@ -25,4 +18,10 @@ class HomeBrandItemModelDto {
       description: json['description'] as String?,
     );
   }
+  final String? id;
+  final String? name;
+  final String? logo;
+  final String? coverImage;
+  final int? productCount;
+  final String? description;
 }

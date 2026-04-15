@@ -14,7 +14,7 @@ class OrderSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    
+
     return InfoCardContainer(
       borderColor: colors.primary.withValues(alpha: 0.08),
       padding: const EdgeInsets.all(Spacing.md),
@@ -38,7 +38,7 @@ class OrderSummaryCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: Spacing.sm),
-          
+
           // Sample order items
           _buildOrderItem(
             'خضروات طازجة مشكلة',
@@ -65,21 +65,23 @@ class OrderSummaryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderItem(String name, String quantity, String price, String imagePath) {
+  Widget _buildOrderItem(
+    String name,
+    String quantity,
+    String price,
+    String imagePath,
+  ) {
     return Builder(
       builder: (context) {
         final l10n = AppLocalizations.of(context)!;
         final colors = Theme.of(context).colorScheme;
-        
+
         return Container(
           padding: const EdgeInsets.all(Spacing.xs + 2),
           decoration: BoxDecoration(
             color: colors.surfaceContainerHighest.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(Spacing.sm),
-            border: Border.all(
-              color: colors.primary.withValues(alpha: 0.06),
-              width: 1,
-            ),
+            border: Border.all(color: colors.primary.withValues(alpha: 0.06)),
           ),
           child: Row(
             children: [
@@ -110,7 +112,7 @@ class OrderSummaryCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: Spacing.xs + 2),
-              
+
               // Product Details
               Expanded(
                 child: Column(
@@ -119,7 +121,6 @@ class OrderSummaryCard extends StatelessWidget {
                     Text(
                       name,
                       style: getMediumStyle(
-                        fontSize: FontSize.size12,
                         fontFamily: FontConstant.cairo,
                         color: colors.onSurface,
                       ),
@@ -148,7 +149,7 @@ class OrderSummaryCard extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Price
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -162,7 +163,6 @@ class OrderSummaryCard extends StatelessWidget {
                 child: Text(
                   '$price ${l10n.sar}',
                   style: getBoldStyle(
-                    fontSize: FontSize.size12,
                     fontFamily: FontConstant.cairo,
                     color: colors.primary,
                   ),

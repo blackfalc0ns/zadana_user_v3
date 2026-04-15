@@ -115,7 +115,6 @@ class TrackOrderScreen extends StatelessWidget {
                         child: SvgPicture.asset(
                           'assets/images/fast_delivery.svg',
                           height: 120,
-                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
@@ -155,14 +154,14 @@ class TrackOrderScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: Spacing.base),
                           ...steps.asMap().entries.map(
-                                (entry) => TrackOrderTimelineTile(
-                                  title: entry.value.$1,
-                                  time: '03 ?????? 2026 - 2:10',
-                                  active: entry.value.$2,
-                                  last: entry.key == steps.length - 1,
-                                  showButton: entry.key == 2,
-                                ),
-                              ),
+                            (entry) => TrackOrderTimelineTile(
+                              title: entry.value.$1,
+                              time: '03 ?????? 2026 - 2:10',
+                              active: entry.value.$2,
+                              last: entry.key == steps.length - 1,
+                              showButton: entry.key == 2,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -204,6 +203,3 @@ class TrackOrderScreen extends StatelessWidget {
     );
   }
 }
-
-
-

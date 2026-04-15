@@ -7,11 +7,8 @@ import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/
 @Injectable(as: ResetPasswordRemoteDataSource)
 class ResetPasswordRemoteDataSourceImpl
     implements ResetPasswordRemoteDataSource {
+  ResetPasswordRemoteDataSourceImpl({required this.apiServices});
   final ApiServices apiServices;
-
-  ResetPasswordRemoteDataSourceImpl({
-    required this.apiServices,
-  });
 
   @override
   Future<ResetPasswordResponseDto> resetPassword(

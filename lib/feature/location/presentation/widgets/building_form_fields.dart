@@ -9,20 +9,19 @@ import 'package:zadana_user_v3/feature/location/presentation/manager/location_vi
 import 'package:zadana_user_v3/feature/location/presentation/widgets/address_form_widgets.dart';
 
 class BuildingFormFields extends StatelessWidget {
-  final TextEditingController buildingController;
-  final TextEditingController floorController;
-  final TextEditingController apartmentController;
-
   const BuildingFormFields({
     super.key,
     required this.buildingController,
     required this.floorController,
     required this.apartmentController,
   });
+  final TextEditingController buildingController;
+  final TextEditingController floorController;
+  final TextEditingController apartmentController;
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme;
+    final color = context.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -41,7 +40,10 @@ class BuildingFormFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel(l10n.location_building_number_label),
+        AddressFormWidgets.buildFieldLabel(
+          context,
+          l10n.location_building_number_label,
+        ),
         AppTextField(
           controller: buildingController,
           hint: l10n.location_building_number_hint,
@@ -63,7 +65,10 @@ class BuildingFormFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel(l10n.location_floor_number_label),
+        AddressFormWidgets.buildFieldLabel(
+          context,
+          l10n.location_floor_number_label,
+        ),
         AppTextField(
           controller: floorController,
           hint: l10n.location_floor_number_hint,
@@ -83,7 +88,10 @@ class BuildingFormFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel(l10n.location_apartment_number_label),
+        AddressFormWidgets.buildFieldLabel(
+          context,
+          l10n.location_apartment_number_label,
+        ),
         AppTextField(
           controller: apartmentController,
           hint: l10n.location_apartment_number_hint,

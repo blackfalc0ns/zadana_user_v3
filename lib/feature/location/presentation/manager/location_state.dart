@@ -3,23 +3,6 @@ import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.
 import 'package:zadana_user_v3/feature/location/domain/entities/location_search_entity.dart';
 
 class LocationState {
-  final bool isLoading;
-  final bool isSearchLoading;
-  final bool isSuccess;
-  final bool isAddressSaved;
-  final String? errorMessage;
-  final Failure? failure;
-  final List<LocationSearchResultEntity> searchResults;
-  final LocationEntity? selectedLocation;
-  final String query;
-  final String addressLine;
-  final String city;
-  final String area;
-  final String buildingNo;
-  final String floorNo;
-  final String apartmentNo;
-  final String label;
-
   const LocationState({
     this.isLoading = false,
     this.isSearchLoading = false,
@@ -38,6 +21,22 @@ class LocationState {
     this.apartmentNo = '',
     this.label = '',
   });
+  final bool isLoading;
+  final bool isSearchLoading;
+  final bool isSuccess;
+  final bool isAddressSaved;
+  final String? errorMessage;
+  final Failure? failure;
+  final List<LocationSearchResultEntity> searchResults;
+  final LocationEntity? selectedLocation;
+  final String query;
+  final String addressLine;
+  final String city;
+  final String area;
+  final String buildingNo;
+  final String floorNo;
+  final String apartmentNo;
+  final String label;
 
   LocationState copyWith({
     bool? isLoading,

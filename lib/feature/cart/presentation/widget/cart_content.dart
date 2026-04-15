@@ -85,7 +85,7 @@ class CartContent extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: AppColors.warning, size: 18),
+          const Icon(Icons.info_outline, color: AppColors.warning, size: 18),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -95,7 +95,6 @@ class CartContent extends StatelessWidget {
                   'منتجات غير متوفرة',
                   style: getBoldStyle(
                     fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size12,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -150,7 +149,7 @@ class CartContent extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.store_rounded,
                 color: AppColors.primary,
                 size: 18,
@@ -165,7 +164,6 @@ class CartContent extends StatelessWidget {
                     locale.select_vendor_to_show_price,
                     style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size12,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -215,4 +213,3 @@ class CartContent extends StatelessWidget {
     );
   }
 }
-

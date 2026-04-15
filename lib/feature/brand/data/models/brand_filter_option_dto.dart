@@ -1,11 +1,5 @@
 class BrandFilterOptionDto {
-  final String? id;
-  final String? name;
-
-  const BrandFilterOptionDto({
-    this.id,
-    this.name,
-  });
+  const BrandFilterOptionDto({this.id, this.name});
 
   factory BrandFilterOptionDto.fromJson(Map<String, dynamic> json) {
     return BrandFilterOptionDto(
@@ -13,4 +7,6 @@ class BrandFilterOptionDto {
       name: json['name'] as String?,
     );
   }
+  final String? id;
+  final String? name;
 }

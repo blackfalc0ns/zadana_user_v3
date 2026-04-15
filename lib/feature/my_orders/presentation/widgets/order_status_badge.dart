@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 
 class OrderStatusBadge extends StatelessWidget {
-  final OrderStatus status;
-
   const OrderStatusBadge({super.key, required this.status});
+  final OrderStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +22,7 @@ class OrderStatusBadge extends StatelessWidget {
       ),
       child: Text(
         _statusLabel(l10n, status),
-        style: getMediumStyle(
-          fontSize: FontSize.size12,
-          fontFamily: FontConstant.cairo,
-          color: colors.$2,
-        ),
+        style: getMediumStyle(fontFamily: FontConstant.cairo, color: colors.$2),
       ),
     );
   }
@@ -79,4 +74,3 @@ class OrderStatusBadge extends StatelessWidget {
     }
   }
 }
-

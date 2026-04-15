@@ -6,10 +6,9 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 
 class FavoritesAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const FavoritesAppBar({super.key, this.onClearAll, this.itemCount = 0});
   final VoidCallback? onClearAll;
   final int itemCount;
-
-  const FavoritesAppBar({super.key, this.onClearAll, this.itemCount = 0});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
@@ -42,14 +41,9 @@ class FavoritesAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (onClearAll != null)
           IconButton(
             onPressed: onClearAll,
-            icon: Icon(
-              Iconsax.trash,
-              size: 20,
-              color: color.error,
-            ),
-          )
+            icon: Icon(Iconsax.trash, size: 20, color: color.error),
+          ),
       ],
     );
   }
 }
-

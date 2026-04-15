@@ -79,7 +79,7 @@ class TrackOrderTimelineTile extends StatelessWidget {
                           onPressed: () => Navigator.pushNamed(
                             context,
                             AppRoutes.deliveryOtp,
-                          ), 
+                          ),
                         ),
                       ),
                   ],
@@ -103,4 +103,3 @@ class TrackOrderTimelineTile extends StatelessWidget {
     );
   }
 }
-

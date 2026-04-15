@@ -7,9 +7,6 @@ abstract class ForgetPasswordEvent {
 
 /// Event to submit forgot password form
 class ForgetPasswordSubmitEvent extends ForgetPasswordEvent {
+  const ForgetPasswordSubmitEvent({required this.requestEntity});
   final ForgetPasswordRequestEntity requestEntity;
-
-  const ForgetPasswordSubmitEvent({
-    required this.requestEntity,
-  });
 }

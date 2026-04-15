@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
+import 'package:zadana_user_v3/feature/addresses/data/models/add_customer_address_request_dto.dart';
+import 'package:zadana_user_v3/feature/addresses/data/models/customer_address_item_dto.dart';
+import 'package:zadana_user_v3/feature/addresses/data/models/update_customer_address_request_dto.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/data/models/request/forget_password_request_dto.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/data/models/response/forget_password_response_dto.dart';
 import 'package:zadana_user_v3/feature/auth/login/data/models/login_request_model_dto.dart';
@@ -13,9 +16,6 @@ import 'package:zadana_user_v3/feature/auth/reset_password/data/models/request/r
 import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/reset_password_response_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/addresses/data/models/add_customer_address_request_dto.dart';
-import 'package:zadana_user_v3/feature/addresses/data/models/customer_address_item_dto.dart';
-import 'package:zadana_user_v3/feature/addresses/data/models/update_customer_address_request_dto.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/brand_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/brand_products_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/cart_vendors_response_dto.dart';
@@ -35,20 +35,21 @@ import 'package:zadana_user_v3/feature/favorites/data/models/add_favorite_respon
 import 'package:zadana_user_v3/feature/favorites/data/models/clear_favorites_response_dto.dart';
 import 'package:zadana_user_v3/feature/favorites/data/models/favorites_response_dto.dart';
 import 'package:zadana_user_v3/feature/favorites/data/models/remove_favorite_response_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_brands_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_categories_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
 import 'package:zadana_user_v3/feature/search/data/models/product_search_response_dto.dart';
+
 part 'api_services.g.dart';
 
 @RestApi()

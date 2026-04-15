@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
-import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_rating_dialog.dart'
     as delivery_dialog;
 
@@ -49,7 +49,6 @@ class SuccessActionButtons extends StatelessWidget {
           child: AppButton(
             text: locale.delegate_values,
             onPressed: () => _onViewOrderDetails(context),
-            isLoading: false,
             color: AppColors.primary,
             textColor: AppColors.white,
             height: 56,
@@ -62,7 +61,6 @@ class SuccessActionButtons extends StatelessWidget {
           child: AppButton(
             text: locale.continue_shopping,
             onPressed: () => _onContinue(context),
-            isLoading: false,
             color: AppColors.surface,
             textColor: AppColors.primary,
             height: 56,

@@ -54,7 +54,9 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     readOnly: true,
                     onTap: onSearchTap,
                     decoration: InputDecoration(
-                      hintText: context.localization.search_in_brand_products(brandName),
+                      hintText: context.localization.search_in_brand_products(
+                        brandName,
+                      ),
                       hintStyle: getRegularStyle(
                         fontFamily: FontConstant.cairo,
                         color: color.onSurfaceVariant,
@@ -94,11 +96,7 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    icon: Icon(
-                      Icons.tune,
-                      color: color.onPrimary,
-                      size: 20,
-                    ),
+                    icon: Icon(Icons.tune, color: color.onPrimary, size: 20),
                     onPressed: onFilterPressed,
                     padding: EdgeInsets.zero,
                   ),

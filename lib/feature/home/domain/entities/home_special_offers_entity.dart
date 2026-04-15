@@ -1,13 +1,6 @@
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class HomeSpecialOffersEntity {
-  final String key;
-  final String title;
-  final bool isActive;
-  final String? theme;
-  final int itemsCount;
-  final List<ProductModel> items;
-
   const HomeSpecialOffersEntity({
     required this.key,
     required this.title,
@@ -16,4 +9,10 @@ class HomeSpecialOffersEntity {
     required this.itemsCount,
     required this.items,
   });
+  final String key;
+  final String title;
+  final bool isActive;
+  final String? theme;
+  final int itemsCount;
+  final List<ProductModel> items;
 }

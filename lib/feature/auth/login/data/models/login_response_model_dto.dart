@@ -9,16 +9,12 @@ part 'login_response_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class LoginResponseModelDto {
-  final TokensModelDto tokens;
-  final UserModelDto user;
-
-  const LoginResponseModelDto({
-    required this.tokens,
-    required this.user,
-  });
+  const LoginResponseModelDto({required this.tokens, required this.user});
 
   factory LoginResponseModelDto.fromJson(Map<String, dynamic> json) =>
       _$LoginResponseModelDtoFromJson(json);
+  final TokensModelDto tokens;
+  final UserModelDto user;
 
   Map<String, dynamic> toJson() => _$LoginResponseModelDtoToJson(this);
 

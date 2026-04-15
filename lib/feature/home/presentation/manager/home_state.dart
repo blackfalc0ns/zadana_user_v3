@@ -10,16 +10,6 @@ import 'package:zadana_user_v3/feature/home/presentation/manager/home_recommende
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_special_offers_section_state.dart';
 
 class HomeState {
-  final HomeAppBarSectionState appBarSection;
-  final HomeBannerSectionState bannerSection;
-  final HomeCategoriesSectionState categoriesSection;
-  final HomeBestSellingSectionState bestSellingSection;
-  final HomeBrandsSectionState brandsSection;
-  final HomeRecommendedSectionState recommendedSection;
-  final HomeFeaturedSectionState featuredSection;
-  final HomeSpecialOffersSectionState specialOffersSection;
-  final HomeDynamicSectionState dynamicSection;
-
   const HomeState({
     this.appBarSection = const HomeAppBarSectionState(),
     this.bannerSection = const HomeBannerSectionState(),
@@ -31,6 +21,15 @@ class HomeState {
     this.specialOffersSection = const HomeSpecialOffersSectionState(),
     this.dynamicSection = const HomeDynamicSectionState(),
   });
+  final HomeAppBarSectionState appBarSection;
+  final HomeBannerSectionState bannerSection;
+  final HomeCategoriesSectionState categoriesSection;
+  final HomeBestSellingSectionState bestSellingSection;
+  final HomeBrandsSectionState brandsSection;
+  final HomeRecommendedSectionState recommendedSection;
+  final HomeFeaturedSectionState featuredSection;
+  final HomeSpecialOffersSectionState specialOffersSection;
+  final HomeDynamicSectionState dynamicSection;
 
   bool get isLoading =>
       bannerSection.isLoading ||

@@ -12,11 +12,8 @@ import 'verify_otp_state.dart';
 /// Handles verify OTP logic using intent/event pattern
 @injectable
 class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
+  VerifyOtpViewModel(this._verifyOtpUseCase) : super(const VerifyOtpState());
   final VerifyOtpUseCase _verifyOtpUseCase;
-
-  VerifyOtpViewModel(
-    this._verifyOtpUseCase,
-  ) : super(const VerifyOtpState());
 
   /// Main intent handler
   /// Dispatches events to appropriate handlers
@@ -28,14 +25,8 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
   }
 
   /// Verify OTP
-  Future<void> _verifyOtp(
-    VerifyOtpRequestEntity requestEntity,
-  ) async {
-    emit(state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-      failure: null,
-    ));
+  Future<void> _verifyOtp(VerifyOtpRequestEntity requestEntity) async {
+    emit(state.copyWith(isLoading: true));
 
     developer.log(
       'Verifying OTP for: ${requestEntity.identifier}',
@@ -51,12 +42,13 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
           name: 'VerifyOtpViewModel',
         );
 
-        emit(state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          verifyOtpResponse: result.data,
-          failure: null,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            verifyOtpResponse: result.data,
+          ),
+        );
 
       case ApiErrorResult():
         developer.log(
@@ -64,21 +56,17 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
           name: 'VerifyOtpViewModel',
         );
 
-        emit(state.copyWith(
-          isLoading: false,
-          errorMessage: result.failure.errorMessage,
-          failure: result.failure,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: result.failure.errorMessage,
+            failure: result.failure,
+          ),
+        );
     }
   }
 
   void clearFeedback() {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isSuccess: false));
   }
 }

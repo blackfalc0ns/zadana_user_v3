@@ -3,12 +3,6 @@ import 'package:zadana_user_v3/feature/auth/reset_password/domain/entities/reset
 
 /// State for reset password feature
 class ResetPasswordState {
-  final bool isLoading;
-  final String? errorMessage;
-  final bool isSuccess;
-  final ResetPasswordResponseEntity? responseEntity;
-  final Failure? failure;
-
   const ResetPasswordState({
     this.responseEntity,
     this.isLoading = false,
@@ -16,6 +10,11 @@ class ResetPasswordState {
     this.isSuccess = false,
     this.failure,
   });
+  final bool isLoading;
+  final String? errorMessage;
+  final bool isSuccess;
+  final ResetPasswordResponseEntity? responseEntity;
+  final Failure? failure;
 
   ResetPasswordState copyWith({
     ResetPasswordResponseEntity? responseEntity,

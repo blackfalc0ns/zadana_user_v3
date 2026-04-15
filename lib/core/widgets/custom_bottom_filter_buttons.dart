@@ -21,7 +21,8 @@ class CustomBottomFilterButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    final resolvedFilterLabel = filterLabel ?? context.localization.filter_button;
+    final resolvedFilterLabel =
+        filterLabel ?? context.localization.filter_button;
     final resolvedSortLabel = sortLabel ?? context.localization.sort_button;
 
     return Container(

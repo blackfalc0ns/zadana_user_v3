@@ -5,9 +5,8 @@ import 'package:zadana_user_v3/feature/auth/logout/domain/repo/logout_repository
 
 @injectable
 class LogoutUseCase {
-  final LogoutRepository repository;
-
   LogoutUseCase({required this.repository});
+  final LogoutRepository repository;
 
   Future<ApiResult<void>> call(LogoutRequestEntity entity) async {
     return repository.logout(entity);

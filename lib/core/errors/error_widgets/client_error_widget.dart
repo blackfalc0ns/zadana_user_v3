@@ -5,9 +5,7 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'base_error_widget.dart';
 
 class ClientErrorWidget extends BaseErrorWidget {
-  final ApiErrorType clientErrorType;
-  final int? statusCode;
-  final String? serverMessage; // رسالة الـ server المخصصة
+  // رسالة الـ server المخصصة
 
   const ClientErrorWidget({
     super.key,
@@ -24,6 +22,9 @@ class ClientErrorWidget extends BaseErrorWidget {
          secondaryActionText: '',
          primaryColor: Colors.orange,
        );
+  final ApiErrorType clientErrorType;
+  final int? statusCode;
+  final String? serverMessage;
 
   /// Check if message contains technical details that should be hidden
   bool _isTechnicalMessage(String? message) {
@@ -59,7 +60,7 @@ class ClientErrorWidget extends BaseErrorWidget {
     ];
 
     final lowerMessage = message.toLowerCase();
-    return technicalPatterns.any((pattern) => lowerMessage.contains(pattern));
+    return technicalPatterns.any(lowerMessage.contains);
   }
 
   @override

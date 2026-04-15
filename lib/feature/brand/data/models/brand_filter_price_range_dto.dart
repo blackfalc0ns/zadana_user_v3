@@ -1,11 +1,5 @@
 class BrandFilterPriceRangeDto {
-  final double? min;
-  final double? max;
-
-  const BrandFilterPriceRangeDto({
-    this.min,
-    this.max,
-  });
+  const BrandFilterPriceRangeDto({this.min, this.max});
 
   factory BrandFilterPriceRangeDto.fromJson(Map<String, dynamic> json) {
     return BrandFilterPriceRangeDto(
@@ -13,4 +7,6 @@ class BrandFilterPriceRangeDto {
       max: (json['max'] as num?)?.toDouble(),
     );
   }
+  final double? min;
+  final double? max;
 }

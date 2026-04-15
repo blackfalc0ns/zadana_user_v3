@@ -23,20 +23,6 @@ import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart
 
 @injectable
 class HomeViewModel extends Cubit<HomeState> {
-  static const int _homeSectionPreviewTake = 5;
-  static const int _homeBrandsPreviewTake = 8;
-
-  final GetHomeAppBarUseCase _getHomeAppBarUseCase;
-  final GetHomeBannersUseCase _getHomeBannersUseCase;
-  final GetHomeCategoriesUseCase _getHomeCategoriesUseCase;
-  final GetHomeBestSellingUseCase _getHomeBestSellingUseCase;
-  final GetHomeBrandsUseCase _getHomeBrandsUseCase;
-  final GetHomeRecommendedUseCase _getHomeRecommendedUseCase;
-  final GetHomeFeaturedProductsUseCase _getHomeFeaturedProductsUseCase;
-  final GetHomeSpecialOffersUseCase _getHomeSpecialOffersUseCase;
-  final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
-  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
-
   HomeViewModel(
     this._getHomeAppBarUseCase,
     this._getHomeBannersUseCase,
@@ -50,6 +36,19 @@ class HomeViewModel extends Cubit<HomeState> {
   ) : super(const HomeState()) {
     _favoriteSyncService.addListener(_syncFavoriteState);
   }
+  static const int _homeSectionPreviewTake = 5;
+  static const int _homeBrandsPreviewTake = 8;
+
+  final GetHomeAppBarUseCase _getHomeAppBarUseCase;
+  final GetHomeBannersUseCase _getHomeBannersUseCase;
+  final GetHomeCategoriesUseCase _getHomeCategoriesUseCase;
+  final GetHomeBestSellingUseCase _getHomeBestSellingUseCase;
+  final GetHomeBrandsUseCase _getHomeBrandsUseCase;
+  final GetHomeRecommendedUseCase _getHomeRecommendedUseCase;
+  final GetHomeFeaturedProductsUseCase _getHomeFeaturedProductsUseCase;
+  final GetHomeSpecialOffersUseCase _getHomeSpecialOffersUseCase;
+  final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
+  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
 
   void doIntent(HomeEvent event) {
     switch (event) {
@@ -291,9 +290,7 @@ class HomeViewModel extends Cubit<HomeState> {
 
     developer.log('Loading home brands section', name: 'HomeViewModel');
 
-    final result = await _getHomeBrandsUseCase(
-      take: _homeBrandsPreviewTake,
-    );
+    final result = await _getHomeBrandsUseCase(take: _homeBrandsPreviewTake);
 
     switch (result) {
       case ApiSuccessResult():
@@ -653,7 +650,11 @@ class HomeViewModel extends Cubit<HomeState> {
             isActive: section.isActive,
             theme: section.theme,
             itemsCount: section.itemsCount,
-            items: _updateProductFavorites(section.items, productId, isFavorite),
+            items: _updateProductFavorites(
+              section.items,
+              productId,
+              isFavorite,
+            ),
           ),
         )
         .toList();

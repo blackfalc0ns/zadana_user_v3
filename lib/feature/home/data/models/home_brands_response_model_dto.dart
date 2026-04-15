@@ -1,13 +1,6 @@
 import 'package:zadana_user_v3/feature/home/data/models/home_brand_item_model_dto.dart';
 
 class HomeBrandsResponseModelDto {
-  final String? key;
-  final String? title;
-  final bool? isActive;
-  final String? theme;
-  final int? itemsCount;
-  final List<HomeBrandItemModelDto>? items;
-
   const HomeBrandsResponseModelDto({
     this.key,
     this.title,
@@ -32,4 +25,10 @@ class HomeBrandsResponseModelDto {
           .toList(),
     );
   }
+  final String? key;
+  final String? title;
+  final bool? isActive;
+  final String? theme;
+  final int? itemsCount;
+  final List<HomeBrandItemModelDto>? items;
 }

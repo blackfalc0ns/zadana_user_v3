@@ -13,13 +13,10 @@ import 'profile_event.dart';
 /// Handles profile logic using intent/event pattern
 @injectable
 class ProfileViewModel extends Cubit<ProfileState> {
+  ProfileViewModel(this._profileUseCase, this._updateProfileUseCase)
+    : super(const ProfileState());
   final ProfileUseCase _profileUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
-
-  ProfileViewModel(
-    this._profileUseCase,
-    this._updateProfileUseCase,
-  ) : super(const ProfileState());
 
   /// Main intent handler
   /// Dispatches events to appropriate handlers
@@ -34,7 +31,6 @@ class ProfileViewModel extends Cubit<ProfileState> {
           state.copyWith(
             profileResponse: event.profile,
             isUpdateSuccess: false,
-            updateFailure: null,
           ),
         );
     }
@@ -42,31 +38,23 @@ class ProfileViewModel extends Cubit<ProfileState> {
 
   /// Load profile data
   Future<void> _loadProfile() async {
-    emit(state.copyWith(
-      isLoading: true,
-      failure: null,
-    ));
+    emit(state.copyWith(isLoading: true));
 
-    developer.log(
-      'Loading profile data',
-      name: 'ProfileViewModel',
-    );
+    developer.log('Loading profile data', name: 'ProfileViewModel');
 
     final result = await _profileUseCase.call();
 
     switch (result) {
       case ApiSuccessResult():
-        developer.log(
-          'Profile loaded successfully',
-          name: 'ProfileViewModel',
-        );
+        developer.log('Profile loaded successfully', name: 'ProfileViewModel');
 
-        emit(state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          profileResponse: result.data,
-          failure: null,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            profileResponse: result.data,
+          ),
+        );
 
       case ApiErrorResult():
         developer.log(
@@ -74,22 +62,18 @@ class ProfileViewModel extends Cubit<ProfileState> {
           name: 'ProfileViewModel',
         );
 
-        emit(state.copyWith(
-          isLoading: false,
-          isSuccess: false,
-          failure: result.failure,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: false,
+            failure: result.failure,
+          ),
+        );
     }
   }
 
   Future<void> _updateProfile(UpdateProfileRequestEntity request) async {
-    emit(
-      state.copyWith(
-        isUpdating: true,
-        isUpdateSuccess: false,
-        updateFailure: null,
-      ),
-    );
+    emit(state.copyWith(isUpdating: true, isUpdateSuccess: false));
 
     developer.log('Updating profile data', name: 'ProfileViewModel');
 
@@ -103,7 +87,6 @@ class ProfileViewModel extends Cubit<ProfileState> {
             isUpdating: false,
             isUpdateSuccess: true,
             profileResponse: result.data,
-            updateFailure: null,
           ),
         );
       case ApiErrorResult():

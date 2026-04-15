@@ -31,8 +31,9 @@ class BrandCard extends StatelessWidget {
     final verticalPadding = isCompact ? 8.0 : Spacing.sm;
     final imageSize = isCompact ? 32.0 : 40.0;
     final imageSpacing = isCompact ? 6.0 : Spacing.xs;
-    final fontSize =
-        isCompact ? (compactFontSize ?? FontSize.size10) : FontSize.size11;
+    final fontSize = isCompact
+        ? (compactFontSize ?? FontSize.size10)
+        : FontSize.size11;
     final maxLines = isCompact ? 2 : 1;
 
     return Material(

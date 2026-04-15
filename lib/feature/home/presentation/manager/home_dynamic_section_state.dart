@@ -2,17 +2,16 @@ import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
 
 class HomeDynamicSectionState {
-  final bool isLoading;
-  final bool isSuccess;
-  final Failure? failure;
-  final List<HomeExploreMoreEntity>? data;
-
   const HomeDynamicSectionState({
     this.isLoading = false,
     this.isSuccess = false,
     this.failure,
     this.data,
   });
+  final bool isLoading;
+  final bool isSuccess;
+  final Failure? failure;
+  final List<HomeExploreMoreEntity>? data;
 
   HomeDynamicSectionState copyWith({
     bool? isLoading,

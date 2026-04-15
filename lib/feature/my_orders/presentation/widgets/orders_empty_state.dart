@@ -4,14 +4,9 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 class OrdersEmptyState extends StatelessWidget {
+  const OrdersEmptyState({super.key, required this.title, required this.icon});
   final String title;
   final IconData icon;
-
-  const OrdersEmptyState({
-    super.key,
-    required this.title,
-    required this.icon,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,4 +51,3 @@ class OrdersEmptyState extends StatelessWidget {
     );
   }
 }
-

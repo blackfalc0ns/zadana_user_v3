@@ -4,12 +4,6 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 class InfoBadge extends StatelessWidget {
-  final String text;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final double? fontSize;
-  final EdgeInsetsGeometry? padding;
-
   const InfoBadge({
     super.key,
     required this.text,
@@ -18,6 +12,11 @@ class InfoBadge extends StatelessWidget {
     this.fontSize,
     this.padding,
   });
+  final String text;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double? fontSize;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -45,4 +44,3 @@ class InfoBadge extends StatelessWidget {
     );
   }
 }
-

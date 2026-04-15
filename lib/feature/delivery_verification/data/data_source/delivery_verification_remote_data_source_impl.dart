@@ -9,9 +9,8 @@ import 'delivery_verification_remote_data_source.dart';
 @Injectable(as: DeliveryVerificationRemoteDataSource)
 class DeliveryVerificationRemoteDataSourceImpl
     implements DeliveryVerificationRemoteDataSource {
-  final ApiServices _apiServices;
-
   DeliveryVerificationRemoteDataSourceImpl(this._apiServices);
+  final ApiServices _apiServices;
 
   @override
   Future<void> sendOtp(DeliveryOtpRequestModel request) async {
@@ -20,7 +19,8 @@ class DeliveryVerificationRemoteDataSourceImpl
 
   @override
   Future<DeliveryOtpResponseModel> verifyOtp(
-      DeliveryOtpRequestModel request) async {
+    DeliveryOtpRequestModel request,
+  ) async {
     return _apiServices.verifyDeliveryOtp(request);
   }
 

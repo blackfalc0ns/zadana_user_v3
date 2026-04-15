@@ -8,22 +8,6 @@ import 'package:zadana_user_v3/feature/product_details/presentation/widgets/prod
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/similar_products_section.dart';
 
 class ProductDetailsContent extends StatelessWidget {
-  final String productName;
-  final String? unit;
-  final int quantity;
-  final VoidCallback onIncrease;
-  final VoidCallback onDecrease;
-  final String descriptionTitle;
-  final String description;
-  final double basePrice;
-  final double? oldPrice;
-  final String currency;
-  final List<ProductVendorPriceEntity> vendorPrices;
-  final List<ProductModel> similarProducts;
-  final Function(ProductModel)? onSimilarProductTap;
-  final Future<void> Function(ProductModel)? onSimilarProductAddToCart;
-  final String? activeProductId;
-
   const ProductDetailsContent({
     super.key,
     required this.productName,
@@ -42,6 +26,21 @@ class ProductDetailsContent extends StatelessWidget {
     this.onSimilarProductAddToCart,
     this.activeProductId,
   });
+  final String productName;
+  final String? unit;
+  final int quantity;
+  final VoidCallback onIncrease;
+  final VoidCallback onDecrease;
+  final String descriptionTitle;
+  final String description;
+  final double basePrice;
+  final double? oldPrice;
+  final String currency;
+  final List<ProductVendorPriceEntity> vendorPrices;
+  final List<ProductModel> similarProducts;
+  final Function(ProductModel)? onSimilarProductTap;
+  final Future<void> Function(ProductModel)? onSimilarProductAddToCart;
+  final String? activeProductId;
 
   @override
   Widget build(BuildContext context) {

@@ -5,9 +5,8 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class FavoritesEmptyState extends StatelessWidget {
-  final VoidCallback onStartShopping;
-
   const FavoritesEmptyState({super.key, required this.onStartShopping});
+  final VoidCallback onStartShopping;
 
   @override
   Widget build(BuildContext context) {
@@ -38,4 +37,3 @@ class FavoritesEmptyState extends StatelessWidget {
     );
   }
 }
-

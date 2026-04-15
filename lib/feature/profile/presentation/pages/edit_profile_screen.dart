@@ -62,9 +62,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         elevation: 0,
         title: Text(
           'تعديل الحساب',
-          style: AppTextStyles.h4.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -75,7 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             children: [
               const SizedBox(height: Spacing.base),
-              
+
               // Profile Image
               Stack(
                 children: [
@@ -103,7 +101,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.surface, width: 3),
+                          border: Border.all(
+                            color: AppColors.surface,
+                            width: 3,
+                          ),
                         ),
                         child: const FaIcon(
                           FontAwesomeIcons.camera,
@@ -115,11 +116,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: Spacing.xl),
 
               // Name Field
-              FieldLabel('الاسم'),
+              const FieldLabel('الاسم'),
               AppTextField(
                 controller: _nameController,
                 hint: 'أدخل الاسم',

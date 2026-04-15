@@ -7,10 +7,7 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 
 class BrandHeader extends StatelessWidget {
-  const BrandHeader({
-    super.key,
-    required this.brand,
-  });
+  const BrandHeader({super.key, required this.brand});
 
   final BrandModel brand;
 
@@ -40,7 +37,10 @@ class BrandHeader extends StatelessWidget {
             ),
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -73,9 +73,7 @@ class BrandHeader extends StatelessWidget {
           'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
-        return Container(
-          color: const Color(0xFFF3EEE8),
-        );
+        return Container(color: const Color(0xFFF3EEE8));
       },
     );
   }
@@ -92,7 +90,9 @@ class BrandHeader extends StatelessWidget {
       ),
       child: IconButton(
         icon: Icon(
-          isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
+          isRtl
+              ? Icons.arrow_forward_ios_rounded
+              : Icons.arrow_back_ios_new_rounded,
           color: AppColors.white,
           size: 18,
         ),
@@ -104,10 +104,7 @@ class BrandHeader extends StatelessWidget {
 
   Widget _buildLogo() {
     Widget fallbackLogo() {
-      return Image.asset(
-        Assets.notFound,
-        fit: BoxFit.contain,
-      );
+      return Image.asset(Assets.notFound, fit: BoxFit.contain);
     }
 
     return Container(
@@ -170,9 +167,7 @@ class BrandHeader extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.white.withValues(alpha: 0.16),
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(
-              color: AppColors.white.withValues(alpha: 0.22),
-            ),
+            border: Border.all(color: AppColors.white.withValues(alpha: 0.22)),
           ),
           child: Text(
             context.localization.brand_product_count(brand.productCount),

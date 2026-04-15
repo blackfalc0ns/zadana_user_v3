@@ -10,9 +10,8 @@ import '../models/update_profile_request_dto.dart';
 /// Data layer - Repository implementation
 @Injectable(as: ProfileRepository)
 class ProfileRepositoryImpl implements ProfileRepository {
-  final ProfileRemoteDataSource _remoteDataSource;
-
   const ProfileRepositoryImpl(this._remoteDataSource);
+  final ProfileRemoteDataSource _remoteDataSource;
 
   @override
   Future<ApiResult<ProfileResponseEntity>> getProfile() async {

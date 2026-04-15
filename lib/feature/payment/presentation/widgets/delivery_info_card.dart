@@ -43,7 +43,6 @@ class DeliveryInfoCard extends StatelessWidget {
                   child: Text(
                     l10n.change_address,
                     style: getBoldStyle(
-                      fontSize: FontSize.size12,
                       fontFamily: FontConstant.cairo,
                       color: colors.primary,
                     ),
@@ -60,10 +59,7 @@ class DeliveryInfoCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: colors.primary.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(Spacing.sm + 2),
-              border: Border.all(
-                color: colors.primary.withValues(alpha: 0.12),
-                width: 1,
-              ),
+              border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +132,6 @@ class DeliveryInfoCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(Spacing.sm + 2),
               border: Border.all(
                 color: colors.secondary.withValues(alpha: 0.15),
-                width: 1,
               ),
             ),
             child: Row(
@@ -161,7 +156,6 @@ class DeliveryInfoCard extends StatelessWidget {
                       Text(
                         l10n.estimated_delivery,
                         style: getMediumStyle(
-                          fontSize: FontSize.size12,
                           fontFamily: FontConstant.cairo,
                           color: colors.onSurface,
                         ),
@@ -181,7 +175,6 @@ class DeliveryInfoCard extends StatelessWidget {
                           Text(
                             '30-45 ${l10n.minutes}',
                             style: getBoldStyle(
-                              fontSize: FontSize.size12,
                               fontFamily: FontConstant.cairo,
                               color: colors.secondary,
                             ),
@@ -209,4 +202,3 @@ class DeliveryInfoCard extends StatelessWidget {
     );
   }
 }
-

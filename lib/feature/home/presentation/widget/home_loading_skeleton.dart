@@ -43,11 +43,7 @@ class _ShimmerEffectState extends State<ShimmerEffect>
             return LinearGradient(
               begin: Alignment(-2.0 + (_controller.value * 4), -0.5),
               end: Alignment(0.0 + (_controller.value * 4), 0.5),
-              colors: [
-                baseColor,
-                highlightColor,
-                baseColor,
-              ],
+              colors: [baseColor, highlightColor, baseColor],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
           },

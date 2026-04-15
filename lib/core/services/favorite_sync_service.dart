@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FavoriteSyncService extends ChangeNotifier {
-  static final FavoriteSyncService _instance = FavoriteSyncService._internal();
-
   factory FavoriteSyncService() => _instance;
 
   FavoriteSyncService._internal();
+  static final FavoriteSyncService _instance = FavoriteSyncService._internal();
 
   String? _productId;
   bool? _isFavorite;

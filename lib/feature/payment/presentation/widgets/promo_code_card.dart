@@ -30,7 +30,7 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    
+
     return InfoCardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +40,7 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
             title: l10n.promo_code,
           ),
           const SizedBox(height: Spacing.md),
-          
+
           if (_isApplied) ...[
             // Applied Promo Code
             Container(
@@ -48,7 +48,9 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
               decoration: BoxDecoration(
                 color: colors.secondary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Spacing.sm),
-                border: Border.all(color: colors.secondary.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: colors.secondary.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
@@ -73,7 +75,6 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
                         Text(
                           'SAVE15 - ${l10n.discount} 15 ${l10n.sar}',
                           style: getRegularStyle(
-                            fontSize: FontSize.size12,
                             fontFamily: FontConstant.cairo,
                             color: colors.onSurfaceVariant,
                           ),
@@ -121,14 +122,14 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
 
   void _applyPromoCode() {
     if (_promoController.text.trim().isEmpty) return;
-    
+
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     // Simulate API call
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
@@ -136,7 +137,7 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
           _isLoading = false;
           _isApplied = true;
         });
-        
+
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -162,12 +163,12 @@ class _PromoCodeCardState extends State<PromoCodeCard> {
   void _removePromoCode() {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    
+
     setState(() {
       _isApplied = false;
       _promoController.clear();
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

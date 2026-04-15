@@ -4,12 +4,6 @@ part 'user_model_register_dto.g.dart';
 
 @JsonSerializable()
 class UserModelRegisterDto {
-  final String id;
-  final String fullName;
-  final String email;
-  final String phone;
-  final String role;
-
   UserModelRegisterDto({
     required this.id,
     required this.fullName,
@@ -20,6 +14,11 @@ class UserModelRegisterDto {
 
   factory UserModelRegisterDto.fromJson(Map<String, dynamic> json) =>
       _$UserModelRegisterDtoFromJson(json);
+  final String id;
+  final String fullName;
+  final String email;
+  final String phone;
+  final String role;
 
   Map<String, dynamic> toJson() => _$UserModelRegisterDtoToJson(this);
 }

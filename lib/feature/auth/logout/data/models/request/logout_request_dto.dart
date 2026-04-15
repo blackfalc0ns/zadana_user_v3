@@ -4,14 +4,11 @@ part 'logout_request_dto.g.dart';
 
 @JsonSerializable()
 class LogoutRequestDto {
-  final String refreshToken;
-
-  const LogoutRequestDto({
-    required this.refreshToken,
-  });
+  const LogoutRequestDto({required this.refreshToken});
 
   factory LogoutRequestDto.fromJson(Map<String, dynamic> json) =>
       _$LogoutRequestDtoFromJson(json);
+  final String refreshToken;
 
   Map<String, dynamic> toJson() => _$LogoutRequestDtoToJson(this);
 }

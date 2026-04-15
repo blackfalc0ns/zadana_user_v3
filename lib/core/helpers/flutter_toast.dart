@@ -12,7 +12,6 @@ abstract class ToastMessage {
       msg: msg,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
       backgroundColor: backgroundColor ?? AppColors.backgroundDark,
       textColor: textColor ?? AppColors.white,
       fontSize: 16,

@@ -85,7 +85,9 @@ class _SuccessfulLoginRepository implements LoginRepository {
   const _SuccessfulLoginRepository();
 
   @override
-  Future<ApiResult<LoginResponseEntity>> login(LoginRequestEntity request) async {
+  Future<ApiResult<LoginResponseEntity>> login(
+    LoginRequestEntity request,
+  ) async {
     return ApiSuccessResult(
       data: const LoginResponseEntity(
         tokens: TokensEntity(
@@ -108,7 +110,9 @@ class _FailingLoginRepository implements LoginRepository {
   const _FailingLoginRepository();
 
   @override
-  Future<ApiResult<LoginResponseEntity>> login(LoginRequestEntity request) async {
+  Future<ApiResult<LoginResponseEntity>> login(
+    LoginRequestEntity request,
+  ) async {
     return ApiErrorResult(
       failure: const Failure(errorMessage: 'Invalid credentials'),
     );

@@ -67,9 +67,7 @@ class CustomerAddressesState {
           ? null
           : updatingAddressId ?? this.updatingAddressId,
       actionType: clearActionType ? null : actionType ?? this.actionType,
-      actionLabel: clearActionLabel
-          ? null
-          : actionLabel ?? this.actionLabel,
+      actionLabel: clearActionLabel ? null : actionLabel ?? this.actionLabel,
       actionFailure: clearActionFailure
           ? null
           : actionFailure ?? this.actionFailure,

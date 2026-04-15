@@ -8,9 +8,8 @@ import 'package:zadana_user_v3/feature/auth/forget_password/domain/repo/forget_p
 
 @Injectable(as: ForgetPasswordRepository)
 class ForgetPasswordRepositoryImpl implements ForgetPasswordRepository {
-  final ForgetPasswordRemoteDataSource remoteDataSource;
-
   ForgetPasswordRepositoryImpl(this.remoteDataSource);
+  final ForgetPasswordRemoteDataSource remoteDataSource;
 
   @override
   Future<ApiResult<ForgetPasswordResponseEntity>> forgetPassword(

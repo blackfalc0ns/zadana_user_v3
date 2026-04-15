@@ -6,10 +6,9 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 /// FAQ item widget
 class FAQItem extends StatelessWidget {
+  const FAQItem({super.key, required this.question, required this.answer});
   final String question;
   final String answer;
-
-  const FAQItem({super.key, required this.question, required this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +19,7 @@ class FAQItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.surface,
         borderRadius: BorderRadius.circular(Spacing.md),
-        border: Border.all(
-          color: color.outline.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.outline.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,4 +54,3 @@ class FAQItem extends StatelessWidget {
     );
   }
 }
-

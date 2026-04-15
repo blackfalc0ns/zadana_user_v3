@@ -7,14 +7,13 @@ import 'package:zadana_user_v3/feature/payment/presentation/widgets/info_card_co
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/section_header.dart';
 
 class PaymentMethodCard extends StatelessWidget {
-  final String selectedMethod;
-  final Function(String) onMethodChanged;
-
   const PaymentMethodCard({
     super.key,
     required this.selectedMethod,
     required this.onMethodChanged,
   });
+  final String selectedMethod;
+  final Function(String) onMethodChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -190,4 +189,3 @@ class PaymentMethodCard extends StatelessWidget {
     );
   }
 }
-

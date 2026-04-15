@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CartCountSyncService extends ChangeNotifier {
-  static final CartCountSyncService _instance =
-      CartCountSyncService._internal();
-
   factory CartCountSyncService() => _instance;
 
   CartCountSyncService._internal();
+  static final CartCountSyncService _instance =
+      CartCountSyncService._internal();
 
   int? _absoluteCount;
   int _delta = 0;

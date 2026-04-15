@@ -8,9 +8,8 @@ import '../repo/verify_otp_repository.dart';
 /// Domain layer - Business logic
 @injectable
 class VerifyOtpUseCase {
-  final VerifyOtpRepository _repository;
-
   const VerifyOtpUseCase(this._repository);
+  final VerifyOtpRepository _repository;
 
   Future<ApiResult<VerifyOtpResponseEntity>> call(
     VerifyOtpRequestEntity request,

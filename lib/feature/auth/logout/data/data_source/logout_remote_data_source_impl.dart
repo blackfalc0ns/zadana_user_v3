@@ -5,9 +5,8 @@ import 'package:zadana_user_v3/feature/auth/logout/data/models/request/logout_re
 
 @Injectable(as: LogoutRemoteDataSource)
 class LogoutRemoteDataSourceImpl implements LogoutRemoteDataSource {
-  final ApiServices _apiServices;
-
   LogoutRemoteDataSourceImpl(this._apiServices);
+  final ApiServices _apiServices;
 
   @override
   Future<void> logout(LogoutRequestDto requestDto) {

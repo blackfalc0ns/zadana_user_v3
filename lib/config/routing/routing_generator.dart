@@ -2,40 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/feature/addresses/presentation/pages/customer_addresses_page.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/presentation/pages/forget_password_screen.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/pages/login_screen.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/pages/register_screen.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
+import 'package:zadana_user_v3/feature/auth/register/presentation/pages/register_screen.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/reset_password_screen.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/verify_reset_otp_screen.dart';
+import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/pages/verify_otp_screen.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/delivery_otp_screen.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/success_order_screen.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
+import 'package:zadana_user_v3/feature/location/presentation/pages/building_details_page.dart';
+import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
-import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
+import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
+import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
-import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
-import 'package:zadana_user_v3/feature/profile/presentation/pages/edit_profile_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/about_app_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/edit_profile_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/faq_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/help_support_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/privacy_policy_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/terms_conditions_screen.dart';
-import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/pages/verify_otp_screen.dart';
-import 'package:zadana_user_v3/feature/addresses/presentation/pages/customer_addresses_page.dart';
-import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
-import 'package:zadana_user_v3/feature/location/presentation/pages/building_details_page.dart';
-import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
-import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
-import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_order_screen.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
-import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
-import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/delivery_otp_screen.dart';
-import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/success_order_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -48,9 +48,9 @@ class RouteGenerator {
           ),
         );
       case AppRoutes.splash:
-        return MaterialPageRoute(builder: (_) => SplashPage());
+        return MaterialPageRoute(builder: (_) => const SplashPage());
       case AppRoutes.startPage:
-        return MaterialPageRoute(builder: (_) => StartPage());
+        return MaterialPageRoute(builder: (_) => const StartPage());
       case AppRoutes.signUp:
         final locationEntity = settings.arguments as LocationEntity?;
         return MaterialPageRoute(
@@ -82,11 +82,11 @@ class RouteGenerator {
       case AppRoutes.customerAddresses:
         return MaterialPageRoute(builder: (_) => const CustomerAddressesPage());
       case AppRoutes.editProfile:
-        return MaterialPageRoute(builder: (_) => EditProfileScreen());
+        return MaterialPageRoute(builder: (_) => const EditProfileScreen());
       case AppRoutes.home:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => MainShell(key: mainShellKey, initialIndex: 0),
+          builder: (_) => MainShell(key: mainShellKey),
         );
       case AppRoutes.mainShell:
         final initialIndex = settings.arguments as int? ?? 0;
@@ -96,7 +96,9 @@ class RouteGenerator {
               MainShell(key: mainShellKey, initialIndex: initialIndex),
         );
       case AppRoutes.selectAddress:
-        return MaterialPageRoute(builder: (_) => SelectAddressFromMapPage());
+        return MaterialPageRoute(
+          builder: (_) => const SelectAddressFromMapPage(),
+        );
       case AppRoutes.startSelectLocationPage:
         final fromAddresses = settings.arguments as bool? ?? false;
         return MaterialPageRoute(

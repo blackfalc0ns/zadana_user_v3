@@ -1,12 +1,4 @@
 class RegisterResponseEntity {
-  final String id;
-  final String fullName;
-  final String email;
-  final String phone;
-  final String role;
-  final bool isVerified;
-  final String message;
-
   RegisterResponseEntity({
     required this.message,
     required this.isVerified,
@@ -16,4 +8,11 @@ class RegisterResponseEntity {
     required this.phone,
     required this.role,
   });
+  final String id;
+  final String fullName;
+  final String email;
+  final String phone;
+  final String role;
+  final bool isVerified;
+  final String message;
 }

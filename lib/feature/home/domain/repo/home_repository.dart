@@ -6,8 +6,8 @@ import 'package:zadana_user_v3/feature/home/domain/entities/home_categories_enti
 import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_recommended_entity.dart';
-import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_response_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
 
 abstract class HomeRepository {
   Future<ApiResult<HomeAppBarEntity>> getHomeAppBar();

@@ -39,7 +39,6 @@ class TrackOrderDriverCard extends StatelessWidget {
                 Text(
                   '????? ??????? ????? ?????',
                   style: getRegularStyle(
-                    fontSize: 12,
                     fontFamily: FontConstant.cairo,
                     color: color.onSurfaceVariant,
                   ),
@@ -60,4 +59,3 @@ class TrackOrderDriverCard extends StatelessWidget {
     );
   }
 }
-

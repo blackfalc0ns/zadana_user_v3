@@ -7,7 +7,6 @@ import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class FavoritesGrid extends StatelessWidget {
-
   const FavoritesGrid({
     super.key,
     required this.products,

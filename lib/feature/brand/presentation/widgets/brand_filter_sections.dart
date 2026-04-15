@@ -161,7 +161,9 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
               child: TextButton(
                 onPressed: () =>
                     setState(() => showAllCategories = !showAllCategories),
-                child: Text(showAllCategories ? locale.show_less : locale.show_more),
+                child: Text(
+                  showAllCategories ? locale.show_less : locale.show_more,
+                ),
               ),
             ),
           ),

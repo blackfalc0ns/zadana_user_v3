@@ -16,7 +16,6 @@ class ModernStoreCard extends StatelessWidget {
     required this.discountPercentage,
     required this.isDiscounted,
     this.storeImage,
-    
   });
 
   final String storeName;
@@ -29,11 +28,10 @@ class ModernStoreCard extends StatelessWidget {
   final int discountPercentage;
   final bool isDiscounted;
   final String? storeImage;
- 
 
   @override
   Widget build(BuildContext context) {
-    final locale=context.localization;
+    final locale = context.localization;
     final color = context.colorScheme;
     final hasDiscount = isDiscounted && oldPrice != null && oldPrice! > price;
 

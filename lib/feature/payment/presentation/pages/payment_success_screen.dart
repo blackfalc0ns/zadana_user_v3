@@ -11,8 +11,8 @@ import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
-  final String? orderId;
   const PaymentSuccessScreen({super.key, this.orderId});
+  final String? orderId;
 
   @override
   State<PaymentSuccessScreen> createState() => _PaymentSuccessScreenState();
@@ -42,9 +42,10 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
 
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -90,11 +91,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
             child: ConfettiWidget(
               confettiController: _confettiController,
               blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              colors: const [
-                Colors.green,
-                Colors.blue,
-              ],
+              colors: const [Colors.green, Colors.blue],
             ),
           ),
 
@@ -231,13 +228,14 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                             return isMainShell || route.isFirst;
                           });
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (foundMainShell && mainShellKey.currentState != null) {
+                            if (foundMainShell &&
+                                mainShellKey.currentState != null) {
                               mainShellKey.currentState?.jumpToTab(0);
                               return;
                             }
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (_) => const MainShell(initialIndex: 0),
+                                builder: (_) => const MainShell(),
                               ),
                               (route) => false,
                             );
@@ -260,4 +258,3 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
     );
   }
 }
-

@@ -100,7 +100,6 @@ class DrawerHeader extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: getRegularStyle(
-                    fontSize: FontSize.size12,
                     fontFamily: FontConstant.cairo,
                     color: color.onPrimary.withValues(alpha: 0.92),
                   ).copyWith(height: 1.5),

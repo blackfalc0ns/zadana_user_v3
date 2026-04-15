@@ -12,9 +12,6 @@ import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_loading_ske
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_screen_content.dart';
 
 class CartScreenBody extends StatelessWidget {
-  static const double _cartBottomBarGap = 8.0;
-  static const double _cartBottomBarReservedHeight = 96.0;
-
   const CartScreenBody({
     super.key,
     required this.state,
@@ -31,6 +28,8 @@ class CartScreenBody extends StatelessWidget {
     required this.onDeleteItem,
     required this.onCheckout,
   });
+  static const double _cartBottomBarGap = 8.0;
+  static const double _cartBottomBarReservedHeight = 96.0;
 
   final CartState state;
   final CartScreenViewData viewData;

@@ -41,25 +41,19 @@ class DeliveryOtpInputField extends StatelessWidget {
           fillColor: color.surface,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Spacing.inputRadius),
-            borderSide: BorderSide(
-              color: color.outline.withValues(alpha: 0.3),
-              width: 1,
-            ),
+            borderSide: BorderSide(color: color.outline.withValues(alpha: 0.3)),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Spacing.inputRadius),
-            borderSide: BorderSide(
-              color: color.outline.withValues(alpha: 0.3),
-              width: 1,
-            ),
+            borderSide: BorderSide(color: color.outline.withValues(alpha: 0.3)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Spacing.inputRadius),
-            borderSide: BorderSide(color: color.primary, width: 1),
+            borderSide: BorderSide(color: color.primary),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Spacing.inputRadius),
-            borderSide: BorderSide(color: color.error, width: 1),
+            borderSide: BorderSide(color: color.error),
           ),
           contentPadding: const EdgeInsets.symmetric(
             vertical: 12,

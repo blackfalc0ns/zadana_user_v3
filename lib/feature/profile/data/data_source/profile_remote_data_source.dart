@@ -6,5 +6,7 @@ import '../models/update_profile_request_dto.dart';
 abstract class ProfileRemoteDataSource {
   Future<ProfileResponseModelDto> getProfile();
 
-  Future<ProfileResponseModelDto> updateProfile(UpdateProfileRequestDto request);
+  Future<ProfileResponseModelDto> updateProfile(
+    UpdateProfileRequestDto request,
+  );
 }

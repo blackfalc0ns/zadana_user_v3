@@ -17,7 +17,8 @@ class GuestFavoritesSyncService {
   static final GuestFavoritesSyncService _instance =
       GuestFavoritesSyncService._internal();
 
-  SharedPreferences get _sharedPreferences => GetIt.instance<SharedPreferences>();
+  SharedPreferences get _sharedPreferences =>
+      GetIt.instance<SharedPreferences>();
   TokenService get _tokenService => GetIt.instance<TokenService>();
 
   FavoritesRepository _buildRepository() {
@@ -65,7 +66,9 @@ class GuestFavoritesSyncService {
   }
 
   Future<void> clearPendingFavorites() async {
-    await _sharedPreferences.remove(AppConstants.pendingGuestFavoriteProductIdsKey);
+    await _sharedPreferences.remove(
+      AppConstants.pendingGuestFavoriteProductIdsKey,
+    );
   }
 
   Future<void> syncPendingFavoritesIfAuthenticated() async {

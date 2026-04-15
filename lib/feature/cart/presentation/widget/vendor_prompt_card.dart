@@ -59,7 +59,6 @@ class VendorPromptCard extends StatelessWidget {
           locale.select_vendors_to_compare,
           style: getRegularStyle(
             fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size12,
             color: color.onSurfaceVariant,
           ),
         ),
@@ -73,4 +72,3 @@ class VendorPromptCard extends StatelessWidget {
     return Icon(Icons.touch_app, color: color.primary, size: 24);
   }
 }
-

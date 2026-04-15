@@ -4,11 +4,7 @@ import 'package:zadana_user_v3/core/widgets/banner/banner_data.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_text_widgets.dart';
 
 class BannerContent extends StatelessWidget {
-  const BannerContent({
-    super.key,
-    required this.banner,
-    this.padding,
-  });
+  const BannerContent({super.key, required this.banner, this.padding});
 
   final BannerData banner;
   final EdgeInsetsGeometry? padding;
@@ -21,10 +17,12 @@ class BannerContent extends StatelessWidget {
       right: 0,
       bottom: 40,
       child: Padding(
-        padding: padding ?? const EdgeInsets.symmetric(
-          horizontal: Spacing.lg,
-          vertical: Spacing.md,
-        ),
+        padding:
+            padding ??
+            const EdgeInsets.symmetric(
+              horizontal: Spacing.lg,
+              vertical: Spacing.md,
+            ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

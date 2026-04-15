@@ -5,14 +5,10 @@ import 'package:zadana_user_v3/feature/location/domain/repo/location_repo.dart';
 
 @injectable
 class GetAddressFromCoordinatesUseCase {
+  GetAddressFromCoordinatesUseCase(this.repository);
   final LocationRepository repository;
 
-  GetAddressFromCoordinatesUseCase(this.repository);
-
-  Future<ApiResult<LocationEntity>> call(
-    double latitude,
-    double longitude,
-  ) {
+  Future<ApiResult<LocationEntity>> call(double latitude, double longitude) {
     return repository.getAddressFromCoordinates(latitude, longitude);
   }
 }

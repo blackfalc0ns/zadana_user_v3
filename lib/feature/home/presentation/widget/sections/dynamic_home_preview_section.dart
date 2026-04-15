@@ -42,7 +42,8 @@ class DynamicHomePreviewSection extends StatelessWidget {
             children: [
               for (var i = 0; i < sections.length; i++) ...[
                 _DynamicSectionBlock(section: sections[i]),
-                if (i != sections.length - 1) const SizedBox(height: Spacing.xl),
+                if (i != sections.length - 1)
+                  const SizedBox(height: Spacing.xl),
               ],
             ],
           ),

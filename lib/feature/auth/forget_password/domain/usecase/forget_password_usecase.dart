@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/feature/auth/forget_password/domain/repo/forget_p
 
 @injectable
 class ForgetPasswordUseCase {
-  final ForgetPasswordRepository repository;
-
   ForgetPasswordUseCase({required this.repository});
+  final ForgetPasswordRepository repository;
 
   Future<ApiResult<ForgetPasswordResponseEntity>> call(
     ForgetPasswordRequestEntity entity,

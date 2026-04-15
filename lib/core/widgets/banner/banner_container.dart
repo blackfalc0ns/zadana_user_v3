@@ -21,11 +21,11 @@ class BannerContainer extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.shadow,
             blurRadius: 4, // تقليل الشادو من 8 إلى 4
-            offset: const Offset(0, 1), // تقليل الإزاحة من 2 إلى 1
+            offset: Offset(0, 1), // تقليل الإزاحة من 2 إلى 1
           ),
         ],
       ),

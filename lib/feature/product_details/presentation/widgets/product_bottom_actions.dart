@@ -27,12 +27,12 @@ class ProductBottomActions extends StatelessWidget {
       color.surface,
     );
 
-    return Container(padding: const EdgeInsets.symmetric(horizontal: Spacing.base), //padding: const EdgeInsets.all(Spacing.base),
-     
-      decoration: BoxDecoration(
-        color: color.surface,
-      
-      ),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.base,
+      ), //padding: const EdgeInsets.all(Spacing.base),
+
+      decoration: BoxDecoration(color: color.surface),
       child: SafeArea(
         top: false,
         child: Row(
@@ -54,7 +54,9 @@ class ProductBottomActions extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: color.primary,
                   foregroundColor: color.onPrimary,
-                  disabledBackgroundColor: color.primary.withValues(alpha: 0.72),
+                  disabledBackgroundColor: color.primary.withValues(
+                    alpha: 0.72,
+                  ),
                   disabledForegroundColor: color.onPrimary,
                   minimumSize: const Size.fromHeight(46),
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -71,7 +73,9 @@ class ProductBottomActions extends StatelessWidget {
                 onPressed: onGoToCart,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: color.onSurface,
-                  side: BorderSide(color: color.primary.withValues(alpha: 0.45)),
+                  side: BorderSide(
+                    color: color.primary.withValues(alpha: 0.45),
+                  ),
                   backgroundColor: cartButtonBackground,
                   minimumSize: const Size.fromHeight(48),
                   padding: const EdgeInsets.symmetric(

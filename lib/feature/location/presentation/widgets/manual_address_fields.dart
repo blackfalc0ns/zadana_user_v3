@@ -8,16 +8,15 @@ import 'package:zadana_user_v3/feature/location/presentation/manager/location_vi
 import 'package:zadana_user_v3/feature/location/presentation/widgets/address_form_widgets.dart';
 
 class ManualAddressFields extends StatelessWidget {
-  final TextEditingController addressController;
-  final TextEditingController cityController;
-  final TextEditingController areaController;
-
   const ManualAddressFields({
     super.key,
     required this.addressController,
     required this.cityController,
     required this.areaController,
   });
+  final TextEditingController addressController;
+  final TextEditingController cityController;
+  final TextEditingController areaController;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,10 @@ class ManualAddressFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel(l10n.location_address_details_label),
+        AddressFormWidgets.buildFieldLabel(
+          context,
+          l10n.location_address_details_label,
+        ),
         AppTextField(
           controller: addressController,
           hint: l10n.location_address_details_hint,
@@ -61,12 +63,13 @@ class ManualAddressFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel(l10n.location_city_label),
+        AddressFormWidgets.buildFieldLabel(context, l10n.location_city_label),
         AppTextField(
           controller: cityController,
           hint: l10n.location_city_hint,
-          validator: (value) =>
-              value?.trim().isEmpty == true ? l10n.location_city_required : null,
+          validator: (value) => value?.trim().isEmpty == true
+              ? l10n.location_city_required
+              : null,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(
             UpdateCityEvent(value),
           ),
@@ -81,12 +84,13 @@ class ManualAddressFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AddressFormWidgets.buildFieldLabel(l10n.location_area_label),
+        AddressFormWidgets.buildFieldLabel(context, l10n.location_area_label),
         AppTextField(
           controller: areaController,
           hint: l10n.location_area_hint,
-          validator: (value) =>
-              value?.trim().isEmpty == true ? l10n.location_area_required : null,
+          validator: (value) => value?.trim().isEmpty == true
+              ? l10n.location_area_required
+              : null,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(
             UpdateAreaEvent(value),
           ),

@@ -1,13 +1,6 @@
 import 'package:zadana_user_v3/core/network/failures.dart';
 
 class PaginatedSectionState<T> {
-  final String title;
-  final List<T> items;
-  final bool isLoading;
-  final bool isLoadingMore;
-  final bool hasMore;
-  final Failure? failure;
-
   const PaginatedSectionState({
     this.title = '',
     this.items = const [],
@@ -16,6 +9,12 @@ class PaginatedSectionState<T> {
     this.hasMore = true,
     this.failure,
   });
+  final String title;
+  final List<T> items;
+  final bool isLoading;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final Failure? failure;
 
   PaginatedSectionState<T> copyWith({
     String? title,

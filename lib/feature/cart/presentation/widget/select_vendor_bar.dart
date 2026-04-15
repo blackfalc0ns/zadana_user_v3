@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 
 class SelectVendorBar extends StatelessWidget {
-  final List<CartItemModel> items;
-
   const SelectVendorBar({super.key, required this.items});
+  final List<CartItemModel> items;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class SelectVendorBar extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.shopping_cart_outlined,
                 color: AppColors.textSecondary,
                 size: 18,
@@ -54,7 +53,7 @@ class SelectVendorBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.info_outline,
                       size: 14,
                       color: AppColors.warning,
@@ -64,7 +63,6 @@ class SelectVendorBar extends StatelessWidget {
                       locale.select_vendor_to_show_price,
                       style: getMediumStyle(
                         fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size12,
                         color: AppColors.warning,
                       ),
                     ),
@@ -104,4 +102,3 @@ class SelectVendorBar extends StatelessWidget {
     );
   }
 }
-

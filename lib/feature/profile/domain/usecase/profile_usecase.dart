@@ -7,11 +7,10 @@ import '../repo/profile_repository.dart';
 /// Domain layer - Business logic
 @injectable
 class ProfileUseCase {
+  const ProfileUseCase(this._repository);
   final ProfileRepository _repository;
 
-  const ProfileUseCase(this._repository);
-
-  Future<ApiResult<ProfileResponseEntity>> call()  {
-    return  _repository.getProfile();
+  Future<ApiResult<ProfileResponseEntity>> call() {
+    return _repository.getProfile();
   }
 }

@@ -4,13 +4,6 @@ import 'package:zadana_user_v3/feature/auth/register/domain/entities/register_re
 /// State for register feature
 /// Handles both UI state and business logic state
 class RegisterState {
-  final bool isSignUp;
-  final bool isLoading;
-  final String? errorMessage;
-  final bool isSuccess;
-  final RegisterResponseEntity? registerResponseEntity;
-  final Failure? failure;
-
   const RegisterState({
     this.registerResponseEntity,
     this.isSignUp = false,
@@ -19,6 +12,12 @@ class RegisterState {
     this.isSuccess = false,
     this.failure,
   });
+  final bool isSignUp;
+  final bool isLoading;
+  final String? errorMessage;
+  final bool isSuccess;
+  final RegisterResponseEntity? registerResponseEntity;
+  final Failure? failure;
 
   RegisterState copyWith({
     RegisterResponseEntity? registerResponseEntity,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_dialogs.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 
 class DrawerActions {
   static void handleNotifications(BuildContext context) {
@@ -138,24 +138,24 @@ class DrawerActions {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
+
             // Title
-            Text('المطور', style: AppTextStyles.h4),
+            const Text('المطور', style: AppTextStyles.h4),
             const SizedBox(height: Spacing.lg),
-            
+
             // Content
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('فريق زدانة للتطوير', style: AppTextStyles.labelMedium),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text('تطوير تطبيقات الجوال', style: AppTextStyles.bodySmall),
                 Text('Flutter & Dart', style: AppTextStyles.bodySmall),
               ],
             ),
-            
+
             const SizedBox(height: Spacing.lg),
-            
+
             // Close button
             SizedBox(
               width: double.infinity,
@@ -174,7 +174,7 @@ class DrawerActions {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: Spacing.md),
           ],
         ),
@@ -204,20 +204,20 @@ class DrawerActions {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
+
             // Title
-            Text('تسجيل الخروج', style: AppTextStyles.h4),
+            const Text('تسجيل الخروج', style: AppTextStyles.h4),
             const SizedBox(height: Spacing.lg),
-            
+
             // Content
-            Text(
+            const Text(
               'هل أنت متأكد من رغبتك في تسجيل الخروج؟',
               style: AppTextStyles.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            
+
             const SizedBox(height: Spacing.lg),
-            
+
             // Action buttons
             Row(
               children: [
@@ -229,11 +229,13 @@ class DrawerActions {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(Spacing.cardRadius),
                       ),
-                      side: BorderSide(color: AppColors.textSecondary),
+                      side: const BorderSide(color: AppColors.textSecondary),
                     ),
                     child: Text(
                       'إلغاء',
-                      style: AppTextStyles.button.copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 ),
@@ -253,13 +255,15 @@ class DrawerActions {
                     ),
                     child: Text(
                       'تسجيل الخروج',
-                      style: AppTextStyles.button.copyWith(color: AppColors.white),
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.white,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            
+
             const SizedBox(height: Spacing.md),
           ],
         ),

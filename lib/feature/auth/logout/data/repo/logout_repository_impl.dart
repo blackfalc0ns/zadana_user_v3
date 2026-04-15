@@ -7,9 +7,8 @@ import 'package:zadana_user_v3/feature/auth/logout/domain/repo/logout_repository
 
 @Injectable(as: LogoutRepository)
 class LogoutRepositoryImpl implements LogoutRepository {
-  final LogoutRemoteDataSource remoteDataSource;
-
   LogoutRepositoryImpl(this.remoteDataSource);
+  final LogoutRemoteDataSource remoteDataSource;
 
   @override
   Future<ApiResult<void>> logout(LogoutRequestEntity entity) async {

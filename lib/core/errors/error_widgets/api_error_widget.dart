@@ -3,19 +3,13 @@ import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:zadana_user_v3/core/errors/api_exception.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 
-import 'no_internet_error_widget.dart';
-import 'timeout_error_widget.dart';
-import 'server_error_widget.dart';
 import 'client_error_widget.dart';
 import 'generic_error_widget.dart';
+import 'no_internet_error_widget.dart';
+import 'server_error_widget.dart';
+import 'timeout_error_widget.dart';
 
 class ApiErrorWidget extends StatelessWidget {
-  final ApiException exception;
-  final VoidCallback? onRetry;
-  final VoidCallback? onGoBack;
-  final VoidCallback? onContactSupport;
-  final VoidCallback? onCheckConnection;
-
   const ApiErrorWidget({
     super.key,
     required this.exception,
@@ -24,6 +18,11 @@ class ApiErrorWidget extends StatelessWidget {
     this.onContactSupport,
     this.onCheckConnection,
   });
+  final ApiException exception;
+  final VoidCallback? onRetry;
+  final VoidCallback? onGoBack;
+  final VoidCallback? onContactSupport;
+  final VoidCallback? onCheckConnection;
 
   @override
   Widget build(BuildContext context) {

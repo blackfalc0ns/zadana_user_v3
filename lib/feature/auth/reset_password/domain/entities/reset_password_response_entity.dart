@@ -1,7 +1,4 @@
 class ResetPasswordResponseEntity {
+  ResetPasswordResponseEntity({required this.message});
   final String message;
-
-  ResetPasswordResponseEntity({
-    required this.message,
-  });
 }

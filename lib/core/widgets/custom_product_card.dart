@@ -9,9 +9,9 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
-import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 
@@ -184,7 +184,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
                               url: widget.product.imageUrl,
                               width: double.infinity,
                               height: imageHeight,
-                              borderRadius: Spacing.cardRadius,
                               backgroundColor: imageBackground,
                               heroTag: widget.enableHeroAnimation
                                   ? (widget.heroTag ??
@@ -220,7 +219,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Expanded(
-                              child: PriceText(
+                                      child: PriceText(
                                         price: widget.product.price,
                                         oldPrice: widget.product.oldPrice,
                                         compact:
@@ -241,7 +240,9 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                         width: cartSize,
                                         height: cartSize,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
                                           color: AppColors.primary,
                                         ),
                                         child: Center(
@@ -345,4 +346,3 @@ class _CustomProductCardState extends State<CustomProductCard> {
     );
   }
 }
-

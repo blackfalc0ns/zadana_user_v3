@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 
 class ShimmerWrapper extends StatefulWidget {
-  const ShimmerWrapper({super.key, required this.child, this.isLoading = false});
+  const ShimmerWrapper({
+    super.key,
+    required this.child,
+    this.isLoading = false,
+  });
 
   final Widget child;
   final bool isLoading;
@@ -48,11 +52,7 @@ class _ShimmerWrapperState extends State<ShimmerWrapper>
             return LinearGradient(
               begin: Alignment(-2.0 + (_controller.value * 4), -0.5),
               end: Alignment(0.0 + (_controller.value * 4), 0.5),
-              colors: [
-                baseColor,
-                highlightColor,
-                baseColor,
-              ],
+              colors: [baseColor, highlightColor, baseColor],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
           },

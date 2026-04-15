@@ -15,7 +15,6 @@ extension CategoryProductsItemModelDtoMapper on CategoryProductsItemModelDto {
       discount: discount,
       isFavorite: isFavorite ?? false,
       unit: unit,
-      emoji: null,
       isDiscounted: isDiscounted ?? false,
     );
   }

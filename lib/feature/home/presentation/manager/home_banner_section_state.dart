@@ -2,17 +2,16 @@ import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_banner_entity.dart';
 
 class HomeBannerSectionState {
-  final bool isLoading;
-  final bool isSuccess;
-  final Failure? failure;
-  final HomeBannerEntity? data;
-
   const HomeBannerSectionState({
     this.isLoading = false,
     this.isSuccess = false,
     this.failure,
     this.data,
   });
+  final bool isLoading;
+  final bool isSuccess;
+  final Failure? failure;
+  final HomeBannerEntity? data;
 
   HomeBannerSectionState copyWith({
     bool? isLoading,

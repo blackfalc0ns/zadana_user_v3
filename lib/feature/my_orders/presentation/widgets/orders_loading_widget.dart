@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 
 class OrdersLoadingWidget extends StatelessWidget {
+  const OrdersLoadingWidget({super.key, this.itemCount = 4});
   final int itemCount;
-
-  const OrdersLoadingWidget({
-    super.key,
-    this.itemCount = 4,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +18,13 @@ class OrdersLoadingWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.surface,
             borderRadius: BorderRadius.circular(Spacing.xl),
-            border: Border.all(color: color.outlineVariant.withValues(alpha: .45)),
+            border: Border.all(
+              color: color.outlineVariant.withValues(alpha: .45),
+            ),
           ),
-          child: Column(
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Row(
                 children: [
                   _SkeletonIconBox(),
@@ -65,9 +63,8 @@ class OrdersLoadingWidget extends StatelessWidget {
 }
 
 class _SkeletonLine extends StatelessWidget {
-  final double width;
-
   const _SkeletonLine({required this.width});
+  final double width;
 
   @override
   Widget build(BuildContext context) {

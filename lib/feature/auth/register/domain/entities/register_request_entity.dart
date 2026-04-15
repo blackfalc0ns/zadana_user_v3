@@ -1,18 +1,4 @@
 class RegisterRequestEntity {
-   final String fullName;
-  final String email;
-  final String phone;
-  final String password;
-  final String addressLine;
-  final String label;
-  final String buildingNo;
-  final String floorNo;
-  final String apartmentNo;
-  final String city;
-  final String area;
-  final double latitude;
-  final double longitude;
-
   RegisterRequestEntity({
     required this.fullName,
     required this.email,
@@ -28,4 +14,17 @@ class RegisterRequestEntity {
     required this.latitude,
     required this.longitude,
   });
+  final String fullName;
+  final String email;
+  final String phone;
+  final String password;
+  final String addressLine;
+  final String label;
+  final String buildingNo;
+  final String floorNo;
+  final String apartmentNo;
+  final String city;
+  final String area;
+  final double latitude;
+  final double longitude;
 }

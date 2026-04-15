@@ -109,10 +109,9 @@ class _AddressCardHeader extends StatelessWidget {
           width: 42,
           height: 42,
           decoration: BoxDecoration(
-            color: (isSelectedDefault
-                    ? AppColors.primary
-                    : AppColors.primaryLight)
-                .withValues(alpha: 0.12),
+            color:
+                (isSelectedDefault ? AppColors.primary : AppColors.primaryLight)
+                    .withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(

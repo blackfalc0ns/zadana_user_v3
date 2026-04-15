@@ -20,8 +20,7 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
     this._deleteCustomerAddressUseCase,
     this._setCustomerAddressAsDefaultUseCase,
     this._updateCustomerAddressUseCase,
-  )
-    : super(const CustomerAddressesState());
+  ) : super(const CustomerAddressesState());
 
   final GetCustomerAddressesUseCase _getCustomerAddressesUseCase;
   final DeleteCustomerAddressUseCase _deleteCustomerAddressUseCase;
@@ -39,23 +38,17 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
       case CustomerAddressSetDefaultEvent():
         _setDefaultAddress(event.addressId);
       case CustomerAddressUpdateEvent():
-        _updateAddress(
-          event.originalAddress,
-          event.updatedLocation,
-        );
+        _updateAddress(event.originalAddress, event.updatedLocation);
     }
   }
 
   Future<void> _loadAddresses() async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        isSuccess: false,
-        clearFailure: true,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, isSuccess: false, clearFailure: true));
 
-    developer.log('Loading customer addresses', name: 'CustomerAddressesViewModel');
+    developer.log(
+      'Loading customer addresses',
+      name: 'CustomerAddressesViewModel',
+    );
 
     final result = await _getCustomerAddressesUseCase();
 
@@ -83,8 +76,8 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
 
   Future<void> _deleteAddress(String addressId) async {
     emit(
-        state.copyWith(
-          deletingAddressId: addressId,
+      state.copyWith(
+        deletingAddressId: addressId,
         clearActionType: true,
         clearActionLabel: true,
         clearActionFailure: true,

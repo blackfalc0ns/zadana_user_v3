@@ -4,6 +4,10 @@ part 'location_search_dto.g.dart';
 
 @JsonSerializable()
 class LocationSearchDto {
+  LocationSearchDto({this.placeId, this.displayName, this.lat, this.lon});
+
+  factory LocationSearchDto.fromJson(Map<String, dynamic> json) =>
+      _$LocationSearchDtoFromJson(json);
   @JsonKey(name: 'place_id')
   final int? placeId;
 
@@ -12,16 +16,6 @@ class LocationSearchDto {
 
   final String? lat;
   final String? lon;
-
-  LocationSearchDto({
-    this.placeId,
-    this.displayName,
-    this.lat,
-    this.lon,
-  });
-
-  factory LocationSearchDto.fromJson(Map<String, dynamic> json) =>
-      _$LocationSearchDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$LocationSearchDtoToJson(this);
 }

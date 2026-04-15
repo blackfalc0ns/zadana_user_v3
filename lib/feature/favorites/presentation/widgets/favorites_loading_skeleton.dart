@@ -68,11 +68,7 @@ class _ShimmerWrapper extends StatelessWidget {
             return LinearGradient(
               begin: Alignment(-2.0 + (controller.value * 4), -0.5),
               end: Alignment(0.0 + (controller.value * 4), 0.5),
-              colors: [
-                baseColor,
-                highlightColor,
-                baseColor,
-              ],
+              colors: [baseColor, highlightColor, baseColor],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
           },
@@ -122,9 +118,9 @@ class _FavoriteCardSkeleton extends StatelessWidget {
                         radius: 999,
                       ),
                       const Spacer(),
-                      Row(
+                      const Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: const [
+                        children: [
                           Expanded(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,

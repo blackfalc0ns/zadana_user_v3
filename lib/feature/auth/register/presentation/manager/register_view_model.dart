@@ -28,34 +28,19 @@ class RegisterViewModel extends Cubit<RegisterState> {
   /// Switch to signup tab
   void _switchToSignUp() {
     if (!state.isSignUp) {
-      emit(state.copyWith(
-        isSignUp: true,
-        errorMessage: null,
-        isSuccess: false,
-      ));
+      emit(state.copyWith(isSignUp: true, isSuccess: false));
     }
   }
 
   /// Switch to login tab
   void _switchToLogin() {
     if (state.isSignUp) {
-      emit(state.copyWith(
-        isSignUp: false,
-        errorMessage: null,
-        isSuccess: false,
-      ));
+      emit(state.copyWith(isSignUp: false, isSuccess: false));
     }
   }
 
   Future<void> register(RegisterRequestEntity requestEntity) async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, isSuccess: false));
 
     developer.log(
       'Registering user: ${requestEntity.fullName}',
@@ -71,7 +56,6 @@ class RegisterViewModel extends Cubit<RegisterState> {
             isLoading: false,
             isSuccess: true,
             registerResponseEntity: result.data,
-            failure: null,
           ),
         );
       case ApiErrorResult():
@@ -87,12 +71,6 @@ class RegisterViewModel extends Cubit<RegisterState> {
   }
 
   void clearFeedback() {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isSuccess: false));
   }
 }

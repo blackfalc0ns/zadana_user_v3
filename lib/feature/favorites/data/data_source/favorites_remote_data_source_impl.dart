@@ -55,7 +55,9 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
   }
 
   @override
-  Future<AddFavoriteResponseDto> addFavorite(AddFavoriteRequestDto request) async {
+  Future<AddFavoriteResponseDto> addFavorite(
+    AddFavoriteRequestDto request,
+  ) async {
     try {
       return await _apiServices.addFavorite(request);
     } on DioException catch (error) {

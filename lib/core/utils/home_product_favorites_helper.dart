@@ -10,10 +10,7 @@ import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class FavoriteActionResult {
-  const FavoriteActionResult({
-    required this.isSuccess,
-    required this.message,
-  });
+  const FavoriteActionResult({required this.isSuccess, required this.message});
 
   final bool isSuccess;
   final String message;

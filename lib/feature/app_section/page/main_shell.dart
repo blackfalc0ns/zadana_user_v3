@@ -265,7 +265,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           BoxShadow(
             color: color.shadow.withValues(alpha: 0.07),
             blurRadius: 10,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
         borderRadius: BorderRadius.circular(25),
@@ -306,9 +306,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       curve: Curves.easeInOut,
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
-                        color: active
-                            ? activeBackground
-                            : inactiveBackground,
+                        color: active ? activeBackground : inactiveBackground,
                         shape: BoxShape.circle,
                       ),
                       child: Stack(

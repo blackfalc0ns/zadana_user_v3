@@ -8,12 +8,6 @@ import 'package:zadana_user_v3/feature/location/presentation/manager/location_vi
 import 'package:zadana_user_v3/feature/location/presentation/widgets/address_form_widgets.dart';
 
 class AddressFormPage extends StatelessWidget {
-  final String title;
-  final Widget formContent;
-  final bool isLoading;
-  final VoidCallback onConfirm;
-  final String confirmButtonText;
-
   const AddressFormPage({
     super.key,
     required this.title,
@@ -22,13 +16,16 @@ class AddressFormPage extends StatelessWidget {
     required this.onConfirm,
     required this.confirmButtonText,
   });
+  final String title;
+  final Widget formContent;
+  final bool isLoading;
+  final VoidCallback onConfirm;
+  final String confirmButtonText;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: title,
-      ),
+      appBar: CustomAppBar(title: title),
       body: BlocBuilder<LocationViewModel, LocationState>(
         builder: (context, state) {
           final showGlobalError = !state.isLoading && state.failure != null;

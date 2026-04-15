@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class AddressFormWidgets {
-  static Widget buildFieldLabel(String label) {
+  static Widget buildFieldLabel(BuildContext context, String label) {
+    final color = context.colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: Text(
         label,
         style: AppTextStyles.labelMedium.copyWith(
-          color: AppColors.textPrimary,
+          color: color.onSurface,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -19,15 +19,17 @@ class AddressFormWidgets {
   }
 
   static Widget buildLabelDropdown({
+    required BuildContext context,
     required String? selectedLabel,
     required Map<String, String> labelOptions,
     required ValueChanged<String?> onChanged,
   }) {
+    final color = context.colorScheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.divider),
+        border: Border.all(color: color.outlineVariant),
         borderRadius: BorderRadius.circular(8),
       ),
       child: DropdownButtonHideUnderline(
@@ -39,10 +41,7 @@ class AddressFormWidgets {
           ),
           isExpanded: true,
           items: labelOptions.keys.map((String label) {
-            return DropdownMenuItem<String>(
-              value: label,
-              child: Text(label),
-            );
+            return DropdownMenuItem<String>(value: label, child: Text(label));
           }).toList(),
           onChanged: onChanged,
         ),
@@ -50,27 +49,22 @@ class AddressFormWidgets {
     );
   }
 
-  static Widget buildLocationDisplay(String addressLine) {
+  static Widget buildLocationDisplay(BuildContext context, String addressLine) {
+    final color = context.colorScheme;
     return Container(
       padding: const EdgeInsets.all(Spacing.base),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.1),
+        color: color.primaryContainer.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.location_on,
-            color: AppColors.primary,
-            size: 20,
-          ),
+          Icon(Icons.location_on, color: color.primary, size: 20),
           const SizedBox(width: Spacing.sm),
           Expanded(
             child: Text(
               addressLine,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: AppTextStyles.bodySmall.copyWith(color: color.onSurface),
             ),
           ),
         ],
@@ -84,6 +78,7 @@ class AddressFormWidgets {
     required String text,
     required BuildContext context,
   }) {
+    final color = context.colorScheme;
     return Container(
       padding: EdgeInsets.only(
         left: Spacing.screenH,
@@ -92,10 +87,10 @@ class AddressFormWidgets {
         top: Spacing.base,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow,
+            color: color.shadow.withValues(alpha: 0.10),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -106,12 +101,12 @@ class AddressFormWidgets {
         child: ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           child: isLoading
-              ? const SizedBox(
+              ? SizedBox(
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.textOnPrimary,
+                    color: color.onPrimary,
                   ),
                 )
               : Text(text),

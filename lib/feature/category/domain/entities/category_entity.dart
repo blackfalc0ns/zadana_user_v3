@@ -1,15 +1,14 @@
 class CategoryEntity {
-  final String id;
-  final String name;
-  final String imageAsset;
-  final String emoji;
-
   const CategoryEntity({
     required this.id,
     required this.name,
     required this.imageAsset,
     required this.emoji,
   });
+  final String id;
+  final String name;
+  final String imageAsset;
+  final String emoji;
 
   CategoryEntity copyWith({
     String? id,

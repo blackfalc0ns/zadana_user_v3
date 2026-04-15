@@ -59,7 +59,9 @@ class BrandFilterLogic {
 
     // Filter by subcategory
     if (selectedSubcategory != null) {
-      filtered = filtered.where((p) => p.subcategory == selectedSubcategory).toList();
+      filtered = filtered
+          .where((p) => p.subcategory == selectedSubcategory)
+          .toList();
     }
 
     // Filter by price range

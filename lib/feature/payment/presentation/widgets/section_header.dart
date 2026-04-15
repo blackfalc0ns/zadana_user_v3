@@ -5,12 +5,6 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 class SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final Widget? trailing;
-  final Color? iconColor;
-  final Color? backgroundColor;
-
   const SectionHeader({
     super.key,
     required this.icon,
@@ -19,6 +13,11 @@ class SectionHeader extends StatelessWidget {
     this.iconColor,
     this.backgroundColor,
   });
+  final IconData icon;
+  final String title;
+  final Widget? trailing;
+  final Color? iconColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -53,4 +52,3 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
-

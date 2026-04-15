@@ -4,13 +4,6 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 
 class ProfileAddressCard extends StatelessWidget {
-  final String title;
-  final String address;
-  final bool isDefault;
-  final VoidCallback? onTap;
-  final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
-
   const ProfileAddressCard({
     super.key,
     required this.title,
@@ -20,6 +13,12 @@ class ProfileAddressCard extends StatelessWidget {
     this.onEdit,
     this.onDelete,
   });
+  final String title;
+  final String address;
+  final bool isDefault;
+  final VoidCallback? onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +34,7 @@ class ProfileAddressCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(Spacing.cardRadius),
-          border: isDefault
-              ? Border.all(color: AppColors.primary, width: 1)
-              : null,
+          border: isDefault ? Border.all(color: AppColors.primary) : null,
         ),
         child: Row(
           children: [
@@ -90,7 +87,7 @@ class ProfileAddressCard extends StatelessWidget {
             if (onEdit != null || onDelete != null) ...[
               const SizedBox(width: Spacing.sm),
               PopupMenuButton<String>(
-                icon: Icon(
+                icon: const Icon(
                   Icons.more_vert,
                   color: AppColors.textSecondary,
                   size: Spacing.iconMd,

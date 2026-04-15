@@ -46,10 +46,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.only(top: topInset + 6),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color.primary,
-                  color.primary.withValues(alpha: 0.92),
-                ],
+                colors: [color.primary, color.primary.withValues(alpha: 0.92)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -77,8 +74,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     const SizedBox(width: Spacing.md),
                     _ActionButton(
-                      notificationCount:
-                          homeResponse?.notificationsCount ?? 0,
+                      notificationCount: homeResponse?.notificationsCount ?? 0,
                       onTap: onNotificationsTap ?? onLocationTap,
                       isPrimary: true,
                     ),
@@ -177,10 +173,7 @@ class _ActionButton extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: color.error,
                             borderRadius: BorderRadius.circular(32),
-                            border: Border.all(
-                              color: color.onPrimary,
-                              width: 1,
-                            ),
+                            border: Border.all(color: color.onPrimary),
                           ),
                           child: Center(
                             child: Text(
@@ -279,7 +272,6 @@ class _LocationCard extends StatelessWidget {
                           style: getSemiBoldStyle(
                             fontFamily: FontConstant.cairo,
                             color: color.onPrimary,
-                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -289,10 +281,7 @@ class _LocationCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: Spacing.xs),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: color.onPrimary,
-            ),
+            Icon(Icons.keyboard_arrow_down_rounded, color: color.onPrimary),
           ],
         ),
       ),

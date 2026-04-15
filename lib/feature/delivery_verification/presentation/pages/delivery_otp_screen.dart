@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
-import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
@@ -12,7 +14,6 @@ import 'package:zadana_user_v3/feature/delivery_verification/presentation/manage
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/manager/delivery_otp_view_model.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_rating_dialog.dart'
     as delivery_dialog;
-import 'dart:async';
 
 class DeliveryOtpScreen extends StatefulWidget {
   const DeliveryOtpScreen({
@@ -42,10 +43,7 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
         Navigator.pushReplacementNamed(
           context,
           AppRoutes.successOrder,
-          arguments: {
-            'orderId': widget.orderId,
-            'courierName': 'Ayşe Demirci',
-          },
+          arguments: {'orderId': widget.orderId, 'courierName': 'Ayşe Demirci'},
         );
       }
     });
@@ -64,7 +62,7 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
 
     return Scaffold(
       backgroundColor: color.surface,
-      appBar:CustomAppBar(title: locale.delivery_otp_title),
+      appBar: CustomAppBar(title: locale.delivery_otp_title),
       body: BlocProvider(
         create: (_) => getIt<DeliveryOtpViewModel>(),
         child: BlocListener<DeliveryOtpViewModel, DeliveryOtpState>(
@@ -72,7 +70,6 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(Spacing.lg),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: Spacing.xl),
 
@@ -113,7 +110,6 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: color.primary.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Column(
@@ -128,7 +124,7 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                       ),
                       const SizedBox(height: Spacing.xs),
                       Text(
-                    '0345667892',
+                        '0345667892',
                         style: getBoldStyle(
                           fontSize: FontSize.size18,
                           fontFamily: FontConstant.cairo,
@@ -199,7 +195,6 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                         },
                       );
                     },
-                    isLoading: false,
                     color: color.primary,
                     textColor: color.onPrimary,
                     height: 56,
@@ -263,4 +258,3 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
     }
   }
 }
-

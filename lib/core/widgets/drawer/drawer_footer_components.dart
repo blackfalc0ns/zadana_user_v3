@@ -32,7 +32,11 @@ void showDeveloperDialog(BuildContext context) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(Assets.blackFalcons, height: 72, fit: BoxFit.contain),
+                Image.asset(
+                  Assets.blackFalcons,
+                  height: 72,
+                  fit: BoxFit.contain,
+                ),
                 const SizedBox(height: Spacing.md),
                 Text(
                   'Black Falcons',
@@ -153,7 +157,9 @@ void showLogoutDialog(BuildContext context) {
                 onPressed: () => Navigator.pop(dialogContext),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(44),
-                  side: BorderSide(color: color.outline.withValues(alpha: 0.35)),
+                  side: BorderSide(
+                    color: color.outline.withValues(alpha: 0.35),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -222,16 +228,13 @@ class FooterInfoTile extends StatelessWidget {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(Assets.blackFalcons, height: 30, fit: BoxFit.contain),
               const SizedBox(width: Spacing.sm),
               Flexible(
                 child: Align(
-                  alignment: Alignment.center,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         'Developed by',
@@ -299,7 +302,6 @@ class DeveloperInfoCard extends StatelessWidget {
                 Text(
                   title,
                   style: getRegularStyle(
-                    fontSize: FontSize.size12,
                     fontFamily: FontConstant.cairo,
                     color: AppColors.textSecondary,
                   ),

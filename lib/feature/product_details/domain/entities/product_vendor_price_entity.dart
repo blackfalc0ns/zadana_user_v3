@@ -1,11 +1,4 @@
 class ProductVendorPriceEntity {
-  final String id;
-  final String name;
-  final String? logoUrl;
-  final double price;
-  final double? oldPrice;
-  final bool isDiscounted;
-
   const ProductVendorPriceEntity({
     required this.id,
     required this.name,
@@ -14,4 +7,10 @@ class ProductVendorPriceEntity {
     this.oldPrice,
     required this.isDiscounted,
   });
+  final String id;
+  final String name;
+  final String? logoUrl;
+  final double price;
+  final double? oldPrice;
+  final bool isDiscounted;
 }

@@ -7,9 +7,8 @@ import 'package:zadana_user_v3/feature/product_details/domain/repo/product_detai
 
 @Injectable(as: ProductDetailsRepository)
 class ProductDetailsRepositoryImpl implements ProductDetailsRepository {
-  final ProductDetailsRemoteDataSource _remoteDataSource;
-
   const ProductDetailsRepositoryImpl(this._remoteDataSource);
+  final ProductDetailsRemoteDataSource _remoteDataSource;
 
   @override
   Future<ApiResult<ProductDetailsEntity>> getProductDetails(

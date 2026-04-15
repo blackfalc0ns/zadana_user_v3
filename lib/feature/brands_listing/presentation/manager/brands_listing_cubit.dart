@@ -9,10 +9,8 @@ import 'package:zadana_user_v3/feature/section_listing_shared/presentation/manag
 
 @injectable
 class BrandsListingCubit extends Cubit<PaginatedSectionState<BrandModel>> {
-  BrandsListingCubit(
-    this._getHomeBrandsUseCase,
-    @factoryParam String title,
-  ) : super(PaginatedSectionState<BrandModel>(title: title));
+  BrandsListingCubit(this._getHomeBrandsUseCase, @factoryParam String title)
+    : super(PaginatedSectionState<BrandModel>(title: title));
 
   static const int pageSize = 9;
   static const double loadMoreThreshold = 320;

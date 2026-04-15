@@ -1,13 +1,6 @@
 import 'package:zadana_user_v3/feature/home/domain/entities/home_banner_item_entity.dart';
 
 class HomeBannerEntity {
-  final String key;
-  final String title;
-  final bool isActive;
-  final String? theme;
-  final int itemsCount;
-  final List<HomeBannerItemEntity> items;
-
   const HomeBannerEntity({
     required this.key,
     required this.title,
@@ -16,5 +9,10 @@ class HomeBannerEntity {
     required this.itemsCount,
     required this.items,
   });
-
+  final String key;
+  final String title;
+  final bool isActive;
+  final String? theme;
+  final int itemsCount;
+  final List<HomeBannerItemEntity> items;
 }

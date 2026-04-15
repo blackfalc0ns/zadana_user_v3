@@ -24,14 +24,10 @@ class CourierInfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.border.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withValues(
-              alpha: 0.05,
-            ),
+            color: AppColors.shadow.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -44,10 +40,7 @@ class CourierInfoCard extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
-              border: Border.all(
-                color: AppColors.primary,
-                width: 0.5,
-              ),
+              border: Border.all(color: AppColors.primary, width: 0.5),
               image: DecorationImage(
                 image: NetworkImage(
                   courierImage ??
@@ -67,9 +60,7 @@ class CourierInfoCard extends StatelessWidget {
                   style: getRegularStyle(
                     fontSize: FontSize.size11,
                     fontFamily: FontConstant.cairo,
-                    color: color.onSurface.withValues(
-                      alpha: 0.5,
-                    ),
+                    color: color.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -89,4 +80,3 @@ class CourierInfoCard extends StatelessWidget {
     );
   }
 }
-

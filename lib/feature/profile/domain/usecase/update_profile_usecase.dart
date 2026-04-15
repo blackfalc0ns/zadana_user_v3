@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/feature/profile/domain/repo/profile_repository.da
 
 @injectable
 class UpdateProfileUseCase {
-  final ProfileRepository _repository;
-
   const UpdateProfileUseCase(this._repository);
+  final ProfileRepository _repository;
 
   Future<ApiResult<ProfileResponseEntity>> call(
     UpdateProfileRequestEntity request,

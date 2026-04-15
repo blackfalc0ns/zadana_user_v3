@@ -39,7 +39,6 @@ class OrderCardHeader extends StatelessWidget {
               Text(
                 '${l10n.my_orders_order_date}: ${formatOrderDate(order.createdAt)}',
                 style: getRegularStyle(
-                  fontSize: FontSize.size12,
                   fontFamily: FontConstant.cairo,
                   color: colors.onSurfaceVariant,
                 ),
@@ -91,14 +90,7 @@ class OrderCardActionButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(Spacing.buttonSmallRadius),
         ),
       ),
-      child: Text(
-        label,
-        style: getMediumStyle(
-          fontSize: FontSize.size12,
-          fontFamily: FontConstant.cairo,
-        ),
-      ),
+      child: Text(label, style: getMediumStyle(fontFamily: FontConstant.cairo)),
     );
   }
 }
-

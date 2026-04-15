@@ -8,12 +8,8 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 /// ═══════════════════════════════════════════════════════════════
 
 class EmotionSliderWidget extends StatefulWidget {
+  const EmotionSliderWidget({super.key, required this.onEmotionChanged});
   final Function(int emotionIndex, String emotionLabel) onEmotionChanged;
-
-  const EmotionSliderWidget({
-    super.key,
-    required this.onEmotionChanged,
-  });
 
   @override
   State<EmotionSliderWidget> createState() => _EmotionSliderWidgetState();
@@ -106,10 +102,7 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
       vsync: this,
     );
     _titleScaleAnimation = Tween<double>(begin: 1.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _titleScaleController,
-        curve: Curves.easeOutBack,
-      ),
+      CurvedAnimation(parent: _titleScaleController, curve: Curves.easeOutBack),
     );
 
     // Periyodik göz kırpma (4 saniyede bir)
@@ -119,7 +112,8 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
   void _startBlinking() {
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 4));
-      if (mounted && _emotion == 2) { // Sadece متوسط (orta) duygu durumunda
+      if (mounted && _emotion == 2) {
+        // Sadece متوسط (orta) duygu durumunda
         _blinkController.forward().then((_) => _blinkController.reverse());
       }
       return mounted;
@@ -202,7 +196,8 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
             _emotionLabels[_emotion],
             style: getBoldStyle(
               fontSize: 20,
-              color: _emotionColors[_emotion], fontFamily: FontConstant.cairo,
+              color: _emotionColors[_emotion],
+              fontFamily: FontConstant.cairo,
             ),
             textAlign: TextAlign.center,
           ),
@@ -290,7 +285,6 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
                       _emotionLabels[emotionIndex],
                       style: getBoldStyle(
                         fontFamily: FontConstant.cairo,
-                        fontSize: 12,
                         color: isActive
                             ? _emotionColors[emotionIndex]
                             : const Color(0xFFBBBBBB),
@@ -311,15 +305,14 @@ class _EmotionSliderWidgetState extends State<EmotionSliderWidget>
 /// YÜZ ÇİZİMİ - CustomPainter
 /// ═══════════════════════════════════════════════════════════════
 class FacePainter extends CustomPainter {
-  final int emotion;
-  final Color color;
-  final double eyeScale;
-
   FacePainter({
     required this.emotion,
     required this.color,
     required this.eyeScale,
   });
+  final int emotion;
+  final Color color;
+  final double eyeScale;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -336,7 +329,11 @@ class FacePainter extends CustomPainter {
       ..color = Colors.white.withValues(alpha: 0.3)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
 
-    canvas.drawCircle(Offset(center.dx - 20, center.dy - 20), radius, glowPaint);
+    canvas.drawCircle(
+      Offset(center.dx - 20, center.dy - 20),
+      radius,
+      glowPaint,
+    );
     canvas.drawCircle(center, radius, bgPaint);
 
     // Gözler ve ağız çizimi
@@ -431,7 +428,8 @@ class FacePainter extends CustomPainter {
 
     // Göz kırpma animasyonu için scale hesaplama
     // eyeScale 0.0 - 1.0 arasında, 0.0'a yaklaştıkça göz küçülür ama tamamen kaybolmaz
-    final animatedRadius = radius * (0.2 + (eyeScale * 0.8)); // Minimum %20 kalır
+    final animatedRadius =
+        radius * (0.2 + (eyeScale * 0.8)); // Minimum %20 kalır
 
     // Sol göz
     canvas.drawCircle(
@@ -461,23 +459,13 @@ class FacePainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
 
-    final size = 12.0;
+    const size = 12.0;
 
     // Sol X
-    _drawX(
-      canvas,
-      Offset(center.dx - eyeOffset, eyeY),
-      size,
-      paint,
-    );
+    _drawX(canvas, Offset(center.dx - eyeOffset, eyeY), size, paint);
 
     // Sağ X
-    _drawX(
-      canvas,
-      Offset(center.dx + eyeOffset, eyeY),
-      size,
-      paint,
-    );
+    _drawX(canvas, Offset(center.dx + eyeOffset, eyeY), size, paint);
   }
 
   void _drawX(Canvas canvas, Offset center, double size, Paint paint) {
@@ -508,13 +496,7 @@ class FacePainter extends CustomPainter {
           width: 30,
           height: 18,
         );
-        canvas.drawArc(
-          mouthRect,
-          0,
-          3.14159,
-          true,
-          paint,
-        );
+        canvas.drawArc(mouthRect, 0, 3.14159, true, paint);
         break;
 
       case 1: // جيد - Dar yarım daire
@@ -523,13 +505,7 @@ class FacePainter extends CustomPainter {
           width: 22,
           height: 14,
         );
-        canvas.drawArc(
-          mouthRect,
-          0,
-          3.14159,
-          true,
-          paint,
-        );
+        canvas.drawArc(mouthRect, 0, 3.14159, true, paint);
         break;
 
       case 2: // متوسط - Yatay çizgi
@@ -580,19 +556,15 @@ class FacePainter extends CustomPainter {
 /// SLİDER ÇİZİMİ - CustomPainter
 /// ═══════════════════════════════════════════════════════════════
 class SliderTrackPainter extends CustomPainter {
+  SliderTrackPainter({required this.sliderValue, required this.activeColor});
   final double sliderValue;
   final Color activeColor;
 
-  SliderTrackPainter({
-    required this.sliderValue,
-    required this.activeColor,
-  });
-
   @override
   void paint(Canvas canvas, Size size) {
-    final trackHeight = 6.0;
-    final stationRadius = 6.0;
-    final thumbRadius = 14.0;
+    const trackHeight = 6.0;
+    const stationRadius = 6.0;
+    const thumbRadius = 14.0;
     // sliderValue 0.0 = sol (سيئ جداً), 1.0 = sağ (ممتاز)
     // Thumb soldan sağa hareket eder
     final thumbX = size.width * sliderValue;
@@ -603,7 +575,12 @@ class SliderTrackPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final trackRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, size.height / 2 - trackHeight / 2, size.width, trackHeight),
+      Rect.fromLTWH(
+        0,
+        size.height / 2 - trackHeight / 2,
+        size.width,
+        trackHeight,
+      ),
       const Radius.circular(3),
     );
     canvas.drawRRect(trackRect, trackPaint);
@@ -686,4 +663,3 @@ class SliderTrackPainter extends CustomPainter {
         oldDelegate.activeColor != activeColor;
   }
 }
- 

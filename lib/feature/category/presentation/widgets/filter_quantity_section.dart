@@ -54,8 +54,9 @@ class _FilterQuantitySectionState extends State<FilterQuantitySection> {
           options: quantities,
           selectedValue: localSelectedQuantity,
           onOptionTap: (quantity) {
-            final newSelection =
-                localSelectedQuantity == quantity ? null : quantity;
+            final newSelection = localSelectedQuantity == quantity
+                ? null
+                : quantity;
             setState(() {
               localSelectedQuantity = newSelection;
             });

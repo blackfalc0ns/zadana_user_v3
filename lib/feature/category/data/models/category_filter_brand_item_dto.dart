@@ -1,13 +1,5 @@
 class CategoryFilterBrandItemDto {
-  final String? id;
-  final String? name;
-  final String? logoUrl;
-
-  const CategoryFilterBrandItemDto({
-    this.id,
-    this.name,
-    this.logoUrl,
-  });
+  const CategoryFilterBrandItemDto({this.id, this.name, this.logoUrl});
 
   factory CategoryFilterBrandItemDto.fromJson(Map<String, dynamic> json) {
     return CategoryFilterBrandItemDto(
@@ -16,4 +8,7 @@ class CategoryFilterBrandItemDto {
       logoUrl: json['logo_url'] as String?,
     );
   }
+  final String? id;
+  final String? name;
+  final String? logoUrl;
 }

@@ -14,23 +14,24 @@ class RecommendedProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<RecommendedProductsCubit>(param1: title)
-        ..loadInitial(),
-      child: BlocBuilder<
-        RecommendedProductsCubit,
-        PaginatedSectionState<ProductModel>
-      >(
-        builder: (context, state) {
-          final cubit = context.read<RecommendedProductsCubit>();
-          return PaginatedProductsGridPage(
-            title: title,
-            state: state,
-            onRefresh: cubit.refresh,
-            onRetry: cubit.loadInitial,
-            onLoadMore: cubit.loadMore,
-          );
-        },
-      ),
+      create: (_) =>
+          getIt<RecommendedProductsCubit>(param1: title)..loadInitial(),
+      child:
+          BlocBuilder<
+            RecommendedProductsCubit,
+            PaginatedSectionState<ProductModel>
+          >(
+            builder: (context, state) {
+              final cubit = context.read<RecommendedProductsCubit>();
+              return PaginatedProductsGridPage(
+                title: title,
+                state: state,
+                onRefresh: cubit.refresh,
+                onRetry: cubit.loadInitial,
+                onLoadMore: cubit.loadMore,
+              );
+            },
+          ),
     );
   }
 }

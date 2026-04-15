@@ -5,9 +5,8 @@ import 'package:zadana_user_v3/feature/location/domain/repo/location_repo.dart';
 
 @injectable
 class GetCurrentLocationWithAddressUseCase {
-  final LocationRepository repository;
-
   GetCurrentLocationWithAddressUseCase(this.repository);
+  final LocationRepository repository;
 
   Future<ApiResult<LocationEntity>> call() {
     return repository.getCurrentLocationWithAddress();

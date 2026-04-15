@@ -4,7 +4,8 @@ import 'package:zadana_user_v3/feature/search/data/data_source/product_search_re
 import 'package:zadana_user_v3/feature/search/data/models/product_search_response_dto.dart';
 
 @Injectable(as: ProductSearchRemoteDataSource)
-class ProductSearchRemoteDataSourceImpl implements ProductSearchRemoteDataSource {
+class ProductSearchRemoteDataSourceImpl
+    implements ProductSearchRemoteDataSource {
   const ProductSearchRemoteDataSourceImpl(this._apiServices);
 
   final ApiServices _apiServices;

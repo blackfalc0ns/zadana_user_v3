@@ -11,7 +11,7 @@ class GradientSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    
+
     return Text(
       title,
       style: getBoldStyle(
@@ -22,4 +22,3 @@ class GradientSectionTitle extends StatelessWidget {
     );
   }
 }
-

@@ -95,10 +95,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
         return;
       }
 
-      await selectCategory(
-        initialCategory,
-        fromOutside: true,
-      );
+      await selectCategory(initialCategory, fromOutside: true);
 
       _navigationService.clearSelectedCategory();
     } catch (error) {
@@ -224,9 +221,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
         state.showAllSubCategories && !state.isCategoryPreselectedFromOutside;
 
     if (isShoppingMode) {
-      await _loadShoppingProducts(
-        subcategoryId: effectiveSubCategoryId,
-      );
+      await _loadShoppingProducts(subcategoryId: effectiveSubCategoryId);
       return;
     }
 
@@ -288,7 +283,11 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     final category = state.categories
         .where((item) => item.name == categoryName)
-        .firstWhere((_) => true, orElse: () => const CategoryEntity(id: '', name: '', imageAsset: '', emoji: ''));
+        .firstWhere(
+          (_) => true,
+          orElse: () =>
+              const CategoryEntity(id: '', name: '', imageAsset: '', emoji: ''),
+        );
     if (category.id.isEmpty) return;
 
     unawaited(selectCategory(category));
@@ -318,11 +317,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
       ),
     );
 
-    unawaited(
-      loadCategoryProducts(
-        overrideSubCategoryId: nextSubCategoryId,
-      ),
-    );
+    unawaited(loadCategoryProducts(overrideSubCategoryId: nextSubCategoryId));
   }
 
   void applySort(String? sortValue) {
@@ -351,7 +346,8 @@ class CategoryViewModel extends Cubit<CategoryState> {
     final brand = result['brand'] as String?;
     final productType = result['productType'] as String?;
     final part = result['part'] as String?;
-    final priceRange = result['priceRange'] as RangeValues? ?? state.priceBounds;
+    final priceRange =
+        result['priceRange'] as RangeValues? ?? state.priceBounds;
 
     emit(
       state.copyWith(
@@ -364,8 +360,10 @@ class CategoryViewModel extends Cubit<CategoryState> {
         selectedSubCategory: subCategoryName,
         selectedQuantityId: _findOptionId(state.quantityOptions, quantity),
         selectedBrandId: _findBrandId(brand),
-        selectedProductTypeId:
-            _findOptionId(state.productTypeOptions, productType),
+        selectedProductTypeId: _findOptionId(
+          state.productTypeOptions,
+          productType,
+        ),
         selectedPartId: _findPartId(part),
         priceRange: priceRange,
       ),
@@ -383,12 +381,8 @@ class CategoryViewModel extends Cubit<CategoryState> {
         .where((item) => item.name == categoryName)
         .firstWhere(
           (_) => true,
-          orElse: () => const CategoryEntity(
-            id: '',
-            name: '',
-            imageAsset: '',
-            emoji: '',
-          ),
+          orElse: () =>
+              const CategoryEntity(id: '', name: '', imageAsset: '', emoji: ''),
         );
     if (category.id.isEmpty) return;
 
@@ -415,8 +409,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     emit(
       state.copyWith(
-        filterSelectedCategory:
-            state.isCategoryPreselectedFromOutside ? state.selectedCategory : null,
+        filterSelectedCategory: state.isCategoryPreselectedFromOutside
+            ? state.selectedCategory
+            : null,
         filterSelectedQuantity: null,
         filterSelectedBrand: null,
         filterSelectedProductType: null,
@@ -478,11 +473,12 @@ class CategoryViewModel extends Cubit<CategoryState> {
   }) {
     final resolvedSubCategories =
         (subCategories ?? filters.subcategories ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList();
+            .where(
+              (item) =>
+                  (item.id ?? '').isNotEmpty &&
+                  (item.name ?? '').trim().isNotEmpty,
+            )
+            .toList();
     final quantityOptions = (filters.quantities ?? const [])
         .where(
           (item) =>
@@ -624,7 +620,8 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
 
     return state.showAllSubCategories
-        ? state.subCategoryCategoryMap[subCategoryId] ?? state.selectedCategoryId
+        ? state.subCategoryCategoryMap[subCategoryId] ??
+              state.selectedCategoryId
         : state.selectedCategoryId;
   }
 
@@ -745,9 +742,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
   }
 
-  Future<void> _loadShoppingProducts({
-    String? subcategoryId,
-  }) async {
+  Future<void> _loadShoppingProducts({String? subcategoryId}) async {
     emit(
       state.copyWith(
         isLoading: true,
@@ -797,7 +792,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
   }
 
   void _checkSelectedCategory() {
-    final requested = _resolveRequestedCategory(_navigationService.selectedCategory);
+    final requested = _resolveRequestedCategory(
+      _navigationService.selectedCategory,
+    );
     if (requested == null) {
       final selectedSubCategoryId = _navigationService.selectedSubCategoryId;
       final selectedSubCategoryName =

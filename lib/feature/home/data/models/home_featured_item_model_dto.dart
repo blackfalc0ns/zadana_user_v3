@@ -1,18 +1,4 @@
 class HomeFeaturedItemModelDto {
-  final String? id;
-  final String? name;
-  final String? store;
-  final double? price;
-  final double? oldPrice;
-  final String? imageUrl;
-  final double? rating;
-  final int? reviewCount;
-  final String? discount;
-  final bool? isFavorite;
-  final bool? isFeatured;
-  final String? unit;
-  final bool? isDiscounted;
-
   const HomeFeaturedItemModelDto({
     this.id,
     this.name,
@@ -46,4 +32,17 @@ class HomeFeaturedItemModelDto {
       isDiscounted: json['is_discounted'] as bool?,
     );
   }
+  final String? id;
+  final String? name;
+  final String? store;
+  final double? price;
+  final double? oldPrice;
+  final String? imageUrl;
+  final double? rating;
+  final int? reviewCount;
+  final String? discount;
+  final bool? isFavorite;
+  final bool? isFeatured;
+  final String? unit;
+  final bool? isDiscounted;
 }

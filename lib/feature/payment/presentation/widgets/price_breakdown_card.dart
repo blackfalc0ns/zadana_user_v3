@@ -5,11 +5,6 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class PriceBreakdownCard extends StatelessWidget {
-  final String subtotal;
-  final String shipping;
-  final String discount;
-  final String total;
-
   const PriceBreakdownCard({
     super.key,
     required this.subtotal,
@@ -17,6 +12,10 @@ class PriceBreakdownCard extends StatelessWidget {
     required this.discount,
     required this.total,
   });
+  final String subtotal;
+  final String shipping;
+  final String discount;
+  final String total;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +100,7 @@ class PriceBreakdownCard extends StatelessWidget {
 
   Widget _buildDivider(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Container(
       height: 1,
       decoration: BoxDecoration(
@@ -118,13 +117,6 @@ class PriceBreakdownCard extends StatelessWidget {
 }
 
 class PriceRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final String? currency;
-  final bool isTotal;
-  final bool isDiscount;
-  final bool showCurrency;
-
   const PriceRow({
     super.key,
     required this.label,
@@ -134,11 +126,17 @@ class PriceRow extends StatelessWidget {
     this.isDiscount = false,
     this.showCurrency = true,
   });
+  final String label;
+  final String value;
+  final String? currency;
+  final bool isTotal;
+  final bool isDiscount;
+  final bool showCurrency;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -174,4 +172,3 @@ class PriceRow extends StatelessWidget {
     );
   }
 }
-

@@ -166,4 +166,3 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
     );
   }
 }
-

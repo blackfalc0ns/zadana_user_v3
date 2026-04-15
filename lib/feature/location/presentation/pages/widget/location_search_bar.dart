@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class LocationSearchBar extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-  final VoidCallback? onClear;
-
   const LocationSearchBar({
     super.key,
     required this.controller,
     required this.onChanged,
     this.onClear,
   });
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final VoidCallback? onClear;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final color = context.colorScheme;
 
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
+        border: Border.all(color: color.outlineVariant.withValues(alpha: 0.8)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow,
+            color: color.shadow.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -35,18 +35,20 @@ class LocationSearchBar extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        style: AppTextStyles.bodyMedium,
+        style: AppTextStyles.bodyMedium.copyWith(color: color.onSurface),
         decoration: InputDecoration(
           hintText: l10n.location_map_search_hint,
-          hintStyle: AppTextStyles.inputHint,
-          prefixIcon: const Icon(
+          hintStyle: AppTextStyles.inputHint.copyWith(
+            color: color.onSurfaceVariant,
+          ),
+          prefixIcon: Icon(
             Icons.search,
-            color: AppColors.textSecondary,
+            color: color.onSurfaceVariant,
             size: Spacing.iconMd,
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: Icon(Icons.close, color: color.onSurfaceVariant),
                   onPressed: onClear,
                 )
               : null,

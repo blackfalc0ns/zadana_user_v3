@@ -2,25 +2,6 @@ import 'package:zadana_user_v3/feature/product_details/data/models/product_vendo
 import 'package:zadana_user_v3/feature/product_details/data/models/similar_product_model_dto.dart';
 
 class ProductDetailsResponseModelDto {
-  final String? id;
-  final String? masterProductId;
-  final String? defaultVendorProductId;
-  final String? name;
-  final String? store;
-  final double? price;
-  final double? oldPrice;
-  final String? imageUrl;
-  final List<String>? images;
-  final double? rating;
-  final int? reviewCount;
-  final String? discount;
-  final bool? isFavorite;
-  final String? unit;
-  final bool? isDiscounted;
-  final String? description;
-  final List<ProductVendorPriceModelDto>? vendorPrices;
-  final List<SimilarProductModelDto>? similarProducts;
-
   const ProductDetailsResponseModelDto({
     this.id,
     this.masterProductId,
@@ -75,4 +56,22 @@ class ProductDetailsResponseModelDto {
           .toList(),
     );
   }
+  final String? id;
+  final String? masterProductId;
+  final String? defaultVendorProductId;
+  final String? name;
+  final String? store;
+  final double? price;
+  final double? oldPrice;
+  final String? imageUrl;
+  final List<String>? images;
+  final double? rating;
+  final int? reviewCount;
+  final String? discount;
+  final bool? isFavorite;
+  final String? unit;
+  final bool? isDiscounted;
+  final String? description;
+  final List<ProductVendorPriceModelDto>? vendorPrices;
+  final List<SimilarProductModelDto>? similarProducts;
 }

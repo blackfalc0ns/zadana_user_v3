@@ -24,7 +24,7 @@ class SuccessAnimationWidget extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: AppColors.background,
-                child: Icon(
+                child: const Icon(
                   Icons.celebration,
                   size: 80,
                   color: AppColors.primary,
@@ -39,7 +39,6 @@ class SuccessAnimationWidget extends StatelessWidget {
             child: ConfettiWidget(
               confettiController: _confettiController,
               blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
               colors: const [
                 Color(0xFF4CAF50),
                 Color(0xFF2196F3),
@@ -47,7 +46,6 @@ class SuccessAnimationWidget extends StatelessWidget {
                 Color(0xFFFF5722),
                 Color(0xFF9C27B0),
               ],
-              particleDrag: 0.05,
               emissionFrequency: 0.05,
               numberOfParticles: 30,
               gravity: 0.1,

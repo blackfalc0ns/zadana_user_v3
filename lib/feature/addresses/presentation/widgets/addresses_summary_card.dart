@@ -25,9 +25,7 @@ class AddressesSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFFDFEFE),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.14),
-        ),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.14)),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.04),
@@ -66,7 +64,6 @@ class AddressesSummaryCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: getRegularStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size12,
                       color: AppColors.primary,
                     ),
                   ),

@@ -6,6 +6,8 @@ part 'add_cart_item_response_dto.g.dart';
 
 @JsonSerializable()
 class AddCartItemResponseDto {
+  factory AddCartItemResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$AddCartItemResponseDtoFromJson(json);
   const AddCartItemResponseDto({
     required this.message,
     required this.item,
@@ -15,9 +17,6 @@ class AddCartItemResponseDto {
   final String message;
   final CartItemResponseDto item;
   final CartSummaryResponseDto summary;
-
-  factory AddCartItemResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$AddCartItemResponseDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$AddCartItemResponseDtoToJson(this);
 }

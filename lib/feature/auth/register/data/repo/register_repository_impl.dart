@@ -8,9 +8,8 @@ import 'package:zadana_user_v3/feature/auth/register/domain/repo/register_reposi
 
 @Injectable(as: RegisterRepository)
 class RegisterRepositoryImpl implements RegisterRepository {
+  RegisterRepositoryImpl(this.remoteDataSource);
   final RegisterRemoteDataSource remoteDataSource;
-
-  RegisterRepositoryImpl( this.remoteDataSource);
 
   @override
   Future<ApiResult<RegisterResponseEntity>> register(

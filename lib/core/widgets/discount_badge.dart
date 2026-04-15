@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-class DiscountBadge extends StatelessWidget {
+import 'package:flutter/material.dart';
 
+class DiscountBadge extends StatelessWidget {
   const DiscountBadge({
     super.key,
     required this.discountText,
@@ -12,7 +12,7 @@ class DiscountBadge extends StatelessWidget {
     this.trianglesize = 45.0,
     this.cornerRadius = 10.0,
     this.fontSize = 14.0,
-     required this.shadowColor,
+    required this.shadowColor,
   });
   final String discountText;
   final Color color;
@@ -74,12 +74,11 @@ class DiscountBadge extends StatelessWidget {
 }
 
 class TrianglePainter extends CustomPainter {
-
   TrianglePainter({
     required this.color,
     this.trianglesize = 45.0,
     required this.cornerRadius,
-     required this.shadowColor,
+    required this.shadowColor,
   });
   final Color color;
   final Color shadowColor;
@@ -95,26 +94,25 @@ class TrianglePainter extends CustomPainter {
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
     final path = Path();
-    
+
     // Start from top edge, near the corner
     path.moveTo(cornerRadius, 0);
-    
+
     // Top edge to diagonal
     path.lineTo(trianglesize, 0);
-    
+
     // Diagonal edge to left
     path.lineTo(0, trianglesize);
-    
+
     // Left edge up to near the corner
     path.lineTo(0, cornerRadius);
-    
+
     // Rounded corner at top-left (outer radius)
     path.arcToPoint(
       Offset(cornerRadius, 0),
       radius: Radius.circular(cornerRadius),
-      clockwise: true,
     );
-    
+
     path.close();
 
     // Draw shadow with offset

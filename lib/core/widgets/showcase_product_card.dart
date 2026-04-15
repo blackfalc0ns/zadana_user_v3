@@ -112,7 +112,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
             height: 82,
             padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 6, 4),
             decoration: BoxDecoration(
-            color: color.surfaceContainerLowest,
+              color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: color.primary.withValues(alpha: 0.12)),
               boxShadow: [

@@ -3,12 +3,6 @@ import 'package:zadana_user_v3/feature/auth/forget_password/domain/entities/forg
 
 /// State for forgot password feature
 class ForgetPasswordState {
-  final bool isLoading;
-  final String? errorMessage;
-  final bool isSuccess;
-  final ForgetPasswordResponseEntity? responseEntity;
-  final Failure? failure;
-
   const ForgetPasswordState({
     this.responseEntity,
     this.isLoading = false,
@@ -16,6 +10,11 @@ class ForgetPasswordState {
     this.isSuccess = false,
     this.failure,
   });
+  final bool isLoading;
+  final String? errorMessage;
+  final bool isSuccess;
+  final ForgetPasswordResponseEntity? responseEntity;
+  final Failure? failure;
 
   ForgetPasswordState copyWith({
     ForgetPasswordResponseEntity? responseEntity,

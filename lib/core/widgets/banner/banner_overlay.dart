@@ -20,10 +20,12 @@ class BannerOverlay extends StatelessWidget {
         gradient: LinearGradient(
           begin: begin,
           end: end,
-          colors: colors ?? [
-            AppColors.black.withValues(alpha: 0.75),
-            AppColors.black.withValues(alpha: 0.4),
-          ],
+          colors:
+              colors ??
+              [
+                AppColors.black.withValues(alpha: 0.75),
+                AppColors.black.withValues(alpha: 0.4),
+              ],
         ),
       ),
     );

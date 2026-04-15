@@ -1,7 +1,7 @@
+import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_summary_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
-import 'package:zadana_user_v3/core/network/failures.dart';
 
 class CartState {
   const CartState({

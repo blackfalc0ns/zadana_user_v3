@@ -6,13 +6,12 @@ part 'get_cart_response_dto.g.dart';
 
 @JsonSerializable()
 class GetCartResponseDto {
+  factory GetCartResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$GetCartResponseDtoFromJson(json);
   const GetCartResponseDto({required this.items, required this.summary});
 
   final List<CartItemResponseDto> items;
   final CartSummaryResponseDto summary;
-
-  factory GetCartResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$GetCartResponseDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$GetCartResponseDtoToJson(this);
 }

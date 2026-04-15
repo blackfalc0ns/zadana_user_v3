@@ -2,12 +2,6 @@ import 'package:zadana_user_v3/feature/brand/data/models/brand_products_applied_
 import 'package:zadana_user_v3/feature/brand/data/models/brand_products_item_model_dto.dart';
 
 class BrandProductsResponseModelDto {
-  final BrandProductsAppliedFiltersDto? appliedFilters;
-  final int? total;
-  final int? page;
-  final int? perPage;
-  final List<BrandProductsItemModelDto>? items;
-
   const BrandProductsResponseModelDto({
     this.appliedFilters,
     this.total,
@@ -28,10 +22,16 @@ class BrandProductsResponseModelDto {
       perPage: json['per_page'] as int?,
       items: (json['items'] as List<dynamic>?)
           ?.map(
-            (item) =>
-                BrandProductsItemModelDto.fromJson(item as Map<String, dynamic>),
+            (item) => BrandProductsItemModelDto.fromJson(
+              item as Map<String, dynamic>,
+            ),
           )
           .toList(),
     );
   }
+  final BrandProductsAppliedFiltersDto? appliedFilters;
+  final int? total;
+  final int? page;
+  final int? perPage;
+  final List<BrandProductsItemModelDto>? items;
 }

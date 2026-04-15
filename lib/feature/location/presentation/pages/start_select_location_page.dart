@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
@@ -14,10 +13,7 @@ import 'package:zadana_user_v3/feature/location/presentation/manager/location_st
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
 
 class StartSelectLocationPage extends StatelessWidget {
-  const StartSelectLocationPage({
-    super.key,
-    this.fromAddresses = false,
-  });
+  const StartSelectLocationPage({super.key, this.fromAddresses = false});
 
   final bool fromAddresses;
 
@@ -31,18 +27,17 @@ class StartSelectLocationPage extends StatelessWidget {
 }
 
 class _StartSelectLocationView extends StatelessWidget {
-  const _StartSelectLocationView({
-    required this.fromAddresses,
-  });
+  const _StartSelectLocationView({required this.fromAddresses});
 
   final bool fromAddresses;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final color = context.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      backgroundColor: color.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
@@ -90,21 +85,22 @@ class _StartSelectLocationView extends StatelessWidget {
                     const SizedBox(height: Spacing.sm),
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.textPrimary,
+                        color: color.onSurface,
                       ),
                     ),
                   ] else
                     const SizedBox(height: Spacing.lg),
-                  Center(
-                    child: Image.asset(
-                      Assets.logoDark,
-                      height: 52,
+                  Center(child: Image.asset(Assets.logoDark, height: 52)),
+                  const Spacer(),
+                  Text(
+                    l10n.location_start_title,
+                    style: AppTextStyles.h2.copyWith(
+                      color: color.onSurface,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const Spacer(),
-                  Text(l10n.location_start_title, style: AppTextStyles.h2),
                   const SizedBox(height: Spacing.md),
                   Text(
                     state.selectedLocation != null
@@ -113,13 +109,12 @@ class _StartSelectLocationView extends StatelessWidget {
                           )
                         : l10n.location_start_subtitle,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                      color: color.onSurfaceVariant,
+                      height: 1.5,
                     ),
                   ),
                   const Spacer(),
-                  Center(
-                    child: Image.asset(Assets.locationImage),
-                  ),
+                  Center(child: Image.asset(Assets.locationImage)),
                   const Spacer(),
                   SizedBox(
                     width: double.infinity,
@@ -127,10 +122,7 @@ class _StartSelectLocationView extends StatelessWidget {
                       icon: const Icon(Icons.map),
                       label: Text(l10n.location_select_on_map),
                       onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.selectAddress,
-                        );
+                        Navigator.pushNamed(context, AppRoutes.selectAddress);
                       },
                     ),
                   ),
@@ -144,12 +136,12 @@ class _StartSelectLocationView extends StatelessWidget {
                               const GetCurrentLocationEvent(),
                             ),
                       child: state.isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: AppColors.primary,
+                                color: color.primary,
                               ),
                             )
                           : Text(l10n.location_use_current_location),

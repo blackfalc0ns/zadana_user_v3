@@ -9,19 +9,13 @@ import 'package:zadana_user_v3/feature/auth/login/domain/entities/user_entity.da
 
 extension LoginRequestEntityMapper on LoginRequestEntity {
   LoginRequestModelDto toDto() {
-    return LoginRequestModelDto(
-      identifier: identifier,
-      password: password,
-    );
+    return LoginRequestModelDto(identifier: identifier, password: password);
   }
 }
 
 extension TokensModelMapper on TokensModelDto {
   TokensEntity toEntity() {
-    return TokensEntity(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    );
+    return TokensEntity(accessToken: accessToken, refreshToken: refreshToken);
   }
 }
 

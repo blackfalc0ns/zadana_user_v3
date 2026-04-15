@@ -14,23 +14,24 @@ class SpecialOffersProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<SpecialOffersProductsCubit>(param1: title)
-        ..loadInitial(),
-      child: BlocBuilder<
-        SpecialOffersProductsCubit,
-        PaginatedSectionState<ProductModel>
-      >(
-        builder: (context, state) {
-          final cubit = context.read<SpecialOffersProductsCubit>();
-          return PaginatedProductsGridPage(
-            title: title,
-            state: state,
-            onRefresh: cubit.refresh,
-            onRetry: cubit.loadInitial,
-            onLoadMore: cubit.loadMore,
-          );
-        },
-      ),
+      create: (_) =>
+          getIt<SpecialOffersProductsCubit>(param1: title)..loadInitial(),
+      child:
+          BlocBuilder<
+            SpecialOffersProductsCubit,
+            PaginatedSectionState<ProductModel>
+          >(
+            builder: (context, state) {
+              final cubit = context.read<SpecialOffersProductsCubit>();
+              return PaginatedProductsGridPage(
+                title: title,
+                state: state,
+                onRefresh: cubit.refresh,
+                onRetry: cubit.loadInitial,
+                onLoadMore: cubit.loadMore,
+              );
+            },
+          ),
     );
   }
 }

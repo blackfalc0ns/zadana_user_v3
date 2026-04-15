@@ -79,6 +79,7 @@ class BannerTitle extends StatelessWidget {
     );
   }
 }
+
 class BannerSubtitle extends StatelessWidget {
   const BannerSubtitle({
     super.key,

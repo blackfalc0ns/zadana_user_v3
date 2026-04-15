@@ -38,10 +38,7 @@ class CategoryNavigationService extends ChangeNotifier {
   }
 
   /// Update the selected shopping subcategory.
-  void setSelectedSubCategory({
-    String? id,
-    String? name,
-  }) {
+  void setSelectedSubCategory({String? id, String? name}) {
     final normalizedId = id?.trim();
     final normalizedName = name?.trim();
     if ((normalizedId == null || normalizedId.isEmpty) &&
@@ -50,10 +47,10 @@ class CategoryNavigationService extends ChangeNotifier {
     }
 
     _selectedCategory = null;
-    _selectedSubCategoryId =
-        normalizedId == null || normalizedId.isEmpty ? null : normalizedId;
-    _selectedSubCategoryName =
-        normalizedName == null || normalizedName.isEmpty
+    _selectedSubCategoryId = normalizedId == null || normalizedId.isEmpty
+        ? null
+        : normalizedId;
+    _selectedSubCategoryName = normalizedName == null || normalizedName.isEmpty
         ? null
         : normalizedName;
     _shouldResetToDefault = false;

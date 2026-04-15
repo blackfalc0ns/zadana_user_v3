@@ -5,9 +5,8 @@ import 'package:zadana_user_v3/feature/product_details/domain/repo/product_detai
 
 @injectable
 class ProductDetailsUseCase {
-  final ProductDetailsRepository _repository;
-
   const ProductDetailsUseCase(this._repository);
+  final ProductDetailsRepository _repository;
 
   Future<ApiResult<ProductDetailsEntity>> getProductDetails(
     String productId,

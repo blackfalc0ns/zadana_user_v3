@@ -87,7 +87,9 @@ class SpecialOffersSection extends StatelessWidget {
             SizedBox(
               height: 140,
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.screenH,
+                ),
                 scrollDirection: Axis.horizontal,
                 itemCount: visibleItems.length,
                 separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),

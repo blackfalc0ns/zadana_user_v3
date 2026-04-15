@@ -1,11 +1,11 @@
-import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+
 import 'base_error_widget.dart';
 
 class GenericErrorWidget extends BaseErrorWidget {
-  final ApiErrorType errorType;
-  final String? serverMessage; // رسالة الـ server المخصصة
+  // رسالة الـ server المخصصة
 
   const GenericErrorWidget({
     super.key,
@@ -20,6 +20,8 @@ class GenericErrorWidget extends BaseErrorWidget {
          onSecondaryAction: onGoBack,
          secondaryActionText: '',
        );
+  final ApiErrorType errorType;
+  final String? serverMessage;
 
   /// Check if message contains technical details that should be hidden
   bool _isTechnicalMessage(String? message) {
@@ -55,7 +57,7 @@ class GenericErrorWidget extends BaseErrorWidget {
     ];
 
     final lowerMessage = message.toLowerCase();
-    return technicalPatterns.any((pattern) => lowerMessage.contains(pattern));
+    return technicalPatterns.any(lowerMessage.contains);
   }
 
   @override
@@ -125,7 +127,9 @@ class GenericErrorWidget extends BaseErrorWidget {
       icon: iconData,
       onRetry: onRetry,
       onSecondaryAction: onSecondaryAction,
-      secondaryActionText: onSecondaryAction == null ? null : l10n?.go_back ?? '',
+      secondaryActionText: onSecondaryAction == null
+          ? null
+          : l10n?.go_back ?? '',
       primaryColor: color,
     );
   }

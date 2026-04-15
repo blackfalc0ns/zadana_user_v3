@@ -47,7 +47,7 @@ class CustomFilterChip extends StatelessWidget {
             color: isSelected
                 ? (selectedColor ?? color.primary)
                 : (borderColor ?? color.outline),
-            width: .5, 
+            width: .5,
           ),
         ),
         child: Row(

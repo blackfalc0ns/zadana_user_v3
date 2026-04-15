@@ -110,7 +110,6 @@ class _FilterOptionTile extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: getSemiBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size12,
                   color: isSelected ? color.onPrimary : color.onSurface,
                 ),
               ),
@@ -121,4 +120,3 @@ class _FilterOptionTile extends StatelessWidget {
     );
   }
 }
-

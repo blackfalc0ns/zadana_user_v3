@@ -5,6 +5,17 @@ part 'home_categories_response_model_dto.g.dart';
 
 @JsonSerializable()
 class HomeCategoriesResponseModelDto {
+  const HomeCategoriesResponseModelDto({
+    this.key,
+    this.title,
+    this.isActive,
+    this.theme,
+    this.itemsCount,
+    this.items,
+  });
+
+  factory HomeCategoriesResponseModelDto.fromJson(Map<String, dynamic> json) =>
+      _$HomeCategoriesResponseModelDtoFromJson(json);
   final String? key;
   final String? title;
 
@@ -17,18 +28,6 @@ class HomeCategoriesResponseModelDto {
   final int? itemsCount;
 
   final List<HomeCategoryItemModelDto>? items;
-
-  const HomeCategoriesResponseModelDto({
-    this.key,
-    this.title,
-    this.isActive,
-    this.theme,
-    this.itemsCount,
-    this.items,
-  });
-
-  factory HomeCategoriesResponseModelDto.fromJson(Map<String, dynamic> json) =>
-      _$HomeCategoriesResponseModelDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$HomeCategoriesResponseModelDtoToJson(this);
 }

@@ -9,8 +9,8 @@ import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/manager/delivery_otp_event.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/manager/delivery_otp_state.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/manager/delivery_otp_view_model.dart';
-import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_otp_input_field.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_otp_header.dart';
+import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_otp_input_field.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/delivery_otp_resend_button.dart';
 
 class DeliveryOtpForm extends StatefulWidget {
@@ -28,7 +28,10 @@ class DeliveryOtpForm extends StatefulWidget {
 }
 
 class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
-  final List<TextEditingController> _controllers = List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
 
   @override
@@ -38,13 +41,10 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
     for (int i = 0; i < 4; i++) {
       _focusNodes[i].addListener(() => _handleFocusChange(i));
     }
-    
+
     Future.microtask(() {
       context.read<DeliveryOtpViewModel>().doIntent(
-        SendOtpEvent(
-          orderId: widget.orderId,
-          phoneNumber: widget.phoneNumber,
-        ),
+        SendOtpEvent(orderId: widget.orderId, phoneNumber: widget.phoneNumber),
       );
     });
   }
@@ -76,9 +76,9 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
   void _handleFocusChange(int index) {
     if (_focusNodes[index].hasFocus && _controllers[index].text.isEmpty) {
       _focusNodes[index].onKeyEvent = (node, event) {
-        if (event is KeyDownEvent && 
+        if (event is KeyDownEvent &&
             event.logicalKey == LogicalKeyboardKey.backspace &&
-            index > 0 && 
+            index > 0 &&
             _controllers[index].text.isEmpty) {
           _focusNodes[index - 1].requestFocus();
           return KeyEventResult.handled;
@@ -103,10 +103,7 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
     }
 
     context.read<DeliveryOtpViewModel>().doIntent(
-      VerifyOtpEvent(
-        orderId: widget.orderId,
-        otpCode: _otpCode,
-      ),
+      VerifyOtpEvent(orderId: widget.orderId, otpCode: _otpCode),
     );
   }
 
@@ -131,7 +128,8 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
             _buildOtpRow(),
             const SizedBox(height: Spacing.md),
             if (state.errorMessage != null) _buildErrorMessage(state, color),
-            if (state.remainingAttempts < 3) _buildRemainingAttempts(state, locale, color),
+            if (state.remainingAttempts < 3)
+              _buildRemainingAttempts(state, locale, color),
             const SizedBox(height: Spacing.sm),
             AppButton(
               text: locale.delivery_otp_verify_button,
@@ -188,7 +186,11 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
     );
   }
 
-  Widget _buildRemainingAttempts(DeliveryOtpState state, AppLocalizations locale, ColorScheme color) {
+  Widget _buildRemainingAttempts(
+    DeliveryOtpState state,
+    AppLocalizations locale,
+    ColorScheme color,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
       child: Text(
@@ -202,4 +204,3 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
     );
   }
 }
-

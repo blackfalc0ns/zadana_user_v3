@@ -93,7 +93,9 @@ class _EmptyStateHint extends StatelessWidget {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller!,
       builder: (context, value, _) {
-        return value.text.isEmpty ? const AnimatedSearchHint() : const SizedBox.shrink();
+        return value.text.isEmpty
+            ? const AnimatedSearchHint()
+            : const SizedBox.shrink();
       },
     );
   }

@@ -139,7 +139,8 @@ class _BrandsLoadingSection extends StatelessWidget {
             onActionTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => BrandsListingPage(title: locale.section_brands),
+                  builder: (_) =>
+                      BrandsListingPage(title: locale.section_brands),
                 ),
               );
             },
@@ -195,4 +196,3 @@ class _BrandsGridSkeleton extends StatelessWidget {
     );
   }
 }
-

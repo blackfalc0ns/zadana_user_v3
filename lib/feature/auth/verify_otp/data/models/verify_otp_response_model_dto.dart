@@ -9,11 +9,6 @@ part 'verify_otp_response_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class VerifyOtpResponseModelDto {
-  final TokensModelVerifyDto? tokens;
-  final UserModelVerifyDto? user;
-  final bool? isVerified;
-  final String? message;
-
   const VerifyOtpResponseModelDto({
     this.tokens,
     this.user,
@@ -23,6 +18,10 @@ class VerifyOtpResponseModelDto {
 
   factory VerifyOtpResponseModelDto.fromJson(Map<String, dynamic> json) =>
       _$VerifyOtpResponseModelDtoFromJson(json);
+  final TokensModelVerifyDto? tokens;
+  final UserModelVerifyDto? user;
+  final bool? isVerified;
+  final String? message;
 
   Map<String, dynamic> toJson() => _$VerifyOtpResponseModelDtoToJson(this);
 

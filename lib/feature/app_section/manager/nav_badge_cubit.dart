@@ -26,21 +26,14 @@ class NavBadgeCubit extends Cubit<NavBadgeState> {
   final CartCountSyncService _cartCountSyncService;
 
   Future<void> loadCounts() async {
-    await Future.wait([
-      _loadCartCount(),
-      _loadFavoritesCount(),
-    ]);
+    await Future.wait([_loadCartCount(), _loadFavoritesCount()]);
   }
 
   Future<void> _loadCartCount() async {
     final result = await _getCartUseCase.call();
     switch (result) {
       case ApiSuccessResult():
-        emit(
-          state.copyWith(
-            cartCount: result.data.summary.totalQuantity,
-          ),
-        );
+        emit(state.copyWith(cartCount: result.data.summary.totalQuantity));
       case ApiErrorResult():
         // Keep the current count on failure.
         break;
@@ -51,11 +44,7 @@ class NavBadgeCubit extends Cubit<NavBadgeState> {
     final result = await _favoritesRepository.getFavorites();
     switch (result) {
       case ApiSuccessResult<FavoritesResponseEntity>():
-        emit(
-          state.copyWith(
-            favoritesCount: result.data.itemsCount,
-          ),
-        );
+        emit(state.copyWith(favoritesCount: result.data.itemsCount));
       case ApiErrorResult():
         break;
     }
@@ -83,7 +72,10 @@ class NavBadgeCubit extends Cubit<NavBadgeState> {
       return;
     }
 
-    final nextCount = math.max(0, state.cartCount + _cartCountSyncService.delta);
+    final nextCount = math.max(
+      0,
+      state.cartCount + _cartCountSyncService.delta,
+    );
     emit(state.copyWith(cartCount: nextCount));
   }
 

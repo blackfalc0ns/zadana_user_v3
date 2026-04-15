@@ -90,12 +90,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     final productId = _productId;
     if (productId == null || productId.isEmpty) return;
 
-    emit(
-      state.copyWith(
-        isLoading: true,
-        clearLoadFailure: true,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, clearLoadFailure: true));
 
     developer.log(
       'Loading product details: $productId',
@@ -115,12 +110,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
           ),
         );
       case ApiErrorResult<ProductDetailsEntity>():
-        emit(
-          state.copyWith(
-            isLoading: false,
-            loadFailure: result.failure,
-          ),
-        );
+        emit(state.copyWith(isLoading: false, loadFailure: result.failure));
     }
   }
 
@@ -189,7 +179,10 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
             isAddingToCart: false,
             addToCartSuccessMessage: result.data.message.isNotEmpty
                 ? result.data.message
-                : _l10n.product_added_to_cart(state.quantity, productDetails.name),
+                : _l10n.product_added_to_cart(
+                    state.quantity,
+                    productDetails.name,
+                  ),
             clearAddToCartFailure: true,
           ),
         );

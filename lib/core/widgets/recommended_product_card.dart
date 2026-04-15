@@ -129,7 +129,6 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                       url: widget.product.imageUrl,
                       width: 48,
                       height: 48,
-                      borderRadius: Spacing.cardRadius,
                       heroTag: widget.heroTag,
                     ),
                   ),

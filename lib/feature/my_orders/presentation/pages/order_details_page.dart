@@ -121,10 +121,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.deliveryOtp,
-                      ),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, AppRoutes.deliveryOtp),
                       icon: const Icon(Icons.visibility_outlined, size: 20),
                       label: const Text(
                         'عرض رمز OTP',

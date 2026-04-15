@@ -39,30 +39,26 @@ class ProductDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProductDetailsCubit(
-        productDetailsUseCase: getIt<ProductDetailsUseCase>(),
-        addCartItemUseCase: getIt<AddCartItemUseCase>(),
-        getCartUseCase: getIt<GetCartUseCase>(),
-        guestCartSyncService: getIt<GuestCartSyncService>(),
-        languageService: getIt<LanguageService>(),
-      )..doIntent(
-        InitializeProductDetailsEvent(
-        productId: product.id,
-        activeProductId: activeProductId,
-      )),
-      child: _ProductDetailsView(
-        product: product,
-        heroTag: heroTag,
-      ),
+      create: (_) =>
+          ProductDetailsCubit(
+            productDetailsUseCase: getIt<ProductDetailsUseCase>(),
+            addCartItemUseCase: getIt<AddCartItemUseCase>(),
+            getCartUseCase: getIt<GetCartUseCase>(),
+            guestCartSyncService: getIt<GuestCartSyncService>(),
+            languageService: getIt<LanguageService>(),
+          )..doIntent(
+            InitializeProductDetailsEvent(
+              productId: product.id,
+              activeProductId: activeProductId,
+            ),
+          ),
+      child: _ProductDetailsView(product: product, heroTag: heroTag),
     );
   }
 }
 
 class _ProductDetailsView extends StatelessWidget {
-  const _ProductDetailsView({
-    required this.product,
-    this.heroTag,
-  });
+  const _ProductDetailsView({required this.product, this.heroTag});
 
   final ProductModel product;
   final String? heroTag;
@@ -117,12 +113,10 @@ class _ProductDetailsView extends StatelessWidget {
             emoji: product.emoji ?? '',
             imageUrl: imageUrl,
             quantity: state.quantity,
-            onIncrease: () => cubit.doIntent(
-              const IncreaseProductQuantityEvent(),
-            ),
-            onDecrease: () => cubit.doIntent(
-              const DecreaseProductQuantityEvent(),
-            ),
+            onIncrease: () =>
+                cubit.doIntent(const IncreaseProductQuantityEvent()),
+            onDecrease: () =>
+                cubit.doIntent(const DecreaseProductQuantityEvent()),
             descriptionTitle: l10n.product_description,
             description: productDetails.description,
             basePrice: productDetails.price,
@@ -131,9 +125,7 @@ class _ProductDetailsView extends StatelessWidget {
             vendorPrices: productDetails.vendorPrices,
             similarProducts: productDetails.similarProducts,
             onSimilarProductTap: (similarProduct) async {
-              cubit.doIntent(
-                SetActiveProductDetailsEvent(similarProduct.id),
-              );
+              cubit.doIntent(SetActiveProductDetailsEvent(similarProduct.id));
               await WidgetsBinding.instance.endOfFrame;
               if (!context.mounted) return;
 
@@ -375,11 +367,7 @@ class _DetailsShimmerState extends State<_DetailsShimmer>
             return LinearGradient(
               begin: Alignment(-2.0 + (_controller.value * 4), -0.4),
               end: Alignment(0.0 + (_controller.value * 4), 0.4),
-              colors: [
-                baseColor,
-                highlightColor,
-                baseColor,
-              ],
+              colors: [baseColor, highlightColor, baseColor],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
           },

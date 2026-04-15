@@ -8,14 +8,14 @@ class CartLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SkeletonStateWidget(
+    return const SkeletonStateWidget(
       child: Stack(
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(bottom: 170),
             child: _CartContentSkeleton(),
           ),
-          const Positioned(
+          Positioned(
             bottom: 90,
             left: 0,
             right: 0,
@@ -32,8 +32,8 @@ class _CartContentSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: const [
+    return const Column(
+      children: [
         _VendorSelectorSkeleton(),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -136,24 +136,24 @@ class _VendorPromptSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          const _Bone(width: 36, height: 36, radius: 8),
-          const SizedBox(width: 12),
+          _Bone(width: 36, height: 36, radius: 8),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 _Bone(width: 190, height: 16, radius: 999),
                 SizedBox(height: 6),
                 _Bone(width: 150, height: 12, radius: 999),
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          const _Bone(width: 24, height: 24, radius: 999),
+          SizedBox(width: 10),
+          _Bone(width: 24, height: 24, radius: 999),
         ],
       ),
     );
@@ -204,8 +204,8 @@ class _CartItemsSkeleton extends StatelessWidget {
                   const SizedBox(height: 4),
                   const _Bone(width: 132, height: 11, radius: 999),
                   const SizedBox(height: 8),
-                  Row(
-                    children: const [
+                  const Row(
+                    children: [
                       _Bone(width: 32, height: 32, radius: 6),
                       SizedBox(width: 12),
                       _Bone(width: 48, height: 32, radius: 6),
@@ -245,11 +245,11 @@ class _SelectVendorBottomSkeleton extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
+      child: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            children: const [
+            children: [
               _Bone(width: 16, height: 16, radius: 999),
               SizedBox(width: 5),
               _Bone(width: 52, height: 12, radius: 999),
@@ -257,8 +257,8 @@ class _SelectVendorBottomSkeleton extends StatelessWidget {
               _Bone(width: 138, height: 12, radius: 999),
             ],
           ),
-          const SizedBox(height: 8),
-          const _Bone(height: 36, radius: 8),
+          SizedBox(height: 8),
+          _Bone(height: 36, radius: 8),
         ],
       ),
     );

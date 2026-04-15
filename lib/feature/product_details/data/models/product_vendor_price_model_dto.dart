@@ -1,11 +1,4 @@
 class ProductVendorPriceModelDto {
-  final String? id;
-  final String? name;
-  final String? logoUrl;
-  final double? price;
-  final double? oldPrice;
-  final bool? isDiscounted;
-
   const ProductVendorPriceModelDto({
     this.id,
     this.name,
@@ -25,4 +18,10 @@ class ProductVendorPriceModelDto {
       isDiscounted: json['is_discounted'] as bool?,
     );
   }
+  final String? id;
+  final String? name;
+  final String? logoUrl;
+  final double? price;
+  final double? oldPrice;
+  final bool? isDiscounted;
 }

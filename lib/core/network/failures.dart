@@ -1,24 +1,15 @@
 import 'package:dio/dio.dart';
 
 class Failure {
+  const Failure({required this.errorMessage, this.code = 'unknown'});
   final String errorMessage;
   final String code;
-
-  const Failure({
-    required this.errorMessage,
-    this.code = 'unknown',
-  });
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure({
-    required super.errorMessage,
-    super.code,
-  });
+  const ServerFailure({required super.errorMessage, super.code});
 
-  factory ServerFailure.fromDioError({
-    required DioException dioException,
-  }) {
+  factory ServerFailure.fromDioError({required DioException dioException}) {
     switch (dioException.type) {
       case DioExceptionType.connectionTimeout:
         return const ServerFailure(
@@ -40,8 +31,7 @@ class ServerFailure extends Failure {
 
       case DioExceptionType.badCertificate:
         return const ServerFailure(
-          errorMessage:
-              'Connection failed because of an invalid certificate.',
+          errorMessage: 'Connection failed because of an invalid certificate.',
           code: 'error_bad_certificate',
         );
 

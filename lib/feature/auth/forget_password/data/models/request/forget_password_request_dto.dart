@@ -4,17 +4,11 @@ part 'forget_password_request_dto.g.dart';
 
 @JsonSerializable()
 class ForgetPasswordRequestDto {
+  ForgetPasswordRequestDto({required this.identifier});
+
+  factory ForgetPasswordRequestDto.fromJson(Map<String, dynamic> json) =>
+      _$ForgetPasswordRequestDtoFromJson(json);
   final String identifier;
 
-  ForgetPasswordRequestDto({
-    required this.identifier,
-  });
-
-  factory ForgetPasswordRequestDto.fromJson(
-    Map<String, dynamic> json,
-  ) =>
-      _$ForgetPasswordRequestDtoFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      _$ForgetPasswordRequestDtoToJson(this);
+  Map<String, dynamic> toJson() => _$ForgetPasswordRequestDtoToJson(this);
 }

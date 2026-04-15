@@ -12,10 +12,9 @@ import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 
 class SignUpForm extends StatefulWidget {
+  const SignUpForm({super.key, this.locationEntity, this.onEmailChanged});
   final LocationEntity? locationEntity;
   final Function(String)? onEmailChanged;
-
-  const SignUpForm({super.key, this.locationEntity, this.onEmailChanged});
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();

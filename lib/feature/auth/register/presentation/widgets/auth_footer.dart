@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -30,11 +29,9 @@ class AuthFooter extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.72),
+              color: color.surfaceContainerLowest.withValues(alpha: 0.84),
               borderRadius: BorderRadius.circular(100),
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.08),
-              ),
+              border: Border.all(color: color.primary.withValues(alpha: 0.10)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -81,4 +78,3 @@ class AuthFooter extends StatelessWidget {
     );
   }
 }
-

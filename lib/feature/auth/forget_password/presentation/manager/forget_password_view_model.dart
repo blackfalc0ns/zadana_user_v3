@@ -11,9 +11,8 @@ import 'package:zadana_user_v3/feature/auth/forget_password/presentation/manager
 /// Handles business logic using intent/event pattern
 @injectable
 class ForgetPasswordViewModel extends Cubit<ForgetPasswordState> {
-  ForgetPasswordViewModel(
-    this._forgetPasswordUseCase,
-  ) : super(const ForgetPasswordState());
+  ForgetPasswordViewModel(this._forgetPasswordUseCase)
+    : super(const ForgetPasswordState());
 
   final ForgetPasswordUseCase _forgetPasswordUseCase;
 
@@ -27,48 +26,37 @@ class ForgetPasswordViewModel extends Cubit<ForgetPasswordState> {
   }
 
   /// Submit forgot password request
-  Future<void> _submitForgotPassword(
-    ForgetPasswordSubmitEvent event,
-  ) async {
-    emit(state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-      failure: null,
-    ));
+  Future<void> _submitForgotPassword(ForgetPasswordSubmitEvent event) async {
+    emit(state.copyWith(isLoading: true));
 
     developer.log(
       'Submitting forgot password: ${event.requestEntity.identifier}',
       name: 'ForgotPasswordViewModel',
     );
 
-    final result = await _forgetPasswordUseCase.call(
-      event.requestEntity,
-    );
+    final result = await _forgetPasswordUseCase.call(event.requestEntity);
 
     switch (result) {
       case ApiSuccessResult():
-        emit(state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          responseEntity: result.data,
-          failure: null,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            responseEntity: result.data,
+          ),
+        );
       case ApiErrorResult():
-        emit(state.copyWith(
-          isLoading: false,
-          errorMessage: result.failure.errorMessage,
-          failure: result.failure,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: result.failure.errorMessage,
+            failure: result.failure,
+          ),
+        );
     }
   }
 
   void clearFeedback() {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isSuccess: false));
   }
 }

@@ -6,18 +6,18 @@ abstract class LocationEvent {
 }
 
 class SearchLocationQueryChangedEvent extends LocationEvent {
-  final String query;
   const SearchLocationQueryChangedEvent(this.query);
+  final String query;
 }
 
 class SearchLocationSubmitEvent extends LocationEvent {
-  final String query;
   const SearchLocationSubmitEvent(this.query);
+  final String query;
 }
 
 class SelectSearchedLocationEvent extends LocationEvent {
-  final LocationSearchResultEntity location;
   const SelectSearchedLocationEvent(this.location);
+  final LocationSearchResultEntity location;
 }
 
 class GetCurrentLocationEvent extends LocationEvent {
@@ -25,58 +25,57 @@ class GetCurrentLocationEvent extends LocationEvent {
 }
 
 class GetAddressFromCoordinatesEvent extends LocationEvent {
-  final double latitude;
-  final double longitude;
-
   const GetAddressFromCoordinatesEvent({
     required this.latitude,
     required this.longitude,
   });
+  final double latitude;
+  final double longitude;
 }
 
 class SetSelectedLocationEvent extends LocationEvent {
-  final LocationEntity location;
   const SetSelectedLocationEvent(this.location);
+  final LocationEntity location;
 }
 
 class SaveSelectedAddressEvent extends LocationEvent {
-  final LocationEntity location;
   const SaveSelectedAddressEvent(this.location);
+  final LocationEntity location;
 }
 
 class UpdateManualAddressEvent extends LocationEvent {
-  final String addressLine;
   const UpdateManualAddressEvent(this.addressLine);
+  final String addressLine;
 }
 
 class UpdateCityEvent extends LocationEvent {
-  final String city;
   const UpdateCityEvent(this.city);
+  final String city;
 }
 
 class UpdateAreaEvent extends LocationEvent {
-  final String area;
   const UpdateAreaEvent(this.area);
+  final String area;
 }
 
 class UpdateBuildingNoEvent extends LocationEvent {
-  final String buildingNo;
   const UpdateBuildingNoEvent(this.buildingNo);
+  final String buildingNo;
 }
 
 class UpdateFloorNoEvent extends LocationEvent {
-  final String floorNo;
   const UpdateFloorNoEvent(this.floorNo);
+  final String floorNo;
 }
 
 class UpdateApartmentNoEvent extends LocationEvent {
-  final String apartmentNo;
   const UpdateApartmentNoEvent(this.apartmentNo);
+  final String apartmentNo;
 }
 
 class UpdateLabelEvent extends LocationEvent {
-  final String label;
   const UpdateLabelEvent(this.label);
+  final String label;
 }
 
 class ClearLocationErrorEvent extends LocationEvent {

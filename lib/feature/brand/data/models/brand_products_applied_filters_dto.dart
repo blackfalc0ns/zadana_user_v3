@@ -1,11 +1,4 @@
 class BrandProductsAppliedFiltersDto {
-  final String? categoryId;
-  final String? subcategoryId;
-  final String? unitId;
-  final double? minPrice;
-  final double? maxPrice;
-  final String? sort;
-
   const BrandProductsAppliedFiltersDto({
     this.categoryId,
     this.subcategoryId,
@@ -25,4 +18,10 @@ class BrandProductsAppliedFiltersDto {
       sort: json['sort'] as String?,
     );
   }
+  final String? categoryId;
+  final String? subcategoryId;
+  final String? unitId;
+  final double? minPrice;
+  final double? maxPrice;
+  final String? sort;
 }

@@ -5,21 +5,16 @@ part 'reverse_location_dto.g.dart';
 
 @JsonSerializable()
 class ReverseLocationDto {
+  ReverseLocationDto({this.address, this.displayName, this.lat, this.lon});
+
+  factory ReverseLocationDto.fromJson(Map<String, dynamic> json) =>
+      _$ReverseLocationDtoFromJson(json);
   @JsonKey(name: 'display_name')
   final String? displayName;
 
   final String? lat;
   final String? lon;
-final ReverseAddressDto? address;
-  ReverseLocationDto({
-    this.address,
-    this.displayName,
-    this.lat,
-    this.lon,
-  });
-
-  factory ReverseLocationDto.fromJson(Map<String, dynamic> json) =>
-      _$ReverseLocationDtoFromJson(json);
+  final ReverseAddressDto? address;
 
   Map<String, dynamic> toJson() => _$ReverseLocationDtoToJson(this);
 }

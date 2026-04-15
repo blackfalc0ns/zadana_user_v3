@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 
 class LocationBottomSheet extends StatelessWidget {
-  final LocationEntity? location;
-  final bool isLoading;
-  final VoidCallback onConfirm;
-
   const LocationBottomSheet({
     super.key,
     required this.location,
     required this.isLoading,
     required this.onConfirm,
   });
+  final LocationEntity? location;
+  final bool isLoading;
+  final VoidCallback onConfirm;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final color = context.colorScheme;
 
     return Container(
       padding: EdgeInsets.only(
@@ -29,13 +28,13 @@ class LocationBottomSheet extends StatelessWidget {
         bottom: MediaQuery.of(context).padding.bottom + Spacing.base,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: color.surface,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(Spacing.bottomSheetRadius),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow,
+            color: color.shadow.withValues(alpha: 0.12),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -49,7 +48,7 @@ class LocationBottomSheet extends StatelessWidget {
             height: 4,
             margin: const EdgeInsets.only(bottom: Spacing.base),
             decoration: BoxDecoration(
-              color: AppColors.divider,
+              color: color.outlineVariant,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -59,14 +58,10 @@ class LocationBottomSheet extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: color.primaryContainer.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(Spacing.cardRadius),
                 ),
-                child: const Icon(
-                  Icons.location_on,
-                  color: AppColors.primary,
-                  size: 22,
-                ),
+                child: Icon(Icons.location_on, color: color.primary, size: 22),
               ),
               const SizedBox(width: Spacing.md),
               Expanded(
@@ -77,12 +72,16 @@ class LocationBottomSheet extends StatelessWidget {
                       location?.addressLine ?? l10n.location_map_drag_hint,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.labelMedium,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: color.onSurface,
+                      ),
                     ),
                     if (location != null)
                       Text(
                         '${location!.latitude.toStringAsFixed(4)}, ${location!.longitude.toStringAsFixed(4)}',
-                        style: AppTextStyles.bodySmall,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: color.onSurfaceVariant,
+                        ),
                       ),
                   ],
                 ),
@@ -95,12 +94,12 @@ class LocationBottomSheet extends StatelessWidget {
             child: ElevatedButton(
               onPressed: isLoading ? null : onConfirm,
               child: isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.textOnPrimary,
+                        color: color.onPrimary,
                       ),
                     )
                   : Text(l10n.location_map_confirm),

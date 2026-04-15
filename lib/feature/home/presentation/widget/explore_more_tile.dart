@@ -4,8 +4,8 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
-import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 
 class ExploreMoreTile extends StatefulWidget {
@@ -121,7 +121,6 @@ class _ExploreMoreTileState extends State<ExploreMoreTile> {
               url: widget.product.imageUrl,
               width: 72,
               height: 72,
-              borderRadius: Spacing.cardRadius,
               heroTag: widget.heroTag,
             ),
 

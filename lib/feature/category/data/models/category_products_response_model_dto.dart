@@ -2,12 +2,6 @@ import 'package:zadana_user_v3/feature/category/data/models/category_products_ap
 import 'package:zadana_user_v3/feature/category/data/models/category_products_item_model_dto.dart';
 
 class CategoryProductsResponseModelDto {
-  final CategoryProductsAppliedFiltersDto? appliedFilters;
-  final int? total;
-  final int? page;
-  final int? perPage;
-  final List<CategoryProductsItemModelDto>? items;
-
   const CategoryProductsResponseModelDto({
     this.appliedFilters,
     this.total,
@@ -35,4 +29,9 @@ class CategoryProductsResponseModelDto {
           .toList(),
     );
   }
+  final CategoryProductsAppliedFiltersDto? appliedFilters;
+  final int? total;
+  final int? page;
+  final int? perPage;
+  final List<CategoryProductsItemModelDto>? items;
 }

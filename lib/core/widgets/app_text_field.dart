@@ -8,28 +8,6 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 /// Reusable text field with consistent styling.
 /// ─────────────────────────────────────────────────────────────
 class AppTextField extends StatelessWidget {
-  final TextEditingController? controller;
-  final String? label;
-  final String? hint;
-  final String? errorText;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final bool obscureText;
-  final bool readOnly;
-  final bool enabled;
-  final int maxLines;
-  final int? maxLength;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final List<TextInputFormatter>? inputFormatters;
-  final String? Function(String?)? validator;
-  final void Function(String)? onChanged;
-  final void Function(String)? onSubmitted;
-  final void Function()? onTap;
-  final FocusNode? focusNode;
-  final EdgeInsetsGeometry? contentPadding;
-  final bool autofocus;
-
   const AppTextField({
     super.key,
     this.controller,
@@ -54,6 +32,27 @@ class AppTextField extends StatelessWidget {
     this.contentPadding,
     this.autofocus = false,
   });
+  final TextEditingController? controller;
+  final String? label;
+  final String? hint;
+  final String? errorText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool obscureText;
+  final bool readOnly;
+  final bool enabled;
+  final int maxLines;
+  final int? maxLength;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
+  final void Function()? onTap;
+  final FocusNode? focusNode;
+  final EdgeInsetsGeometry? contentPadding;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {

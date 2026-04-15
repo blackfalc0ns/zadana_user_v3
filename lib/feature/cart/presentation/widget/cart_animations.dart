@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CartAnimations {
-  late AnimationController _priceAnimationController;
-  late Animation<Offset> _priceSlideAnimation;
-  late Animation<double> _priceFadeAnimation;
-
   CartAnimations(TickerProvider vsync) {
     _setupAnimations(vsync);
   }
+  late AnimationController _priceAnimationController;
+  late Animation<Offset> _priceSlideAnimation;
+  late Animation<double> _priceFadeAnimation;
 
   void _setupAnimations(TickerProvider vsync) {
     _priceAnimationController = AnimationController(

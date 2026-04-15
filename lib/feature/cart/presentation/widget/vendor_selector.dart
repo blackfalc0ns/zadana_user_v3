@@ -140,4 +140,3 @@ class _VendorChip extends StatelessWidget {
     );
   }
 }
-

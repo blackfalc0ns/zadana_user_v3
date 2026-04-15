@@ -5,14 +5,13 @@ import '../utils/constants.dart';
 
 @injectable
 class TokenService {
-  final FlutterSecureStorage _prefs;
-  final SharedPreferences _sharedPreferences;
-
   TokenService({
     required FlutterSecureStorage prefs,
     required SharedPreferences sharedPreferences,
   }) : _prefs = prefs,
        _sharedPreferences = sharedPreferences;
+  final FlutterSecureStorage _prefs;
+  final SharedPreferences _sharedPreferences;
   // ---------------- ACCESS TOKEN ----------------
 
   bool get isAccessTokenSaved =>
@@ -33,10 +32,9 @@ class TokenService {
     await _prefs.delete(key: AppConstants.accessToken);
   }
 
-
   // ---------------- REFRESH TOKEN ----------------
 
-   bool get isRefreshTokenSaved =>
+  bool get isRefreshTokenSaved =>
       _sharedPreferences.getBool(AppConstants.isRefreshTokenSaved) ?? false;
 
   Future<void> saveRefreshToken(String? token) async {

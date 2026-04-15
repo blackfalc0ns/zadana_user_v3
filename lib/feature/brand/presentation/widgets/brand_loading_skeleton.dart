@@ -14,7 +14,6 @@ class BrandLoadingSkeleton extends StatelessWidget {
           builder: (context, constraints) {
             final layout = ProductGridLayout.resolve(
               constraints.maxWidth,
-              horizontalPadding: Spacing.md * 2,
               crossAxisSpacing: Spacing.xs,
             );
 

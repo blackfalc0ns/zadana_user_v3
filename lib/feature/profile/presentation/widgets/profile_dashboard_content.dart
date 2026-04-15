@@ -228,9 +228,9 @@ class _GuestProfileHeader extends StatelessWidget {
         Spacing.base,
         Spacing.xl,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: AppColors.primarygradient,
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(34)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(34)),
       ),
       child: Column(
         children: [

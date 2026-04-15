@@ -22,12 +22,8 @@ class LocationAccuracyDialog extends StatelessWidget {
     final color = context.colorScheme;
 
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: Spacing.xl,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Column(

@@ -59,9 +59,7 @@ class _PaymentScreenState extends State<PaymentScreen>
                 ? l10n.processing
                 : '${l10n.checkout} - 110.00 ${l10n.sar}',
             isLoading: isLoading,
-            onPressed: () {
-              handlePlaceOrder();
-            },
+            onPressed: handlePlaceOrder,
           ),
         ],
       ),

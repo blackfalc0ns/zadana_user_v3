@@ -6,9 +6,6 @@ sealed class VerifyOtpEvent {}
 
 /// Event to submit verify OTP form
 class VerifyOtpSubmitEvent extends VerifyOtpEvent {
+  VerifyOtpSubmitEvent({required this.requestEntity});
   final VerifyOtpRequestEntity requestEntity;
-
-  VerifyOtpSubmitEvent({
-    required this.requestEntity,
-  });
 }

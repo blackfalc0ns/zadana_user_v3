@@ -23,7 +23,7 @@ mixin PaymentOrderMixin<T extends StatefulWidget> on State<T> {
 
   void showOrderSuccess() {
     HapticFeedback.heavyImpact();
-    
+
     // Navigate to payment success screen
     Navigator.pushReplacementNamed(
       context,

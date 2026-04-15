@@ -43,7 +43,9 @@ class CustomerAddressesRepositoryImpl implements CustomerAddressesRepository {
   }
 
   @override
-  Future<ApiResult<String>> setCustomerAddressAsDefault(String addressId) async {
+  Future<ApiResult<String>> setCustomerAddressAsDefault(
+    String addressId,
+  ) async {
     return safeApiCall(() async {
       await _remoteDataSource.setCustomerAddressAsDefault(addressId);
       return 'تم تعيين العنوان كافتراضي بنجاح';

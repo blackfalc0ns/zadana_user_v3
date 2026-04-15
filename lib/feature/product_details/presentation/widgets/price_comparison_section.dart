@@ -95,7 +95,6 @@ class PriceComparisonSection extends StatelessWidget {
                         ? originalPrice
                         : null,
                     storeImage: store['image'] as String?,
-                  
                   ),
                 );
               },

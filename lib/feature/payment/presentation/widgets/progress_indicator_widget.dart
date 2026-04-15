@@ -5,9 +5,8 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 class ProgressIndicatorWidget extends StatelessWidget {
-  final List<ProgressStep> steps;
-
   const ProgressIndicatorWidget({super.key, required this.steps});
+  final List<ProgressStep> steps;
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +20,7 @@ class ProgressIndicatorWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(
-          color: colors.primary.withValues(alpha: 0.08),
-          width: 1,
-        ),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.08)),
       ),
       child: Row(
         children: List.generate(steps.length * 2 - 1, (index) {
@@ -42,21 +38,19 @@ class ProgressIndicatorWidget extends StatelessWidget {
 }
 
 class ProgressStep {
-  final String title;
-  final bool isActive;
-  final bool isCompleted;
-
   const ProgressStep({
     required this.title,
     required this.isActive,
     required this.isCompleted,
   });
+  final String title;
+  final bool isActive;
+  final bool isCompleted;
 }
 
 class _ProgressStepWidget extends StatelessWidget {
-  final ProgressStep step;
-
   const _ProgressStepWidget({required this.step});
+  final ProgressStep step;
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +109,8 @@ class _ProgressStepWidget extends StatelessWidget {
 }
 
 class _ProgressLineWidget extends StatelessWidget {
-  final bool isActive;
-
   const _ProgressLineWidget({required this.isActive});
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -135,4 +128,3 @@ class _ProgressLineWidget extends StatelessWidget {
     );
   }
 }
-

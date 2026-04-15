@@ -8,9 +8,8 @@ import 'package:zadana_user_v3/feature/location/domain/repo/location_repo.dart';
 
 @Injectable(as: LocationRepository)
 class LocationRepositoryImpl implements LocationRepository {
-  final LocationDataSource dataSource;
-
   LocationRepositoryImpl(this.dataSource);
+  final LocationDataSource dataSource;
 
   @override
   Future<ApiResult<List<LocationSearchResultEntity>>> searchLocations(

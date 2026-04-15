@@ -5,6 +5,17 @@ part 'home_banner_response_model_dto.g.dart';
 
 @JsonSerializable()
 class HomeBannerResponseModelDto {
+  const HomeBannerResponseModelDto({
+    this.key,
+    this.title,
+    this.isActive,
+    this.theme,
+    this.itemsCount,
+    this.items,
+  });
+
+  factory HomeBannerResponseModelDto.fromJson(Map<String, dynamic> json) =>
+      _$HomeBannerResponseModelDtoFromJson(json);
   final String? key;
   final String? title;
 
@@ -17,18 +28,6 @@ class HomeBannerResponseModelDto {
   final int? itemsCount;
 
   final List<HomeBannerItemModelDto>? items;
-
-  const HomeBannerResponseModelDto({
-    this.key,
-    this.title,
-    this.isActive,
-    this.theme,
-    this.itemsCount,
-    this.items,
-  });
-
-  factory HomeBannerResponseModelDto.fromJson(Map<String, dynamic> json) =>
-      _$HomeBannerResponseModelDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$HomeBannerResponseModelDtoToJson(this);
 }

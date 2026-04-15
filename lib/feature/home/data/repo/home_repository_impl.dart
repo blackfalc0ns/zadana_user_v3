@@ -9,15 +9,14 @@ import 'package:zadana_user_v3/feature/home/domain/entities/home_categories_enti
 import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_recommended_entity.dart';
-import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_response_entity.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/home_special_offers_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/repo/home_repository.dart';
 
 @Injectable(as: HomeRepository)
 class HomeRepositoryImpl implements HomeRepository {
-  final HomeRemoteDataSource _remoteDataSource;
-
   const HomeRepositoryImpl(this._remoteDataSource);
+  final HomeRemoteDataSource _remoteDataSource;
 
   @override
   Future<ApiResult<HomeAppBarEntity>> getHomeAppBar() async {
@@ -84,9 +83,7 @@ class HomeRepositoryImpl implements HomeRepository {
     int? take,
   }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getHomeSpecialOffers(
-        take: take,
-      );
+      final response = await _remoteDataSource.getHomeSpecialOffers(take: take);
       return response.toEntity();
     });
   }

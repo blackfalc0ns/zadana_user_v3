@@ -6,15 +6,6 @@ import 'package:zadana_user_v3/feature/category/data/models/category_filter_sort
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 
 class CategoryFiltersResponseModelDto {
-  final CategoryFilterOptionDto? category;
-  final List<CategorySubcategoryItemDto>? subcategories;
-  final List<CategoryFilterOptionDto>? productTypes;
-  final List<CategoryFilterPartItemDto>? parts;
-  final List<CategoryFilterOptionDto>? quantities;
-  final List<CategoryFilterBrandItemDto>? brands;
-  final CategoryFilterPriceRangeDto? priceRange;
-  final List<CategoryFilterSortOptionDto>? sortOptions;
-
   const CategoryFiltersResponseModelDto({
     this.category,
     this.subcategories,
@@ -42,9 +33,8 @@ class CategoryFiltersResponseModelDto {
           .toList(),
       productTypes: (json['product_types'] as List<dynamic>?)
           ?.map(
-            (item) => CategoryFilterOptionDto.fromJson(
-              item as Map<String, dynamic>,
-            ),
+            (item) =>
+                CategoryFilterOptionDto.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
       parts: (json['parts'] as List<dynamic>?)
@@ -56,9 +46,8 @@ class CategoryFiltersResponseModelDto {
           .toList(),
       quantities: (json['quantities'] as List<dynamic>?)
           ?.map(
-            (item) => CategoryFilterOptionDto.fromJson(
-              item as Map<String, dynamic>,
-            ),
+            (item) =>
+                CategoryFilterOptionDto.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
       brands: (json['brands'] as List<dynamic>?)
@@ -82,4 +71,12 @@ class CategoryFiltersResponseModelDto {
           .toList(),
     );
   }
+  final CategoryFilterOptionDto? category;
+  final List<CategorySubcategoryItemDto>? subcategories;
+  final List<CategoryFilterOptionDto>? productTypes;
+  final List<CategoryFilterPartItemDto>? parts;
+  final List<CategoryFilterOptionDto>? quantities;
+  final List<CategoryFilterBrandItemDto>? brands;
+  final CategoryFilterPriceRangeDto? priceRange;
+  final List<CategoryFilterSortOptionDto>? sortOptions;
 }

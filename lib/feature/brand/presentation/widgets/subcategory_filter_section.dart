@@ -60,18 +60,19 @@ class _SubcategoryFilterSectionState extends State<SubcategoryFilterSection> {
         )
         .id;
 
-    final availableSubcategories = widget.subcategories
-        .where(
-          (item) =>
-              selectedCategoryId == null ||
-              selectedCategoryId.isEmpty ||
-              item.categoryId == selectedCategoryId,
-        )
-        .map((item) => item.name?.trim() ?? '')
-        .where((item) => item.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
+    final availableSubcategories =
+        widget.subcategories
+            .where(
+              (item) =>
+                  selectedCategoryId == null ||
+                  selectedCategoryId.isEmpty ||
+                  item.categoryId == selectedCategoryId,
+            )
+            .map((item) => item.name?.trim() ?? '')
+            .where((item) => item.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
 
     if (availableSubcategories.isEmpty) {
       return const SizedBox.shrink();
@@ -97,11 +98,13 @@ class _SubcategoryFilterSectionState extends State<SubcategoryFilterSection> {
               : localizeBrandFilterLabel(context, localSelectedSubcategory!),
           onOptionTap: (subcategory) {
             final rawSubcategory = availableSubcategories.firstWhere(
-              (value) => localizeBrandFilterLabel(context, value) == subcategory,
+              (value) =>
+                  localizeBrandFilterLabel(context, value) == subcategory,
               orElse: () => subcategory,
             );
-            final newSelection =
-                localSelectedSubcategory == rawSubcategory ? null : rawSubcategory;
+            final newSelection = localSelectedSubcategory == rawSubcategory
+                ? null
+                : rawSubcategory;
             setState(() => localSelectedSubcategory = newSelection);
             widget.onSubcategoryChanged(newSelection);
           },

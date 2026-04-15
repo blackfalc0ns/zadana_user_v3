@@ -6,11 +6,6 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class OrderSuccessDialog extends StatelessWidget {
-  final String orderNumber;
-  final String estimatedTime;
-  final VoidCallback onTrackOrder;
-  final VoidCallback onBackToHome;
-
   const OrderSuccessDialog({
     super.key,
     required this.orderNumber,
@@ -18,6 +13,10 @@ class OrderSuccessDialog extends StatelessWidget {
     required this.onTrackOrder,
     required this.onBackToHome,
   });
+  final String orderNumber;
+  final String estimatedTime;
+  final VoidCallback onTrackOrder;
+  final VoidCallback onBackToHome;
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +45,9 @@ class OrderSuccessDialog extends StatelessWidget {
           const SizedBox(height: Spacing.md),
           _buildOrderInfo(l10n, colors),
           const SizedBox(height: Spacing.xl),
-          AppButton.filled(
-            text: l10n.track_order,
-            onPressed: onTrackOrder,
-          ),
+          AppButton.filled(text: l10n.track_order, onPressed: onTrackOrder),
           const SizedBox(height: Spacing.md),
-          AppButton.outlined(
-            text: l10n.back_to_home,
-            onPressed: onBackToHome,
-          ),
+          AppButton.outlined(text: l10n.back_to_home, onPressed: onBackToHome),
         ],
       ),
     );
@@ -99,9 +92,7 @@ class OrderSuccessDialog extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(Spacing.sm),
-        border: Border.all(
-          color: colors.primary.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
@@ -117,7 +108,6 @@ class OrderSuccessDialog extends StatelessWidget {
           Text(
             '${l10n.estimated_delivery}: $estimatedTime',
             style: getRegularStyle(
-              fontSize: FontSize.size12,
               fontFamily: FontConstant.cairo,
               color: colors.onSurfaceVariant,
             ),
@@ -127,4 +117,3 @@ class OrderSuccessDialog extends StatelessWidget {
     );
   }
 }
-

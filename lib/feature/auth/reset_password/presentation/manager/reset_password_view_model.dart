@@ -11,9 +11,8 @@ import 'reset_password_state.dart';
 /// Handles business logic using intent/event pattern
 @injectable
 class ResetPasswordViewModel extends Cubit<ResetPasswordState> {
-  ResetPasswordViewModel(
-    this._resetPasswordUseCase,
-  ) : super(const ResetPasswordState());
+  ResetPasswordViewModel(this._resetPasswordUseCase)
+    : super(const ResetPasswordState());
 
   final ResetPasswordUseCase _resetPasswordUseCase;
 
@@ -27,48 +26,34 @@ class ResetPasswordViewModel extends Cubit<ResetPasswordState> {
   }
 
   /// Submit reset password request
-  Future<void> _submitResetPassword(
-    ResetPasswordSubmitEvent event,
-  ) async {
-    emit(state.copyWith(
-      isLoading: true,
-      errorMessage: null,
-      failure: null,
-    ));
+  Future<void> _submitResetPassword(ResetPasswordSubmitEvent event) async {
+    emit(state.copyWith(isLoading: true));
 
-    developer.log(
-      'Submitting reset password',
-      name: 'ResetPasswordViewModel',
-    );
+    developer.log('Submitting reset password', name: 'ResetPasswordViewModel');
 
-    final result = await _resetPasswordUseCase.call(
-      event.requestEntity,
-    );
+    final result = await _resetPasswordUseCase.call(event.requestEntity);
 
     switch (result) {
       case ApiSuccessResult():
-        emit(state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          responseEntity: result.data,
-          failure: null,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            responseEntity: result.data,
+          ),
+        );
       case ApiErrorResult():
-        emit(state.copyWith(
-          isLoading: false,
-          errorMessage: result.failure.errorMessage,
-          failure: result.failure,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: result.failure.errorMessage,
+            failure: result.failure,
+          ),
+        );
     }
   }
 
   void clearFeedback() {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        isSuccess: false,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isSuccess: false));
   }
 }

@@ -50,12 +50,10 @@ class SectionHeader extends StatelessWidget {
               style: isActionBold
                   ? getBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size12,
                       color: actionColor ?? AppColors.secondary,
                     )
                   : getBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size12,
                       color: actionColor ?? AppColors.secondary,
                     ),
             ),
@@ -65,4 +63,3 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
-

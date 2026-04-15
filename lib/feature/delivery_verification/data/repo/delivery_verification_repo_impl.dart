@@ -8,9 +8,8 @@ import '../models/delivery_otp_request_model.dart';
 /// Data layer - Repository implementation
 @Injectable(as: DeliveryVerificationRepo)
 class DeliveryVerificationRepoImpl implements DeliveryVerificationRepo {
-  final DeliveryVerificationRemoteDataSource _remoteDataSource;
-
   const DeliveryVerificationRepoImpl(this._remoteDataSource);
+  final DeliveryVerificationRemoteDataSource _remoteDataSource;
 
   @override
   Future<ApiResult<void>> sendOtp(String orderId, String phoneNumber) async {

@@ -4,33 +4,30 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_password_field.dart';
+import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
+import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/domain/entities/reset_password_request_entity.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_event.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_state.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_view_model.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_password_field.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
-import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_label.dart';
 
 class ResetPasswordForm extends StatefulWidget {
-  final String identifier;
-  final String otpCode;
-  final VoidCallback onSuccess;
-
   const ResetPasswordForm({
     super.key,
     required this.identifier,
     required this.otpCode,
     required this.onSuccess,
   });
+  final String identifier;
+  final String otpCode;
+  final VoidCallback onSuccess;
 
   @override
-  State<ResetPasswordForm> createState() =>
-      _ResetPasswordFormState();
+  State<ResetPasswordForm> createState() => _ResetPasswordFormState();
 }
 
-class _ResetPasswordFormState
-    extends State<ResetPasswordForm> {
+class _ResetPasswordFormState extends State<ResetPasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -80,8 +77,7 @@ class _ResetPasswordFormState
               AppPasswordField(
                 controller: _newPasswordController,
                 hint: locale.hint_new_password,
-                validator: (v) =>
-                    Validations.validatePassword(context, v),
+                validator: (v) => Validations.validatePassword(context, v),
               ),
               const SizedBox(height: Spacing.base),
               FieldLabel(locale.label_new_password),

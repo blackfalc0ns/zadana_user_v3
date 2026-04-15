@@ -55,12 +55,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
     final updatedItems = state.items
         .where((item) => item.id != productId)
         .toList();
-    emit(
-      state.copyWith(
-        items: updatedItems,
-        itemsCount: updatedItems.length,
-      ),
-    );
+    emit(state.copyWith(items: updatedItems, itemsCount: updatedItems.length));
   }
 
   Future<void> removeFavorite(String productId) async {
@@ -96,12 +91,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   }
 
   void clearAllLocally() {
-    emit(
-      state.copyWith(
-        items: const [],
-        itemsCount: 0,
-      ),
-    );
+    emit(state.copyWith(items: const [], itemsCount: 0));
   }
 
   Future<void> clearAllFavorites() async {

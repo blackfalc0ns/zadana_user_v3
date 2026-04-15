@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class AuthExperienceShell extends StatelessWidget {
   const AuthExperienceShell({
@@ -32,8 +32,9 @@ class AuthExperienceShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F5F5),
+      backgroundColor: color.surface,
       body: Stack(
         children: [
           const _AuthBackground(),
@@ -49,11 +50,10 @@ class AuthExperienceShell extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (showBackButton) ...[
-                    IconButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.textPrimary,
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: _AuthBackButton(
+                        onTap: () => Navigator.of(context).maybePop(),
                       ),
                     ),
                     const SizedBox(height: Spacing.xs),
@@ -85,6 +85,51 @@ class AuthExperienceShell extends StatelessWidget {
   }
 }
 
+class _AuthBackButton extends StatelessWidget {
+  const _AuthBackButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Ink(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: color.surfaceContainerLow.withValues(alpha: 0.88),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: color.outlineVariant.withValues(alpha: 0.6),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.shadow.withValues(alpha: 0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Icon(
+            isRtl
+                ? Icons.arrow_forward_ios_rounded
+                : Icons.arrow_back_ios_new_rounded,
+            size: 18,
+            color: color.onSurface,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AuthPromptText extends StatelessWidget {
   const AuthPromptText({
     super.key,
@@ -99,10 +144,11 @@ class AuthPromptText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.92),
+        color: color.surfaceContainerLowest.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(100),
       ),
       child: Wrap(
@@ -114,7 +160,7 @@ class AuthPromptText extends StatelessWidget {
             style: getRegularStyle(
               fontSize: FontSize.size14,
               fontFamily: FontConstant.cairo,
-              color: AppColors.textSecondary,
+              color: color.onSurfaceVariant,
             ),
           ),
           InkWell(
@@ -127,7 +173,7 @@ class AuthPromptText extends StatelessWidget {
                 style: getBoldStyle(
                   fontSize: FontSize.size14,
                   fontFamily: FontConstant.cairo,
-                  color: AppColors.primary,
+                  color: color.primary,
                 ),
               ),
             ),
@@ -151,22 +197,23 @@ class _HeroHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
           colors: [
-            AppColors.primary,
-            AppColors.primaryLight,
-            AppColors.primarySurface,
+            color.primary,
+            color.primary.withValues(alpha: 0.88),
+            color.primaryContainer,
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.18),
+            color: color.primary.withValues(alpha: 0.18),
             blurRadius: 24,
             offset: const Offset(0, 16),
           ),
@@ -187,7 +234,7 @@ class _HeroHeader extends StatelessWidget {
                       style: getBoldStyle(
                         fontSize: 20,
                         fontFamily: FontConstant.cairo,
-                        color: Colors.white,
+                        color: color.onPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -196,7 +243,7 @@ class _HeroHeader extends StatelessWidget {
                       style: getRegularStyle(
                         fontSize: 13,
                         fontFamily: FontConstant.cairo,
-                        color: Colors.white.withValues(alpha: 0.92),
+                        color: color.onPrimary.withValues(alpha: 0.92),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -220,6 +267,7 @@ class _HeroProduceArtwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return SizedBox(
       width: 108,
       height: 72,
@@ -236,11 +284,13 @@ class _HeroProduceArtwork extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white.withValues(alpha: 0.16),
-                    Colors.white.withValues(alpha: 0.06),
+                    color.onPrimary.withValues(alpha: 0.16),
+                    color.onPrimary.withValues(alpha: 0.06),
                   ],
                 ),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
+                border: Border.all(
+                  color: color.onPrimary.withValues(alpha: 0.10),
+                ),
               ),
             ),
           ),
@@ -251,7 +301,7 @@ class _HeroProduceArtwork extends StatelessWidget {
               width: 18,
               height: 18,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.14),
+                color: color.onPrimary.withValues(alpha: 0.14),
                 shape: BoxShape.circle,
               ),
             ),
@@ -302,6 +352,7 @@ class _ProduceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Transform.rotate(
       angle: rotation,
       child: Container(
@@ -309,12 +360,12 @@ class _ProduceBox extends StatelessWidget {
         height: size,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.22),
+          color: color.onPrimary.withValues(alpha: 0.22),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.20)),
+          border: Border.all(color: color.onPrimary.withValues(alpha: 0.20)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
+              color: color.shadow.withValues(alpha: 0.12),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -343,15 +394,16 @@ class _FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: color.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: color.shadow.withValues(alpha: 0.10),
             blurRadius: 24,
             offset: const Offset(0, 12),
           ),
@@ -373,15 +425,22 @@ class _AuthBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Stack(
       children: [
-        const Positioned.fill(
+        Positioned.fill(
           child: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFF1F5F5), Color(0xFFF7F8F8)],
+                colors: [
+                  Color.alphaBlend(
+                    color.primary.withValues(alpha: 0.05),
+                    color.surface,
+                  ),
+                  color.surface,
+                ],
               ),
             ),
           ),
@@ -393,7 +452,7 @@ class _AuthBackground extends StatelessWidget {
             width: 180,
             height: 180,
             decoration: BoxDecoration(
-              color: const Color(0x220A8597),
+              color: color.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(60),
             ),
           ),
@@ -405,7 +464,7 @@ class _AuthBackground extends StatelessWidget {
             width: 130,
             height: 130,
             decoration: BoxDecoration(
-              color: const Color(0x14FFFFFF),
+              color: color.primary.withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(40),
             ),
           ),
@@ -414,4 +473,3 @@ class _AuthBackground extends StatelessWidget {
     );
   }
 }
-

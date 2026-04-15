@@ -7,12 +7,6 @@ part 'user_model_dto.g.dart';
 /// Data layer - DTO
 @JsonSerializable()
 class UserModelDto {
-  final String id;
-  final String fullName;
-  final String email;
-  final String phone;
-  final String role;
-
   const UserModelDto({
     required this.id,
     required this.fullName,
@@ -23,6 +17,11 @@ class UserModelDto {
 
   factory UserModelDto.fromJson(Map<String, dynamic> json) =>
       _$UserModelDtoFromJson(json);
+  final String id;
+  final String fullName;
+  final String email;
+  final String phone;
+  final String role;
 
   Map<String, dynamic> toJson() => _$UserModelDtoToJson(this);
 

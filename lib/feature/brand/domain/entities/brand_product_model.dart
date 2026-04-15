@@ -1,24 +1,4 @@
 class BrandProductModel {
-  final String id;
-  final String name;
-  final String brandId;
-  final String brandName;
-  final double price;
-  final double? oldPrice;
-  final String imageUrl;
-  final String? emoji;
-  final double? rating;
-  final int? reviewCount;
-  final String? discount;
-  final bool isFavorite;
-  final bool isInStock;
-  final String? unit;
-  final String? category;
-  final String? subcategory;
-  final String? size;
-  final bool isBestSeller;
-  final DateTime? createdAt;
-
   const BrandProductModel({
     required this.id,
     required this.name,
@@ -40,6 +20,25 @@ class BrandProductModel {
     this.isBestSeller = false,
     this.createdAt,
   });
+  final String id;
+  final String name;
+  final String brandId;
+  final String brandName;
+  final double price;
+  final double? oldPrice;
+  final String imageUrl;
+  final String? emoji;
+  final double? rating;
+  final int? reviewCount;
+  final String? discount;
+  final bool isFavorite;
+  final bool isInStock;
+  final String? unit;
+  final String? category;
+  final String? subcategory;
+  final String? size;
+  final bool isBestSeller;
+  final DateTime? createdAt;
 
   bool get hasDiscount => discount != null && discount!.isNotEmpty;
 

@@ -4,14 +4,14 @@ enum ApiErrorType {
   connectionTimeout,
   receiveTimeout,
   sendTimeout,
-  
+
   // Server errors
   serverError,
   internalServerError,
   badGateway,
   serviceUnavailable,
   gatewayTimeout,
-  
+
   // Client errors
   badRequest,
   unauthorized,
@@ -30,7 +30,7 @@ enum ApiErrorType {
   rangeNotSatisfiable,
   expectationFailed,
   tooManyRequests,
-  
+
   // Other errors
   locationServiceDisabled,
   locationPermissionDenied,

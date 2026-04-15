@@ -20,7 +20,6 @@ extension BrandProductsItemModelDtoMapper on BrandProductsItemModelDto {
       discount: discount,
       isFavorite: isFavorite ?? false,
       unit: unit,
-      isInStock: true,
     );
   }
 }

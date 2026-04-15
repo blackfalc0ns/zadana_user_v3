@@ -8,24 +8,12 @@ class PaymentProgressSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return ProgressIndicatorWidget(
       steps: [
-        ProgressStep(
-          title: l10n.nav_cart,
-          isActive: true,
-          isCompleted: true,
-        ),
-        ProgressStep(
-          title: l10n.checkout,
-          isActive: true,
-          isCompleted: false,
-        ),
-        ProgressStep(
-          title: l10n.confirm,
-          isActive: false,
-          isCompleted: false,
-        ),
+        ProgressStep(title: l10n.nav_cart, isActive: true, isCompleted: true),
+        ProgressStep(title: l10n.checkout, isActive: true, isCompleted: false),
+        ProgressStep(title: l10n.confirm, isActive: false, isCompleted: false),
       ],
     );
   }

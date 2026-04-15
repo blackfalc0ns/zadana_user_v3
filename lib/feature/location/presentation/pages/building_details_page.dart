@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
@@ -132,6 +131,7 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView>
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final color = context.colorScheme;
 
     return BlocListener<LocationViewModel, LocationState>(
       listenWhen: (previous, current) =>
@@ -156,18 +156,23 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView>
                 children: [
                   Text(
                     l10n.location_building_details_heading,
-                    style: AppTextStyles.h2,
+                    style: AppTextStyles.h2.copyWith(
+                      color: color.onSurface,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: Spacing.sm),
                   Text(
                     l10n.location_building_details_subtitle,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                      color: color.onSurfaceVariant,
+                      height: 1.5,
                     ),
                   ),
                   const SizedBox(height: Spacing.lg),
                   if (state.selectedLocation != null) ...[
                     AddressFormWidgets.buildLocationDisplay(
+                      context,
                       state.selectedLocation!.addressLine,
                     ),
                     const SizedBox(height: Spacing.xl),
@@ -179,9 +184,11 @@ class _BuildingDetailsViewState extends State<_BuildingDetailsView>
                   ),
                   const SizedBox(height: Spacing.lg),
                   AddressFormWidgets.buildFieldLabel(
+                    context,
                     l10n.location_address_label_title,
                   ),
                   AddressFormWidgets.buildLabelDropdown(
+                    context: context,
                     selectedLabel: selectedLabel,
                     labelOptions: labelOptions,
                     onChanged: onLabelChanged,

@@ -4,21 +4,20 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 
 class PaymentAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final VoidCallback? onBackPressed;
-  final VoidCallback? onHelpPressed;
-
   const PaymentAppBar({
     super.key,
     required this.title,
     this.onBackPressed,
     this.onHelpPressed,
   });
+  final String title;
+  final VoidCallback? onBackPressed;
+  final VoidCallback? onHelpPressed;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return AppBar(
       title: Text(
         title,
@@ -32,17 +31,17 @@ class PaymentAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       leading: _AppBarIconButton(
         icon: Icons.arrow_back_ios,
-        onPressed: onBackPressed ?? () {
-          HapticFeedback.lightImpact();
-          Navigator.pop(context);
-        },
+        onPressed:
+            onBackPressed ??
+            () {
+              HapticFeedback.lightImpact();
+              Navigator.pop(context);
+            },
       ),
       actions: [
         _AppBarIconButton(
           icon: Icons.help_outline,
-          onPressed: onHelpPressed ?? () {
-            HapticFeedback.lightImpact();
-          },
+          onPressed: onHelpPressed ?? HapticFeedback.lightImpact,
         ),
       ],
     );
@@ -53,18 +52,14 @@ class PaymentAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _AppBarIconButton extends StatelessWidget {
+  const _AppBarIconButton({required this.icon, required this.onPressed});
   final IconData icon;
   final VoidCallback onPressed;
-
-  const _AppBarIconButton({
-    required this.icon,
-    required this.onPressed,
-  });
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     return Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -85,4 +80,3 @@ class _AppBarIconButton extends StatelessWidget {
     );
   }
 }
-

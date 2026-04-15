@@ -6,9 +6,8 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
-  final NavBarConfig navBarConfig;
-
   const CustomBottomNavBar({super.key, required this.navBarConfig});
+  final NavBarConfig navBarConfig;
 
   @override
   Widget build(BuildContext context) {

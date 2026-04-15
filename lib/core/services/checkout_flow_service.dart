@@ -1,5 +1,4 @@
 class CheckoutFlowService {
-
   factory CheckoutFlowService() => _instance;
 
   CheckoutFlowService._internal();

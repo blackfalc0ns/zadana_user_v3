@@ -60,12 +60,7 @@ class ProductSearchViewModel extends Cubit<ProductSearchState> {
     _debounce?.cancel();
     _requestSequence += 1;
 
-    emit(
-      state.copyWith(
-        query: event.query,
-        clearFailure: true,
-      ),
-    );
+    emit(state.copyWith(query: event.query, clearFailure: true));
 
     if (query.isEmpty) {
       _page = 1;
