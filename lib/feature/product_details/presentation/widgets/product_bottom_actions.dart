@@ -1,97 +1,37 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 
-class ProductBottomActions extends StatefulWidget {
-  const ProductBottomActions({super.key, this.onAddToCart, this.onGoToCart});
+class ProductBottomActions extends StatelessWidget {
+  const ProductBottomActions({
+    super.key,
+    this.onAddToCart,
+    this.onGoToCart,
+    this.cartCount = 0,
+    this.isAddingToCart = false,
+  });
 
   final VoidCallback? onAddToCart;
   final VoidCallback? onGoToCart;
-
-  @override
-  State<ProductBottomActions> createState() => _ProductBottomActionsState();
-}
-
-class _ProductBottomActionsState extends State<ProductBottomActions> {
-  late final CartCountSyncService _cartCountSyncService;
-  late final GetCartUseCase _getCartUseCase;
-  int _cartCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _cartCountSyncService = CartCountSyncService();
-    _getCartUseCase = getIt<GetCartUseCase>();
-    _cartCountSyncService.addListener(_handleCartCountChanged);
-    _loadInitialCartCount();
-  }
-
-  @override
-  void dispose() {
-    _cartCountSyncService.removeListener(_handleCartCountChanged);
-    super.dispose();
-  }
-
-  Future<void> _loadInitialCartCount() async {
-    final result = await _getCartUseCase.call();
-    if (!mounted) return;
-
-    switch (result) {
-      case ApiSuccessResult():
-        setState(() => _cartCount = result.data.summary.totalQuantity);
-      case ApiErrorResult():
-        break;
-    }
-  }
-
-  void _handleCartCountChanged() {
-    final absoluteCount = _cartCountSyncService.absoluteCount;
-    if (absoluteCount != null) {
-      if (!mounted) return;
-      setState(() => _cartCount = math.max(0, absoluteCount));
-      return;
-    }
-
-    if (_cartCountSyncService.refreshRequested) {
-      _loadInitialCartCount();
-      return;
-    }
-
-    if (!mounted) return;
-    setState(() {
-      _cartCount = math.max(0, _cartCount + _cartCountSyncService.delta);
-    });
-  }
+  final int cartCount;
+  final bool isAddingToCart;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final color = context.colorScheme;
+    final cartButtonBackground = Color.alphaBlend(
+      color.primary.withValues(alpha: 0.06),
+      color.surface,
+    );
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        Spacing.base,
-        Spacing.md,
-        Spacing.base,
-        Spacing.sm,
-      ),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.divider)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 8,
-            offset: Offset(0, -2),
-          ),
-        ],
+    return Container(padding: const EdgeInsets.symmetric(horizontal: Spacing.base), //padding: const EdgeInsets.all(Spacing.base),
+     
+      decoration: BoxDecoration(
+        color: color.surface,
+      
       ),
       child: SafeArea(
         top: false,
@@ -99,10 +39,23 @@ class _ProductBottomActionsState extends State<ProductBottomActions> {
           children: [
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: widget.onAddToCart,
-                icon: const FaIcon(FontAwesomeIcons.cartPlus, size: 17),
+                onPressed: isAddingToCart ? null : onAddToCart,
+                icon: isAddingToCart
+                    ? SizedBox(
+                        width: 17,
+                        height: 17,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: color.onPrimary,
+                        ),
+                      )
+                    : const FaIcon(FontAwesomeIcons.cartPlus, size: 17),
                 label: Text(l10n.add_to_cart_button),
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: color.primary,
+                  foregroundColor: color.onPrimary,
+                  disabledBackgroundColor: color.primary.withValues(alpha: 0.72),
+                  disabledForegroundColor: color.onPrimary,
                   minimumSize: const Size.fromHeight(46),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   textStyle: const TextStyle(
@@ -115,8 +68,11 @@ class _ProductBottomActionsState extends State<ProductBottomActions> {
             const SizedBox(width: Spacing.sm),
             Expanded(
               child: OutlinedButton(
-                onPressed: widget.onGoToCart,
+                onPressed: onGoToCart,
                 style: OutlinedButton.styleFrom(
+                  foregroundColor: color.onSurface,
+                  side: BorderSide(color: color.primary.withValues(alpha: 0.45)),
+                  backgroundColor: cartButtonBackground,
                   minimumSize: const Size.fromHeight(48),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -135,11 +91,11 @@ class _ProductBottomActionsState extends State<ProductBottomActions> {
                         alignment: Alignment.center,
                         children: [
                           const FaIcon(FontAwesomeIcons.cartShopping, size: 17),
-                          if (_cartCount > 0)
+                          if (cartCount > 0)
                             PositionedDirectional(
                               top: -3,
                               end: -1,
-                              child: _CartCountBadge(count: _cartCount),
+                              child: _CartCountBadge(count: cartCount),
                             ),
                         ],
                       ),
@@ -171,14 +127,15 @@ class _CartCountBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayCount = count > 99 ? '99+' : '$count';
+    final color = context.colorScheme;
 
     return Container(
       constraints: const BoxConstraints(minWidth: 17, minHeight: 17),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       decoration: BoxDecoration(
-        color: AppColors.error,
+        color: color.error,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.surface, width: 1.2),
+        border: Border.all(color: color.surface, width: 1.2),
       ),
       child: Center(
         child: Text(

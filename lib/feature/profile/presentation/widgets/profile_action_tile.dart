@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class ProfileActionTile extends StatelessWidget {
   const ProfileActionTile({
@@ -28,6 +28,9 @@ class ProfileActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final color = context.colorScheme;
+    final resolvedIconColor = iconColor ?? color.primary;
+    final resolvedTitleColor = titleColor ?? color.onSurface;
 
     return InkWell(
       onTap: onTap,
@@ -43,14 +46,10 @@ class ProfileActionTile extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: (iconColor ?? AppColors.primary).withValues(alpha: 0.10),
+                color: resolvedIconColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                icon,
-                color: iconColor ?? AppColors.primary,
-                size: 21,
-              ),
+              child: Icon(icon, color: resolvedIconColor, size: 21),
             ),
             const SizedBox(width: Spacing.md),
             Expanded(
@@ -61,7 +60,7 @@ class ProfileActionTile extends StatelessWidget {
                     title,
                     style: getSemiBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      color: titleColor ?? AppColors.textPrimary,
+                      color: resolvedTitleColor,
                       fontSize: 15,
                     ),
                   ),
@@ -69,7 +68,7 @@ class ProfileActionTile extends StatelessWidget {
                   Text(
                     subtitle,
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: color.onSurfaceVariant,
                       fontSize: 12,
                     ),
                   ),
@@ -82,7 +81,7 @@ class ProfileActionTile extends StatelessWidget {
                   isRtl
                       ? Icons.keyboard_arrow_left_rounded
                       : Icons.keyboard_arrow_right_rounded,
-                  color: AppColors.textSecondary,
+                  color: color.onSurfaceVariant,
                 ),
           ],
         ),

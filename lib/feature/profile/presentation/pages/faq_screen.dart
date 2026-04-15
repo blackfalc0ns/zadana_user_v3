@@ -12,45 +12,12 @@ class FaqScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final color = context.colorScheme;
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-
-    final questions = isArabic
-        ? const [
-            (
-              'كيف يمكنني تتبع طلبي؟',
-              'يمكنك تتبع طلبك من خلال صفحة طلباتي، ثم اختيار الطلب الذي تريد معرفة حالته.'
-            ),
-            (
-              'ما هي طرق الدفع المتاحة؟',
-              'نقبل الدفع ببطاقات الدفع المختلفة، والمحافظ الإلكترونية، والدفع عند الاستلام حسب المتاح.'
-            ),
-            (
-              'كيف يمكنني إرجاع منتج؟',
-              'يمكنك طلب الإرجاع من صفحة تفاصيل الطلب خلال الفترة المسموح بها وفق سياسة الإرجاع.'
-            ),
-            (
-              'كيف أتواصل مع الدعم؟',
-              'يمكنك التواصل معنا من خلال صفحة المساعدة والدعم أو عبر وسائل التواصل المتاحة داخل التطبيق.'
-            ),
-          ]
-        : const [
-            (
-              'How can I track my order?',
-              'You can track your order from the My Orders page, then open the order you want to follow.'
-            ),
-            (
-              'What payment methods are available?',
-              'We support common payment cards, e-wallets, and cash on delivery when available.'
-            ),
-            (
-              'How can I return a product?',
-              'You can request a return from the order details page within the allowed return period.'
-            ),
-            (
-              'How do I contact support?',
-              'You can contact us through the Help & Support page or the communication methods available in the app.'
-            ),
-          ];
+    final questions = [
+      (l10n.faq_track_order_question, l10n.faq_track_order_answer),
+      (l10n.faq_payment_methods_question, l10n.faq_payment_methods_answer),
+      (l10n.faq_return_product_question, l10n.faq_return_product_answer),
+      (l10n.faq_contact_support_question, l10n.faq_contact_support_answer),
+    ];
 
     return Scaffold(
       backgroundColor: color.surface,
@@ -61,10 +28,7 @@ class FaqScreen extends StatelessWidget {
         separatorBuilder: (_, _) => const SizedBox(height: Spacing.sm),
         itemBuilder: (context, index) {
           final item = questions[index];
-          return FAQItem(
-            question: item.$1,
-            answer: item.$2,
-          );
+          return FAQItem(question: item.$1, answer: item.$2);
         },
       ),
     );

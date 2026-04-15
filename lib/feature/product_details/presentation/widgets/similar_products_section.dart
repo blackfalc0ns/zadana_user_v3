@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class SimilarProductsSection extends StatelessWidget {
-  final List<ProductModel> similarProducts;
-  final Function(ProductModel)? onProductTap;
-  final Function(ProductModel)? onAddToCart;
-  final String? activeProductId;
-
   const SimilarProductsSection({
     super.key,
     required this.similarProducts,
@@ -19,21 +14,28 @@ class SimilarProductsSection extends StatelessWidget {
     this.activeProductId,
   });
 
+  final List<ProductModel> similarProducts;
+  final Function(ProductModel)? onProductTap;
+  final Future<void> Function(ProductModel)? onAddToCart;
+  final String? activeProductId;
+
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     if (similarProducts.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Container(
-      color: AppColors.background,
+      color: color.surface,
       padding: const EdgeInsets.all(Spacing.base),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'منتجات مشابهة',
-            style: AppTextStyles.h4.copyWith(color: AppColors.textPrimary),
+            'Ù…Ù†ØªØ¬Ø§Øª Ù…Ø´Ø§Ø¨Ù‡Ø©',
+            style: AppTextStyles.h4.copyWith(color: color.onSurface),
           ),
           const SizedBox(height: Spacing.sm),
           SizedBox(
@@ -52,7 +54,7 @@ class SimilarProductsSection extends StatelessWidget {
                     isDiscounted: product.isDiscounted,
                     product: product,
                     onCardTap: () => onProductTap?.call(product),
-                    onAddTap: () => onAddToCart?.call(product),
+                    onAddTap: () async => onAddToCart?.call(product),
                     showFavorite: true,
                     enableHeroAnimation: activeProductId == product.id,
                   ),

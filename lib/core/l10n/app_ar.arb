@@ -89,6 +89,27 @@
   "location_service_disabled": "خدمة الموقع مقفلة",
   "location_permission_denied": "تم رفض إذن الموقع",
   "location_permission_denied_forever": "تم رفض إذن الموقع نهائيًا",
+  "location_service_disabled_message": "خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات ثم المحاولة مرة أخرى.",
+  "location_permission_denied_message": "يحتاج التطبيق إلى إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.",
+  "location_permission_denied_forever_message": "تم رفض إذن الوصول للموقع نهائيًا. يرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع.",
+  "location_search_temporarily_unavailable": "البحث غير متاح مؤقتًا، يرجى المحاولة لاحقًا.",
+  "location_rate_limit_retry": "يرجى الانتظار قليلًا قبل المحاولة مرة أخرى.",
+  "location_start_title": "الموقع",
+  "location_start_subtitle": "حدد موقعك لنتمكن من توصيل طلباتك بسرعة ودقة",
+  "location_start_selected_subtitle": "تم اختيار الموقع: {address}",
+  "@location_start_selected_subtitle": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "location_select_on_map": "اختيار الموقع من الخريطة",
+  "location_use_current_location": "استخدام موقعي الحالي",
+  "location_enter_address_manually": "أدخل العنوان يدويًا",
+  "location_map_search_hint": "ابحث عن موقع...",
+  "location_map_drag_hint": "حرّك الخريطة لاختيار الموقع",
+  "location_map_confirm": "تأكيد الموقع",
 
   "auth_title": "ابدأ معنا الحين",
   "auth_subtitle_login": "هلا فيك! سجّل دخولك",
@@ -127,16 +148,25 @@
 
   "forget_password_title": "نسيت كلمة المرور",
   "forget_password_description": "اكتب رقم جوالك أو إيميلك وبنرسل لك كود",
+  "forget_password_hero_badge": "استعادة الوصول",
+  "forget_password_hero_subtitle": "سنساعدك على استعادة الوصول بسرعة حتى تتمكن من متابعة استخدام حسابك بسهولة.",
+  "forget_password_section_badge": "استعادة",
   "btn_send_verification_code": "إرسال الكود",
   "msg_verification_code_sent": "تم إرسال الكود",
 
   "reset_password_title": "تغيير كلمة المرور",
   "reset_password_description_prefix": "أدخل الكود اللي انرسل لـ",
+  "reset_password_otp_hero_badge": "تأكيد الرمز",
+  "reset_password_otp_hero_subtitle": "أدخل الرمز الذي أرسلناه لك حتى تتمكن من متابعة تعيين كلمة مرور جديدة بأمان.",
+  "reset_password_otp_section_badge": "رمز التحقق",
+  "reset_password_hero_badge": "تأمين الحساب",
+  "reset_password_hero_subtitle": "اختر كلمة مرور أقوى وحافظ على أمان حسابك في كل مرة تسجل فيها الدخول.",
+  "reset_password_section_badge": "أمان",
   "label_verification_code": "كود التحقق",
   "hint_verification_code": "اكتب الكود",
   "label_new_password": "كلمة مرور جديدة",
   "hint_new_password": "اكتب كلمة المرور الجديدة",
-  "btn_confirm": "تم التغير بنجاح",
+  "btn_confirm": "تاكيد",
   "msg_password_reset_success": "تم تغيير كلمة المرور",
   "verification_code_required": "اكتب كود التحقق",
   "verification_code_invalid": "الكود غلط",
@@ -165,6 +195,31 @@
   "location": "السعوديه",
 
   "search_hint": "ابحث عن منتجات أو متاجر...",
+  "search_marketplace_title": "البحث في التسوق",
+  "search_start_title": "ابدأ البحث",
+  "search_start_description": "اكتب اسم المنتج وسيتم تحميل النتائج تدريجيًا مع التصفح.",
+  "search_empty_title": "لا توجد نتائج",
+  "search_empty_description": "جرّب كلمة بحث مختلفة أو وسّع نطاق البحث.",
+  "search_in_brand_products": "ابحث في منتجات {brandName}",
+  "home_search_hint_dairy": "🧀 ابحث عن منتجات الألبان...",
+  "home_search_hint_vegetables": "🥬 ابحث عن الخضروات الطازجة...",
+  "home_search_hint_fruits": "🍎 ابحث عن الفواكه الموسمية...",
+  "home_search_hint_meat": "🍗 ابحث عن اللحوم والدواجن...",
+  "home_search_hint_drinks": "☕ ابحث عن المشروبات والقهوة...",
+  "home_search_hint_bakery": "🥐 ابحث عن المخبوزات والحلويات...",
+  "home_search_hint_spices": "🌶️ ابحث عن التوابل والبقوليات...",
+  "home_search_hint_cleaning": "🧴 ابحث عن المنظفات المنزلية...",
+  "home_search_hint_oils": "🫒 ابحث عن الزيوت والسمن...",
+  "home_search_hint_nuts": "🥜 ابحث عن المكسرات والياميش...",
+  "home_search_hint_canned": "🥫 ابحث عن المعلبات والوجبات السريعة...",
+  "home_search_hint_baby": "🍼 ابحث عن أغذية الأطفال...",
+  "@search_in_brand_products": {
+    "placeholders": {
+      "brandName": {
+        "type": "String"
+      }
+    }
+  },
 
   "banner_tag": "عرض محدود",
   "banner_title": "خضار طازجة\nخصم يوصل 40%",
@@ -177,6 +232,16 @@
   "best_selling_unavailable": "لا توجد منتجات الاكثر مبيعا متاحه",
   "section_brands": "العلامات التجارية",
   "brands_unavailable": "لا توجد علامات تجارية متاحه",
+  "brands_empty_description": "لا توجد علامات تجارية متاحة حاليًا. اسحب للتحديث أو جرّب مرة أخرى بعد قليل.",
+  "brands_listing_subtitle": "تصفّح العلامات التجارية المتاحة واختر ما يناسبك بسهولة.",
+  "brands_count_badge": "{count} علامة",
+  "@brands_count_badge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "section_featured": "مميزة",
   "featured_unavailable": "لا توجد منتجات مميزة متاحه",
   "section_recommended": "مقترح لك",
@@ -212,14 +277,28 @@
   "settings": "الإعدادات",
   "language": "اللغة",
   "notifications": "الإشعارات",
+  "notifications_empty_title": "لا توجد إشعارات",
+  "brand_product_count": "{count} منتج",
+  "@brand_product_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dark_mode": "الوضع الليلي",
   "account": "الحساب",
   "change_password": "تغيير كلمة المرور",
   "help_support": "الدعم والمساعدة",
+  "help_support_header_title": "كيف يمكننا مساعدتك؟",
+  "help_support_header_subtitle": "تواصل معنا وسنرد على استفسارك قريبًا.",
   "about_app": "عن التطبيق",
   "developer": "المطور",
   "version": "الإصدار",
   "contact_us": "تواصل معنا",
+  "contact_whatsapp": "واتساب",
+  "contact_whatsapp_subtitle": "تواصل معنا عبر واتساب",
+  "contact_phone_subtitle": "اتصل بنا مباشرة",
   "select_language": "اختر اللغة",
   "arabic": "العربية",
   "english": "English",
@@ -238,6 +317,14 @@
   "terms_conditions": "الشروط والأحكام",
   "privacy_policy": "سياسة الخصوصية",
   "faq": "الأسئلة الشائعة",
+  "faq_track_order_question": "كيف يمكنني تتبع طلبي؟",
+  "faq_track_order_answer": "يمكنك تتبع طلبك من صفحة طلباتي، ثم فتح الطلب الذي تريد متابعة حالته.",
+  "faq_payment_methods_question": "ما هي طرق الدفع المتاحة؟",
+  "faq_payment_methods_answer": "ندعم بطاقات الدفع المختلفة والمحافظ الإلكترونية والدفع عند الاستلام حسب المتاح.",
+  "faq_return_product_question": "كيف يمكنني إرجاع منتج؟",
+  "faq_return_product_answer": "يمكنك طلب الإرجاع من صفحة تفاصيل الطلب خلال فترة الإرجاع المسموح بها.",
+  "faq_contact_support_question": "كيف أتواصل مع الدعم؟",
+  "faq_contact_support_answer": "يمكنك التواصل معنا من خلال صفحة الدعم والمساعدة أو عبر وسائل التواصل المتاحة داخل التطبيق.",
 
   "logout": "تسجيل خروج",
   "logout_confirm": "متأكد تبغى تسجل خروج؟",
@@ -382,6 +469,7 @@
   "filter_category_title": "التصنيف",
   "filter_brand": "البراند",
   "filter_part": "الجزء",
+  "filter_subcategory_title": "التصنيف الفرعي",
   "filter_title": "فلترة المنتجات",
   "filter_type": "النوع",
   "fresh_products": "منتجات طازجة",
@@ -405,6 +493,18 @@
   "not_available": "غير متوفر",
   "nutrition_info": "المعلومات الغذائية",
   "price_range": "نطاق السعر",
+  "brand_filter_category_title": "الفئة",
+  "brand_filter_type_title": "النوع",
+  "brand_filter_unit_title": "الكمية",
+  "brand_filter_accessories": "الإكسسوارات",
+  "brand_filter_chargers": "الشواحن",
+  "brand_filter_phone_cases": "أغطية الهاتف",
+  "brand_filter_cables": "الكابلات",
+  "brand_filter_adapters": "المحوّلات",
+  "brand_filter_headphones": "سماعات الرأس",
+  "brand_filter_speakers": "السماعات",
+  "brand_filter_power_banks": "الباور بانك",
+  "brand_filter_screen_protectors": "حمايات الشاشة",
   "product": "منتج",
   "redirecting_to_checkout": "جاري تحويلك لإتمام الطلب...",
   "save_amount": "وفّر",
@@ -530,7 +630,15 @@
   "location_area_label": "المنطقة *",
   "location_area_hint": "مثال: المعادي",
   "location_area_required": "المنطقة مطلوبة",
-  "addresses_summary_count": "عندك {count} عنوان",
+  "addresses_summary_count": "العناوين المحفوظة",
+  "addresses_summary_count_badge": "{count}",
+  "@addresses_summary_count_badge": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
   "@addresses_summary_count": {
     "placeholders": {
       "count": {

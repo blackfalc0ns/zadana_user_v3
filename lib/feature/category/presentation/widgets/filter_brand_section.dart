@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_section.dart';
 
 class FilterBrandSection extends StatefulWidget {
@@ -43,7 +44,7 @@ class _FilterBrandSectionState extends State<FilterBrandSection> {
     }
 
     return FilterOptionSection(
-      title: 'العلامة التجارية',
+      title: context.localization.filter_brand,
       options: brands,
       selectedValue: localSelectedBrand,
       onOptionSelected: (brand) {

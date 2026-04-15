@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 
 void showDeveloperDialog(BuildContext context) {
   final color = context.colorScheme;
@@ -63,20 +63,20 @@ void showDeveloperDialog(BuildContext context) {
                   ),
                 ),
                 const SizedBox(height: Spacing.lg),
-                DeveloperInfoCard(
+                const DeveloperInfoCard(
                   icon: Icons.phone_in_talk_rounded,
-                  title: 'رقم الهاتف',
+                  title: 'Phone',
                   value: '+20 101 555 9674',
                 ),
                 const SizedBox(height: Spacing.sm),
-                DeveloperInfoCard(
+                const DeveloperInfoCard(
                   icon: Icons.language_rounded,
-                  title: 'الموقع الإلكتروني',
+                  title: 'Website',
                   value: 'www.blackfalcons.dev',
                 ),
                 const SizedBox(height: Spacing.lg),
                 Text(
-                  'شكراً لاستخدام تطبيقنا',
+                  'Thanks for using Zadana',
                   style: getMediumStyle(
                     fontSize: FontSize.size13,
                     fontFamily: FontConstant.cairo,
@@ -121,7 +121,12 @@ void showLogoutDialog(BuildContext context) {
     builder: (dialogContext) => AlertDialog(
       backgroundColor: color.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      actionsPadding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, Spacing.lg),
+      actionsPadding: const EdgeInsets.fromLTRB(
+        Spacing.lg,
+        0,
+        Spacing.lg,
+        Spacing.lg,
+      ),
       title: Text(
         locale.logout,
         textAlign: TextAlign.center,
@@ -132,7 +137,7 @@ void showLogoutDialog(BuildContext context) {
         ),
       ),
       content: Text(
-        'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+        locale.logout_confirm,
         textAlign: TextAlign.center,
         style: getRegularStyle(
           fontSize: FontSize.size14,
@@ -149,10 +154,12 @@ void showLogoutDialog(BuildContext context) {
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(44),
                   side: BorderSide(color: color.outline.withValues(alpha: 0.35)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Text(
-                  'إلغاء',
+                  locale.cancel,
                   style: getMediumStyle(
                     fontSize: FontSize.size14,
                     fontFamily: FontConstant.cairo,
@@ -164,21 +171,19 @@ void showLogoutDialog(BuildContext context) {
             const SizedBox(width: Spacing.sm),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(dialogContext);
-                  Navigator.pop(context);
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.signUp,
-                    (route) => false,
-                  );
+                  await LogoutHelper.performLogout(context);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(44),
                   backgroundColor: AppColors.error,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Text(
-                  'تأكيد',
+                  locale.logout,
                   style: getMediumStyle(
                     fontSize: FontSize.size14,
                     fontFamily: FontConstant.cairo,
@@ -206,7 +211,10 @@ class FooterInfoTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(Spacing.md),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.sm,
+          vertical: Spacing.sm,
+        ),
         decoration: BoxDecoration(
           color: color.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(Spacing.md),
@@ -323,4 +331,3 @@ class DeveloperInfoCard extends StatelessWidget {
     );
   }
 }
-

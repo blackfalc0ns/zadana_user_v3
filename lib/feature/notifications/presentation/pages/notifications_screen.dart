@@ -36,7 +36,7 @@ class NotificationsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'لا توجد إشعارات',
+                context.localization.notifications_empty_title,
                 style: getSemiBoldStyle(
                   fontFamily: FontConstant.cairo,
                   fontSize: FontSize.size18,
@@ -51,4 +51,3 @@ class NotificationsScreen extends StatelessWidget {
     );
   }
 }
-

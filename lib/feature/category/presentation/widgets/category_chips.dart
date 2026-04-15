@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_chip.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart'
@@ -58,6 +58,7 @@ class _CategoryChipsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
     return SizedBox(
       height: 40,
       child: ShimmerEffect(
@@ -69,7 +70,7 @@ class _CategoryChipsSkeleton extends StatelessWidget {
           itemBuilder: (_, index) => Container(
             width: 72 + ((index % 3) * 12),
             decoration: BoxDecoration(
-              color: AppColors.shimmerBase,
+              color: baseColor,
               borderRadius: BorderRadius.circular(999),
             ),
           ),

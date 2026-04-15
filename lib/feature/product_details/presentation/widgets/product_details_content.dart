@@ -21,7 +21,7 @@ class ProductDetailsContent extends StatelessWidget {
   final List<ProductVendorPriceEntity> vendorPrices;
   final List<ProductModel> similarProducts;
   final Function(ProductModel)? onSimilarProductTap;
-  final Function(ProductModel)? onSimilarProductAddToCart;
+  final Future<void> Function(ProductModel)? onSimilarProductAddToCart;
   final String? activeProductId;
 
   const ProductDetailsContent({

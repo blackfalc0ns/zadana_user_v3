@@ -8,19 +8,21 @@ class CustomBottomFilterButtons extends StatelessWidget {
     this.onSortPressed,
     this.onFilterPressed,
     this.hasActiveFilters = false,
-    this.sortLabel = 'ترتيب',
-    this.filterLabel = 'فلتر',
+    this.sortLabel,
+    this.filterLabel,
   });
 
   final VoidCallback? onSortPressed;
   final VoidCallback? onFilterPressed;
   final bool hasActiveFilters;
-  final String sortLabel;
-  final String filterLabel;
+  final String? sortLabel;
+  final String? filterLabel;
 
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final resolvedFilterLabel = filterLabel ?? context.localization.filter_button;
+    final resolvedSortLabel = sortLabel ?? context.localization.sort_button;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
@@ -43,7 +45,7 @@ class CustomBottomFilterButtons extends StatelessWidget {
             Expanded(
               child: CustomFilterButton(
                 icon: Icons.tune_rounded,
-                label: filterLabel,
+                label: resolvedFilterLabel,
                 onTap: onFilterPressed ?? () {},
               ),
             ),
@@ -55,7 +57,7 @@ class CustomBottomFilterButtons extends StatelessWidget {
             Expanded(
               child: CustomFilterButton(
                 icon: Icons.sort_rounded,
-                label: sortLabel,
+                label: resolvedSortLabel,
                 onTap: onSortPressed ?? () {},
               ),
             ),

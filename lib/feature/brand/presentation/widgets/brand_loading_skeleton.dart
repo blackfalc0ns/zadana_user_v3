@@ -28,7 +28,7 @@ class BrandLoadingSkeleton extends StatelessWidget {
                 crossAxisSpacing: Spacing.xs,
                 mainAxisSpacing: Spacing.xs,
               ),
-              itemCount: 8,
+              itemCount: 12,
               itemBuilder: (_, _) => const ProductCardSkeleton(),
             );
           },

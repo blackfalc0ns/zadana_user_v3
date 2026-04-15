@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
   BrandSearchBarDelegate({
@@ -28,8 +28,9 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
+    final color = context.colorScheme;
+
     return Container(
-      color: AppColors.white,
       padding: const EdgeInsets.only(top: 16),
       child: Column(
         children: [
@@ -37,7 +38,13 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: color.shadow.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
               borderRadius: BorderRadius.circular(25),
             ),
             child: Row(
@@ -47,18 +54,17 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     readOnly: true,
                     onTap: onSearchTap,
                     decoration: InputDecoration(
-                      hintText: 'ابحث في منتجات $brandName',
+                      hintText: context.localization.search_in_brand_products(brandName),
                       hintStyle: getRegularStyle(
                         fontFamily: FontConstant.cairo,
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
+                        color: color.onSurfaceVariant,
                       ),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: SvgPicture.asset(
                           'assets/images/search-normal.svg',
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.textSecondary,
+                          colorFilter: ColorFilter.mode(
+                            color.onSurfaceVariant,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -68,14 +74,14 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: AppColors.white,
+                      fillColor: color.surfaceContainerLowest,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,
                       ),
                     ),
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textPrimary,
+                      color: color.onSurface,
                     ),
                   ),
                 ),
@@ -84,13 +90,13 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                   height: 44,
                   margin: const EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: color.primary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.tune,
-                      color: AppColors.white,
+                      color: color.onPrimary,
                       size: 20,
                     ),
                     onPressed: onFilterPressed,
@@ -110,4 +116,3 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
-

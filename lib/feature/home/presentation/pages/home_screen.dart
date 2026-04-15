@@ -80,7 +80,6 @@ class _HomeScreenView extends StatelessWidget {
               key: const PageStorageKey<String>('home_scroll_view'),
               slivers: [
                 const SliverToBoxAdapter(child: SizedBox(height: Spacing.sm)),
-
                 if (showGlobalError)
                   SliverFillRemaining(
                     hasScrollBody: false,
@@ -159,13 +158,15 @@ class _HomeScreenView extends StatelessWidget {
   }
 
   void _openShoppingSearch(BuildContext context) {
+    final l10n = context.localization;
+
     mainShellKey.currentState?.jumpToTab(1);
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const ProductSearchPage(
+        builder: (_) => ProductSearchPage(
           params: ProductSearchParams(
-            title: 'البحث في التسوق',
-            hintText: 'ابحث عن منتجات أو متاجر...',
+            title: l10n.search_marketplace_title,
+            hintText: l10n.search_hint,
             autofocus: true,
           ),
         ),

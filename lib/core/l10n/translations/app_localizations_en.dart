@@ -298,6 +298,56 @@ class AppLocalizationsEn extends AppLocalizations {
       'Location permission permanently denied';
 
   @override
+  String get location_service_disabled_message =>
+      'Location service is disabled. Please enable location services from settings and try again.';
+
+  @override
+  String get location_permission_denied_message =>
+      'The app needs location permission to determine your current location. Please allow location access.';
+
+  @override
+  String get location_permission_denied_forever_message =>
+      'Location permission has been permanently denied. Please go to the app settings and enable location permission.';
+
+  @override
+  String get location_search_temporarily_unavailable =>
+      'Search is temporarily unavailable. Please try again later.';
+
+  @override
+  String get location_rate_limit_retry =>
+      'Please wait a moment before trying again.';
+
+  @override
+  String get location_start_title => 'Location';
+
+  @override
+  String get location_start_subtitle =>
+      'Set your location so we can deliver your orders quickly and accurately.';
+
+  @override
+  String location_start_selected_subtitle(String address) {
+    return 'Selected location: $address';
+  }
+
+  @override
+  String get location_select_on_map => 'Choose location from map';
+
+  @override
+  String get location_use_current_location => 'Use my current location';
+
+  @override
+  String get location_enter_address_manually => 'Enter address manually';
+
+  @override
+  String get location_map_search_hint => 'Search for a place...';
+
+  @override
+  String get location_map_drag_hint => 'Move the map to choose a location';
+
+  @override
+  String get location_map_confirm => 'Confirm location';
+
+  @override
   String get auth_title => 'Get Started Now';
 
   @override
@@ -398,6 +448,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter your phone number or email to receive a verification code';
 
   @override
+  String get forget_password_hero_badge => 'Recover access';
+
+  @override
+  String get forget_password_hero_subtitle =>
+      'We will help you recover access quickly so you can get back to your account without friction.';
+
+  @override
+  String get forget_password_section_badge => 'Recovery';
+
+  @override
   String get btn_send_verification_code => 'Send Verification Code';
 
   @override
@@ -410,6 +470,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reset_password_description_prefix =>
       'Enter the verification code sent to';
+
+  @override
+  String get reset_password_otp_hero_badge => 'Confirm code';
+
+  @override
+  String get reset_password_otp_hero_subtitle =>
+      'Enter the code we sent so you can safely continue to set your new password.';
+
+  @override
+  String get reset_password_otp_section_badge => 'OTP';
+
+  @override
+  String get reset_password_hero_badge => 'Secure account';
+
+  @override
+  String get reset_password_hero_subtitle =>
+      'Choose a stronger password and keep your account protected across every session.';
+
+  @override
+  String get reset_password_section_badge => 'Secure';
 
   @override
   String get label_verification_code => 'Verification Code';
@@ -499,6 +579,66 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_hint => 'Search for products, stores...';
 
   @override
+  String get search_marketplace_title => 'Search in shopping';
+
+  @override
+  String get search_start_title => 'Start searching';
+
+  @override
+  String get search_start_description =>
+      'Type a product name and results will load progressively as you browse.';
+
+  @override
+  String get search_empty_title => 'No results found';
+
+  @override
+  String get search_empty_description =>
+      'Try a different keyword or broaden your search.';
+
+  @override
+  String search_in_brand_products(String brandName) {
+    return 'Search in $brandName products';
+  }
+
+  @override
+  String get home_search_hint_dairy => '🧀 Search for dairy products...';
+
+  @override
+  String get home_search_hint_vegetables => '🥬 Search for fresh vegetables...';
+
+  @override
+  String get home_search_hint_fruits => '🍎 Search for seasonal fruits...';
+
+  @override
+  String get home_search_hint_meat => '🍗 Search for meat and poultry...';
+
+  @override
+  String get home_search_hint_drinks => '☕ Search for drinks and coffee...';
+
+  @override
+  String get home_search_hint_bakery => '🥐 Search for bakery and desserts...';
+
+  @override
+  String get home_search_hint_spices => '🌶️ Search for spices and legumes...';
+
+  @override
+  String get home_search_hint_cleaning =>
+      '🧴 Search for home cleaning products...';
+
+  @override
+  String get home_search_hint_oils => '🫒 Search for oils and ghee...';
+
+  @override
+  String get home_search_hint_nuts => '🥜 Search for nuts and dried fruits...';
+
+  @override
+  String get home_search_hint_canned =>
+      '🥫 Search for canned food and fast meals...';
+
+  @override
+  String get home_search_hint_baby => '🍼 Search for baby food...';
+
+  @override
   String get banner_tag => 'LIMITED OFFER';
 
   @override
@@ -527,6 +667,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get brands_unavailable => 'No brands available';
+
+  @override
+  String get brands_empty_description =>
+      'No brands are available right now. Pull to refresh or try again shortly.';
+
+  @override
+  String get brands_listing_subtitle =>
+      'Browse the available brands and jump into the one you want faster.';
+
+  @override
+  String brands_count_badge(int count) {
+    return '$count brands';
+  }
 
   @override
   String get section_featured => 'Featured Products';
@@ -619,6 +772,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get notifications_empty_title => 'No notifications';
+
+  @override
+  String brand_product_count(int count) {
+    return '$count products';
+  }
+
+  @override
   String get dark_mode => 'Dark Mode';
 
   @override
@@ -631,6 +792,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get help_support => 'Help & Support';
 
   @override
+  String get help_support_header_title => 'How can we help you?';
+
+  @override
+  String get help_support_header_subtitle =>
+      'Contact us and we will get back to you soon.';
+
+  @override
   String get about_app => 'About App';
 
   @override
@@ -641,6 +809,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contact_us => 'Contact Us';
+
+  @override
+  String get contact_whatsapp => 'WhatsApp';
+
+  @override
+  String get contact_whatsapp_subtitle => 'Chat with us on WhatsApp';
+
+  @override
+  String get contact_phone_subtitle => 'Call us directly';
 
   @override
   String get select_language => 'Select Language';
@@ -688,6 +865,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faq => 'FAQ';
+
+  @override
+  String get faq_track_order_question => 'How can I track my order?';
+
+  @override
+  String get faq_track_order_answer =>
+      'You can track your order from the My Orders page, then open the order you want to follow.';
+
+  @override
+  String get faq_payment_methods_question =>
+      'What payment methods are available?';
+
+  @override
+  String get faq_payment_methods_answer =>
+      'We support common payment cards, e-wallets, and cash on delivery when available.';
+
+  @override
+  String get faq_return_product_question => 'How can I return a product?';
+
+  @override
+  String get faq_return_product_answer =>
+      'You can request a return from the order details page within the allowed return period.';
+
+  @override
+  String get faq_contact_support_question => 'How do I contact support?';
+
+  @override
+  String get faq_contact_support_answer =>
+      'You can contact us through the Help & Support page or the communication methods available in the app.';
 
   @override
   String get logout => 'Logout';
@@ -1042,6 +1248,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get price_range => 'Price Range';
 
   @override
+  String get brand_filter_category_title => 'Category';
+
+  @override
+  String get brand_filter_type_title => 'Type';
+
+  @override
+  String get brand_filter_unit_title => 'Quantity';
+
+  @override
+  String get brand_filter_accessories => 'Accessories';
+
+  @override
+  String get brand_filter_chargers => 'Chargers';
+
+  @override
+  String get brand_filter_phone_cases => 'Phone Cases';
+
+  @override
+  String get brand_filter_cables => 'Cables';
+
+  @override
+  String get brand_filter_adapters => 'Adapters';
+
+  @override
+  String get brand_filter_headphones => 'Headphones';
+
+  @override
+  String get brand_filter_speakers => 'Speakers';
+
+  @override
+  String get brand_filter_power_banks => 'Power Banks';
+
+  @override
+  String get brand_filter_screen_protectors => 'Screen Protectors';
+
+  @override
   String get currency => 'SAR';
 
   @override
@@ -1055,6 +1297,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filter_category_title => 'Category';
+
+  @override
+  String get filter_subcategory_title => 'Subcategory';
 
   @override
   String get filter_apply => 'Apply Filter';
@@ -1498,7 +1743,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String addresses_summary_count(Object count) {
-    return 'You have $count address';
+    return 'Saved addresses';
+  }
+
+  @override
+  String addresses_summary_count_badge(Object count) {
+    return '$count';
   }
 
   @override

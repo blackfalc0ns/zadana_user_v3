@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/utils/brand_filter_label_localizer.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_grid.dart';
 
 class UnitFilterSection extends StatefulWidget {
@@ -42,21 +44,32 @@ class _UnitFilterSectionState extends State<UnitFilterSection> {
       return const SizedBox.shrink();
     }
 
+    final color = context.colorScheme;
     final sortedUnits = List<String>.from(widget.units)..sort();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'الكمية',
-          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          context.localization.brand_filter_unit_title,
+          style: AppTextStyles.h4.copyWith(
+            fontWeight: FontWeight.w600,
+            color: color.onSurface,
+          ),
         ),
         const SizedBox(height: Spacing.md),
         FilterOptionGrid(
-          options: sortedUnits,
-          selectedValue: localSelectedUnit,
+          options: sortedUnits
+              .map((value) => localizeBrandFilterLabel(context, value))
+              .toList(),
+          selectedValue:
+              localSelectedUnit == null ? null : localizeBrandFilterLabel(context, localSelectedUnit!),
           onOptionTap: (unit) {
-            final newSelection = localSelectedUnit == unit ? null : unit;
+            final rawUnit = sortedUnits.firstWhere(
+              (value) => localizeBrandFilterLabel(context, value) == unit,
+              orElse: () => unit,
+            );
+            final newSelection = localSelectedUnit == rawUnit ? null : rawUnit;
             setState(() => localSelectedUnit = newSelection);
             widget.onUnitChanged(newSelection);
           },

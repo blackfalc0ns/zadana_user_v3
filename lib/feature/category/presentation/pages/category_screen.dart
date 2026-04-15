@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
@@ -40,12 +41,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   void _openSearch(BuildContext context) {
+    final l10n = context.localization;
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const ProductSearchPage(
+        builder: (_) => ProductSearchPage(
           params: ProductSearchParams(
-            title: 'البحث في التسوق',
-            hintText: 'ابحث عن منتجات أو متاجر...',
+            title: l10n.search_marketplace_title,
+            hintText: l10n.search_hint,
             autofocus: true,
           ),
         ),
@@ -89,13 +92,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
             emptyStateMessage: state.errorMessage,
             errorFailure: state.failure,
             onRetryError: context.read<CategoryViewModel>().retry,
-            onCategorySelected: context.read<CategoryViewModel>().selectCategoryByName,
-            onSubCategorySelected:
-                context.read<CategoryViewModel>().selectSubCategory,
+            onCategorySelected: context
+                .read<CategoryViewModel>()
+                .selectCategoryByName,
+            onSubCategorySelected: context
+                .read<CategoryViewModel>()
+                .selectSubCategory,
             onFilterApplied: context.read<CategoryViewModel>().applyFilters,
             onSortChanged: context.read<CategoryViewModel>().applySort,
             onFilterChanged: context.read<CategoryViewModel>().applyFilters,
-            onClearAllFilters: context.read<CategoryViewModel>().clearAllFilters,
+            onClearAllFilters: context
+                .read<CategoryViewModel>()
+                .clearAllFilters,
             sortOptions: state.sortOptions,
             hasActiveFilters: state.hasActiveFilters,
             bottomNavHeight: 60,

@@ -8,6 +8,8 @@ abstract class AppConstants {
   static const String isRemember = 'isRemember';
   static const String deviceIdKey = 'deviceIdKey';
   static const String pendingGuestCartItemsKey = 'pendingGuestCartItemsKey';
+  static const String pendingGuestFavoriteProductIdsKey =
+      'pendingGuestFavoriteProductIdsKey';
 
   // 🔹 Localization Keys
   static const String languageCode = 'languageCode';

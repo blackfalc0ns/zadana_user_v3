@@ -21,6 +21,7 @@ abstract class EndPoints {
       '/categories/{categoryId}/subcategories';
   static const String categoryFilters = '/categories/{categoryId}/filters';
   static const String categoryProducts = '/categories/{categoryId}/products';
+  static const String shoppingProducts = '/categories/products';
   static const String productsSearch = '/products/search';
   static const String productDetails = '/products/{productId}';
   static const String register = "/customers/auth/register";

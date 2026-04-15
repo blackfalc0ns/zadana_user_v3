@@ -28,11 +28,21 @@ class CustomSortOptionItem extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: Spacing.xss),
         padding: const EdgeInsets.all(Spacing.xss),
         decoration: BoxDecoration(
+          color: isSelected
+              ? color.primaryContainer.withValues(alpha: 0.45)
+              : color.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? color.secondary : color.outline,
-            width: .5,
+            color: isSelected ? color.primary : color.outlineVariant,
+            width: 0.8,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: color.shadow.withValues(alpha: isSelected ? 0.08 : 0.04),
+              blurRadius: isSelected ? 8 : 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -45,7 +55,7 @@ class CustomSortOptionItem extends StatelessWidget {
                     style: getSemiBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: FontSize.size16,
-                      color: isSelected ? color.secondary : color.onSurface,
+                      color: isSelected ? color.primary : color.onSurface,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -63,7 +73,7 @@ class CustomSortOptionItem extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: color.secondary, size: 24),
+              Icon(Icons.check_circle, color: color.primary, size: 24),
           ],
         ),
       ),

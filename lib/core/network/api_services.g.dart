@@ -455,6 +455,56 @@ class _ApiServices implements ApiServices {
   }
 
   @override
+  Future<CategoryProductsResponseModelDto> getShoppingProducts(
+    String? categoryId,
+    String? productTypeId,
+    String? partId,
+    String? quantityId,
+    String? brandId,
+    double? minPrice,
+    double? maxPrice,
+    String? sort,
+    int? page,
+    int? perPage,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'categoryId': categoryId,
+      r'product_type_id': productTypeId,
+      r'part_id': partId,
+      r'quantity_id': quantityId,
+      r'brand_id': brandId,
+      r'min_price': minPrice,
+      r'max_price': maxPrice,
+      r'sort': sort,
+      r'page': page,
+      r'per_page': perPage,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<CategoryProductsResponseModelDto>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/categories/products',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CategoryProductsResponseModelDto _value;
+    try {
+      _value = CategoryProductsResponseModelDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<ProductSearchResponseDto> searchProducts(
     String query,
     String? categoryId,

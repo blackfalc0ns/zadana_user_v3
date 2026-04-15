@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 
 class ShimmerWrapper extends StatefulWidget {
   const ShimmerWrapper({super.key, required this.child, this.isLoading = false});
@@ -36,6 +36,9 @@ class _ShimmerWrapperState extends State<ShimmerWrapper>
       return widget.child;
     }
 
+    final baseColor = SkeletonColors.base(context);
+    final highlightColor = SkeletonColors.highlight(context);
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -46,9 +49,9 @@ class _ShimmerWrapperState extends State<ShimmerWrapper>
               begin: Alignment(-2.0 + (_controller.value * 4), -0.5),
               end: Alignment(0.0 + (_controller.value * 4), 0.5),
               colors: [
-                AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withValues(alpha: 0.5),
-                AppColors.shimmerBase,
+                baseColor,
+                highlightColor,
+                baseColor,
               ],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);

@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/widgets/profile_action_tile.dart';
@@ -320,6 +321,8 @@ class _ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
       child: Column(
@@ -333,7 +336,7 @@ class _ProfileSection extends StatelessWidget {
             child: Text(
               title,
               style: AppTextStyles.labelLarge.copyWith(
-                color: AppColors.textPrimary,
+                color: color.onSurface,
                 fontWeight: FontWeight.w700,
                 fontSize: 15,
               ),
@@ -341,12 +344,12 @@ class _ProfileSection extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: color.surface,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: color.outlineVariant),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow.withValues(alpha: 0.04),
+                  color: color.shadow.withValues(alpha: 0.05),
                   blurRadius: 18,
                   offset: const Offset(0, 8),
                 ),

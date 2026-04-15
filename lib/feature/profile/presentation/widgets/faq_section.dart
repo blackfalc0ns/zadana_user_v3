@@ -15,6 +15,24 @@ class FAQSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final faqItems = [
+      (
+        question: l10n.faq_track_order_question,
+        answer: l10n.faq_track_order_answer,
+      ),
+      (
+        question: l10n.faq_payment_methods_question,
+        answer: l10n.faq_payment_methods_answer,
+      ),
+      (
+        question: l10n.faq_return_product_question,
+        answer: l10n.faq_return_product_answer,
+      ),
+      (
+        question: l10n.faq_contact_support_question,
+        answer: l10n.faq_contact_support_answer,
+      ),
+    ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
@@ -30,23 +48,12 @@ class FAQSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Spacing.md),
-          const FAQItem(
-            question: 'كيف يمكنني تتبع طلبي؟',
-            answer: 'يمكنك تتبع طلبك من خلال قسم "طلباتي" في التطبيق',
-          ),
-          const SizedBox(height: Spacing.sm),
-          const FAQItem(
-            question: 'ما هي طرق الدفع المتاحة؟',
-            answer: 'نقبل الدفع بالبطاقة الائتمانية، مدى، وأبل باي',
-          ),
-          const SizedBox(height: Spacing.sm),
-          const FAQItem(
-            question: 'كيف يمكنني إرجاع منتج؟',
-            answer: 'يمكنك طلب الإرجاع من خلال صفحة تفاصيل الطلب خلال 14 يوم',
-          ),
+          for (var i = 0; i < faqItems.length; i++) ...[
+            FAQItem(question: faqItems[i].question, answer: faqItems[i].answer),
+            if (i != faqItems.length - 1) const SizedBox(height: Spacing.sm),
+          ],
         ],
       ),
     );
   }
 }
-

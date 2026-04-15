@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
@@ -26,6 +26,7 @@ class DrawerMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -81,7 +82,6 @@ class DrawerMenuItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: getRegularStyle(
-                        fontSize: FontSize.size12,
                         fontFamily: FontConstant.cairo,
                         color: color.onSurface.withValues(alpha: 0.62),
                       ),
@@ -98,7 +98,9 @@ class DrawerMenuItem extends StatelessWidget {
                   ),
                   child: Center(
                     child: FaIcon(
-                      FontAwesomeIcons.chevronLeft,
+                      isRtl
+                          ? FontAwesomeIcons.chevronLeft
+                          : FontAwesomeIcons.chevronRight,
                       color: color.primary,
                       size: 10,
                     ),

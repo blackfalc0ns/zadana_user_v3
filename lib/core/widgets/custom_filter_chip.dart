@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CustomFilterChip extends StatelessWidget {
@@ -29,24 +29,25 @@ class CustomFilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(
-           horizontal: Spacing.md,
+          horizontal: Spacing.md,
           vertical: Spacing.xs,
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? (selectedColor ?? AppColors.primary)
-              : (backgroundColor ?? AppColors.white),
+              ? (selectedColor ?? color.primary)
+              : (backgroundColor ?? color.surfaceContainerHigh),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? (selectedColor ?? AppColors.primary)
-                : (color.outline.withValues(alpha: 0.2)),
-            width: 1,
+                ? (selectedColor ?? color.primary)
+                : (borderColor ?? color.outline),
+            width: .5, 
           ),
         ),
         child: Row(
@@ -61,12 +62,10 @@ class CustomFilterChip extends StatelessWidget {
             ],
             Text(
               label,
-              style:
-                  textStyle ??
-                  AppTextStyles.labelSmall.copyWith(
-                    color: isSelected ? AppColors.white : AppColors.textPrimary,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  ),
+              style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+                color: isSelected ? color.onPrimary : color.onSurface,
+              ).merge(textStyle),
             ),
           ],
         ),

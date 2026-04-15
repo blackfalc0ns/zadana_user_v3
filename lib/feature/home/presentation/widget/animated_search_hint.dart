@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'home_search_bar_hints.dart';
 
 class AnimatedSearchHint extends StatefulWidget {
@@ -24,9 +25,12 @@ class _AnimatedSearchHintState extends State<AnimatedSearchHint> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      final hints = HomeSearchBarHints.resolve(context);
+      if (hints.isEmpty) return;
+
       if (mounted) {
         setState(() {
-          _currentIndex = (_currentIndex + 1) % HomeSearchBarHints.hints.length;
+          _currentIndex = (_currentIndex + 1) % hints.length;
         });
       }
     });
@@ -40,6 +44,11 @@ class _AnimatedSearchHintState extends State<AnimatedSearchHint> {
 
   @override
   Widget build(BuildContext context) {
+    final hints = HomeSearchBarHints.resolve(context);
+    final currentHint = hints.isEmpty
+        ? null
+        : hints[_currentIndex % hints.length];
+
     return IgnorePointer(
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
@@ -53,9 +62,9 @@ class _AnimatedSearchHintState extends State<AnimatedSearchHint> {
           );
         },
         child: Text(
-          HomeSearchBarHints.hints[_currentIndex].$1,
+          currentHint?.$1 ?? context.localization.search_hint,
           key: ValueKey<int>(_currentIndex),
-          textDirection: TextDirection.rtl,
+          textDirection: Directionality.of(context),
           overflow: TextOverflow.ellipsis,
           style: getSemiBoldStyle(
             fontFamily: FontConstant.cairo,
@@ -67,4 +76,3 @@ class _AnimatedSearchHintState extends State<AnimatedSearchHint> {
     );
   }
 }
-

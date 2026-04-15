@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 
 class SkeletonStateWidget extends StatefulWidget {
   const SkeletonStateWidget({
@@ -31,8 +32,9 @@ class _SkeletonStateWidgetState extends State<SkeletonStateWidget>
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = widget.baseColor ?? const Color(0xFFEAEAEA);
-    final highlightColor = widget.highlightColor ?? const Color(0xFFF8F8F8);
+    final baseColor = widget.baseColor ?? SkeletonColors.base(context);
+    final highlightColor =
+        widget.highlightColor ?? SkeletonColors.highlight(context);
 
     return AnimatedBuilder(
       animation: _controller,

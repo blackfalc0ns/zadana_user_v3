@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class ProductHeaderSection extends StatelessWidget {
-  final String productName;
-  final String? unit;
-  final int quantity;
-  final VoidCallback onIncrease;
-  final VoidCallback onDecrease;
-
   const ProductHeaderSection({
     super.key,
     required this.productName,
@@ -20,13 +15,24 @@ class ProductHeaderSection extends StatelessWidget {
     required this.onDecrease,
   });
 
+  final String productName;
+  final String? unit;
+  final int quantity;
+  final VoidCallback onIncrease;
+  final VoidCallback onDecrease;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final color = context.colorScheme;
+    final quantityBackground = Color.alphaBlend(
+      color.surfaceTint.withValues(alpha: 0.03),
+      color.surface,
+    );
 
     return Container(
       padding: const EdgeInsets.all(Spacing.base),
-      color: AppColors.surface,
+      color: color.surface,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,14 +40,17 @@ class ProductHeaderSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(productName, style: AppTextStyles.h3),
+                Text(
+                  productName,
+                  style: AppTextStyles.h3.copyWith(color: color.onSurface),
+                ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
                     Text(
                       l10n.fresh_products,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
+                        color: color.onSurfaceVariant,
                       ),
                     ),
                     if (unit != null && unit!.trim().isNotEmpty) ...[
@@ -52,10 +61,10 @@ class ProductHeaderSection extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
+                          color: AppColors.primary.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.3),
+                            color: AppColors.primary.withValues(alpha: 0.45),
                           ),
                         ),
                         child: Text(
@@ -73,52 +82,110 @@ class ProductHeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.sm),
-          _buildQuantitySelector(),
+          _QuantitySelector(
+            quantity: quantity,
+            onIncrease: onIncrease,
+            onDecrease: onDecrease,
+            quantityBackground: quantityBackground,
+            quantityBorderColor: color.outlineVariant,
+            quantityTextColor: color.onSurface,
+            disabledButtonColor: color.surfaceContainerHighest,
+            disabledIconColor: color.onSurfaceVariant,
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildQuantitySelector() {
+class _QuantitySelector extends StatelessWidget {
+  const _QuantitySelector({
+    required this.quantity,
+    required this.onIncrease,
+    required this.onDecrease,
+    required this.quantityBackground,
+    required this.quantityBorderColor,
+    required this.quantityTextColor,
+    required this.disabledButtonColor,
+    required this.disabledIconColor,
+  });
+
+  final int quantity;
+  final VoidCallback onIncrease;
+  final VoidCallback onDecrease;
+  final Color quantityBackground;
+  final Color quantityBorderColor;
+  final Color quantityTextColor;
+  final Color disabledButtonColor;
+  final Color disabledIconColor;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildButton(Icons.remove, quantity > 1 ? onDecrease : null),
+        _QuantityButton(
+          icon: Icons.remove,
+          onTap: quantity > 1 ? onDecrease : null,
+          disabledButtonColor: disabledButtonColor,
+          disabledIconColor: disabledIconColor,
+        ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 8),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: quantityBackground,
             borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: quantityBorderColor),
           ),
           child: Text(
             quantity.toString(),
             style: AppTextStyles.labelMedium.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: quantityTextColor,
               fontSize: 16,
             ),
           ),
         ),
-        _buildButton(Icons.add, onIncrease),
+        _QuantityButton(
+          icon: Icons.add,
+          onTap: onIncrease,
+          disabledButtonColor: disabledButtonColor,
+          disabledIconColor: disabledIconColor,
+        ),
       ],
     );
   }
+}
 
-  Widget _buildButton(IconData icon, VoidCallback? onTap) {
+class _QuantityButton extends StatelessWidget {
+  const _QuantityButton({
+    required this.icon,
+    required this.onTap,
+    required this.disabledButtonColor,
+    required this.disabledIconColor,
+  });
+
+  final IconData icon;
+  final VoidCallback? onTap;
+  final Color disabledButtonColor;
+  final Color disabledIconColor;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: onTap != null ? AppColors.primary : AppColors.disabled,
+          color: onTap != null ? AppColors.primary : disabledButtonColor,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
           icon,
           size: 18,
-          color: AppColors.white,
+          color: onTap != null ? AppColors.white : disabledIconColor,
         ),
       ),
     );

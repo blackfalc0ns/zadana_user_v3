@@ -1,66 +1,122 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class BrandCard extends StatelessWidget {
   const BrandCard({
     super.key,
     required this.name,
+    required this.imageUrl,
     required this.emoji,
     this.onTap,
+    this.isCompact = false,
+    this.compactFontSize,
   });
 
   final String name;
+  final String imageUrl;
   final String emoji;
   final VoidCallback? onTap;
+  final bool isCompact;
+  final double? compactFontSize;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(Spacing.xs),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Brand Logo/Emoji
-            Container(
-              width: 45,
-              height: 45,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(emoji, style: const TextStyle(fontSize: 24)),
-              ),
-            ),
+    final color = context.colorScheme;
+    final horizontalPadding = isCompact ? 6.0 : Spacing.xs;
+    final verticalPadding = isCompact ? 8.0 : Spacing.sm;
+    final imageSize = isCompact ? 32.0 : 40.0;
+    final imageSpacing = isCompact ? 6.0 : Spacing.xs;
+    final fontSize =
+        isCompact ? (compactFontSize ?? FontSize.size10) : FontSize.size11;
+    final maxLines = isCompact ? 2 : 1;
 
-            const SizedBox(height: 4),
-
-            // Brand Name
-            Text(
-              name,
-              style: getSemiBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size12,
+    return Material(
+      color: color.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(Spacing.cardRadius),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(Spacing.cardRadius),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: imageSize,
+                height: imageSize,
+                decoration: BoxDecoration(
+                  color: color.primaryContainer.withValues(alpha: 0.55),
+                  shape: BoxShape.circle,
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: _BrandImage(imageUrl: imageUrl, emoji: emoji),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+              SizedBox(height: imageSpacing),
+              Text(
+                name,
+                style: getSemiBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: fontSize,
+                  color: color.onSurface,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: maxLines,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+class _BrandImage extends StatelessWidget {
+  const _BrandImage({required this.imageUrl, required this.emoji});
+
+  final String imageUrl;
+  final String emoji;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    if (imageUrl.trim().isEmpty) {
+      return _FallbackBrandImage(emoji: emoji);
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+      fadeInDuration: const Duration(milliseconds: 180),
+      placeholder: (context, url) =>
+          Container(color: color.primaryContainer.withValues(alpha: 0.45)),
+      errorWidget: (context, url, error) =>
+          Image.asset(Assets.notFound, fit: BoxFit.cover),
+    );
+  }
+}
+
+class _FallbackBrandImage extends StatelessWidget {
+  const _FallbackBrandImage({required this.emoji});
+
+  final String emoji;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    return Container(
+      color: color.primaryContainer.withValues(alpha: 0.55),
+      alignment: Alignment.center,
+      child: Text(emoji, style: const TextStyle(fontSize: 14)),
+    );
+  }
+}

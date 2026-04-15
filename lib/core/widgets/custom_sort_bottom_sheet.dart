@@ -9,16 +9,16 @@ class CustomSortBottomSheet extends StatefulWidget {
     super.key,
     this.selectedSortOption,
     required this.sortOptions,
-    this.title = 'ترتيب حسب',
-    this.cancelLabel = 'إلغاء',
-    this.applyLabel = 'تطبيق',
+    this.title,
+    this.cancelLabel,
+    this.applyLabel,
   });
 
   final String? selectedSortOption;
-  final List<Map<String, dynamic>> sortOptions; // تغيير النوع
-  final String title;
-  final String cancelLabel;
-  final String applyLabel;
+  final List<Map<String, dynamic>> sortOptions;
+  final String? title;
+  final String? cancelLabel;
+  final String? applyLabel;
 
   @override
   State<CustomSortBottomSheet> createState() => _CustomSortBottomSheetState();
@@ -36,7 +36,11 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    
+    final l10n = context.localization;
+    final resolvedTitle = widget.title ?? l10n.sort_title;
+    final resolvedCancelLabel = widget.cancelLabel ?? l10n.cancel;
+    final resolvedApplyLabel = widget.applyLabel ?? l10n.apply;
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
@@ -62,17 +66,20 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text(
-                    widget.cancelLabel,
+                    resolvedCancelLabel,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: color.onSurfaceVariant,
                     ),
                   ),
                 ),
-                Text(widget.title, style: AppTextStyles.h3),
+                Text(
+                  resolvedTitle,
+                  style: AppTextStyles.h3.copyWith(color: color.onSurface),
+                ),
                 TextButton(
                   onPressed: () => Navigator.pop(context, selectedOption),
                   child: Text(
-                    widget.applyLabel,
+                    resolvedApplyLabel,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: color.primary,
                       fontWeight: FontWeight.w600,

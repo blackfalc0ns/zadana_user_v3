@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 /// ─────────────────────────────────────────────────────────────
 /// Reusable text field with consistent styling.
@@ -56,6 +57,8 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
@@ -72,13 +75,17 @@ class AppTextField extends StatelessWidget {
       onFieldSubmitted: onSubmitted,
       onTap: onTap,
       autofocus: autofocus,
-      style: AppTextStyles.input,
+      style: AppTextStyles.input.copyWith(color: color.onSurface),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
         errorText: errorText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
+        labelStyle: AppTextStyles.input.copyWith(color: color.onSurfaceVariant),
+        hintStyle: AppTextStyles.inputHint.copyWith(
+          color: color.onSurfaceVariant,
+        ),
         contentPadding:
             contentPadding ??
             const EdgeInsets.symmetric(

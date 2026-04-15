@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
+import 'package:zadana_user_v3/core/services/language_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
-import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
+import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
-import 'package:zadana_user_v3/feature/product_details/domain/entities/product_details_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_details_usecase.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_bottom_actions.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_details_content.dart';
-import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_main_image.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_cubit.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_event.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_state.dart';
+import 'package:zadana_user_v3/feature/product_details/presentation/widgets/reusable_product_details_screen.dart';
 
-class ProductDetailsScreen extends StatefulWidget {
-  final ProductModel product;
-  final String? activeProductId;
-  final String? heroTag;
-
+class ProductDetailsScreen extends StatelessWidget {
   const ProductDetailsScreen({
     super.key,
     required this.product,
@@ -30,189 +32,204 @@ class ProductDetailsScreen extends StatefulWidget {
     this.heroTag,
   });
 
+  final ProductModel product;
+  final String? activeProductId;
+  final String? heroTag;
+
   @override
-  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => ProductDetailsCubit(
+        productDetailsUseCase: getIt<ProductDetailsUseCase>(),
+        addCartItemUseCase: getIt<AddCartItemUseCase>(),
+        getCartUseCase: getIt<GetCartUseCase>(),
+        guestCartSyncService: getIt<GuestCartSyncService>(),
+        languageService: getIt<LanguageService>(),
+      )..doIntent(
+        InitializeProductDetailsEvent(
+        productId: product.id,
+        activeProductId: activeProductId,
+      )),
+      child: _ProductDetailsView(
+        product: product,
+        heroTag: heroTag,
+      ),
+    );
+  }
 }
 
-class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  late final ProductDetailsUseCase _productDetailsUseCase;
-  late final AddCartItemUseCase _addCartItemUseCase;
-  late final GuestCartSyncService _guestCartSyncService;
-  late Future<ApiResult<ProductDetailsEntity>> _productDetailsFuture;
-  int _quantity = 1;
-  String? _activeProductId;
-  bool _isAddingToCart = false;
+class _ProductDetailsView extends StatelessWidget {
+  const _ProductDetailsView({
+    required this.product,
+    this.heroTag,
+  });
 
-  @override
-  void initState() {
-    super.initState();
-    _productDetailsUseCase = getIt<ProductDetailsUseCase>();
-    _addCartItemUseCase = getIt<AddCartItemUseCase>();
-    _guestCartSyncService = getIt<GuestCartSyncService>();
-    _activeProductId = widget.activeProductId;
-    _productDetailsFuture = _loadProductDetails();
-  }
-
-  Future<ApiResult<ProductDetailsEntity>> _loadProductDetails() {
-    return _productDetailsUseCase.getProductDetails(widget.product.id);
-  }
-
-  Future<void> _addToCart(ProductDetailsEntity productDetails) async {
-    if (_isAddingToCart) return;
-
-    final l10n = AppLocalizations.of(context)!;
-    if (productDetails.masterProductId.isEmpty) {
-      CustomSnackbar.showError(
-        context: context,
-        message: 'Product id is unavailable for this item.',
-      );
-      return;
-    }
-
-    setState(() => _isAddingToCart = true);
-
-    final request = AddCartItemRequestEntity(
-      productId: productDetails.masterProductId,
-      quantity: _quantity,
-    );
-
-    final result = await _addCartItemUseCase.call(request);
-
-    if (!mounted) return;
-
-    switch (result) {
-      case ApiSuccessResult():
-        await _guestCartSyncService.cacheGuestCartItem(request);
-        CartCountSyncService().incrementBy(request.quantity);
-        if (!mounted) return;
-        CustomSnackbar.showSuccess(
-          context: context,
-          message: result.data.message.isNotEmpty
-              ? result.data.message
-              : l10n.product_added_to_cart(_quantity, productDetails.name),
-        );
-      case ApiErrorResult():
-        CustomSnackbar.showError(
-          context: context,
-          message: result.failure.errorMessage,
-        );
-    }
-
-    if (mounted) {
-      setState(() => _isAddingToCart = false);
-    }
-  }
+  final ProductModel product;
+  final String? heroTag;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return FutureBuilder<ApiResult<ProductDetailsEntity>>(
-      future: _productDetailsFuture,
-      builder: (context, snapshot) {
-        final result = snapshot.data;
-        final productDetails = result is ApiSuccessResult<ProductDetailsEntity>
-            ? result.data
-            : null;
+    return BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
+      listenWhen: (previous, current) =>
+          previous.addToCartSuccessMessage != current.addToCartSuccessMessage ||
+          previous.addToCartFailure != current.addToCartFailure,
+      listener: (context, state) {
+        if (state.addToCartSuccessMessage != null) {
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.addToCartSuccessMessage!,
+          );
+          context.read<ProductDetailsCubit>().doIntent(
+            const ClearProductDetailsFeedbackEvent(),
+          );
+        } else if (state.addToCartFailure != null) {
+          CustomSnackbar.showError(
+            context: context,
+            message: state.addToCartFailure!.errorMessage,
+          );
+          context.read<ProductDetailsCubit>().doIntent(
+            const ClearProductDetailsFeedbackEvent(),
+          );
+        }
+      },
+      builder: (context, state) {
+        final color = Theme.of(context).colorScheme;
+        final cubit = context.read<ProductDetailsCubit>();
+        final productDetails = state.productDetails;
+        final title = productDetails?.name ?? product.name;
+        final imageUrl = productDetails?.imageUrl ?? product.imageUrl;
+        final productId = productDetails?.id ?? product.id;
 
-        final title = productDetails?.name ?? widget.product.name;
-        final imageUrl = productDetails?.imageUrl ?? (widget.product.imageUrl);
-        final productId = productDetails?.id ?? widget.product.id;
+        if (state.isInitialLoading) {
+          return Scaffold(
+            backgroundColor: color.surface,
+            body: const SafeArea(child: _ProductDetailsLoadingContent()),
+          );
+        }
 
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () => Navigator.pop(context),
+        if (productDetails != null) {
+          return ReusableProductDetailsScreen(
+            productId: productId,
+            productName: title,
+            unit: productDetails.unit,
+            emoji: product.emoji ?? '',
+            imageUrl: imageUrl,
+            quantity: state.quantity,
+            onIncrease: () => cubit.doIntent(
+              const IncreaseProductQuantityEvent(),
             ),
-            backgroundColor: AppColors.surface,
-            elevation: 0,
-            title: Text(title),
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ProductMainImage(
-                  emoji: widget.product.emoji ?? '',
-                  imageUrl: imageUrl,
-                  productId: productId,
-                  heroTag: widget.heroTag,
-                  height: 250,
-                ),
-                if (snapshot.connectionState != ConnectionState.done)
-                  const _ProductDetailsLoadingContent()
-                else if (productDetails != null)
-                  ProductDetailsContent(
-                    productName: productDetails.name,
-                    unit: productDetails.unit,
-                    quantity: _quantity,
-                    onIncrease: () => setState(() => _quantity++),
-                    onDecrease: () => setState(() {
-                      if (_quantity > 1) {
-                        _quantity--;
-                      }
-                    }),
-                    descriptionTitle: l10n.product_description,
-                    description: productDetails.description,
-                    basePrice: productDetails.price,
-                    oldPrice: productDetails.oldPrice,
-                    currency: l10n.egp,
-                    vendorPrices: productDetails.vendorPrices,
-                    similarProducts: productDetails.similarProducts,
-                    onSimilarProductTap: (product) async {
-                      setState(() => _activeProductId = product.id);
-                      await WidgetsBinding.instance.endOfFrame;
-
-                      if (!mounted) return;
-
-                      ProductNavigationHelper.navigateToProductDetails(
-                        context,
-                        product,
-                        activeProductId: product.id,
-                        heroTag: productHeroTag(
-                          product.id,
-                          source: 'similar-products',
-                        ),
-                      );
-                    },
-                    onSimilarProductAddToCart: (product) {
-                      CustomSnackbar.showSuccess(
-                        context: context,
-                        message: 'تم إضافة ${product.name} إلى السلة',
-                      );
-                    },
-                    activeProductId: _activeProductId,
-                  )
-                else
-                  _ProductDetailsErrorContent(
-                    message: result is ApiErrorResult<ProductDetailsEntity>
-                        ? result.failure.errorMessage
-                        : 'Unexpected error occurred.',
-                    onRetry: () {
-                      setState(() {
-                        _productDetailsFuture = _loadProductDetails();
-                      });
-                    },
-                  ),
-              ],
+            onDecrease: () => cubit.doIntent(
+              const DecreaseProductQuantityEvent(),
             ),
-          ),
-          bottomNavigationBar: productDetails == null
-              ? null
-              : ProductBottomActions(
-                  onAddToCart: _isAddingToCart
-                      ? null
-                      : () => _addToCart(productDetails),
-                  onGoToCart: () => CustomSnackbar.showInfo(
-                    context: context,
-                    message: 'الانتقال للسلة',
-                  ),
+            descriptionTitle: l10n.product_description,
+            description: productDetails.description,
+            basePrice: productDetails.price,
+            oldPrice: productDetails.oldPrice,
+            currency: l10n.egp,
+            vendorPrices: productDetails.vendorPrices,
+            similarProducts: productDetails.similarProducts,
+            onSimilarProductTap: (similarProduct) async {
+              cubit.doIntent(
+                SetActiveProductDetailsEvent(similarProduct.id),
+              );
+              await WidgetsBinding.instance.endOfFrame;
+              if (!context.mounted) return;
+
+              ProductNavigationHelper.navigateToProductDetails(
+                context,
+                similarProduct,
+                activeProductId: similarProduct.id,
+                heroTag: productHeroTag(
+                  similarProduct.id,
+                  source: 'similar-products',
                 ),
-        );
+              );
+            },
+            onSimilarProductAddToCart: (_) async {},
+            onAddToCart: () => cubit.doIntent(const AddProductToCartEvent()),
+            onGoToCart: () => _goToCartTab(context),
+            activeProductId: state.activeProductId,
+            heroTag: heroTag,
+            backgroundColor: color.surface,
+            appBarBackgroundColor: color.surface,
+            appBarTitleColor: color.onSurface,
+            appBarLeading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: color.onSurface,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              splashRadius: 20,
+            ),
+            appBarSystemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: color.brightness == Brightness.dark
+                  ? Brightness.light
+                  : Brightness.dark,
+              statusBarBrightness: color.brightness == Brightness.dark
+                  ? Brightness.dark
+                  : Brightness.light,
+            ),
+            cartCount: state.cartCount,
+            isAddingToCart: state.isAddingToCart,
+          );
+        }
+
+        if (state.loadFailure != null) {
+          return Scaffold(
+            backgroundColor: color.surface,
+            appBar: CustomAppBar(
+              title: title,
+              backgroundColor: color.surface,
+              titleColor: color.onSurface,
+              showShadow: false,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: color.onSurface,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                splashRadius: 20,
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(Spacing.md),
+              child: ApiErrorWidget.fromFailure(
+                state.loadFailure!,
+                onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
+                onGoBack: () => Navigator.of(context).maybePop(),
+              ),
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
       },
     );
+  }
+
+  void _goToCartTab(BuildContext context) {
+    final navigator = Navigator.of(context);
+    final shellState = mainShellKey.currentState;
+
+    if (shellState == null) {
+      navigator.pushNamedAndRemoveUntil(
+        AppRoutes.mainShell,
+        (route) => false,
+        arguments: 2,
+      );
+      return;
+    }
+
+    navigator.popUntil(
+      (route) => route.settings.name == AppRoutes.mainShell || route.isFirst,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      mainShellKey.currentState?.jumpToTab(2);
+    });
   }
 }
 
@@ -229,8 +246,8 @@ class _ProductDetailsLoadingContent extends StatelessWidget {
           children: [
             const _DetailsBone(height: 28, radius: 12),
             const SizedBox(height: Spacing.sm),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Expanded(child: _DetailsBone(height: 18, radius: 10)),
                 SizedBox(width: Spacing.sm),
                 _DetailsBone(width: 88, height: 18, radius: 10),
@@ -245,8 +262,8 @@ class _ProductDetailsLoadingContent extends StatelessWidget {
             const SizedBox(height: Spacing.xs),
             const _DetailsBone(width: 220, height: 14, radius: 8),
             const SizedBox(height: Spacing.lg),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 _DetailsBone(width: 110, height: 20, radius: 10),
                 Spacer(),
                 _DetailsBone(width: 90, height: 20, radius: 10),
@@ -317,42 +334,10 @@ class _ProductDetailsLoadingContent extends StatelessWidget {
   }
 }
 
-class _ProductDetailsErrorContent extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ProductDetailsErrorContent({
-    required this.message,
-    required this.onRetry,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline, size: 48),
-            const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: onRetry,
-              child: const Text('إعادة المحاولة'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _DetailsShimmer extends StatefulWidget {
-  final Widget child;
-
   const _DetailsShimmer({required this.child});
+
+  final Widget child;
 
   @override
   State<_DetailsShimmer> createState() => _DetailsShimmerState();
@@ -379,6 +364,8 @@ class _DetailsShimmerState extends State<_DetailsShimmer>
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
+    final highlightColor = SkeletonColors.highlight(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -389,9 +376,9 @@ class _DetailsShimmerState extends State<_DetailsShimmer>
               begin: Alignment(-2.0 + (_controller.value * 4), -0.4),
               end: Alignment(0.0 + (_controller.value * 4), 0.4),
               colors: [
-                AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withValues(alpha: 0.55),
-                AppColors.shimmerBase,
+                baseColor,
+                highlightColor,
+                baseColor,
               ],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
@@ -405,19 +392,20 @@ class _DetailsShimmerState extends State<_DetailsShimmer>
 }
 
 class _DetailsBone extends StatelessWidget {
+  const _DetailsBone({this.width, required this.height, required this.radius});
+
   final double? width;
   final double height;
   final double radius;
 
-  const _DetailsBone({this.width, required this.height, required this.radius});
-
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.shimmerBase,
+        color: baseColor,
         borderRadius: BorderRadius.circular(radius),
       ),
     );

@@ -23,7 +23,7 @@ ProductModel mapCartItemToProductModel({
     name: item.name,
     store: vendorPrice.name,
     price: vendorPrice.price,
-    imageUrl: item.imageUrl,
+    imageUrl: item.imageUrl ?? '',
     unit: item.unit,
     emoji: '',
     isDiscounted: false,

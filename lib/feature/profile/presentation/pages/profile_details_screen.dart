@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/inline_api_error_widget.dart';
@@ -73,6 +72,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     final colorScheme = context.colorScheme;
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: CustomAppBar(title: locale.personal_info),
       body: SafeArea(
         child: BlocConsumer<ProfileViewModel, ProfileState>(
@@ -101,7 +101,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                 Spacing.base,
                 Spacing.base,
                 Spacing.base,
-                Spacing.xl,
+                Spacing.xxl,
               ),
               child: Form(
                 key: _formKey,
@@ -181,6 +181,7 @@ class _ProfileDetailsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
     final initial = profile.fullName.trim().isNotEmpty
         ? profile.fullName.trim()[0].toUpperCase()
         : 'Z';
@@ -189,13 +190,13 @@ class _ProfileDetailsHeader extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(Spacing.lg),
       decoration: BoxDecoration(
-        gradient: AppColors.primarygradient,
+        color: colorScheme.primary,
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.16),
-            blurRadius: 24,
-            offset: const Offset(0, 14),
+            color: colorScheme.primary.withValues(alpha: 0.18),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -260,22 +261,50 @@ class _ProfileInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = context.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = isDark
+        ? Color.alphaBlend(
+            colorScheme.primary.withValues(alpha: 0.08),
+            colorScheme.surfaceContainerHigh,
+          )
+        : Colors.white;
+    final fieldFillColor = isDark
+        ? colorScheme.surface.withValues(alpha: 0.92)
+        : colorScheme.surface;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(Spacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: colorScheme.outlineVariant),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 18,
+            color: colorScheme.shadow.withValues(alpha: isDark ? 0.10 : 0.05),
+            blurRadius: 16,
             offset: const Offset(0, 8),
           ),
         ],
       ),
-      child: child,
+      child: Theme(
+        data: theme.copyWith(
+          inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+            fillColor: fieldFillColor,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Spacing.inputRadius),
+              borderSide: BorderSide(color: colorScheme.outlineVariant),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Spacing.inputRadius),
+              borderSide: BorderSide(color: colorScheme.primary, width: 1.4),
+            ),
+          ),
+        ),
+        child: child,
+      ),
     );
   }
 }

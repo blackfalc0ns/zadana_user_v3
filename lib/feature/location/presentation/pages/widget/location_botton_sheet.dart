@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 
 class LocationBottomSheet extends StatelessWidget {
@@ -18,6 +19,8 @@ class LocationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.localization;
+
     return Container(
       padding: EdgeInsets.only(
         left: Spacing.lg,
@@ -71,7 +74,7 @@ class LocationBottomSheet extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      location?.addressLine ?? 'حرّك الخريطة لاختيار الموقع',
+                      location?.addressLine ?? l10n.location_map_drag_hint,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.labelMedium,
@@ -90,7 +93,7 @@ class LocationBottomSheet extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-             onPressed: isLoading ? null : onConfirm,
+              onPressed: isLoading ? null : onConfirm,
               child: isLoading
                   ? const SizedBox(
                       height: 20,
@@ -100,7 +103,7 @@ class LocationBottomSheet extends StatelessWidget {
                         color: AppColors.textOnPrimary,
                       ),
                     )
-                  : const Text('تأكيد الموقع'),
+                  : Text(l10n.location_map_confirm),
             ),
           ),
         ],

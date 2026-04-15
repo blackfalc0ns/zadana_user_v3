@@ -129,6 +129,20 @@ abstract class ApiServices {
     @Query('sort') String? sort,
   );
 
+  @GET(EndPoints.shoppingProducts)
+  Future<CategoryProductsResponseModelDto> getShoppingProducts(
+    @Query('categoryId') String? categoryId,
+    @Query('product_type_id') String? productTypeId,
+    @Query('part_id') String? partId,
+    @Query('quantity_id') String? quantityId,
+    @Query('brand_id') String? brandId,
+    @Query('min_price') double? minPrice,
+    @Query('max_price') double? maxPrice,
+    @Query('sort') String? sort,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  );
+
   @GET(EndPoints.productsSearch)
   Future<ProductSearchResponseDto> searchProducts(
     @Query('query') String query,

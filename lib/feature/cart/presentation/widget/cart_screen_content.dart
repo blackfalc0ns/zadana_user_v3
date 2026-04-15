@@ -38,7 +38,6 @@ class CartScreenContent extends StatelessWidget {
     required this.animatingPriceItemId,
     required this.totalPrice,
     required this.totalOldPrice,
-    required this.totalSavings,
     required this.hasDiscounts,
     required this.selectedVendorName,
     required this.animations,
@@ -46,7 +45,6 @@ class CartScreenContent extends StatelessWidget {
     required this.onItemTap,
     required this.onUpdateQuantity,
     required this.onDeleteItem,
-    required this.onComparison,
     required this.onCheckout,
   });
 
@@ -62,7 +60,6 @@ class CartScreenContent extends StatelessWidget {
   final String? animatingPriceItemId;
   final double totalPrice;
   final double totalOldPrice;
-  final double totalSavings;
   final bool hasDiscounts;
   final String selectedVendorName;
   final CartAnimations animations;
@@ -70,7 +67,6 @@ class CartScreenContent extends StatelessWidget {
   final ValueChanged<CartItemModel> onItemTap;
   final void Function(CartItemModel item, bool increment) onUpdateQuantity;
   final ValueChanged<CartItemModel> onDeleteItem;
-  final VoidCallback onComparison;
   final VoidCallback onCheckout;
 
   @override
@@ -105,11 +101,9 @@ class CartScreenContent extends StatelessWidget {
             items: items,
             totalPrice: totalPrice,
             totalOldPrice: totalOldPrice,
-            totalSavings: totalSavings,
             hasDiscounts: hasDiscounts,
             selectedVendorName: selectedVendorName,
             animations: animations,
-            onComparison: onComparison,
             onCheckout: onCheckout,
           ),
         ),

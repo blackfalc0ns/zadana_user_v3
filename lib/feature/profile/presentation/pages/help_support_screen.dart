@@ -20,12 +20,12 @@ class HelpSupportScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HelpSupportHeader(),
-            SizedBox(height: 24),
+            const HelpSupportHeader(),
+            const SizedBox(height: 24),
             ContactSection(l10n: l10n),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             FAQSection(l10n: l10n),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
           ],
         ),
       ),

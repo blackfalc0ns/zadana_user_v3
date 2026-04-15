@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'animated_search_hint.dart';
 
 class HomeSearchBar extends StatelessWidget {
@@ -29,15 +29,16 @@ class HomeSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Padding(
       padding: padding,
       child: Container(
-        height: 50,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+        height: 44,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.transparent,
+          color: backgroundColor ?? color.surface.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.white.withAlpha(50)),
+          border: Border.all(color: color.onPrimary.withValues(alpha: 0.18)),
         ),
         child: Row(
           children: [
@@ -54,7 +55,7 @@ class HomeSearchBar extends StatelessWidget {
                     autofocus: autofocus,
                     textDirection: TextDirection.rtl,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.white,
+                      color: color.onPrimary,
                     ),
                     decoration: InputDecoration(
                       filled: false,
@@ -101,13 +102,14 @@ class _EmptyStateHint extends StatelessWidget {
 class _SearchPrefixIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Padding(
       padding: const EdgeInsetsDirectional.only(end: 10),
       child: SvgPicture.asset(
         'assets/images/search-normal.svg',
         width: 20,
         height: 20,
-        colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+        colorFilter: ColorFilter.mode(color.onPrimary, BlendMode.srcIn),
       ),
     );
   }
@@ -119,12 +121,13 @@ class _FilterAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 10),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
-        child: const Icon(Icons.tune_rounded, size: 20, color: AppColors.white),
+        child: Icon(Icons.tune_rounded, size: 20, color: color.onPrimary),
       ),
     );
   }

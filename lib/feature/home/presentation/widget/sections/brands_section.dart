@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
@@ -24,6 +23,7 @@ class BrandsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     final locale = context.localization;
 
     return BlocBuilder<HomeViewModel, HomeState>(
@@ -54,7 +54,7 @@ class BrandsSection extends StatelessWidget {
           child: Column(
             children: [
               SectionHeader(
-                actionColor: Colors.white,
+                actionColor: color.onPrimaryContainer,
                 title: locale.section_brands,
                 actionLabel: locale.see_all,
                 onActionTap: () {
@@ -66,7 +66,7 @@ class BrandsSection extends StatelessWidget {
                   );
                 },
                 isActionBold: true,
-                titleColor: AppColors.white,
+                titleColor: color.onPrimaryContainer,
                 horizontalPadding: 16,
               ),
               const SizedBox(height: Spacing.md),
@@ -86,6 +86,7 @@ class BrandsSection extends StatelessWidget {
                     final brand = visibleItems[index];
                     return BrandCard(
                       name: brand.name,
+                      imageUrl: brand.logo,
                       emoji: brand.emoji ?? brand.name.substring(0, 1),
                       onTap: () => _navigateToBrandPage(context, brand),
                     );
@@ -107,10 +108,14 @@ class _BrandsSectionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
-      decoration: const BoxDecoration(color: AppColors.primary),
-      margin: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: color.primaryContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: Spacing.sm),
       child: child,
     );
   }
@@ -121,13 +126,14 @@ class _BrandsLoadingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     final locale = context.localization;
 
     return _BrandsSectionContainer(
       child: Column(
         children: [
           SectionHeader(
-            actionColor: Colors.white,
+            actionColor: color.onPrimaryContainer,
             title: locale.section_brands,
             actionLabel: locale.see_all,
             onActionTap: () {
@@ -138,7 +144,7 @@ class _BrandsLoadingSection extends StatelessWidget {
               );
             },
             isActionBold: true,
-            titleColor: AppColors.white,
+            titleColor: color.onPrimaryContainer,
             horizontalPadding: 16,
           ),
           const SizedBox(height: Spacing.md),
@@ -160,6 +166,7 @@ class _BrandsGridSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     return GridView.builder(
       scrollDirection: Axis.horizontal,
       physics: const NeverScrollableScrollPhysics(),
@@ -172,7 +179,7 @@ class _BrandsGridSkeleton extends StatelessWidget {
       itemCount: 6,
       itemBuilder: (_, _) => Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: color.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(Spacing.cardRadius),
         ),
         padding: const EdgeInsets.all(Spacing.xs),

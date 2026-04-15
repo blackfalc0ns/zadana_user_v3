@@ -24,7 +24,7 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return CustomAppBar(
       showBackButton: false,
-      backgroundColor: color.surface,
+     
       titleWidget: Column(
         mainAxisSize: MainAxisSize.min,
         children: [Text(locale.cart)],

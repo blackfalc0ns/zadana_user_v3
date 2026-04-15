@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/auth/forget_password/presentation/pages/forget_password_screen.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/pages/login_screen.dart';
@@ -9,8 +10,6 @@ import 'package:zadana_user_v3/feature/auth/register/presentation/pages/register
 import 'package:zadana_user_v3/feature/auth/register/presentation/manager/register_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/reset_password_screen.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/pages/verify_reset_otp_screen.dart';
-import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
-import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
@@ -61,7 +60,7 @@ class RouteGenerator {
           ),
         );
       case AppRoutes.forgetPassword:
-        return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
+        return MaterialPageRoute(builder: (_) => const ForgetPasswordScreen());
       case AppRoutes.verifyResetOtp:
         final identifier = settings.arguments as String;
         return MaterialPageRoute(
@@ -81,13 +80,14 @@ class RouteGenerator {
           ),
         );
       case AppRoutes.customerAddresses:
-        return MaterialPageRoute(
-          builder: (_) => const CustomerAddressesPage(),
-        );
+        return MaterialPageRoute(builder: (_) => const CustomerAddressesPage());
       case AppRoutes.editProfile:
         return MaterialPageRoute(builder: (_) => EditProfileScreen());
       case AppRoutes.home:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => MainShell(key: mainShellKey, initialIndex: 0),
+        );
       case AppRoutes.mainShell:
         final initialIndex = settings.arguments as int? ?? 0;
         return MaterialPageRoute(
@@ -98,7 +98,10 @@ class RouteGenerator {
       case AppRoutes.selectAddress:
         return MaterialPageRoute(builder: (_) => SelectAddressFromMapPage());
       case AppRoutes.startSelectLocationPage:
-        return MaterialPageRoute(builder: (_) => StartSelectLocationPage());
+        final fromAddresses = settings.arguments as bool? ?? false;
+        return MaterialPageRoute(
+          builder: (_) => StartSelectLocationPage(fromAddresses: fromAddresses),
+        );
       case AppRoutes.verifyOtp:
         final identifier = settings.arguments as String?;
         return MaterialPageRoute(
@@ -107,7 +110,8 @@ class RouteGenerator {
       case AppRoutes.manualAddressEntry:
         final locationEntity = settings.arguments as LocationEntity?;
         return MaterialPageRoute(
-          builder: (_) => ManualAddressEntryPage(initialLocation: locationEntity),
+          builder: (_) =>
+              ManualAddressEntryPage(initialLocation: locationEntity),
         );
       case AppRoutes.buildingDetails:
         final locationEntity = settings.arguments as LocationEntity?;
@@ -196,4 +200,3 @@ class RouteGenerator {
     );
   }
 }
-

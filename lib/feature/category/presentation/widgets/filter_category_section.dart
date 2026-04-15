@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 
@@ -40,6 +42,8 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
     final displayedCategories = showAllCategories
         ? widget.categories
         : widget.categories.take(8).toList();
@@ -48,8 +52,12 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'الفئة',
-          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          locale.filter_category_title,
+          style: getBoldStyle(
+            fontFamily: FontConstant.cairo,
+            color: color.primary,
+            fontSize: FontSize.size16,
+          ),
         ),
         const SizedBox(height: Spacing.md),
         LayoutBuilder(
@@ -92,7 +100,9 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
               child: TextButton(
                 onPressed: () =>
                     setState(() => showAllCategories = !showAllCategories),
-                child: Text(showAllCategories ? 'عرض أقل' : 'عرض المزيد'),
+                child: Text(
+                  showAllCategories ? locale.show_less : locale.show_more,
+                ),
               ),
             ),
           ),

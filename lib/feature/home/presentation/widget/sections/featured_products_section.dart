@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
+import 'package:zadana_user_v3/feature/featured/presentation/pages/featured_products_page.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -29,6 +30,14 @@ class FeaturedProductsSection extends StatelessWidget {
               SectionHeader(
                 title: locale.section_featured,
                 actionLabel: locale.see_all,
+                onActionTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          FeaturedProductsPage(title: locale.section_featured),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: Spacing.md),
               const SizedBox(
@@ -62,6 +71,14 @@ class FeaturedProductsSection extends StatelessWidget {
             SectionHeader(
               title: locale.section_featured,
               actionLabel: locale.see_all,
+              onActionTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        FeaturedProductsPage(title: locale.section_featured),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(

@@ -6,7 +6,9 @@ import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_footer_components.dart';
 
 class DrawerFooter extends StatelessWidget {
-  const DrawerFooter({super.key});
+  const DrawerFooter({super.key, required this.isGuest});
+
+  final bool isGuest;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +27,16 @@ class DrawerFooter extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppButton.outlined(
-            height: 40,
-            text: locale.logout,
-            color: AppColors.error,
-            textColor: AppColors.error,
-            onPressed: () => showLogoutDialog(context),
-          ),
-          const SizedBox(height: Spacing.xss),
+          if (!isGuest) ...[
+            AppButton.outlined(
+              height: 40,
+              text: locale.logout,
+              color: AppColors.error,
+              textColor: AppColors.error,
+              onPressed: () => showLogoutDialog(context),
+            ),
+            const SizedBox(height: Spacing.xss),
+          ],
           FooterInfoTile(onTap: () => showDeveloperDialog(context)),
           const SizedBox(height: Spacing.xss),
         ],

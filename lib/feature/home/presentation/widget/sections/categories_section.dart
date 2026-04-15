@@ -107,8 +107,8 @@ class _HomeCategoryItem extends StatelessWidget {
                 color: color.surface,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: color.outline.withValues(alpha: 0.2),
-                  width: .5,
+                  color: color.outline,
+                  width: .9,
                 ),
               ),
               padding: const EdgeInsets.all(10),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -52,21 +51,34 @@ class CustomVerticalFilterChip extends StatelessWidget {
             padding: contentPadding,
             decoration: BoxDecoration(
               color: isSelected
-                  ? (selectedColor ?? AppColors.primary)
-                  : (backgroundColor ?? AppColors.white),
+                  ? (selectedColor ?? color.primary)
+                  : (backgroundColor ?? color.surfaceContainerLowest),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected
-                    ? (selectedColor ?? AppColors.primary)
-                    : (color.outline.withValues(alpha: 0.2)),
+                    ? (selectedColor ?? color.primary)
+                    : color.outlineVariant,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.shadow.withValues(alpha: isSelected ? 0.12 : 0.06),
+                  blurRadius: isSelected ? 8 : 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (icon != null) ...[
-                  Text(icon!, style: TextStyle(fontSize: iconSize)),
+                  Text(
+                    icon!,
+                    style: TextStyle(
+                      fontSize: iconSize,
+                      color: isSelected ? color.onPrimary : color.primary,
+                    ),
+                  ),
                   SizedBox(height: spacing),
                 ],
                 Flexible(

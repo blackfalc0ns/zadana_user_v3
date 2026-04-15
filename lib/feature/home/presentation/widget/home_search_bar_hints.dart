@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class HomeSearchBarHints {
-  static const List<(String, Color)> hints = [
-    ('🧀 ابحث عن منتجات الألبان...', Colors.white),
-    ('🥬 ابحث عن الخضروات الطازجة...', Colors.greenAccent),
-    ('🍎 ابحث عن الفواكه الموسمية...', Colors.orangeAccent),
-    ('🍗 ابحث عن اللحوم والدواجن...', Colors.redAccent),
-    ('☕ ابحث عن المشروبات والقهوة...', Colors.blueAccent),
-    ('🥐 ابحث عن المخبوزات والحلويات...', Colors.amberAccent),
-    ('🌶️ ابحث عن التوابل والبقوليات...', Colors.brown),
-    ('🧴 ابحث عن المنظفات المنزلية...', Colors.cyanAccent),
-    ('🫒 ابحث عن الزيوت والسمن...', Colors.yellowAccent),
-    ('🥜 ابحث عن المكسرات والياميش...', Colors.deepOrangeAccent),
-    ('🥫 ابحث عن المعلبات والوجبات السريعة...', Colors.lightBlueAccent),
-    ('🍼 ابحث عن أغذية الأطفال...', Colors.pinkAccent),
-  ];
+  static List<(String, Color)> resolve(BuildContext context) {
+    final l10n = context.localization;
+
+    return [
+      (l10n.home_search_hint_dairy, Colors.white),
+      (l10n.home_search_hint_vegetables, Colors.greenAccent),
+      (l10n.home_search_hint_fruits, Colors.orangeAccent),
+      (l10n.home_search_hint_meat, Colors.redAccent),
+      (l10n.home_search_hint_drinks, Colors.blueAccent),
+      (l10n.home_search_hint_bakery, Colors.amberAccent),
+      (l10n.home_search_hint_spices, Colors.brown),
+      (l10n.home_search_hint_cleaning, Colors.cyanAccent),
+      (l10n.home_search_hint_oils, Colors.yellowAccent),
+      (l10n.home_search_hint_nuts, Colors.deepOrangeAccent),
+      (l10n.home_search_hint_canned, Colors.lightBlueAccent),
+      (l10n.home_search_hint_baby, Colors.pinkAccent),
+    ];
+  }
 }

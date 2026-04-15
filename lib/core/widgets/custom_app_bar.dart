@@ -73,7 +73,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         systemOverlayStyle:
             systemOverlayStyle ??
-            SystemUiOverlayStyle(
+            const SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
               statusBarIconBrightness: Brightness.dark,
               statusBarBrightness: Brightness.light,
@@ -115,6 +115,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget? _buildTitle(BuildContext context) {
     if (titleWidget != null) return titleWidget;
     if (title == null) return null;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -124,7 +125,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           style: getBoldStyle(
             fontFamily: FontConstant.cairo,
             fontSize: titleFontSize ?? FontSize.size18,
-            color: titleColor ?? AppColors.textPrimary,
+            color: titleColor ?? colorScheme.onSurface,
           ),
           textAlign: TextAlign.center,
         ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
@@ -22,8 +22,8 @@ class RecommendedProductCard extends StatefulWidget {
   final ProductModel product;
   final String heroTag;
   final VoidCallback? onTap;
-  final VoidCallback? onAddTap;
-  final VoidCallback? onFavoriteTap;
+  final Future<void> Function()? onAddTap;
+  final Future<void> Function()? onFavoriteTap;
 
   @override
   State<RecommendedProductCard> createState() => _RecommendedProductCardState();
@@ -32,6 +32,7 @@ class RecommendedProductCard extends StatefulWidget {
 class _RecommendedProductCardState extends State<RecommendedProductCard> {
   late bool _isFavorite;
   bool _isSubmittingFavorite = false;
+  bool _isSubmittingCart = false;
 
   @override
   void initState() {
@@ -50,7 +51,14 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
   Future<void> _handleFavoriteTap() async {
     if (_isSubmittingFavorite) return;
     if (widget.onFavoriteTap != null) {
-      widget.onFavoriteTap!.call();
+      setState(() => _isSubmittingFavorite = true);
+      try {
+        await widget.onFavoriteTap!.call();
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmittingFavorite = false);
+        }
+      }
       return;
     }
 
@@ -76,8 +84,22 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
     });
   }
 
+  Future<void> _handleAddTap() async {
+    if (_isSubmittingCart || widget.onAddTap == null) return;
+
+    setState(() => _isSubmittingCart = true);
+    try {
+      await widget.onAddTap!.call();
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmittingCart = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     final cardWidth = (MediaQuery.sizeOf(context).width / 2.4).clamp(
       140.0,
       200.0,
@@ -92,9 +114,9 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
             constraints: const BoxConstraints(minHeight: 78),
             padding: const EdgeInsets.all(Spacing.sm),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(Spacing.cardRadius),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: color.outlineVariant),
             ),
             child: Row(
               children: [
@@ -123,6 +145,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                         style: AppTextStyles.labelMedium.copyWith(
                           fontSize: 12.5,
                           height: 1.15,
+                          color: color.onSurface,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -140,17 +163,29 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                           ),
                           const SizedBox(width: Spacing.sm),
                           GestureDetector(
-                            onTap: widget.onAddTap,
+                            onTap: _handleAddTap,
                             child: Container(
                               padding: const EdgeInsets.all(7),
                               decoration: BoxDecoration(
-                                color: AppColors.primary,
+                                color: color.primary,
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: const FaIcon(
-                                FontAwesomeIcons.cartPlus,
-                                color: AppColors.white,
-                                size: 14,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 180),
+                                child: _isSubmittingCart
+                                    ? SizedBox(
+                                        width: 14,
+                                        height: 14,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 1.8,
+                                          color: color.onPrimary,
+                                        ),
+                                      )
+                                    : FaIcon(
+                                        FontAwesomeIcons.cartPlus,
+                                        color: color.onPrimary,
+                                        size: 14,
+                                      ),
                               ),
                             ),
                           ),
@@ -171,20 +206,37 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: AppColors.white.withValues(alpha: 0.8),
+                  color: color.surface.withValues(alpha: 0.92),
                   shape: BoxShape.circle,
-                  boxShadow: const [
-                    BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.shadow.withValues(alpha: 0.12),
+                      blurRadius: 2,
+                    ),
                   ],
                 ),
-                child: Icon(
-                  _isFavorite
-                      ? Icons.favorite_rounded
-                      : Icons.favorite_border_rounded,
-                  size: 16,
-                  color: _isFavorite
-                      ? AppColors.error
-                      : AppColors.textSecondary,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 180),
+                  child: _isSubmittingFavorite
+                      ? Center(
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.8,
+                              color: color.error,
+                            ),
+                          ),
+                        )
+                      : Icon(
+                          _isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          size: 16,
+                          color: _isFavorite
+                              ? color.error
+                              : color.onSurfaceVariant,
+                        ),
                 ),
               ),
             ),

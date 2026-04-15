@@ -43,11 +43,10 @@ class _ForgetPasswordView extends StatelessWidget {
 
         return AuthExperienceShell(
           showBackButton: true,
-          heroBadge: 'Ø§Ø³ØªØ¹Ø§Ø¯Ø© Ø§Ù„ÙˆØµÙˆÙ„',
+          heroBadge: locale.forget_password_hero_badge,
           heroTitle: locale.forget_password_title,
-          heroSubtitle:
-              'We will help you recover access quickly so you can get back to your groceries without friction.',
-          sectionBadge: 'Recovery',
+          heroSubtitle: locale.forget_password_hero_subtitle,
+          sectionBadge: locale.forget_password_section_badge,
           sectionTitle: locale.forget_password_title,
           sectionDescription: locale.forget_password_description,
           sectionIcon: Icons.mark_email_read_outlined,

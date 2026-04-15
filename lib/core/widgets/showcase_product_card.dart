@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
@@ -23,8 +23,8 @@ class ShowcaseProductCard extends StatefulWidget {
   final ProductModel product;
   final String heroTag;
   final VoidCallback? onTap;
-  final VoidCallback? onAddTap;
-  final VoidCallback? onFavoriteTap;
+  final Future<void> Function()? onAddTap;
+  final Future<void> Function()? onFavoriteTap;
 
   @override
   State<ShowcaseProductCard> createState() => _ShowcaseProductCardState();
@@ -33,6 +33,7 @@ class ShowcaseProductCard extends StatefulWidget {
 class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
   late bool _isFavorite;
   bool _isSubmittingFavorite = false;
+  bool _isSubmittingCart = false;
 
   @override
   void initState() {
@@ -51,7 +52,14 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
   Future<void> _handleFavoriteTap() async {
     if (_isSubmittingFavorite) return;
     if (widget.onFavoriteTap != null) {
-      widget.onFavoriteTap!.call();
+      setState(() => _isSubmittingFavorite = true);
+      try {
+        await widget.onFavoriteTap!.call();
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmittingFavorite = false);
+        }
+      }
       return;
     }
 
@@ -77,8 +85,22 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
     });
   }
 
+  Future<void> _handleAddTap() async {
+    if (_isSubmittingCart || widget.onAddTap == null) return;
+
+    setState(() => _isSubmittingCart = true);
+    try {
+      await widget.onAddTap!.call();
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmittingCart = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     final discount = widget.product.discountPercentage;
 
     return GestureDetector(
@@ -90,14 +112,12 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
             height: 82,
             padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 6, 4),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+            color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.1),
-              ),
+              border: Border.all(color: color.primary.withValues(alpha: 0.12)),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow.withValues(alpha: 0.03),
+                  color: color.shadow.withValues(alpha: 0.08),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -110,6 +130,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                   imageUrl: widget.product.imageUrl,
                   heroTag: widget.heroTag,
                   isFavorite: _isFavorite,
+                  isLoading: _isSubmittingFavorite,
                   onFavoriteTap: _handleFavoriteTap,
                 ),
                 Expanded(
@@ -124,7 +145,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                         style: getBoldStyle(
                           fontFamily: FontConstant.cairo,
                           fontSize: 10.4,
-                          color: AppColors.textPrimary,
+                          color: color.onSurface,
                         ),
                       ),
                       const SizedBox(height: 3),
@@ -135,7 +156,10 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                         fontScale: 0.72,
                       ),
                       const SizedBox(height: 4),
-                      _AddButton(onTap: widget.onAddTap),
+                      _AddButton(
+                        onTap: _handleAddTap,
+                        isLoading: _isSubmittingCart,
+                      ),
                     ],
                   ),
                 ),
@@ -148,11 +172,11 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
               left: 0,
               child: DiscountBadge(
                 discountText: '$discount%',
-                color: AppColors.error,
+                color: color.error,
                 trianglesize: 32,
                 cornerRadius: 12,
                 fontSize: 8.4,
-                shadowColor: AppColors.shadow,
+                shadowColor: color.shadow,
               ),
             ),
         ],
@@ -167,6 +191,7 @@ class _ProductVisual extends StatelessWidget {
     required this.imageUrl,
     required this.heroTag,
     required this.isFavorite,
+    required this.isLoading,
     required this.onFavoriteTap,
   });
 
@@ -174,10 +199,13 @@ class _ProductVisual extends StatelessWidget {
   final String imageUrl;
   final String heroTag;
   final bool isFavorite;
+  final bool isLoading;
   final VoidCallback onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return SizedBox(
       width: 62,
       child: Stack(
@@ -186,11 +214,9 @@ class _ProductVisual extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: color.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(11),
-                border: Border.all(
-                  color: AppColors.secondary.withValues(alpha: 0.1),
-                ),
+                border: Border.all(color: color.outlineVariant),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(11),
@@ -210,7 +236,11 @@ class _ProductVisual extends StatelessWidget {
           PositionedDirectional(
             top: 4,
             end: 4,
-            child: _FavoritePill(isFavorite: isFavorite, onTap: onFavoriteTap),
+            child: _FavoritePill(
+              isFavorite: isFavorite,
+              isLoading: isLoading,
+              onTap: onFavoriteTap,
+            ),
           ),
         ],
       ),
@@ -219,29 +249,55 @@ class _ProductVisual extends StatelessWidget {
 }
 
 class _FavoritePill extends StatelessWidget {
-  const _FavoritePill({required this.isFavorite, required this.onTap});
+  const _FavoritePill({
+    required this.isFavorite,
+    required this.isLoading,
+    required this.onTap,
+  });
 
   final bool isFavorite;
+  final bool isLoading;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 18,
         height: 18,
         decoration: BoxDecoration(
-          color: AppColors.white.withValues(alpha: 0.85),
+          color: color.surface.withValues(alpha: 0.92),
           shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(color: AppColors.shadow, blurRadius: 0.5),
+          boxShadow: [
+            BoxShadow(
+              color: color.shadow.withValues(alpha: 0.12),
+              blurRadius: 1.5,
+            ),
           ],
         ),
-        child: Icon(
-          isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-          size: 15,
-          color: isFavorite ? AppColors.error : AppColors.textSecondary,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 180),
+          child: isLoading
+              ? Center(
+                  child: SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.7,
+                      color: color.error,
+                    ),
+                  ),
+                )
+              : Icon(
+                  isFavorite
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                  size: 15,
+                  color: isFavorite ? color.error : color.onSurfaceVariant,
+                ),
         ),
       ),
     );
@@ -249,40 +305,57 @@ class _FavoritePill extends StatelessWidget {
 }
 
 class _AddButton extends StatelessWidget {
-  const _AddButton({required this.onTap});
+  const _AddButton({required this.onTap, required this.isLoading});
 
-  final VoidCallback? onTap;
+  final Future<void> Function() onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 20,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.08),
+          color: color.primaryContainer.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+          border: Border.all(color: color.primary.withValues(alpha: 0.2)),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const FaIcon(
-              FontAwesomeIcons.cartPlus,
-              size: 7.5,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              'إضافة',
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: 8.2,
-                color: AppColors.primaryDark,
-              ),
-            ),
-          ],
+        child: Center(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            child: isLoading
+                ? SizedBox(
+                    width: 10,
+                    height: 10,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.6,
+                      color: color.primary,
+                    ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FaIcon(
+                        FontAwesomeIcons.cartPlus,
+                        size: 7.5,
+                        color: color.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'إضافة',
+                        style: getBoldStyle(
+                          fontFamily: FontConstant.cairo,
+                          fontSize: 8.2,
+                          color: color.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

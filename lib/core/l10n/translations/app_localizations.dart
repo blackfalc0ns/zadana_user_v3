@@ -620,6 +620,90 @@ abstract class AppLocalizations {
   /// **'Location permission permanently denied'**
   String get location_permission_denied_forever;
 
+  /// No description provided for @location_service_disabled_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Location service is disabled. Please enable location services from settings and try again.'**
+  String get location_service_disabled_message;
+
+  /// No description provided for @location_permission_denied_message.
+  ///
+  /// In en, this message translates to:
+  /// **'The app needs location permission to determine your current location. Please allow location access.'**
+  String get location_permission_denied_message;
+
+  /// No description provided for @location_permission_denied_forever_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission has been permanently denied. Please go to the app settings and enable location permission.'**
+  String get location_permission_denied_forever_message;
+
+  /// No description provided for @location_search_temporarily_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Search is temporarily unavailable. Please try again later.'**
+  String get location_search_temporarily_unavailable;
+
+  /// No description provided for @location_rate_limit_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a moment before trying again.'**
+  String get location_rate_limit_retry;
+
+  /// No description provided for @location_start_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location_start_title;
+
+  /// No description provided for @location_start_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your location so we can deliver your orders quickly and accurately.'**
+  String get location_start_subtitle;
+
+  /// No description provided for @location_start_selected_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected location: {address}'**
+  String location_start_selected_subtitle(String address);
+
+  /// No description provided for @location_select_on_map.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose location from map'**
+  String get location_select_on_map;
+
+  /// No description provided for @location_use_current_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my current location'**
+  String get location_use_current_location;
+
+  /// No description provided for @location_enter_address_manually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter address manually'**
+  String get location_enter_address_manually;
+
+  /// No description provided for @location_map_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a place...'**
+  String get location_map_search_hint;
+
+  /// No description provided for @location_map_drag_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the map to choose a location'**
+  String get location_map_drag_hint;
+
+  /// No description provided for @location_map_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm location'**
+  String get location_map_confirm;
+
   /// No description provided for @auth_title.
   ///
   /// In en, this message translates to:
@@ -812,6 +896,24 @@ abstract class AppLocalizations {
   /// **'Enter your phone number or email to receive a verification code'**
   String get forget_password_description;
 
+  /// No description provided for @forget_password_hero_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover access'**
+  String get forget_password_hero_badge;
+
+  /// No description provided for @forget_password_hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We will help you recover access quickly so you can get back to your account without friction.'**
+  String get forget_password_hero_subtitle;
+
+  /// No description provided for @forget_password_section_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery'**
+  String get forget_password_section_badge;
+
   /// No description provided for @btn_send_verification_code.
   ///
   /// In en, this message translates to:
@@ -835,6 +937,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the verification code sent to'**
   String get reset_password_description_prefix;
+
+  /// No description provided for @reset_password_otp_hero_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm code'**
+  String get reset_password_otp_hero_badge;
+
+  /// No description provided for @reset_password_otp_hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code we sent so you can safely continue to set your new password.'**
+  String get reset_password_otp_hero_subtitle;
+
+  /// No description provided for @reset_password_otp_section_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP'**
+  String get reset_password_otp_section_badge;
+
+  /// No description provided for @reset_password_hero_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure account'**
+  String get reset_password_hero_badge;
+
+  /// No description provided for @reset_password_hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a stronger password and keep your account protected across every session.'**
+  String get reset_password_hero_subtitle;
+
+  /// No description provided for @reset_password_section_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure'**
+  String get reset_password_section_badge;
 
   /// No description provided for @label_verification_code.
   ///
@@ -1004,6 +1142,114 @@ abstract class AppLocalizations {
   /// **'Search for products, stores...'**
   String get search_hint;
 
+  /// No description provided for @search_marketplace_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in shopping'**
+  String get search_marketplace_title;
+
+  /// No description provided for @search_start_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Start searching'**
+  String get search_start_title;
+
+  /// No description provided for @search_start_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a product name and results will load progressively as you browse.'**
+  String get search_start_description;
+
+  /// No description provided for @search_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get search_empty_title;
+
+  /// No description provided for @search_empty_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different keyword or broaden your search.'**
+  String get search_empty_description;
+
+  /// No description provided for @search_in_brand_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in {brandName} products'**
+  String search_in_brand_products(String brandName);
+
+  /// No description provided for @home_search_hint_dairy.
+  ///
+  /// In en, this message translates to:
+  /// **'🧀 Search for dairy products...'**
+  String get home_search_hint_dairy;
+
+  /// No description provided for @home_search_hint_vegetables.
+  ///
+  /// In en, this message translates to:
+  /// **'🥬 Search for fresh vegetables...'**
+  String get home_search_hint_vegetables;
+
+  /// No description provided for @home_search_hint_fruits.
+  ///
+  /// In en, this message translates to:
+  /// **'🍎 Search for seasonal fruits...'**
+  String get home_search_hint_fruits;
+
+  /// No description provided for @home_search_hint_meat.
+  ///
+  /// In en, this message translates to:
+  /// **'🍗 Search for meat and poultry...'**
+  String get home_search_hint_meat;
+
+  /// No description provided for @home_search_hint_drinks.
+  ///
+  /// In en, this message translates to:
+  /// **'☕ Search for drinks and coffee...'**
+  String get home_search_hint_drinks;
+
+  /// No description provided for @home_search_hint_bakery.
+  ///
+  /// In en, this message translates to:
+  /// **'🥐 Search for bakery and desserts...'**
+  String get home_search_hint_bakery;
+
+  /// No description provided for @home_search_hint_spices.
+  ///
+  /// In en, this message translates to:
+  /// **'🌶️ Search for spices and legumes...'**
+  String get home_search_hint_spices;
+
+  /// No description provided for @home_search_hint_cleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'🧴 Search for home cleaning products...'**
+  String get home_search_hint_cleaning;
+
+  /// No description provided for @home_search_hint_oils.
+  ///
+  /// In en, this message translates to:
+  /// **'🫒 Search for oils and ghee...'**
+  String get home_search_hint_oils;
+
+  /// No description provided for @home_search_hint_nuts.
+  ///
+  /// In en, this message translates to:
+  /// **'🥜 Search for nuts and dried fruits...'**
+  String get home_search_hint_nuts;
+
+  /// No description provided for @home_search_hint_canned.
+  ///
+  /// In en, this message translates to:
+  /// **'🥫 Search for canned food and fast meals...'**
+  String get home_search_hint_canned;
+
+  /// No description provided for @home_search_hint_baby.
+  ///
+  /// In en, this message translates to:
+  /// **'🍼 Search for baby food...'**
+  String get home_search_hint_baby;
+
   /// No description provided for @banner_tag.
   ///
   /// In en, this message translates to:
@@ -1063,6 +1309,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No brands available'**
   String get brands_unavailable;
+
+  /// No description provided for @brands_empty_description.
+  ///
+  /// In en, this message translates to:
+  /// **'No brands are available right now. Pull to refresh or try again shortly.'**
+  String get brands_empty_description;
+
+  /// No description provided for @brands_listing_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the available brands and jump into the one you want faster.'**
+  String get brands_listing_subtitle;
+
+  /// No description provided for @brands_count_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} brands'**
+  String brands_count_badge(int count);
 
   /// No description provided for @section_featured.
   ///
@@ -1244,6 +1508,18 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notifications;
 
+  /// No description provided for @notifications_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications'**
+  String get notifications_empty_title;
+
+  /// No description provided for @brand_product_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products'**
+  String brand_product_count(int count);
+
   /// No description provided for @dark_mode.
   ///
   /// In en, this message translates to:
@@ -1268,6 +1544,18 @@ abstract class AppLocalizations {
   /// **'Help & Support'**
   String get help_support;
 
+  /// No description provided for @help_support_header_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How can we help you?'**
+  String get help_support_header_title;
+
+  /// No description provided for @help_support_header_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us and we will get back to you soon.'**
+  String get help_support_header_subtitle;
+
   /// No description provided for @about_app.
   ///
   /// In en, this message translates to:
@@ -1291,6 +1579,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact Us'**
   String get contact_us;
+
+  /// No description provided for @contact_whatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get contact_whatsapp;
+
+  /// No description provided for @contact_whatsapp_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with us on WhatsApp'**
+  String get contact_whatsapp_subtitle;
+
+  /// No description provided for @contact_phone_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Call us directly'**
+  String get contact_phone_subtitle;
 
   /// No description provided for @select_language.
   ///
@@ -1381,6 +1687,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'FAQ'**
   String get faq;
+
+  /// No description provided for @faq_track_order_question.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I track my order?'**
+  String get faq_track_order_question;
+
+  /// No description provided for @faq_track_order_answer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can track your order from the My Orders page, then open the order you want to follow.'**
+  String get faq_track_order_answer;
+
+  /// No description provided for @faq_payment_methods_question.
+  ///
+  /// In en, this message translates to:
+  /// **'What payment methods are available?'**
+  String get faq_payment_methods_question;
+
+  /// No description provided for @faq_payment_methods_answer.
+  ///
+  /// In en, this message translates to:
+  /// **'We support common payment cards, e-wallets, and cash on delivery when available.'**
+  String get faq_payment_methods_answer;
+
+  /// No description provided for @faq_return_product_question.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I return a product?'**
+  String get faq_return_product_question;
+
+  /// No description provided for @faq_return_product_answer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can request a return from the order details page within the allowed return period.'**
+  String get faq_return_product_answer;
+
+  /// No description provided for @faq_contact_support_question.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I contact support?'**
+  String get faq_contact_support_question;
+
+  /// No description provided for @faq_contact_support_answer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can contact us through the Help & Support page or the communication methods available in the app.'**
+  String get faq_contact_support_answer;
 
   /// No description provided for @logout.
   ///
@@ -2060,6 +2414,78 @@ abstract class AppLocalizations {
   /// **'Price Range'**
   String get price_range;
 
+  /// No description provided for @brand_filter_category_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get brand_filter_category_title;
+
+  /// No description provided for @brand_filter_type_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get brand_filter_type_title;
+
+  /// No description provided for @brand_filter_unit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get brand_filter_unit_title;
+
+  /// No description provided for @brand_filter_accessories.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessories'**
+  String get brand_filter_accessories;
+
+  /// No description provided for @brand_filter_chargers.
+  ///
+  /// In en, this message translates to:
+  /// **'Chargers'**
+  String get brand_filter_chargers;
+
+  /// No description provided for @brand_filter_phone_cases.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Cases'**
+  String get brand_filter_phone_cases;
+
+  /// No description provided for @brand_filter_cables.
+  ///
+  /// In en, this message translates to:
+  /// **'Cables'**
+  String get brand_filter_cables;
+
+  /// No description provided for @brand_filter_adapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Adapters'**
+  String get brand_filter_adapters;
+
+  /// No description provided for @brand_filter_headphones.
+  ///
+  /// In en, this message translates to:
+  /// **'Headphones'**
+  String get brand_filter_headphones;
+
+  /// No description provided for @brand_filter_speakers.
+  ///
+  /// In en, this message translates to:
+  /// **'Speakers'**
+  String get brand_filter_speakers;
+
+  /// No description provided for @brand_filter_power_banks.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Banks'**
+  String get brand_filter_power_banks;
+
+  /// No description provided for @brand_filter_screen_protectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Protectors'**
+  String get brand_filter_screen_protectors;
+
   /// No description provided for @currency.
   ///
   /// In en, this message translates to:
@@ -2089,6 +2515,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category'**
   String get filter_category_title;
+
+  /// No description provided for @filter_subcategory_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory'**
+  String get filter_subcategory_title;
 
   /// No description provided for @filter_apply.
   ///
@@ -2921,8 +3353,14 @@ abstract class AppLocalizations {
   /// No description provided for @addresses_summary_count.
   ///
   /// In en, this message translates to:
-  /// **'You have {count} address'**
+  /// **'Saved addresses'**
   String addresses_summary_count(Object count);
+
+  /// No description provided for @addresses_summary_count_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}'**
+  String addresses_summary_count_badge(Object count);
 
   /// No description provided for @addresses_summary_default.
   ///

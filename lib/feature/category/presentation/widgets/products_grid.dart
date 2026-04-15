@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart';
@@ -9,6 +8,7 @@ import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart'
     show ShimmerEffect;
@@ -165,11 +165,13 @@ class _ProductCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonCardColor = SkeletonColors.card(context);
+    final skeletonBorderColor = SkeletonColors.border(context);
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: skeletonCardColor,
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: skeletonBorderColor),
       ),
       child: Stack(
         children: [
@@ -238,11 +240,12 @@ class _Bone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.shimmerBase,
+        color: baseColor,
         borderRadius: BorderRadius.circular(radius),
       ),
     );

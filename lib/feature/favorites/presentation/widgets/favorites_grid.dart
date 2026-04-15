@@ -15,8 +15,8 @@ class FavoritesGrid extends StatelessWidget {
     required this.onToggleFavorite,
   });
   final List<ProductModel> products;
-  final Function(ProductModel) onAddToCart;
-  final Function(ProductModel) onToggleFavorite;
+  final Future<void> Function(ProductModel) onAddToCart;
+  final Future<void> Function(ProductModel) onToggleFavorite;
 
   @override
   Widget build(BuildContext context) {

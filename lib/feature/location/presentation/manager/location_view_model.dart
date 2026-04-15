@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/core/services/language_service.dart';
 import 'package:zadana_user_v3/core/services/saved_location_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/addresses/data/models/add_customer_address_request_dto.dart';
@@ -13,6 +17,7 @@ import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.
 import 'package:zadana_user_v3/feature/location/domain/usecase/get_address_from_coordinates_use_case.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/get_current_location_with_address_use_case.dart';
 import 'package:zadana_user_v3/feature/location/domain/usecase/search_locations_usecase.dart';
+import 'package:zadana_user_v3/feature/location/location_failure_codes.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
@@ -20,23 +25,6 @@ import 'package:zadana_user_v3/feature/profile/domain/usecase/profile_usecase.da
 
 @injectable
 class LocationViewModel extends Cubit<LocationState> {
-  static const String _searchTemporarilyUnavailableMessage =
-      'البحث مؤقتًا غير متاح، يرجى المحاولة لاحقًا';
-  static const String _locationServiceDisabledSnippet =
-      'خدمة الموقع غير مفعلة';
-  static const String _locationServiceDisabledMessage =
-      'خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات ثم المحاولة مرة أخرى.';
-  static const String _locationPermissionDeniedForeverSnippet =
-      'تم رفض إذن الوصول للموقع نهائيًا';
-  static const String _locationPermissionDeniedForeverMessage =
-      'تم رفض إذن الوصول للموقع نهائيًا. يرجى الذهاب لإعدادات التطبيق وتفعيل إذن الموقع.';
-  static const String _locationPermissionDeniedSnippet =
-      'تم رفض إذن الوصول للموقع';
-  static const String _locationPermissionDeniedMessage =
-      'يحتاج التطبيق إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.';
-  static const String _rateLimitRetryMessage =
-      'يرجى الانتظار قليلًا قبل المحاولة مرة أخرى';
-
   LocationViewModel(
     this._searchLocationsUseCase,
     this._getCurrentLocationWithAddressUseCase,
@@ -57,9 +45,14 @@ class LocationViewModel extends Cubit<LocationState> {
   double? _lastReverseLat;
   double? _lastReverseLon;
   Timer? _debounce;
-
   DateTime? _lastApiCall;
+
   static const Duration _minApiInterval = Duration(seconds: 2);
+
+  AppLocalizations get _l10n {
+    final languageCode = getIt<LanguageService>().getLanguageCode();
+    return lookupAppLocalizations(Locale(languageCode));
+  }
 
   void doIntent(LocationEvent event) {
     switch (event) {
@@ -222,16 +215,15 @@ class LocationViewModel extends Cubit<LocationState> {
           ),
         );
       case ApiErrorResult():
-        if (result.failure.code == 'error_unknown' &&
-            (result.failure.errorMessage.contains('429') ||
-                result.failure.errorMessage.contains('Too many requests'))) {
+        if (_isRateLimited(result.failure)) {
+          final message = _l10n.location_search_temporarily_unavailable;
           emit(
             state.copyWith(
               isSearchLoading: false,
-              errorMessage: _searchTemporarilyUnavailableMessage,
-              failure: const Failure(
-                errorMessage: _searchTemporarilyUnavailableMessage,
-                code: 'error_unknown',
+              errorMessage: message,
+              failure: Failure(
+                errorMessage: message,
+                code: LocationFailureCodes.searchTemporarilyUnavailable,
               ),
               searchResults: const [],
             ),
@@ -297,28 +289,11 @@ class LocationViewModel extends Cubit<LocationState> {
           ),
         );
       case ApiErrorResult():
-        String errorMessage = result.failure.errorMessage;
-        Failure failure = result.failure;
-
-        if (errorMessage.contains(_locationServiceDisabledSnippet)) {
-          errorMessage = _locationServiceDisabledMessage;
-        } else if (errorMessage.contains(
-          _locationPermissionDeniedForeverSnippet,
-        )) {
-          errorMessage = _locationPermissionDeniedForeverMessage;
-        } else if (errorMessage.contains(_locationPermissionDeniedSnippet)) {
-          errorMessage = _locationPermissionDeniedMessage;
-        }
-
-        failure = Failure(
-          errorMessage: errorMessage,
-          code: result.failure.code,
-        );
-
+        final failure = _mapCurrentLocationFailure(result.failure);
         emit(
           state.copyWith(
             isLoading: false,
-            errorMessage: errorMessage,
+            errorMessage: failure.errorMessage,
             failure: failure,
           ),
         );
@@ -387,14 +362,17 @@ class LocationViewModel extends Cubit<LocationState> {
           ),
         );
       case ApiErrorResult():
-        if (result.failure.code == 'error_unknown' &&
-            (result.failure.errorMessage.contains('429') ||
-                result.failure.errorMessage.contains('Too many requests'))) {
+        if (_isRateLimited(result.failure)) {
           developer.log('Rate limited - backing off', name: 'LocationViewModel');
+          final message = _l10n.location_rate_limit_retry;
           emit(
             state.copyWith(
               isLoading: false,
-              errorMessage: _rateLimitRetryMessage,
+              errorMessage: message,
+              failure: Failure(
+                errorMessage: message,
+                code: LocationFailureCodes.rateLimitRetry,
+              ),
             ),
           );
         } else {
@@ -517,6 +495,44 @@ class LocationViewModel extends Cubit<LocationState> {
           ),
         );
     }
+  }
+
+  bool _isRateLimited(Failure failure) {
+    return failure.code == 'error_unknown' &&
+        (failure.errorMessage.contains('429') ||
+            failure.errorMessage.contains('Too many requests'));
+  }
+
+  Failure _mapCurrentLocationFailure(Failure failure) {
+    final message = failure.errorMessage.toLowerCase();
+
+    if (message.contains('service') && message.contains('disabled')) {
+      final localizedMessage = _l10n.location_service_disabled_message;
+      return Failure(
+        errorMessage: localizedMessage,
+        code: LocationFailureCodes.serviceDisabled,
+      );
+    }
+
+    if (message.contains('denied forever') ||
+        message.contains('permanently denied')) {
+      final localizedMessage = _l10n.location_permission_denied_forever_message;
+      return Failure(
+        errorMessage: localizedMessage,
+        code: LocationFailureCodes.permissionDeniedForever,
+      );
+    }
+
+    if (message.contains('permission denied') ||
+        message.contains('denied')) {
+      final localizedMessage = _l10n.location_permission_denied_message;
+      return Failure(
+        errorMessage: localizedMessage,
+        code: LocationFailureCodes.permissionDenied,
+      );
+    }
+
+    return failure;
   }
 
   String? _nullIfEmpty(String value) {

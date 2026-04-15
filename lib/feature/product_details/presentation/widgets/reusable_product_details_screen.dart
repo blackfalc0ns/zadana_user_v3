@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:flutter/services.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_bottom_actions.dart';
@@ -8,28 +9,6 @@ import 'package:zadana_user_v3/feature/product_details/presentation/widgets/prod
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_main_image.dart';
 
 class ReusableProductDetailsScreen extends StatelessWidget {
-  final String productId;
-  final String productName;
-  final String? unit;
-  final String emoji;
-  final String imageUrl;
-  final int quantity;
-  final VoidCallback onIncrease;
-  final VoidCallback onDecrease;
-  final String descriptionTitle;
-  final String description;
-  final double basePrice;
-  final double? oldPrice;
-  final String currency;
-  final List<ProductVendorPriceEntity> vendorPrices;
-  final List<ProductModel> similarProducts;
-  final Function(ProductModel)? onSimilarProductTap;
-  final Function(ProductModel)? onSimilarProductAddToCart;
-  final VoidCallback? onAddToCart;
-  final VoidCallback? onGoToCart;
-  final double imageHeight;
-  final String? activeProductId;
-
   const ReusableProductDetailsScreen({
     super.key,
     required this.productId,
@@ -53,20 +32,57 @@ class ReusableProductDetailsScreen extends StatelessWidget {
     this.onGoToCart,
     this.imageHeight = 250,
     this.activeProductId,
+    this.heroTag,
+    this.backgroundColor,
+    this.appBarBackgroundColor,
+    this.appBarTitleColor,
+    this.appBarLeading,
+    this.appBarSystemOverlayStyle,
+    this.cartCount = 0,
+    this.isAddingToCart = false,
   });
+
+  final String productId;
+  final String productName;
+  final String? unit;
+  final String emoji;
+  final String imageUrl;
+  final int quantity;
+  final VoidCallback onIncrease;
+  final VoidCallback onDecrease;
+  final String descriptionTitle;
+  final String description;
+  final double basePrice;
+  final double? oldPrice;
+  final String currency;
+  final List<ProductVendorPriceEntity> vendorPrices;
+  final List<ProductModel> similarProducts;
+  final Function(ProductModel)? onSimilarProductTap;
+  final Future<void> Function(ProductModel)? onSimilarProductAddToCart;
+  final VoidCallback? onAddToCart;
+  final VoidCallback? onGoToCart;
+  final double imageHeight;
+  final String? activeProductId;
+  final String? heroTag;
+  final Color? backgroundColor;
+  final Color? appBarBackgroundColor;
+  final Color? appBarTitleColor;
+  final Widget? appBarLeading;
+  final SystemUiOverlayStyle? appBarSystemOverlayStyle;
+  final int cartCount;
+  final bool isAddingToCart;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: AppColors.surface,
-        elevation: 0,
-        title: Text(productName, style: AppTextStyles.h4),
+      backgroundColor: backgroundColor ?? context.colorScheme.surface,
+      appBar: CustomAppBar(
+        title: productName,
+        backgroundColor: appBarBackgroundColor ?? backgroundColor,
+        titleColor: appBarTitleColor,
+        showShadow: false,
+        leading: appBarLeading,
+        systemOverlayStyle: appBarSystemOverlayStyle,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -76,6 +92,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
               imageUrl: imageUrl,
               productId: productId,
               height: imageHeight,
+              heroTag: heroTag,
             ),
             ProductDetailsContent(
               productName: productName,
@@ -100,6 +117,8 @@ class ReusableProductDetailsScreen extends StatelessWidget {
       bottomNavigationBar: ProductBottomActions(
         onAddToCart: onAddToCart,
         onGoToCart: onGoToCart,
+        cartCount: cartCount,
+        isAddingToCart: isAddingToCart,
       ),
     );
   }

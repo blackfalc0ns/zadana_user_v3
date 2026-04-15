@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_chip.dart';
 
 class FilterChipRow extends StatelessWidget {
@@ -9,13 +9,14 @@ class FilterChipRow extends StatelessWidget {
     required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,
+    this.showAllChip = true,
   });
 
   final List<String> categories;
   final String? selectedCategory;
   final Function(String?) onCategorySelected;
+  final bool showAllChip;
 
-  // Map category names to their icons
   String _getCategoryIcon(String category) {
     switch (category) {
       case 'الألبان':
@@ -36,19 +37,19 @@ class FilterChipRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (categories.isEmpty) return const SizedBox.shrink();
+    final color = context.colorScheme;
 
     return Container(
       height: 50,
-      color: AppColors.white,
+      color: color.surface,
       padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length + 1, // +1 for "الكل" chip
-        separatorBuilder: (context, index) => const SizedBox(width: Spacing.sm),
+        itemCount: categories.length + (showAllChip ? 1 : 0),
+        separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
         itemBuilder: (context, index) {
-          if (index == 0) {
-            // "الكل" chip
+          if (showAllChip && index == 0) {
             final isSelected = selectedCategory == null;
             return CustomFilterChip(
               label: 'الكل',
@@ -58,7 +59,7 @@ class FilterChipRow extends StatelessWidget {
             );
           }
 
-          final category = categories[index - 1];
+          final category = categories[index - (showAllChip ? 1 : 0)];
           final isSelected = selectedCategory == category;
 
           return CustomFilterChip(

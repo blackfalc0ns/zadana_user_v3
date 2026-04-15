@@ -12,9 +12,9 @@ import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/widgets/reset_password_form.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  final Map<String, String> arguments;
-
   const ResetPasswordScreen({super.key, required this.arguments});
+
+  final Map<String, String> arguments;
 
   String get identifier => arguments['identifier'] ?? '';
   String get otpCode => arguments['otpCode'] ?? '';
@@ -29,10 +29,13 @@ class ResetPasswordScreen extends StatelessWidget {
 }
 
 class _ResetPasswordView extends StatelessWidget {
+  const _ResetPasswordView({
+    required this.identifier,
+    required this.otpCode,
+  });
+
   final String identifier;
   final String otpCode;
-
-  const _ResetPasswordView({required this.identifier, required this.otpCode});
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +50,10 @@ class _ResetPasswordView extends StatelessWidget {
 
         return AuthExperienceShell(
           showBackButton: true,
-          heroBadge: 'ØªØ£Ù…ÙŠÙ† Ø§Ù„Ø­Ø³Ø§Ø¨',
+          heroBadge: locale.reset_password_hero_badge,
           heroTitle: locale.reset_password_title,
-          heroSubtitle:
-              'Choose a stronger password and keep your grocery account protected across every session.',
-          sectionBadge: 'Secure',
+          heroSubtitle: locale.reset_password_hero_subtitle,
+          sectionBadge: locale.reset_password_section_badge,
           sectionTitle: locale.reset_password_title,
           sectionDescription:
               '${locale.reset_password_description_prefix} $identifier',

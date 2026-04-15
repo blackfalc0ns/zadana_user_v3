@@ -15,6 +15,7 @@ class BrandsListingCubit extends Cubit<PaginatedSectionState<BrandModel>> {
   ) : super(PaginatedSectionState<BrandModel>(title: title));
 
   static const int pageSize = 9;
+  static const double loadMoreThreshold = 320;
 
   final GetHomeBrandsUseCase _getHomeBrandsUseCase;
   int _currentTake = pageSize;
@@ -28,6 +29,14 @@ class BrandsListingCubit extends Cubit<PaginatedSectionState<BrandModel>> {
 
     _currentTake += pageSize;
     await _load(reset: false, isLoadMore: true, take: _currentTake);
+  }
+
+  Future<void> handleScrollExtent(double extentAfter) async {
+    if (extentAfter > loadMoreThreshold) {
+      return;
+    }
+
+    await loadMore();
   }
 
   Future<void> _load({
@@ -55,7 +64,6 @@ class BrandsListingCubit extends Cubit<PaginatedSectionState<BrandModel>> {
         final hasMore = result.data.items.length >= effectiveTake;
         emit(
           state.copyWith(
-            title: result.data.title,
             items: result.data.items,
             isLoading: false,
             isLoadingMore: false,

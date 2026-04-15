@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_option_dto.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_subcategory_item_dto.dart';
@@ -47,7 +48,10 @@ class BrandFilterBottomSheet {
       isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => CustomFilterBottomSheet(
-          title: 'تصنيف المنتجات',
+          title: context.localization.filter_title,
+          cancelLabel: context.localization.cancel,
+          clearAllLabel: context.localization.clear_all,
+          applyLabel: context.localization.apply,
           scrollController: sheetScrollController,
           children: [
             PriceRangeSection(

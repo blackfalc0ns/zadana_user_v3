@@ -13,11 +13,9 @@ class CartBottomBar extends StatelessWidget {
   final List<CartItemModel> items;
   final double totalPrice;
   final double totalOldPrice;
-  final double totalSavings;
   final bool hasDiscounts;
   final String selectedVendorName;
   final CartAnimations animations;
-  final VoidCallback onComparison;
   final VoidCallback onCheckout;
 
   const CartBottomBar({
@@ -26,11 +24,9 @@ class CartBottomBar extends StatelessWidget {
     required this.items,
     required this.totalPrice,
     required this.totalOldPrice,
-    required this.totalSavings,
     required this.hasDiscounts,
     required this.selectedVendorName,
     required this.animations,
-    required this.onComparison,
     required this.onCheckout,
   });
 
@@ -52,11 +48,9 @@ class CartBottomBar extends StatelessWidget {
               items: items,
               totalPrice: totalPrice,
               totalOldPrice: totalOldPrice,
-              totalSavings: totalSavings,
               hasDiscounts: hasDiscounts,
               selectedVendorName: selectedVendorName,
               animations: animations,
-              onComparison: onComparison,
               onCheckout: onCheckout,
             ),
     );
@@ -70,11 +64,9 @@ class _SelectedVendorBar extends StatelessWidget {
     required this.items,
     required this.totalPrice,
     required this.totalOldPrice,
-    required this.totalSavings,
     required this.hasDiscounts,
     required this.selectedVendorName,
     required this.animations,
-    required this.onComparison,
     required this.onCheckout,
   });
 
@@ -82,11 +74,9 @@ class _SelectedVendorBar extends StatelessWidget {
   final List<CartItemModel> items;
   final double totalPrice;
   final double totalOldPrice;
-  final double totalSavings;
   final bool hasDiscounts;
   final String selectedVendorName;
   final CartAnimations animations;
-  final VoidCallback onComparison;
   final VoidCallback onCheckout;
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class FilterPriceSection extends StatelessWidget {
   const FilterPriceSection({
@@ -16,6 +17,8 @@ class FilterPriceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
     final sliderMax = priceBounds.end <= priceBounds.start
         ? priceBounds.start + 1
         : priceBounds.end;
@@ -24,8 +27,11 @@ class FilterPriceSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'نطاق السعر',
-          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          locale.price_range,
+          style: AppTextStyles.h4.copyWith(
+            fontWeight: FontWeight.w600,
+            color: color.onSurface,
+          ),
         ),
         const SizedBox(height: Spacing.md),
         RangeSlider(
@@ -34,8 +40,8 @@ class FilterPriceSection extends StatelessWidget {
           max: sliderMax,
           divisions: 20,
           labels: RangeLabels(
-            '${priceRange.start.round()} ج.م',
-            '${priceRange.end.round()} ج.م',
+            '${priceRange.start.round()} ${locale.currency}',
+            '${priceRange.end.round()} ${locale.currency}',
           ),
           onChanged: onPriceRangeChanged,
         ),
@@ -43,12 +49,16 @@ class FilterPriceSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${priceRange.start.round()} ج.م',
-              style: AppTextStyles.bodySmall,
+              '${priceRange.start.round()} ${locale.currency}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: color.onSurfaceVariant,
+              ),
             ),
             Text(
-              '${priceRange.end.round()} ج.م',
-              style: AppTextStyles.bodySmall,
+              '${priceRange.end.round()} ${locale.currency}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: color.onSurfaceVariant,
+              ),
             ),
           ],
         ),

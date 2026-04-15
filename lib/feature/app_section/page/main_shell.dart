@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
@@ -114,15 +113,14 @@ class MainShellState extends State<MainShell> {
   }
 
   void _onItemTapped(int index) {
+    final wasScreenLoaded = _loadedScreens[index] != null;
+
     if (index == 1) {
-      final isExternalCategorySelection =
-          CategoryNavigationService().consumePendingExternalSelection();
+      final isExternalCategorySelection = CategoryNavigationService()
+          .consumePendingExternalSelection();
       if (!isExternalCategorySelection) {
         CategoryNavigationService().notifyTabChanged();
       }
-    }
-    if (index == 2 && _selectedIndex != 2) {
-      CartNavigationService().notifyTabChanged();
     }
     if (index == 3 && _selectedIndex != 3) {
       FavoritesNavigationService().notifyTabChanged();
@@ -133,10 +131,20 @@ class MainShellState extends State<MainShell> {
         _ensureScreenLoaded(index);
         _selectedIndex = index;
       });
+      if (index == 2 && wasScreenLoaded) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          CartNavigationService().notifyTabChanged();
+        });
+      }
       return;
     }
 
     _ensureScreenLoaded(index);
+    if (index == 2) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        CartNavigationService().notifyTabChanged();
+      });
+    }
   }
 
   void jumpToTab(int index) {
@@ -241,15 +249,22 @@ class CustomBottomNavBar extends StatefulWidget {
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final navBackground = Color.alphaBlend(
+      color.surfaceTint.withValues(alpha: 0.03),
+      color.surfaceContainerLow,
+    );
+
     return Container(
       height: kMainShellBottomNavHeight,
       margin: const EdgeInsets.only(top: kMainShellBottomNavTopMargin),
       decoration: BoxDecoration(
-        color: AppColors.card,
-        boxShadow: const [
+        color: navBackground,
+        border: Border.all(color: color.outlineVariant.withValues(alpha: 0.45)),
+        boxShadow: [
           BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 12,
+            color: color.shadow.withValues(alpha: 0.07),
+            blurRadius: 10,
             offset: Offset(0, -2),
           ),
         ],
@@ -260,6 +275,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   }
 
   List<Widget> _buildItems(BuildContext context, int from, int to) {
+    final color = context.colorScheme;
+    final activeBackground = Color.alphaBlend(
+      color.primary.withValues(alpha: 0.14),
+      color.surface,
+    );
+    final inactiveBackground = color.surface.withValues(alpha: 0.72);
+
     return List.generate(to - from, (i) {
       final index = from + i;
       final item = widget.navItems[index];
@@ -284,7 +306,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       curve: Curves.easeInOut,
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
-                        color: active ? AppColors.primary : AppColors.surface,
+                        color: active
+                            ? activeBackground
+                            : inactiveBackground,
                         shape: BoxShape.circle,
                       ),
                       child: Stack(
@@ -299,8 +323,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                               ),
                               size: 24,
                               color: active
-                                  ? AppColors.white
-                                  : AppColors.textSecondary,
+                                  ? color.primary
+                                  : color.onSurfaceVariant,
                             ),
                           ),
                           if (_badgeCountFor(index) > 0)
@@ -318,8 +342,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                         fontSize: 10,
                         fontFamily: FontConstant.cairo,
                         color: active
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
+                            ? color.primary
+                            : color.onSurfaceVariant.withValues(alpha: 0.9),
                       ),
                       child: Text(item.title),
                     ),
@@ -347,15 +371,16 @@ class _NavBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
     final displayCount = count > 99 ? '99+' : '$count';
 
     return Container(
       constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       decoration: BoxDecoration(
-        color: AppColors.error,
+        color: color.error,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.card, width: 1.5),
+        border: Border.all(color: color.surfaceContainerLowest, width: 1.5),
       ),
       child: Center(
         child: Text(
@@ -364,7 +389,7 @@ class _NavBadge extends StatelessWidget {
           style: getBoldStyle(
             fontSize: 9,
             fontFamily: FontConstant.cairo,
-            color: AppColors.white,
+            color: color.onError,
           ),
         ),
       ),

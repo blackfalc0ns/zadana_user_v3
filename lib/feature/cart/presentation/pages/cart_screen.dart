@@ -83,7 +83,6 @@ class _CartScreenViewState extends State<_CartScreenView>
                 onItemTap: openProductDetails,
                 onUpdateQuantity: updateQuantity,
                 onDeleteItem: showDeleteDialog,
-                onComparison: showComparison,
                 onCheckout: onCheckout,
               ),
             ),

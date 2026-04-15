@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 
 class BrandHeader extends StatelessWidget {
@@ -15,9 +18,6 @@ class BrandHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 230,
-      floating: false,
-      pinned: false,
-      snap: false,
       backgroundColor: AppColors.white,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
@@ -45,7 +45,7 @@ class BrandHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Align(
-                      alignment: Alignment.topRight,
+                      alignment: AlignmentDirectional.topStart,
                       child: _buildBackButton(context),
                     ),
                     const Spacer(),
@@ -54,7 +54,7 @@ class BrandHeader extends StatelessWidget {
                       children: [
                         _buildLogo(),
                         const SizedBox(width: 12),
-                        Expanded(child: _buildInfo()),
+                        Expanded(child: _buildInfo(context)),
                       ],
                     ),
                   ],
@@ -81,6 +81,8 @@ class BrandHeader extends StatelessWidget {
   }
 
   Widget _buildBackButton(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return Container(
       width: 42,
       height: 42,
@@ -89,8 +91,8 @@ class BrandHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios_new_rounded,
+        icon: Icon(
+          isRtl ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_new_rounded,
           color: AppColors.white,
           size: 18,
         ),
@@ -101,6 +103,13 @@ class BrandHeader extends StatelessWidget {
   }
 
   Widget _buildLogo() {
+    Widget fallbackLogo() {
+      return Image.asset(
+        Assets.notFound,
+        fit: BoxFit.contain,
+      );
+    }
+
     return Container(
       width: 78,
       height: 78,
@@ -120,28 +129,28 @@ class BrandHeader extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: brand.logo.isNotEmpty
-              ? Image.network(
-                  brand.logo,
+              ? CachedNetworkImage(
+                  imageUrl: brand.logo,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) => Center(
-                    child: Text(
-                      brand.emoji ?? '🏪',
-                      style: const TextStyle(fontSize: 32),
+                  placeholder: (context, url) => Center(
+                    child: SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.primary.withValues(alpha: 0.7),
+                      ),
                     ),
                   ),
+                  errorWidget: (context, url, error) => fallbackLogo(),
                 )
-              : Center(
-                  child: Text(
-                    brand.emoji ?? '🏪',
-                    style: const TextStyle(fontSize: 32),
-                  ),
-                ),
+              : fallbackLogo(),
         ),
       ),
     );
   }
 
-  Widget _buildInfo() {
+  Widget _buildInfo(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -166,7 +175,7 @@ class BrandHeader extends StatelessWidget {
             ),
           ),
           child: Text(
-            '${brand.productCount} منتج',
+            context.localization.brand_product_count(brand.productCount),
             style: AppTextStyles.labelMedium.copyWith(
               color: AppColors.white,
               fontWeight: FontWeight.w700,

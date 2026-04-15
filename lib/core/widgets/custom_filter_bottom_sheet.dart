@@ -6,98 +6,137 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 class CustomFilterBottomSheet extends StatefulWidget {
   const CustomFilterBottomSheet({
     super.key,
-    this.title = 'فلتر المنتجات',
-    this.cancelLabel = 'إلغاء',
-    this.clearAllLabel = 'مسح الكل',
-    this.applyLabel = 'تطبيق',
+    this.title,
+    this.cancelLabel,
+    this.clearAllLabel,
+    this.applyLabel,
     this.children = const [],
     this.scrollController,
     this.onApply,
     this.onClearAll,
   });
 
-  final String title;
-  final String cancelLabel;
-  final String clearAllLabel;
-  final String applyLabel;
+  final String? title;
+  final String? cancelLabel;
+  final String? clearAllLabel;
+  final String? applyLabel;
   final List<Widget> children;
   final ScrollController? scrollController;
   final VoidCallback? onApply;
   final VoidCallback? onClearAll;
 
   @override
-  State<CustomFilterBottomSheet> createState() => _CustomFilterBottomSheetState();
+  State<CustomFilterBottomSheet> createState() =>
+      _CustomFilterBottomSheetState();
 }
 
 class _CustomFilterBottomSheetState extends State<CustomFilterBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final l10n = context.localization;
+    final resolvedTitle = widget.title ?? l10n.filter_title;
+    final resolvedCancelLabel = widget.cancelLabel ?? l10n.cancel;
+    final resolvedClearAllLabel = widget.clearAllLabel ?? l10n.clear_all;
+    final resolvedApplyLabel = widget.applyLabel ?? l10n.apply;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return SelectionArea(
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.75,
+        height: MediaQuery.of(context).size.height * 0.78,
         decoration: BoxDecoration(
           color: color.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Stack(
           children: [
             Column(
               children: [
-                // Header
-                Container(
-                  padding: const EdgeInsets.all(Spacing.lg),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.lg,
+                    Spacing.sm,
+                    Spacing.lg,
+                    Spacing.sm,
+                  ),
+                  child: Column(
                     children: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(
-                          widget.cancelLabel,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: color.onSurfaceVariant,
-                          ),
+                      Container(
+                        width: 42,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: color.outlineVariant,
+                          borderRadius: BorderRadius.circular(999),
                         ),
                       ),
-                      Text(widget.title, style: AppTextStyles.h3),
-                      TextButton(
-                        onPressed: widget.onClearAll,
-                        child: Text(
-                          widget.clearAllLabel,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: color.primary,
-                            fontWeight: FontWeight.w600,
+                      const SizedBox(height: Spacing.md),
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              resolvedCancelLabel,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: color.onSurfaceVariant,
+                              ),
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            child: Text(
+                              resolvedTitle,
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.h3.copyWith(
+                                color: color.onSurface,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: widget.onClearAll,
+                            child: Text(
+                              resolvedClearAllLabel,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: color.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-
-                // Content
                 Expanded(
                   child: ListView(
                     controller: widget.scrollController,
-                    padding: const EdgeInsets.all(Spacing.lg),
-                    children: [
-                      ...widget.children,
-                      const SizedBox(height: 120), // مساحة للزر
-                    ],
+                    padding: EdgeInsets.fromLTRB(
+                      Spacing.lg,
+                      Spacing.md,
+                      Spacing.lg,
+                      110 + bottomInset,
+                    ),
+                    children: widget.children,
                   ),
                 ),
               ],
             ),
-
-            // Apply Button
             Positioned(
-              bottom: 0,
               left: 0,
               right: 0,
+              bottom: 0,
               child: Container(
-                padding: const EdgeInsets.all(Spacing.lg),
+                padding: EdgeInsets.fromLTRB(
+                  Spacing.lg,
+                  Spacing.md,
+                  Spacing.lg,
+                  Spacing.md + bottomInset,
+                ),
                 decoration: BoxDecoration(
                   color: color.surface,
+                  border: Border(
+                    top: BorderSide(
+                      color: color.outlineVariant.withValues(alpha: 0.45),
+                    ),
+                  ),
                 ),
                 child: ElevatedButton(
                   onPressed: widget.onApply,
@@ -110,7 +149,7 @@ class _CustomFilterBottomSheetState extends State<CustomFilterBottomSheet> {
                     ),
                   ),
                   child: Text(
-                    widget.applyLabel,
+                    resolvedApplyLabel,
                     style: AppTextStyles.labelLarge.copyWith(
                       color: color.onPrimary,
                       fontWeight: FontWeight.w600,

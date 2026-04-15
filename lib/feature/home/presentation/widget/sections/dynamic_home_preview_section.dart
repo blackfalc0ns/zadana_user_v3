@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
+import 'package:zadana_user_v3/core/utils/main_shell_navigation.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -106,7 +108,17 @@ class _DynamicSectionBlock extends StatelessWidget {
 
     return Column(
       children: [
-        SectionHeader(title: section.title, actionLabel: locale.see_all),
+        SectionHeader(
+          title: section.title,
+          actionLabel: locale.see_all,
+          onActionTap: () {
+            CategoryNavigationService().setSelectedSubCategory(
+              id: section.key,
+              name: section.title,
+            );
+            openShoppingTab();
+          },
+        ),
         const SizedBox(height: Spacing.md),
         HomeProductSectionContent(
           items: section.items,

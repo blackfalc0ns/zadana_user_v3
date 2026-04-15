@@ -288,6 +288,56 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_permission_denied_forever => 'تم رفض إذن الموقع نهائيًا';
 
   @override
+  String get location_service_disabled_message =>
+      'خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات ثم المحاولة مرة أخرى.';
+
+  @override
+  String get location_permission_denied_message =>
+      'يحتاج التطبيق إلى إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.';
+
+  @override
+  String get location_permission_denied_forever_message =>
+      'تم رفض إذن الوصول للموقع نهائيًا. يرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع.';
+
+  @override
+  String get location_search_temporarily_unavailable =>
+      'البحث غير متاح مؤقتًا، يرجى المحاولة لاحقًا.';
+
+  @override
+  String get location_rate_limit_retry =>
+      'يرجى الانتظار قليلًا قبل المحاولة مرة أخرى.';
+
+  @override
+  String get location_start_title => 'الموقع';
+
+  @override
+  String get location_start_subtitle =>
+      'حدد موقعك لنتمكن من توصيل طلباتك بسرعة ودقة';
+
+  @override
+  String location_start_selected_subtitle(String address) {
+    return 'تم اختيار الموقع: $address';
+  }
+
+  @override
+  String get location_select_on_map => 'اختيار الموقع من الخريطة';
+
+  @override
+  String get location_use_current_location => 'استخدام موقعي الحالي';
+
+  @override
+  String get location_enter_address_manually => 'أدخل العنوان يدويًا';
+
+  @override
+  String get location_map_search_hint => 'ابحث عن موقع...';
+
+  @override
+  String get location_map_drag_hint => 'حرّك الخريطة لاختيار الموقع';
+
+  @override
+  String get location_map_confirm => 'تأكيد الموقع';
+
+  @override
   String get auth_title => 'ابدأ معنا الحين';
 
   @override
@@ -387,6 +437,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'اكتب رقم جوالك أو إيميلك وبنرسل لك كود';
 
   @override
+  String get forget_password_hero_badge => 'استعادة الوصول';
+
+  @override
+  String get forget_password_hero_subtitle =>
+      'سنساعدك على استعادة الوصول بسرعة حتى تتمكن من متابعة استخدام حسابك بسهولة.';
+
+  @override
+  String get forget_password_section_badge => 'استعادة';
+
+  @override
   String get btn_send_verification_code => 'إرسال الكود';
 
   @override
@@ -397,6 +457,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reset_password_description_prefix => 'أدخل الكود اللي انرسل لـ';
+
+  @override
+  String get reset_password_otp_hero_badge => 'تأكيد الرمز';
+
+  @override
+  String get reset_password_otp_hero_subtitle =>
+      'أدخل الرمز الذي أرسلناه لك حتى تتمكن من متابعة تعيين كلمة مرور جديدة بأمان.';
+
+  @override
+  String get reset_password_otp_section_badge => 'رمز التحقق';
+
+  @override
+  String get reset_password_hero_badge => 'تأمين الحساب';
+
+  @override
+  String get reset_password_hero_subtitle =>
+      'اختر كلمة مرور أقوى وحافظ على أمان حسابك في كل مرة تسجل فيها الدخول.';
+
+  @override
+  String get reset_password_section_badge => 'أمان';
 
   @override
   String get label_verification_code => 'كود التحقق';
@@ -411,7 +491,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hint_new_password => 'اكتب كلمة المرور الجديدة';
 
   @override
-  String get btn_confirm => 'تم التغير بنجاح';
+  String get btn_confirm => 'تاكيد';
 
   @override
   String get msg_password_reset_success => 'تم تغيير كلمة المرور';
@@ -483,6 +563,65 @@ class AppLocalizationsAr extends AppLocalizations {
   String get search_hint => 'ابحث عن منتجات أو متاجر...';
 
   @override
+  String get search_marketplace_title => 'البحث في التسوق';
+
+  @override
+  String get search_start_title => 'ابدأ البحث';
+
+  @override
+  String get search_start_description =>
+      'اكتب اسم المنتج وسيتم تحميل النتائج تدريجيًا مع التصفح.';
+
+  @override
+  String get search_empty_title => 'لا توجد نتائج';
+
+  @override
+  String get search_empty_description =>
+      'جرّب كلمة بحث مختلفة أو وسّع نطاق البحث.';
+
+  @override
+  String search_in_brand_products(String brandName) {
+    return 'ابحث في منتجات $brandName';
+  }
+
+  @override
+  String get home_search_hint_dairy => '🧀 ابحث عن منتجات الألبان...';
+
+  @override
+  String get home_search_hint_vegetables => '🥬 ابحث عن الخضروات الطازجة...';
+
+  @override
+  String get home_search_hint_fruits => '🍎 ابحث عن الفواكه الموسمية...';
+
+  @override
+  String get home_search_hint_meat => '🍗 ابحث عن اللحوم والدواجن...';
+
+  @override
+  String get home_search_hint_drinks => '☕ ابحث عن المشروبات والقهوة...';
+
+  @override
+  String get home_search_hint_bakery => '🥐 ابحث عن المخبوزات والحلويات...';
+
+  @override
+  String get home_search_hint_spices => '🌶️ ابحث عن التوابل والبقوليات...';
+
+  @override
+  String get home_search_hint_cleaning => '🧴 ابحث عن المنظفات المنزلية...';
+
+  @override
+  String get home_search_hint_oils => '🫒 ابحث عن الزيوت والسمن...';
+
+  @override
+  String get home_search_hint_nuts => '🥜 ابحث عن المكسرات والياميش...';
+
+  @override
+  String get home_search_hint_canned =>
+      '🥫 ابحث عن المعلبات والوجبات السريعة...';
+
+  @override
+  String get home_search_hint_baby => '🍼 ابحث عن أغذية الأطفال...';
+
+  @override
   String get banner_tag => 'عرض محدود';
 
   @override
@@ -511,6 +650,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get brands_unavailable => 'لا توجد علامات تجارية متاحه';
+
+  @override
+  String get brands_empty_description =>
+      'لا توجد علامات تجارية متاحة حاليًا. اسحب للتحديث أو جرّب مرة أخرى بعد قليل.';
+
+  @override
+  String get brands_listing_subtitle =>
+      'تصفّح العلامات التجارية المتاحة واختر ما يناسبك بسهولة.';
+
+  @override
+  String brands_count_badge(int count) {
+    return '$count علامة';
+  }
 
   @override
   String get section_featured => 'مميزة';
@@ -603,6 +755,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications => 'الإشعارات';
 
   @override
+  String get notifications_empty_title => 'لا توجد إشعارات';
+
+  @override
+  String brand_product_count(int count) {
+    return '$count منتج';
+  }
+
+  @override
   String get dark_mode => 'الوضع الليلي';
 
   @override
@@ -615,6 +775,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get help_support => 'الدعم والمساعدة';
 
   @override
+  String get help_support_header_title => 'كيف يمكننا مساعدتك؟';
+
+  @override
+  String get help_support_header_subtitle =>
+      'تواصل معنا وسنرد على استفسارك قريبًا.';
+
+  @override
   String get about_app => 'عن التطبيق';
 
   @override
@@ -625,6 +792,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contact_us => 'تواصل معنا';
+
+  @override
+  String get contact_whatsapp => 'واتساب';
+
+  @override
+  String get contact_whatsapp_subtitle => 'تواصل معنا عبر واتساب';
+
+  @override
+  String get contact_phone_subtitle => 'اتصل بنا مباشرة';
 
   @override
   String get select_language => 'اختر اللغة';
@@ -671,6 +847,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get faq => 'الأسئلة الشائعة';
+
+  @override
+  String get faq_track_order_question => 'كيف يمكنني تتبع طلبي؟';
+
+  @override
+  String get faq_track_order_answer =>
+      'يمكنك تتبع طلبك من صفحة طلباتي، ثم فتح الطلب الذي تريد متابعة حالته.';
+
+  @override
+  String get faq_payment_methods_question => 'ما هي طرق الدفع المتاحة؟';
+
+  @override
+  String get faq_payment_methods_answer =>
+      'ندعم بطاقات الدفع المختلفة والمحافظ الإلكترونية والدفع عند الاستلام حسب المتاح.';
+
+  @override
+  String get faq_return_product_question => 'كيف يمكنني إرجاع منتج؟';
+
+  @override
+  String get faq_return_product_answer =>
+      'يمكنك طلب الإرجاع من صفحة تفاصيل الطلب خلال فترة الإرجاع المسموح بها.';
+
+  @override
+  String get faq_contact_support_question => 'كيف أتواصل مع الدعم؟';
+
+  @override
+  String get faq_contact_support_answer =>
+      'يمكنك التواصل معنا من خلال صفحة الدعم والمساعدة أو عبر وسائل التواصل المتاحة داخل التطبيق.';
 
   @override
   String get logout => 'تسجيل خروج';
@@ -1018,6 +1222,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get price_range => 'نطاق السعر';
 
   @override
+  String get brand_filter_category_title => 'الفئة';
+
+  @override
+  String get brand_filter_type_title => 'النوع';
+
+  @override
+  String get brand_filter_unit_title => 'الكمية';
+
+  @override
+  String get brand_filter_accessories => 'الإكسسوارات';
+
+  @override
+  String get brand_filter_chargers => 'الشواحن';
+
+  @override
+  String get brand_filter_phone_cases => 'أغطية الهاتف';
+
+  @override
+  String get brand_filter_cables => 'الكابلات';
+
+  @override
+  String get brand_filter_adapters => 'المحوّلات';
+
+  @override
+  String get brand_filter_headphones => 'سماعات الرأس';
+
+  @override
+  String get brand_filter_speakers => 'السماعات';
+
+  @override
+  String get brand_filter_power_banks => 'الباور بانك';
+
+  @override
+  String get brand_filter_screen_protectors => 'حمايات الشاشة';
+
+  @override
   String get currency => 'ريال';
 
   @override
@@ -1031,6 +1271,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get filter_category_title => 'التصنيف';
+
+  @override
+  String get filter_subcategory_title => 'التصنيف الفرعي';
 
   @override
   String get filter_apply => 'تطبيق تصنيف';
@@ -1462,7 +1705,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String addresses_summary_count(Object count) {
-    return 'عندك $count عنوان';
+    return 'العناوين المحفوظة';
+  }
+
+  @override
+  String addresses_summary_count_badge(Object count) {
+    return '$count';
   }
 
   @override

@@ -202,7 +202,9 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   }
 
   List<String> _visibleTempParts() {
-    final selectedProductTypeId = _findProductTypeIdByName(_tempFilterProductType);
+    final selectedProductTypeId = _findProductTypeIdByName(
+      _tempFilterProductType,
+    );
 
     return _tempPartOptions
         .where(
@@ -275,16 +277,28 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
         )
         .toList(growable: false);
     _tempQuantityOptions = (filters.quantities ?? const [])
-        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
         .toList(growable: false);
     _tempBrandOptions = (filters.brands ?? const [])
-        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
         .toList(growable: false);
     _tempProductTypeOptions = (filters.productTypes ?? const [])
-        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
         .toList(growable: false);
     _tempPartOptions = (filters.parts ?? const [])
-        .where((item) => (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty)
+        .where(
+          (item) =>
+              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
+        )
         .toList(growable: false);
 
     final minPrice = filters.priceRange?.min ?? 0;
@@ -389,9 +403,9 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                       (sheetContext) => StatefulBuilder(
                         builder: (sheetContext, setSheetState) {
                           return CustomFilterBottomSheet(
-                            title: 'تصنيف المنتجات',
+                            title: locale.filter_title,
                             cancelLabel: locale.cancel,
-                            clearAllLabel: 'مسح الكل',
+                            clearAllLabel: locale.clear_all,
                             applyLabel: locale.apply,
                             scrollController: sheetScrollController,
                             children: [
@@ -439,14 +453,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                 },
                                 onSubCategorySelected: (subCategory) {
                                   setSheetState(() {
-                                    final isSame =
-                                        _tempSubCategoryId == subCategory.id;
-                                    _tempSubCategoryId = isSame
-                                        ? null
-                                        : subCategory.id;
-                                    _tempSubCategoryName = isSame
-                                        ? null
-                                        : subCategory.name;
+                                    _tempSubCategoryId = subCategory?.id;
+                                    _tempSubCategoryName = subCategory?.name;
                                   });
                                 },
                                 onQuantitySelected: (quantity) {

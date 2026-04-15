@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
 import 'package:zadana_user_v3/feature/location/presentation/widgets/address_form_widgets.dart';
@@ -27,22 +26,12 @@ class AddressFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(title, style: AppTextStyles.h3),
-        centerTitle: true,
+      appBar: CustomAppBar(
+        title: title,
       ),
       body: BlocBuilder<LocationViewModel, LocationState>(
         builder: (context, state) {
-          final showGlobalError =
-              !state.isLoading &&
-              state.failure != null;
+          final showGlobalError = !state.isLoading && state.failure != null;
 
           if (showGlobalError) {
             return SafeArea(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -26,6 +27,8 @@ class SearchBarWidget extends StatelessWidget {
     return Container(
       height: 40,
       decoration: BoxDecoration(
+        color: color.surfaceContainerLowest,
+        border: Border.all(color: AppColors.border,width: .1),
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
       ),
       child: Row(
@@ -55,6 +58,10 @@ class SearchBarWidget extends StatelessWidget {
                       Assets.searchNormal,
                       width: 16,
                       height: 16,
+                      colorFilter: ColorFilter.mode(
+                        color.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),
@@ -72,7 +79,7 @@ class SearchBarWidget extends StatelessWidget {
               width: 42,
               height: 48,
               decoration: BoxDecoration(
-                color: color.primary,
+              //  color: color.primary,
                 border: Border.all(color: color.primary),
                 borderRadius: BorderRadius.circular(8),
               ),

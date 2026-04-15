@@ -7,40 +7,40 @@ import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_view_model.dart';
-import 'package:zadana_user_v3/feature/location/presentation/widgets/location_accuracy_dialog.dart';
 
 class StartSelectLocationPage extends StatelessWidget {
-  const StartSelectLocationPage({super.key});
+  const StartSelectLocationPage({
+    super.key,
+    this.fromAddresses = false,
+  });
+
+  final bool fromAddresses;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<LocationViewModel>(),
-      child: const _StartSelectLocationView(),
+      child: _StartSelectLocationView(fromAddresses: fromAddresses),
     );
   }
 }
 
 class _StartSelectLocationView extends StatelessWidget {
-  const _StartSelectLocationView();
+  const _StartSelectLocationView({
+    required this.fromAddresses,
+  });
 
-  Future<void> _requestCurrentLocation(BuildContext context) async {
-    final shouldContinue = await LocationAccuracyDialog.show(context);
-    if (!shouldContinue || !context.mounted) {
-      return;
-    }
-
-    context.read<LocationViewModel>().doIntent(
-      const GetCurrentLocationEvent(),
-    );
-  }
+  final bool fromAddresses;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.localization;
+
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: SafeArea(
@@ -86,7 +86,17 @@ class _StartSelectLocationView extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: Spacing.lg),
+                  if (fromAddresses) ...[
+                    const SizedBox(height: Spacing.sm),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ] else
+                    const SizedBox(height: Spacing.lg),
                   Center(
                     child: Image.asset(
                       Assets.logoDark,
@@ -94,12 +104,14 @@ class _StartSelectLocationView extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  const Text('الموقع', style: AppTextStyles.h2),
+                  Text(l10n.location_start_title, style: AppTextStyles.h2),
                   const SizedBox(height: Spacing.md),
                   Text(
                     state.selectedLocation != null
-                        ? 'تم اختيار الموقع: ${state.selectedLocation!.addressLine}'
-                        : 'حدد موقعك لنتمكن من توصيل طلباتك بسرعة ودقة',
+                        ? l10n.location_start_selected_subtitle(
+                            state.selectedLocation!.addressLine,
+                          )
+                        : l10n.location_start_subtitle,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -113,7 +125,7 @@ class _StartSelectLocationView extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.map),
-                      label: const Text('اختيار الموقع من الخريطة'),
+                      label: Text(l10n.location_select_on_map),
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
@@ -128,7 +140,9 @@ class _StartSelectLocationView extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: state.isLoading
                           ? null
-                          : () => _requestCurrentLocation(context),
+                          : () => context.read<LocationViewModel>().doIntent(
+                              const GetCurrentLocationEvent(),
+                            ),
                       child: state.isLoading
                           ? const SizedBox(
                               height: 20,
@@ -138,14 +152,14 @@ class _StartSelectLocationView extends StatelessWidget {
                                 color: AppColors.primary,
                               ),
                             )
-                          : const Text('استخدام موقعي الحالي'),
+                          : Text(l10n.location_use_current_location),
                     ),
                   ),
                   const SizedBox(height: Spacing.base),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      child: const Text('أدخل العنوان يدويًا'),
+                      child: Text(l10n.location_enter_address_manually),
                       onPressed: () async {
                         final result = await Navigator.pushNamed(
                           context,

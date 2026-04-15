@@ -20,6 +20,8 @@ class ProductSearchInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, _) {
@@ -28,8 +30,8 @@ class ProductSearchInput extends StatelessWidget {
           focusNode: focusNode,
           onChanged: onChanged,
           textInputAction: TextInputAction.search,
-          textAlign: TextAlign.right,
-          textDirection: TextDirection.rtl,
+          textAlign: isRtl ? TextAlign.right : TextAlign.left,
+          textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
           textAlignVertical: TextAlignVertical.center,
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.textPrimary,

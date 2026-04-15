@@ -18,7 +18,7 @@ class CartItemModel {
   final String id;
   final String productId;
   final String name;
-  final String imageUrl;
+  final String? imageUrl;
   final String unit;
   final List<VendorPrice> vendorPrices;
   int quantity;
@@ -27,7 +27,7 @@ class CartItemModel {
     required this.id,
     required this.productId,
     required this.name,
-    required this.imageUrl,
+    this.imageUrl,
     required this.unit,
     required this.vendorPrices,
     this.quantity = 1,

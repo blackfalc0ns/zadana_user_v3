@@ -35,15 +35,16 @@ class ContactSection extends StatelessWidget {
           const SizedBox(height: Spacing.md),
           ContactButton(
             icon: FontAwesomeIcons.whatsapp,
-            title: 'WhatsApp',
-            subtitle: 'تواصل معنا عبر واتساب',
-            onTap: () => _launchUrl('https://wa.me/${AppConstants.developerWhatsapp}'),
+            title: l10n.contact_whatsapp,
+            subtitle: l10n.contact_whatsapp_subtitle,
+            onTap: () =>
+                _launchUrl('https://wa.me/${AppConstants.developerWhatsapp}'),
             iconColor: const Color(0xFF25D366),
           ),
           const SizedBox(height: Spacing.sm),
           ContactButton(
             icon: FontAwesomeIcons.envelope,
-            title: 'Email',
+            title: l10n.label_email,
             subtitle: AppConstants.developerEmail,
             onTap: () => _launchUrl('mailto:${AppConstants.developerEmail}'),
             iconColor: const Color(0xFFEA4335),
@@ -51,8 +52,8 @@ class ContactSection extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           ContactButton(
             icon: FontAwesomeIcons.phone,
-            title: 'Phone',
-            subtitle: 'اتصل بنا مباشرة',
+            title: l10n.phone,
+            subtitle: l10n.contact_phone_subtitle,
             onTap: () => _launchUrl('tel:${AppConstants.developerPhone}'),
             iconColor: const Color(0xFF4285F4),
           ),
@@ -62,10 +63,9 @@ class ContactSection extends StatelessWidget {
   }
 
   Future<void> _launchUrl(String urlString) async {
-    final Uri url = Uri.parse(urlString);
+    final url = Uri.parse(urlString);
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       // TODO: Show error message
     }
   }
 }
-

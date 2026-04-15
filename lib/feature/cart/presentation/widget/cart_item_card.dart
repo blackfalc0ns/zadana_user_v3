@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
@@ -72,18 +73,9 @@ class CartItemCard extends StatelessWidget {
           children: [
             Ink(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: color.outline.withValues(alpha: 0.12),
-                ),
+                border: Border.all(color: color.outline),
                 color: color.surface,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: color.shadow.withValues(alpha: 0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
               ),
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -354,20 +346,33 @@ class CartItemCard extends StatelessWidget {
     double oldPrice,
     double newPrice,
   ) {
+    final isArabic = locale.localeName.startsWith('ar');
+    final currentPriceLabel = _formatPriceLabel(
+      price: newPrice,
+      currency: locale.currency,
+      unit: item.unit,
+      isArabic: isArabic,
+    );
+    final oldPriceLabel = PriceFormatter.formatPrice(oldPrice);
+
     return Row(
-      spacing: 4,
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${newPrice.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
-          style: getBoldStyle(
-            color: AppColors.primary,
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size13,
+        Flexible(
+          child: Text(
+            currentPriceLabel,
+            overflow: TextOverflow.ellipsis,
+            style: getBoldStyle(
+              color: AppColors.primary,
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size13,
+            ),
           ),
         ),
+        const SizedBox(width: 4),
         Text(
-          oldPrice.toStringAsFixed(0),
+          oldPriceLabel,
           style:
               getRegularStyle(
                 fontFamily: FontConstant.cairo,
@@ -384,6 +389,14 @@ class CartItemCard extends StatelessWidget {
   }
 
   Widget _buildRegularPrice(dynamic locale, double price) {
+    final isArabic = locale.localeName.startsWith('ar');
+    final priceLabel = _formatPriceLabel(
+      price: price,
+      currency: locale.currency,
+      unit: item.unit,
+      isArabic: isArabic,
+    );
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -391,7 +404,7 @@ class CartItemCard extends StatelessWidget {
         const SizedBox(width: 3),
         Flexible(
           child: Text(
-            '${price.toStringAsFixed(0)} ${locale.currency}/${item.unit}',
+            priceLabel,
             overflow: TextOverflow.ellipsis,
             style: getBoldStyle(
               color: AppColors.primary,
@@ -423,5 +436,16 @@ class CartItemCard extends StatelessWidget {
       ),
     );
   }
-}
 
+  String _formatPriceLabel({
+    required double price,
+    required String currency,
+    required String unit,
+    required bool isArabic,
+  }) {
+    final formattedPrice = PriceFormatter.formatPrice(price);
+    return isArabic
+        ? '$formattedPrice $currency/$unit'
+        : '$formattedPrice $currency / $unit';
+  }
+}

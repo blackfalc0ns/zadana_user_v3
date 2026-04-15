@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
 class ProductMainImage extends StatelessWidget {
-  final String emoji;
-  final String imageUrl;
-  final String productId;
-  final double height;
-  final String? heroTag;
-
   const ProductMainImage({
     super.key,
     required this.emoji,
@@ -19,17 +14,29 @@ class ProductMainImage extends StatelessWidget {
     this.heroTag,
   });
 
+  final String emoji;
+  final String imageUrl;
+  final String productId;
+  final double height;
+  final String? heroTag;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.md),
+    final color = context.colorScheme;
+    final surfaceColor = Color.alphaBlend(
+      color.surfaceTint.withValues(alpha: 0.04),
+      color.surface,
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(Spacing.sm),
       child: ProductImage(
         emoji: emoji,
         url: imageUrl,
         width: double.infinity,
         height: height,
-        borderRadius: Spacing.cardRadius,
-        whiteBackground: true,
+        borderRadius: Spacing.cardRadius - 4,
+        backgroundColor: surfaceColor,
         heroTag: heroTag ?? productHeroTag(productId),
       ),
     );

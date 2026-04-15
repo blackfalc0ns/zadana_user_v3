@@ -32,6 +32,9 @@ enum ApiErrorType {
   tooManyRequests,
   
   // Other errors
+  locationServiceDisabled,
+  locationPermissionDenied,
+  locationPermissionDeniedForever,
   unknown,
   cancelled,
   other,
@@ -92,6 +95,12 @@ extension ApiErrorTypeExtension on ApiErrorType {
         return 'error_expectation_failed';
       case ApiErrorType.tooManyRequests:
         return 'error_too_many_requests';
+      case ApiErrorType.locationServiceDisabled:
+        return 'location_service_disabled';
+      case ApiErrorType.locationPermissionDenied:
+        return 'location_permission_denied';
+      case ApiErrorType.locationPermissionDeniedForever:
+        return 'location_permission_denied_forever';
       case ApiErrorType.unknown:
         return 'error_unknown';
       case ApiErrorType.cancelled:

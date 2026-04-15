@@ -9,7 +9,7 @@ class CartItemResponseDto {
     required this.id,
     required this.productId,
     required this.name,
-    required this.imageUrl,
+    this.imageUrl,
     required this.unit,
     required this.quantity,
     required this.vendorPrices,
@@ -18,7 +18,7 @@ class CartItemResponseDto {
   final String id;
   final String productId;
   final String name;
-  final String imageUrl;
+  final String? imageUrl;
   final String unit;
   final int quantity;
   final List<VendorPriceResponseDto> vendorPrices;

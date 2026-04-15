@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/layout/product_grid_layout.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
@@ -30,6 +31,8 @@ class ProductSearchResultsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductSearchViewModel, ProductSearchState>(
       builder: (context, state) {
+        final l10n = context.localization;
+
         if (!state.hasQuery) return const _SearchPromptState();
         if (state.isLoading && state.items.isEmpty) {
           return const _ProductsLoadingGrid();
@@ -46,9 +49,9 @@ class ProductSearchResultsView extends StatelessWidget {
           );
         }
         if (state.items.isEmpty) {
-          return const EmptyStateWidget(
-            title: 'لا توجد نتائج',
-            description: 'جرّب كلمة بحث مختلفة أو وسّع نطاق البحث.',
+          return EmptyStateWidget(
+            title: l10n.search_empty_title,
+            description: l10n.search_empty_description,
             icon: Icons.search_off_rounded,
           );
         }
@@ -118,13 +121,14 @@ class _SearchPromptState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final l10n = context.localization;
+
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: EmptyStateWidget(
-          title: 'ابدأ البحث',
-          description:
-              'اكتب اسم المنتج وسيتم تحميل النتائج تدريجيًا مع التصفح.',
+          title: l10n.search_start_title,
+          description: l10n.search_start_description,
           icon: Icons.search_rounded,
         ),
       ),

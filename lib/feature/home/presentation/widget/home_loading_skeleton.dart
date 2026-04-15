@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/widgets/skeleton_colors.dart';
 
 class ShimmerEffect extends StatefulWidget {
   const ShimmerEffect({super.key, required this.child});
@@ -32,6 +32,8 @@ class _ShimmerEffectState extends State<ShimmerEffect>
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
+    final highlightColor = SkeletonColors.highlight(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -42,9 +44,9 @@ class _ShimmerEffectState extends State<ShimmerEffect>
               begin: Alignment(-2.0 + (_controller.value * 4), -0.5),
               end: Alignment(0.0 + (_controller.value * 4), 0.5),
               colors: [
-                AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withValues(alpha: 0.5),
-                AppColors.shimmerBase,
+                baseColor,
+                highlightColor,
+                baseColor,
               ],
               stops: const [0.35, 0.5, 0.65],
             ).createShader(bounds);
@@ -74,12 +76,14 @@ class ProductCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonCardColor = SkeletonColors.card(context);
+    final skeletonBorderColor = SkeletonColors.border(context);
     return Container(
       width: 112,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: skeletonCardColor,
         borderRadius: BorderRadius.circular(Spacing.cardRadius),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: skeletonBorderColor),
       ),
       child: const Stack(
         children: [
@@ -169,6 +173,7 @@ class CategoryChipSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
     return Container(
       width: 72,
       padding: const EdgeInsets.symmetric(
@@ -176,7 +181,7 @@ class CategoryChipSkeleton extends StatelessWidget {
         vertical: Spacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.shimmerBase,
+        color: baseColor,
         borderRadius: BorderRadius.circular(18),
       ),
       child: const Column(
@@ -205,11 +210,12 @@ class Bone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = SkeletonColors.base(context);
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.shimmerBase,
+        color: baseColor,
         borderRadius: BorderRadius.circular(radius),
       ),
     );

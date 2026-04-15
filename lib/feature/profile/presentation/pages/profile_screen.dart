@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
@@ -36,106 +36,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BuildContext context,
     AppLocalizations l10n,
   ) async {
-    final shouldLogout = await showDialog<bool>(
+    final shouldLogout = await DialogueUtils.showCompactConfirmationDialog(
       context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.32),
-      builder: (dialogContext) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Container(
-            padding: const EdgeInsets.all(Spacing.lg),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.14),
-                  blurRadius: 30,
-                  offset: const Offset(0, 18),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: AppColors.errorLight,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.logout_rounded,
-                    color: AppColors.error,
-                    size: 30,
-                  ),
-                ),
-                const SizedBox(height: Spacing.md),
-                Text(
-                  l10n.logout,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: Spacing.xs),
-                Text(
-                  l10n.logout_confirm,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                    height: 1.6,
-                  ),
-                ),
-                const SizedBox(height: Spacing.lg),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(dialogContext).pop(false),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: const BorderSide(color: AppColors.border),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          l10n.cancel,
-                          style: AppTextStyles.labelLarge.copyWith(
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: Spacing.sm),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(dialogContext).pop(true),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.error,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          l10n.logout,
-                          style: AppTextStyles.labelLarge.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      title: l10n.logout,
+      message: l10n.logout_confirm,
+      confirmLabel: l10n.logout,
+      cancelLabel: l10n.cancel,
+      icon: Icons.logout_rounded,
+      accentColor: context.colorScheme.error,
     );
 
     if (shouldLogout == true && context.mounted) {
@@ -148,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colorScheme.surface,
       body: FutureBuilder<bool>(
         future: _resolveGuestMode(),
         builder: (context, snapshot) {
@@ -201,10 +109,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   profile: profile,
                   notificationsEnabled: _notificationsEnabled,
                   onEditTap: () async {
-                    final updatedProfile = await Navigator.of(context).pushNamed(
-                      AppRoutes.profileDetails,
-                      arguments: profile,
-                    );
+                    final updatedProfile = await Navigator.of(
+                      context,
+                    ).pushNamed(AppRoutes.profileDetails, arguments: profile);
                     if (!context.mounted ||
                         updatedProfile is! ProfileResponseEntity) {
                       return;
@@ -273,6 +180,8 @@ class _ShimmerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -283,9 +192,9 @@ class _ShimmerSection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(Spacing.md),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: color.surface,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: color.outlineVariant),
           ),
           child: Column(
             children: [
@@ -356,6 +265,8 @@ class _ShimmerBoxState extends State<_ShimmerBox>
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -367,10 +278,10 @@ class _ShimmerBoxState extends State<_ShimmerBox>
             gradient: LinearGradient(
               begin: Alignment(-1.2 + (_controller.value * 2.4), 0),
               end: Alignment(-0.2 + (_controller.value * 2.4), 0),
-              colors: const [
-                Color(0xFFF1F4F6),
-                Color(0xFFF9FBFC),
-                Color(0xFFF1F4F6),
+              colors: [
+                color.surfaceContainerLow,
+                color.surfaceContainerHighest,
+                color.surfaceContainerLow,
               ],
             ),
           ),

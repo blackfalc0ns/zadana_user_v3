@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/utils/brand_filter_label_localizer.dart';
 
 class PriceRangeSection extends StatelessWidget {
   const PriceRangeSection({
@@ -17,6 +19,8 @@ class PriceRangeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
     final sliderMax = priceBounds.end <= priceBounds.start
         ? priceBounds.start + 1
         : priceBounds.end;
@@ -25,8 +29,11 @@ class PriceRangeSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'نطاق السعر',
-          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          locale.price_range,
+          style: AppTextStyles.h4.copyWith(
+            fontWeight: FontWeight.w600,
+            color: color.onSurface,
+          ),
         ),
         const SizedBox(height: Spacing.md),
         RangeSlider(
@@ -35,8 +42,8 @@ class PriceRangeSection extends StatelessWidget {
           max: sliderMax,
           divisions: 50,
           labels: RangeLabels(
-            '${priceRange.start.round()} ج.م',
-            '${priceRange.end.round()} ج.م',
+            '${priceRange.start.round()} ${locale.egp}',
+            '${priceRange.end.round()} ${locale.egp}',
           ),
           onChanged: onChanged,
         ),
@@ -44,12 +51,16 @@ class PriceRangeSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${priceRange.start.round()} ج.م',
-              style: AppTextStyles.bodySmall,
+              '${priceRange.start.round()} ${locale.currency}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: color.onSurfaceVariant,
+              ),
             ),
             Text(
-              '${priceRange.end.round()} ج.م',
-              style: AppTextStyles.bodySmall,
+              '${priceRange.end.round()} ${locale.currency}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: color.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -78,16 +89,21 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
   bool showAllCategories = false;
 
   String _getCategoryIcon(String category) {
-    switch (category) {
+    switch (category.trim().toLowerCase()) {
       case 'الألبان':
+      case 'dairy':
         return '🥛';
       case 'الزبادي':
+      case 'yogurt':
         return '🥣';
       case 'العصائر':
+      case 'juices':
         return '🧃';
       case 'الأجبان':
+      case 'cheese':
         return '🧀';
       case 'الزبدة والقشطة':
+      case 'butter & cream':
         return '🧈';
       default:
         return '📦';
@@ -99,6 +115,7 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
     if (widget.categories.isEmpty) return const SizedBox.shrink();
 
     final color = Theme.of(context).colorScheme;
+    final locale = context.localization;
     final displayedCategories = showAllCategories
         ? widget.categories
         : widget.categories.take(8).toList();
@@ -107,8 +124,11 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'الفئة',
-          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          locale.brand_filter_category_title,
+          style: AppTextStyles.h4.copyWith(
+            fontWeight: FontWeight.w600,
+            color: color.onSurface,
+          ),
         ),
         const SizedBox(height: Spacing.md),
         GridView.builder(
@@ -124,7 +144,7 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
           itemBuilder: (context, index) {
             final category = displayedCategories[index];
             return CustomVerticalFilterChip(
-              label: category,
+              label: localizeBrandFilterLabel(context, category),
               icon: _getCategoryIcon(category),
               isSelected: widget.selectedCategory == category,
               selectedColor: color.primary,
@@ -141,7 +161,7 @@ class _CategoryFilterSectionState extends State<CategoryFilterSection> {
               child: TextButton(
                 onPressed: () =>
                     setState(() => showAllCategories = !showAllCategories),
-                child: Text(showAllCategories ? 'عرض أقل' : 'عرض المزيد'),
+                child: Text(showAllCategories ? locale.show_less : locale.show_more),
               ),
             ),
           ),

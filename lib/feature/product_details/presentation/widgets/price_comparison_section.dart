@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/modern_store_card.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
 
 class PriceComparisonSection extends StatelessWidget {
-  final double basePrice;
-  final double? oldPrice;
-  final String currency;
-  final List<ProductVendorPriceEntity> vendorPrices;
-
   const PriceComparisonSection({
     super.key,
     required this.basePrice,
@@ -18,15 +13,27 @@ class PriceComparisonSection extends StatelessWidget {
     required this.vendorPrices,
   });
 
+  final double basePrice;
+  final double? oldPrice;
+  final String currency;
+  final List<ProductVendorPriceEntity> vendorPrices;
+
   @override
   Widget build(BuildContext context) {
-    final stores = _getStores();
+    final color = context.colorScheme;
+    final stores = _getStores(context);
     if (stores.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Container(
       margin: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.outlineVariant),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,21 +42,21 @@ class PriceComparisonSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: color.primaryContainer,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   Icons.trending_down,
-                  color: AppColors.primary,
+                  color: color.onPrimaryContainer,
                   size: 16,
                 ),
               ),
               const SizedBox(width: 8),
               Text(
-                'اسعار المنتج فى المتاجر',
+                context.localization.compare_prices,
                 style: AppTextStyles.labelLarge.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: color.onSurface,
                 ),
               ),
               const Spacer(),
@@ -57,7 +64,7 @@ class PriceComparisonSection extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 120,
+            height: 132,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -88,6 +95,7 @@ class PriceComparisonSection extends StatelessWidget {
                         ? originalPrice
                         : null,
                     storeImage: store['image'] as String?,
+                  
                   ),
                 );
               },
@@ -98,7 +106,7 @@ class PriceComparisonSection extends StatelessWidget {
     );
   }
 
-  List<Map<String, dynamic>> _getStores() {
+  List<Map<String, dynamic>> _getStores(BuildContext context) {
     if (vendorPrices.isEmpty) {
       final effectiveOldPrice = (oldPrice != null && oldPrice! > basePrice)
           ? oldPrice!
@@ -106,15 +114,15 @@ class PriceComparisonSection extends StatelessWidget {
 
       return [
         {
-          'name': 'المتجر الحالي',
+          'name': context.localization.current_vendor,
           'price': effectiveOldPrice,
           'new_price': basePrice,
           'isLowest': true,
           'icon': Icons.store,
           'image': null,
           'gradientColors': [
-            AppColors.primary,
-            AppColors.primary.withValues(alpha: 0.7),
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
           ],
           'savings': null,
           'is_discounted': oldPrice != null && oldPrice! > basePrice,
@@ -140,8 +148,8 @@ class PriceComparisonSection extends StatelessWidget {
         'icon': Icons.store,
         'image': null,
         'gradientColors': [
-          AppColors.primary,
-          AppColors.primary.withValues(alpha: 0.7),
+          Theme.of(context).colorScheme.primary,
+          Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
         ],
         'savings': null,
         'is_discounted':

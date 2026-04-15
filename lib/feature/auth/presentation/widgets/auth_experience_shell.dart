@@ -48,6 +48,16 @@ class AuthExperienceShell extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (showBackButton) ...[
+                    IconButton(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: Spacing.xs),
+                  ],
                   _HeroHeader(
                     badge: heroBadge,
                     title: heroTitle,

@@ -60,12 +60,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     _viewModel.loadFavorites();
   }
 
-  void _toggleFavorite(ProductModel product) {
+  Future<void> _toggleFavorite(ProductModel product) async {
     _viewModel.removeFavorite(product.id);
   }
 
-  void _addToCart(ProductModel product) {
-    HomeProductCartHelper.addProductToCart(context, product);
+  Future<void> _addToCart(ProductModel product) {
+    return HomeProductCartHelper.addProductToCart(context, product);
   }
 
   void _showClearDialog() {

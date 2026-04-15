@@ -12,16 +12,18 @@ class ProductImage extends StatelessWidget {
     this.borderRadius = 12.0,
     this.fit = BoxFit.cover,
     this.whiteBackground = false,
+    this.backgroundColor,
     this.emoji,
     this.heroTag,
   });
 
-  final String url;
+  final String? url;
   final double width;
   final double height;
   final double borderRadius;
   final BoxFit fit;
   final bool whiteBackground;
+  final Color? backgroundColor;
   final String? emoji;
   final String? heroTag;
 
@@ -33,8 +35,10 @@ class ProductImage extends StatelessWidget {
         width: width,
         height: height,
         child: ColoredBox(
-          color: whiteBackground ? AppColors.white : AppColors.background,
-          child: url.isNotEmpty
+          color:
+              backgroundColor ??
+              (whiteBackground ? AppColors.white : AppColors.background),
+          child: (url?.isNotEmpty ?? false)
               ? _buildImage()
               : (emoji != null && emoji!.isNotEmpty
                     ? _buildEmoji()
@@ -88,30 +92,33 @@ class ProductImage extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    if (url.isEmpty) {
+    final imageUrl = url;
+    if (imageUrl == null || imageUrl.isEmpty) {
       return _errorWidget();
     }
 
-    final resolvedFit = whiteBackground ? BoxFit.contain : fit;
+    final resolvedFit = fit;
+    final imagePadding =
+        whiteBackground && resolvedFit == BoxFit.contain ? 8.0 : 0.0;
 
     return Padding(
-      padding: EdgeInsets.all(whiteBackground ? 8 : 0),
+      padding: EdgeInsets.all(imagePadding),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final image = url.startsWith('assets/')
+          final image = imageUrl.startsWith('assets/')
               ? Image.asset(
-                  url,
+                  imageUrl,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  fit: resolvedFit,
-                  alignment: Alignment.center,
+                 // fit: resolvedFit,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
                 )
               : Image.network(
-                  url,
+                  imageUrl,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
+               //   fit: resolvedFit,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _errorWidget(),
                 );
@@ -143,4 +150,3 @@ class ProductImage extends StatelessWidget {
     );
   }
 }
-

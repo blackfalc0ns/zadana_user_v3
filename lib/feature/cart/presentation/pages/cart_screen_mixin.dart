@@ -20,7 +20,6 @@ import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_product_mapp
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen_view_data.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
-import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_comparison_sheet.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 
 mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
@@ -158,21 +157,6 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
       viewModel.doIntent(const CartClearAllEvent());
     },
   );
-
-  void showComparison() {
-    if (selectedVendorId == null) {
-      showSelectionRequiredMessage();
-      return;
-    }
-
-    showVendorComparisonSheet(
-      context: context,
-      vendors: viewData.vendors,
-      items: viewData.items,
-      currentVendorId: selectedVendorId!,
-      onVendorSelected: onVendorSelected,
-    );
-  }
 
   Future<void> onVendorSelected(String vendorId) async {
     if (selectedVendorId == vendorId) return;

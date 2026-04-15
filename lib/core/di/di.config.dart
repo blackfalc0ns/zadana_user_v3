@@ -123,6 +123,8 @@ import '../../feature/cart/domain/usecase/remove_cart_item_usecase.dart'
 import '../../feature/cart/domain/usecase/update_cart_item_quantity_usecase.dart'
     as _i8;
 import '../../feature/cart/presentation/manager/cart_view_model.dart' as _i341;
+import '../../feature/favorites/data/services/guest_favorites_sync_service.dart'
+    as _i1114;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
     as _i691;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source_impl.dart'
@@ -596,6 +598,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i448.AddCartItemUseCase>(),
       ),
     );
+    gh.lazySingleton<_i1114.GuestFavoritesSyncService>(
+      () => _i1114.GuestFavoritesSyncService(),
+    );
     gh.factory<_i796.DeliveryOtpViewModel>(
       () => _i796.DeliveryOtpViewModel(
         gh<_i475.SendDeliveryOtpUseCase>(),
@@ -619,6 +624,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i698.VerifyOtpRemoteDataSource>(),
         gh<_i227.TokenService>(),
         gh<_i219.GuestCartSyncService>(),
+        gh<_i1114.GuestFavoritesSyncService>(),
       ),
     );
     gh.factory<_i558.LoginRepository>(
@@ -626,6 +632,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i952.LoginRemoteDataSource>(),
         gh<_i227.TokenService>(),
         gh<_i219.GuestCartSyncService>(),
+        gh<_i1114.GuestFavoritesSyncService>(),
       ),
     );
     gh.factory<_i248.LoginUseCase>(

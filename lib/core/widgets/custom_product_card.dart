@@ -30,9 +30,9 @@ class CustomProductCard extends StatefulWidget {
   });
 
   final ProductModel product;
-  final VoidCallback? onAddTap;
+  final Future<void> Function()? onAddTap;
   final VoidCallback? onCardTap;
-  final VoidCallback? onFavoriteTap;
+  final Future<void> Function()? onFavoriteTap;
   final bool showFavorite;
   final bool enableHeroAnimation;
   final String? heroTag;
@@ -46,6 +46,7 @@ class CustomProductCard extends StatefulWidget {
 class _CustomProductCardState extends State<CustomProductCard> {
   late bool _isFavorite;
   bool _isSubmittingFavorite = false;
+  bool _isSubmittingCart = false;
 
   @override
   void initState() {
@@ -65,7 +66,14 @@ class _CustomProductCardState extends State<CustomProductCard> {
     if (_isSubmittingFavorite) return;
 
     if (widget.onFavoriteTap != null) {
-      widget.onFavoriteTap!.call();
+      setState(() => _isSubmittingFavorite = true);
+      try {
+        await widget.onFavoriteTap!.call();
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmittingFavorite = false);
+        }
+      }
       return;
     }
 
@@ -91,9 +99,35 @@ class _CustomProductCardState extends State<CustomProductCard> {
     });
   }
 
+  Future<void> _handleAddTap() async {
+    if (_isSubmittingCart || widget.onAddTap == null) return;
+
+    setState(() => _isSubmittingCart = true);
+    try {
+      await widget.onAddTap!.call();
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmittingCart = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final cardBackground = color.surface;
+    final cardBorderColor = color.outlineVariant;
+    final titleColor = color.onSurface;
+    final imageBackground = Color.alphaBlend(
+      color.surfaceTint.withValues(alpha: 0.04),
+      color.surface,
+    );
+    final favoriteBackground = Color.alphaBlend(
+      color.surfaceTint.withValues(alpha: 0.08),
+      color.surface,
+    );
+    final favoriteIconColor = color.onSurfaceVariant;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final cardWidth = constraints.maxWidth.isFinite
@@ -129,9 +163,9 @@ class _CustomProductCardState extends State<CustomProductCard> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: cardBackground,
                   borderRadius: BorderRadius.circular(Spacing.cardRadius),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: cardBorderColor),
                 ),
                 child: Stack(
                   children: [
@@ -151,6 +185,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                               width: double.infinity,
                               height: imageHeight,
                               borderRadius: Spacing.cardRadius,
+                              backgroundColor: imageBackground,
                               heroTag: widget.enableHeroAnimation
                                   ? (widget.heroTag ??
                                         productHeroTag(widget.product.id))
@@ -173,7 +208,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 Text(
                                   widget.product.name,
                                   style: getSemiBoldStyle(
-                                    color: color.onSurface,
+                                    color: titleColor,
                                     fontFamily: FontConstant.cairo,
                                     fontSize: titleFontSize,
                                   ),
@@ -201,7 +236,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                           .toDouble(),
                                     ),
                                     GestureDetector(
-                                      onTap: widget.onAddTap,
+                                      onTap: _handleAddTap,
                                       child: Container(
                                         width: cartSize,
                                         height: cartSize,
@@ -210,10 +245,26 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                           color: AppColors.primary,
                                         ),
                                         child: Center(
-                                          child: FaIcon(
-                                            FontAwesomeIcons.cartPlus,
-                                            color: AppColors.white,
-                                            size: cartIconSize,
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                              milliseconds: 180,
+                                            ),
+                                            child: _isSubmittingCart
+                                                ? SizedBox(
+                                                    width: cartIconSize + 2,
+                                                    height: cartIconSize + 2,
+                                                    child:
+                                                        const CircularProgressIndicator(
+                                                          strokeWidth: 1.9,
+                                                          color:
+                                                              AppColors.white,
+                                                        ),
+                                                  )
+                                                : FaIcon(
+                                                    FontAwesomeIcons.cartPlus,
+                                                    color: AppColors.white,
+                                                    size: cartIconSize,
+                                                  ),
                                           ),
                                         ),
                                       ),
@@ -236,7 +287,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                             width: favoriteSize,
                             height: favoriteSize,
                             decoration: BoxDecoration(
-                              color: AppColors.white.withValues(alpha: 0.85),
+                              color: favoriteBackground,
                               shape: BoxShape.circle,
                               boxShadow: const [
                                 BoxShadow(
@@ -245,14 +296,28 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 ),
                               ],
                             ),
-                            child: Icon(
-                              _isFavorite
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_rounded,
-                              size: favoriteIconSize,
-                              color: _isFavorite
-                                  ? AppColors.error
-                                  : AppColors.textSecondary,
+                            child: Center(
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 180),
+                                child: _isSubmittingFavorite
+                                    ? SizedBox(
+                                        width: favoriteIconSize + 2,
+                                        height: favoriteIconSize + 2,
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 1.8,
+                                          color: AppColors.error,
+                                        ),
+                                      )
+                                    : Icon(
+                                        _isFavorite
+                                            ? Icons.favorite_rounded
+                                            : Icons.favorite_border_rounded,
+                                        size: favoriteIconSize,
+                                        color: _isFavorite
+                                            ? AppColors.error
+                                            : favoriteIconColor,
+                                      ),
+                              ),
                             ),
                           ),
                         ),

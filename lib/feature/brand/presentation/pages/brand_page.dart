@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
@@ -10,6 +11,7 @@ import 'package:zadana_user_v3/feature/brand/data/models/brand_filter_subcategor
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/services/brand_filter_service.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/utils/brand_filter_label_localizer.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_header.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/widgets/brand_products_grid.dart';
@@ -89,7 +91,12 @@ class _BrandPageState extends State<BrandPage> {
         _sortOptions = (filters.sortOptions ?? const [])
             .map((item) => {
                   'value': item.value ?? '',
-                  'title': item.label ?? '',
+                  'title': localizeBrandFilterLabel(
+                    context,
+                    (item.label?.trim().isNotEmpty ?? false)
+                        ? item.label!.trim()
+                        : (item.value ?? ''),
+                  ),
                   'subtitle': null,
                 })
             .where((item) => (item['value'] as String).isNotEmpty)
@@ -213,7 +220,7 @@ class _BrandPageState extends State<BrandPage> {
       builder: (context) => CustomSortBottomSheet(
         selectedSortOption: _selectedSortOption,
         sortOptions: _sortOptions,
-        title: 'ترتيب المنتجات',
+        title: context.localization.sort_title,
       ),
     ).then((result) async {
       if (result != null) {
@@ -235,7 +242,7 @@ class _BrandPageState extends State<BrandPage> {
         builder: (_) => ProductSearchPage(
           params: ProductSearchParams(
             title: widget.brand.name,
-            hintText: 'ابحث في منتجات ${widget.brand.name}',
+            hintText: context.localization.search_in_brand_products(widget.brand.name),
             brandId: widget.brand.id,
             categoryId: _selectedSubcategoryId ?? _selectedCategoryId,
             minPrice: _priceRange.start,
@@ -251,7 +258,7 @@ class _BrandPageState extends State<BrandPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+    
       body: CustomScrollView(
         slivers: [
           BrandHeader(brand: widget.brand),
@@ -268,6 +275,7 @@ class _BrandPageState extends State<BrandPage> {
               child: FilterChipRow(
                 categories: _categoryNames,
                 selectedCategory: _selectedCategory,
+                showAllChip: false,
                 onCategorySelected: (category) async {
                   setState(() {
                     _selectedCategory = category;
@@ -313,8 +321,8 @@ class _BrandPageState extends State<BrandPage> {
       floatingActionButton: _isLoading || _errorMessage != null
           ? null
           : CustomBottomFilterButtons(
-              sortLabel: 'ترتيب',
-              filterLabel: 'تصنيف',
+              sortLabel: context.localization.sort_button,
+              filterLabel: context.localization.filter_button,
               onSortPressed: _showSortBottomSheet,
               onFilterPressed: _showFilterBottomSheet,
               hasActiveFilters:

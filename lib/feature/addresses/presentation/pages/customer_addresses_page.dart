@@ -73,8 +73,9 @@ class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(AppRoutes.startSelectLocationPage),
+        onPressed: () => Navigator.of(
+          context,
+        ).pushNamed(AppRoutes.startSelectLocationPage, arguments: true),
         icon: const Icon(Icons.add_location_alt_outlined),
         label: Text(l10n.add_address),
       ),

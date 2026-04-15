@@ -68,6 +68,24 @@ class GenericErrorWidget extends BaseErrorWidget {
     Color color = Colors.red;
 
     switch (errorType) {
+      case ApiErrorType.locationServiceDisabled:
+        title = l10n?.location_service_disabled ?? '';
+        description = l10n?.location_service_disabled_message ?? '';
+        iconData = Icons.location_off_rounded;
+        color = Colors.red;
+        break;
+      case ApiErrorType.locationPermissionDenied:
+        title = l10n?.location_permission_denied ?? '';
+        description = l10n?.location_permission_denied_message ?? '';
+        iconData = Icons.location_disabled_rounded;
+        color = Colors.red;
+        break;
+      case ApiErrorType.locationPermissionDeniedForever:
+        title = l10n?.location_permission_denied_forever ?? '';
+        description = l10n?.location_permission_denied_forever_message ?? '';
+        iconData = Icons.location_off_outlined;
+        color = Colors.red;
+        break;
       case ApiErrorType.cancelled:
         title = l10n?.error_cancelled ?? '';
         description = l10n?.error_cancelled_desc ?? '';
@@ -107,7 +125,7 @@ class GenericErrorWidget extends BaseErrorWidget {
       icon: iconData,
       onRetry: onRetry,
       onSecondaryAction: onSecondaryAction,
-      secondaryActionText: l10n?.go_back ?? '',
+      secondaryActionText: onSecondaryAction == null ? null : l10n?.go_back ?? '',
       primaryColor: color,
     );
   }

@@ -16,8 +16,8 @@ class RecommendedCard extends StatelessWidget {
   final ProductModel product;
   final String heroTag;
   final VoidCallback? onTap;
-  final VoidCallback? onAddTap;
-  final VoidCallback? onFavoriteTap;
+  final Future<void> Function()? onAddTap;
+  final Future<void> Function()? onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {

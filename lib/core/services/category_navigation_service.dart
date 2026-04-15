@@ -11,11 +11,15 @@ class CategoryNavigationService extends ChangeNotifier {
       CategoryNavigationService._internal();
 
   CategoryEntity? _selectedCategory;
+  String? _selectedSubCategoryId;
+  String? _selectedSubCategoryName;
   bool _shouldResetToDefault = false;
   bool _hasPendingExternalSelection = false;
 
   /// The category selected from the home screen.
   CategoryEntity? get selectedCategory => _selectedCategory;
+  String? get selectedSubCategoryId => _selectedSubCategoryId;
+  String? get selectedSubCategoryName => _selectedSubCategoryName;
 
   bool consumePendingExternalSelection() {
     final hasPendingExternalSelection = _hasPendingExternalSelection;
@@ -26,6 +30,32 @@ class CategoryNavigationService extends ChangeNotifier {
   /// Update the selected category.
   void setSelectedCategory(CategoryEntity category) {
     _selectedCategory = category;
+    _selectedSubCategoryId = null;
+    _selectedSubCategoryName = null;
+    _shouldResetToDefault = false;
+    _hasPendingExternalSelection = true;
+    notifyListeners();
+  }
+
+  /// Update the selected shopping subcategory.
+  void setSelectedSubCategory({
+    String? id,
+    String? name,
+  }) {
+    final normalizedId = id?.trim();
+    final normalizedName = name?.trim();
+    if ((normalizedId == null || normalizedId.isEmpty) &&
+        (normalizedName == null || normalizedName.isEmpty)) {
+      return;
+    }
+
+    _selectedCategory = null;
+    _selectedSubCategoryId =
+        normalizedId == null || normalizedId.isEmpty ? null : normalizedId;
+    _selectedSubCategoryName =
+        normalizedName == null || normalizedName.isEmpty
+        ? null
+        : normalizedName;
     _shouldResetToDefault = false;
     _hasPendingExternalSelection = true;
     notifyListeners();
@@ -34,12 +64,16 @@ class CategoryNavigationService extends ChangeNotifier {
   /// Clear the selected category.
   void clearSelectedCategory() {
     _selectedCategory = null;
+    _selectedSubCategoryId = null;
+    _selectedSubCategoryName = null;
     notifyListeners();
   }
 
   /// Notify listeners when the tab changes.
   void notifyTabChanged() {
-    if (_selectedCategory == null) {
+    if (_selectedCategory == null &&
+        _selectedSubCategoryId == null &&
+        _selectedSubCategoryName == null) {
       _shouldResetToDefault = true;
     }
     notifyListeners();

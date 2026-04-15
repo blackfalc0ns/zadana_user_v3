@@ -88,6 +88,9 @@ class ApiErrorWidget extends StatelessWidget {
       case ApiErrorType.unknown:
       case ApiErrorType.cancelled:
       case ApiErrorType.other:
+      case ApiErrorType.locationServiceDisabled:
+      case ApiErrorType.locationPermissionDenied:
+      case ApiErrorType.locationPermissionDeniedForever:
         return GenericErrorWidget(
           errorType: exception.errorType,
           serverMessage: !exception.isTranslationKey ? exception.message : null,
@@ -183,6 +186,15 @@ class ApiErrorWidget extends StatelessWidget {
         break;
       case 'error_no_response':
         errorType = ApiErrorType.serverError;
+        break;
+      case 'location_service_disabled':
+        errorType = ApiErrorType.locationServiceDisabled;
+        break;
+      case 'location_permission_denied':
+        errorType = ApiErrorType.locationPermissionDenied;
+        break;
+      case 'location_permission_denied_forever':
+        errorType = ApiErrorType.locationPermissionDeniedForever;
         break;
       case 'error_bad_certificate':
       case 'error_unknown':

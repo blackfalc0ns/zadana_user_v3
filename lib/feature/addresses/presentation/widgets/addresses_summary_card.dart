@@ -18,55 +18,89 @@ class AddressesSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final localizedDefaultLabel = _localizedLabel(l10n, defaultLabel);
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.lg),
+      padding: const EdgeInsets.all(Spacing.md),
       decoration: BoxDecoration(
-        gradient: AppColors.primarygradient,
-        borderRadius: BorderRadius.circular(26),
+        color: const Color(0xFFFDFEFE),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.14),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.16),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
+            color: AppColors.primary.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Row(
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Icon(
-              Icons.location_on_outlined,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-          const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.addresses_summary_count(count),
+                  l10n.addresses,
+                  style: getSemiBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size16,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.07),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    l10n.addresses_summary_default(localizedDefaultLabel),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size12,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '$count',
                   style: getBoldStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size18,
-                    color: Colors.white,
+                    color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
-                  l10n.addresses_summary_default(defaultLabel),
+                  l10n.addresses,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: getRegularStyle(
                     fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size13,
-                    color: Colors.white.withValues(alpha: 0.92),
+                    fontSize: FontSize.size8,
+                    color: AppColors.primary,
                   ),
                 ),
               ],
@@ -75,5 +109,18 @@ class AddressesSummaryCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _localizedLabel(dynamic l10n, String value) {
+    switch (value.trim()) {
+      case 'Home':
+        return l10n.location_address_label_home;
+      case 'Work':
+        return l10n.location_address_label_work;
+      case 'Other':
+        return l10n.location_address_label_other;
+      default:
+        return value;
+    }
   }
 }

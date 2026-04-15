@@ -40,7 +40,12 @@ class DrawerActions {
 
   static void handleLanguage(BuildContext context) {
     Navigator.pop(context);
-    DrawerDialogs.showLanguageDialog(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final targetContext = mainShellKey.currentContext;
+      if (targetContext != null) {
+        DrawerDialogs.showLanguageDialog(targetContext);
+      }
+    });
   }
 
   static void handlePrivacyPolicy(BuildContext context) {

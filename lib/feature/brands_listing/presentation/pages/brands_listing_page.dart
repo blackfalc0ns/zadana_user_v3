@@ -19,11 +19,8 @@ class BrandsListingPage extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<BrandsListingCubit>();
           return PaginatedBrandsGridPage(
-            title: title,
+            cubit: cubit,
             state: state,
-            onRefresh: cubit.refresh,
-            onRetry: cubit.loadInitial,
-            onLoadMore: cubit.loadMore,
           );
         },
       ),

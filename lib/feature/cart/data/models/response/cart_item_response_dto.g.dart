@@ -11,7 +11,7 @@ CartItemResponseDto _$CartItemResponseDtoFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       productId: json['productId'] as String,
       name: json['name'] as String,
-      imageUrl: json['imageUrl'] as String,
+      imageUrl: json['imageUrl'] as String?,
       unit: json['unit'] as String,
       quantity: (json['quantity'] as num).toInt(),
       vendorPrices: (json['vendorPrices'] as List<dynamic>)

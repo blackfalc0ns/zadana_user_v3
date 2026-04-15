@@ -22,8 +22,8 @@ class ExploreMoreTile extends StatefulWidget {
   final ProductModel product;
   final String addToCartLabel;
   final String heroTag;
-  final VoidCallback? onAddTap;
-  final VoidCallback? onFavoriteTap;
+  final Future<void> Function()? onAddTap;
+  final Future<void> Function()? onFavoriteTap;
   final VoidCallback? onTap;
 
   @override
@@ -33,6 +33,7 @@ class ExploreMoreTile extends StatefulWidget {
 class _ExploreMoreTileState extends State<ExploreMoreTile> {
   late bool _isFavorite;
   bool _isSubmittingFavorite = false;
+  bool _isSubmittingCart = false;
 
   @override
   void initState() {
@@ -51,7 +52,14 @@ class _ExploreMoreTileState extends State<ExploreMoreTile> {
   Future<void> _handleFavoriteTap() async {
     if (_isSubmittingFavorite) return;
     if (widget.onFavoriteTap != null) {
-      widget.onFavoriteTap!.call();
+      setState(() => _isSubmittingFavorite = true);
+      try {
+        await widget.onFavoriteTap!.call();
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmittingFavorite = false);
+        }
+      }
       return;
     }
 
@@ -75,6 +83,19 @@ class _ExploreMoreTileState extends State<ExploreMoreTile> {
       _isSubmittingFavorite = false;
       if (result.isSuccess) _isFavorite = !_isFavorite;
     });
+  }
+
+  Future<void> _handleAddTap() async {
+    if (_isSubmittingCart || widget.onAddTap == null) return;
+
+    setState(() => _isSubmittingCart = true);
+    try {
+      await widget.onAddTap!.call();
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmittingCart = false);
+      }
+    }
   }
 
   @override
@@ -138,19 +159,31 @@ class _ExploreMoreTileState extends State<ExploreMoreTile> {
               children: [
                 GestureDetector(
                   onTap: _handleFavoriteTap,
-                  child: Icon(
-                    _isFavorite
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
-                    size: 18,
-                    color: _isFavorite
-                        ? AppColors.error
-                        : AppColors.textSecondary,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 180),
+                    child: _isSubmittingFavorite
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.8,
+                              color: AppColors.error,
+                            ),
+                          )
+                        : Icon(
+                            _isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            size: 18,
+                            color: _isFavorite
+                                ? AppColors.error
+                                : AppColors.textSecondary,
+                          ),
                   ),
                 ),
                 const SizedBox(height: Spacing.sm),
                 GestureDetector(
-                  onTap: widget.onAddTap,
+                  onTap: _handleAddTap,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: Spacing.sm,
@@ -160,12 +193,24 @@ class _ExploreMoreTileState extends State<ExploreMoreTile> {
                       border: Border.all(color: AppColors.primary),
                       borderRadius: BorderRadius.circular(Spacing.sm),
                     ),
-                    child: Text(
-                      widget.addToCartLabel,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 180),
+                      child: _isSubmittingCart
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.8,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : Text(
+                              widget.addToCartLabel,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     ),
                   ),
                 ),

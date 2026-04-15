@@ -29,7 +29,6 @@ class CartScreenBody extends StatelessWidget {
     required this.onItemTap,
     required this.onUpdateQuantity,
     required this.onDeleteItem,
-    required this.onComparison,
     required this.onCheckout,
   });
 
@@ -45,7 +44,6 @@ class CartScreenBody extends StatelessWidget {
   final ValueChanged<CartItemModel> onItemTap;
   final void Function(CartItemModel item, bool increment) onUpdateQuantity;
   final ValueChanged<CartItemModel> onDeleteItem;
-  final VoidCallback onComparison;
   final VoidCallback onCheckout;
 
   bool get _showGlobalError =>
@@ -109,7 +107,6 @@ class CartScreenBody extends StatelessWidget {
       animatingPriceItemId: animatingPriceItemId,
       totalPrice: viewData.totalPrice,
       totalOldPrice: viewData.totalOldPrice,
-      totalSavings: viewData.totalSavings,
       hasDiscounts: viewData.hasDiscounts,
       selectedVendorName: viewData.selectedVendorName,
       animations: animations,
@@ -117,7 +114,6 @@ class CartScreenBody extends StatelessWidget {
       onItemTap: onItemTap,
       onUpdateQuantity: onUpdateQuantity,
       onDeleteItem: onDeleteItem,
-      onComparison: onComparison,
       onCheckout: onCheckout,
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class LocationSearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -17,6 +18,8 @@ class LocationSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.localization;
+
     return Container(
       height: 48,
       decoration: BoxDecoration(
@@ -34,7 +37,7 @@ class LocationSearchBar extends StatelessWidget {
         controller: controller,
         style: AppTextStyles.bodyMedium,
         decoration: InputDecoration(
-          hintText: 'ابحث عن موقع...',
+          hintText: l10n.location_map_search_hint,
           hintStyle: AppTextStyles.inputHint,
           prefixIcon: const Icon(
             Icons.search,

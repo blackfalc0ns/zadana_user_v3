@@ -20,7 +20,10 @@ import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/field_
 class ForgetPasswordForm extends StatefulWidget {
   final void Function(String identifier) onSuccess;
 
-  const ForgetPasswordForm({super.key, required this.onSuccess});
+  const ForgetPasswordForm({
+    super.key,
+    required this.onSuccess,
+  });
 
   @override
   State<ForgetPasswordForm> createState() => _ForgetPasswordFormState();

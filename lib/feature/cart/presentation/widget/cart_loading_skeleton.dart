@@ -1,37 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/skeleton_state_widget.dart';
 
-class CartLoadingSkeleton extends StatefulWidget {
+class CartLoadingSkeleton extends StatelessWidget {
   const CartLoadingSkeleton({super.key});
 
   @override
-  State<CartLoadingSkeleton> createState() => _CartLoadingSkeletonState();
-}
-
-class _CartLoadingSkeletonState extends State<CartLoadingSkeleton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return _ShimmerWrapper(
-      controller: _controller,
+    return SkeletonStateWidget(
       child: Stack(
         children: [
           const Padding(
@@ -46,39 +23,6 @@ class _CartLoadingSkeletonState extends State<CartLoadingSkeleton>
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ShimmerWrapper extends StatelessWidget {
-  const _ShimmerWrapper({required this.controller, required this.child});
-
-  final AnimationController controller;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, child) {
-        return ShaderMask(
-          blendMode: BlendMode.srcATop,
-          shaderCallback: (bounds) {
-            return LinearGradient(
-              begin: Alignment(-2.0 + (controller.value * 4), -0.5),
-              end: Alignment(0.0 + (controller.value * 4), 0.5),
-              colors: [
-                AppColors.shimmerBase,
-                AppColors.shimmerHighlight.withValues(alpha: 0.5),
-                AppColors.shimmerBase,
-              ],
-              stops: const [0.35, 0.5, 0.65],
-            ).createShader(bounds);
-          },
-          child: child,
-        );
-      },
-      child: child,
     );
   }
 }
