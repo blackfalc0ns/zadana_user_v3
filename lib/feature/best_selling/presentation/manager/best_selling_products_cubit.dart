@@ -1,10 +1,10 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/pagination/cubit/home_paginated_products_cubit.dart';
+import 'package:zadana_user_v3/core/pagination/models/paginated_section_page_data.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_best_selling_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/domain/usecase/get_home_best_selling_usecase.dart';
-import 'package:zadana_user_v3/feature/section_listing_shared/presentation/manager/home_paginated_products_cubit.dart';
-import 'package:zadana_user_v3/feature/section_listing_shared/presentation/manager/paginated_section_page_data.dart';
 
 @injectable
 class BestSellingProductsCubit extends HomePaginatedProductsCubit {

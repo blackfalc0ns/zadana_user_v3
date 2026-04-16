@@ -142,51 +142,6 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                         textAlign: TextAlign.center,
                       ),
 
-                      // Order ID card
-                      if (widget.orderId != null) ...[
-                        const SizedBox(height: 24),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.lg,
-                            vertical: Spacing.md,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colors.surface,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: colors.outline.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.receipt_long_outlined,
-                                color: colors.primary,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${l10n.order_number}: ',
-                                style: getMediumStyle(
-                                  fontSize: FontSize.size13,
-                                  fontFamily: FontConstant.cairo,
-                                  color: colors.onSurfaceVariant,
-                                ),
-                              ),
-                              Text(
-                                widget.orderId!,
-                                style: getBoldStyle(
-                                  fontSize: FontSize.size14,
-                                  fontFamily: FontConstant.cairo,
-                                  color: colors.onSurface,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-
                       const SizedBox(height: 48),
 
                       // Track order button

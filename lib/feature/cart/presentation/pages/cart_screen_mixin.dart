@@ -20,7 +20,6 @@ import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_product_mapp
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen_view_data.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
-import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 
 mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
   static const Duration quantityDebounceDuration = Duration(milliseconds: 500);
@@ -226,10 +225,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PaymentScreen()),
-    );
+    Navigator.pushNamed(context, AppRoutes.payment);
   }
 
   void _resetUiAfterCartEmptied({bool resetPriceAnimationVersion = false}) {

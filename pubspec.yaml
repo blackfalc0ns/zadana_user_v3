@@ -49,6 +49,7 @@ dependencies:
   iconsax: ^0.0.8
   lottie: ^3.3.2
   confetti: ^0.8.0
+  webview_flutter: ^4.13.0
 
   intl: any
   dio_cache_interceptor: ^3.5.1

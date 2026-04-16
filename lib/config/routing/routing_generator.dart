@@ -24,6 +24,7 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_pa
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
@@ -144,6 +145,8 @@ class RouteGenerator {
             );
           },
         );
+      case AppRoutes.payment:
+        return MaterialPageRoute(builder: (_) => const PaymentScreen());
       case AppRoutes.paymentSuccess:
         final orderId = settings.arguments as String?;
         return MaterialPageRoute(

@@ -32,8 +32,8 @@ class CustomFilterChip extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
+      
         padding: const EdgeInsets.symmetric(
           horizontal: Spacing.md,
           vertical: Spacing.xs,

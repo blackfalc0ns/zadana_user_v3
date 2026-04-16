@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
@@ -17,6 +18,7 @@ import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_de
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_event.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_state.dart';
 
+@injectable
 class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   ProductDetailsCubit({
     required ProductDetailsUseCase productDetailsUseCase,

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
-import 'package:zadana_user_v3/feature/brand/presentation/pages/brand_page.dart';
-import 'package:zadana_user_v3/feature/brands_listing/presentation/pages/brands_listing_page.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/brand/pages/brands_listing_page.dart';
+import 'package:zadana_user_v3/feature/brand/presentation/brand_details/pages/brand_details_page_view.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/brand_card.dart';
@@ -14,10 +14,10 @@ import 'package:zadana_user_v3/feature/home/presentation/widget/section_header.d
 class BrandsSection extends StatelessWidget {
   const BrandsSection({super.key});
 
-  void _navigateToBrandPage(BuildContext context, BrandModel brand) {
+  void _navigateToBrandDetailsPage(BuildContext context, BrandModel brand) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BrandPage(brand: brand)),
+      MaterialPageRoute(builder: (context) => BrandDetailsPage(brand: brand)),
     );
   }
 
@@ -88,7 +88,7 @@ class BrandsSection extends StatelessWidget {
                       name: brand.name,
                       imageUrl: brand.logo,
                       emoji: brand.emoji ?? brand.name.substring(0, 1),
-                      onTap: () => _navigateToBrandPage(context, brand),
+                      onTap: () => _navigateToBrandDetailsPage(context, brand),
                     );
                   },
                 ),

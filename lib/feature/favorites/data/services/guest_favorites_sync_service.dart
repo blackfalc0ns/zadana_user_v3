@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
@@ -9,6 +10,7 @@ import 'package:zadana_user_v3/core/utils/constants.dart';
 import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 
+@lazySingleton
 class GuestFavoritesSyncService {
   GuestFavoritesSyncService._internal();
 

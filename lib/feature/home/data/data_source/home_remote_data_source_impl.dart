@@ -1,15 +1,15 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/feature/home/data/data_source/home_remote_data_source.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_banner_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_best_selling_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_brands_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_categories_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_explore_more_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_featured_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_recommended_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/home/data/models/home_special_offers_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/app_bar/home_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/banner/home_banner_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/best_selling/home_best_selling_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/brands/home_brands_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/categories/home_categories_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/explore_more/home_explore_more_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/featured/home_featured_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/recommended/home_recommended_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/home/data/models/special_offers/home_special_offers_response_model_dto.dart';
 
 @Injectable(as: HomeRemoteDataSource)
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
