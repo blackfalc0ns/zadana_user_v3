@@ -136,6 +136,25 @@ import '../../feature/cart/domain/usecase/remove_cart_item_usecase.dart'
 import '../../feature/cart/domain/usecase/update_cart_item_quantity_usecase.dart'
     as _i8;
 import '../../feature/cart/presentation/manager/cart_view_model.dart' as _i341;
+import '../../feature/category/data/data_source/category_remote_data_source.dart'
+    as _i601;
+import '../../feature/category/data/data_source/category_remote_data_source_impl.dart'
+    as _i642;
+import '../../feature/category/data/repo/category_repository_impl.dart'
+    as _i473;
+import '../../feature/category/domain/repo/category_repository.dart' as _i131;
+import '../../feature/category/domain/usecase/get_categories_usecase.dart'
+    as _i17;
+import '../../feature/category/domain/usecase/get_category_filters_usecase.dart'
+    as _i91;
+import '../../feature/category/domain/usecase/get_category_products_usecase.dart'
+    as _i127;
+import '../../feature/category/domain/usecase/get_category_subcategories_usecase.dart'
+    as _i737;
+import '../../feature/category/domain/usecase/get_shopping_products_usecase.dart'
+    as _i45;
+import '../../feature/category/presentation/manager/category_view_model.dart'
+    as _i228;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
     as _i691;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source_impl.dart'
@@ -300,8 +319,10 @@ import '../helpers/shared_pref.dart' as _i42;
 import '../network/api_services.dart' as _i804;
 import '../network/external_modules.dart' as _i576;
 import '../network/osm_api_services.dart' as _i777;
+import '../services/category_navigation_service.dart' as _i900;
 import '../services/device_id_interceptor.dart' as _i930;
 import '../services/device_id_service.dart' as _i148;
+import '../services/favorite_sync_service.dart' as _i761;
 import '../services/language_interceptor.dart' as _i32;
 import '../services/language_service.dart' as _i819;
 import '../services/notification_device_service.dart' as _i823;
@@ -369,6 +390,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i367.LocationPermissionService>(),
       ),
     );
+    gh.lazySingleton<_i219.GuestCartSyncService>(
+      () => _i219.GuestCartSyncService(
+        gh<_i460.SharedPreferences>(),
+        gh<_i227.TokenService>(),
+      ),
+    );
     gh.factory<_i930.DeviceIdInterceptor>(
       () => _i930.DeviceIdInterceptor(
         gh<_i227.TokenService>(),
@@ -390,8 +417,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i695.CacheStore>(),
       ),
     );
+    gh.factory<_i844.PaymentRemoteDataSource>(
+      () => _i311.PaymentRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.factory<_i912.LocationRepository>(
       () => _i232.LocationRepositoryImpl(gh<_i408.LocationDataSource>()),
+    );
+    gh.factory<_i420.PaymentRepository>(
+      () => _i562.PaymentRepositoryImpl(gh<_i844.PaymentRemoteDataSource>()),
     );
     gh.factory<_i1061.GetAddressFromCoordinatesUseCase>(
       () => _i1061.GetAddressFromCoordinatesUseCase(
@@ -407,9 +440,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i903.SearchLocationsUseCase(gh<_i912.LocationRepository>()),
     );
     gh.factory<_i804.ApiServices>(() => _i804.ApiServices(gh<_i361.Dio>()));
-    gh.factory<_i844.PaymentRemoteDataSource>(
-      () => _i311.PaymentRemoteDataSourceImpl(gh<_i361.Dio>()),
-    );
     gh.factory<_i596.ForgetPasswordRemoteDataSource>(
       () => _i570.ForgetPasswordRemoteDataSourceImpl(
         apiServices: gh<_i804.ApiServices>(),
@@ -419,6 +449,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i19.DeliveryVerificationRemoteDataSourceImpl(
         gh<_i804.ApiServices>(),
       ),
+    );
+    gh.factory<_i601.CategoryRemoteDataSource>(
+      () => _i642.CategoryRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
     gh.factory<_i698.VerifyOtpRemoteDataSource>(
       () => _i285.VerifyOtpRemoteDataSourceImpl(gh<_i804.ApiServices>()),
@@ -512,6 +545,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i31.LogoutRepository>(
       () => _i691.LogoutRepositoryImpl(gh<_i609.LogoutRemoteDataSource>()),
     );
+    gh.factory<_i492.ApplyCheckoutPromoCodeUseCase>(
+      () => _i492.ApplyCheckoutPromoCodeUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i867.GetCheckoutSummaryUseCase>(
+      () => _i867.GetCheckoutSummaryUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i859.PlaceOrderUseCase>(
+      () => _i859.PlaceOrderUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i1066.RemoveCheckoutPromoCodeUseCase>(
+      () =>
+          _i1066.RemoveCheckoutPromoCodeUseCase(gh<_i420.PaymentRepository>()),
+    );
     gh.factory<_i122.ResetPasswordRemoteDataSource>(
       () => _i992.ResetPasswordRemoteDataSourceImpl(
         apiServices: gh<_i804.ApiServices>(),
@@ -540,9 +586,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i227.HomeRepository>(
       () => _i311.HomeRepositoryImpl(gh<_i730.HomeRemoteDataSource>()),
-    );
-    gh.factory<_i420.PaymentRepository>(
-      () => _i562.PaymentRepositoryImpl(gh<_i844.PaymentRemoteDataSource>()),
     );
     gh.factory<_i699.GetHomeAppBarUseCase>(
       () => _i699.GetHomeAppBarUseCase(gh<_i227.HomeRepository>()),
@@ -587,6 +630,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i691.DeliveryVerificationRemoteDataSource>(),
       ),
     );
+    gh.factory<_i131.CategoryRepository>(
+      () => _i473.CategoryRepositoryImpl(gh<_i601.CategoryRemoteDataSource>()),
+    );
     gh.factory<_i685.ProductSearchRepository>(
       () => _i333.ProductSearchRepositoryImpl(
         gh<_i1069.ProductSearchRemoteDataSource>(),
@@ -603,10 +649,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1071.NotificationsRemoteDataSource>(),
       ),
     );
-    gh.lazySingleton<_i219.GuestCartSyncService>(
-      () => _i219.GuestCartSyncService(
-        gh<_i460.SharedPreferences>(),
-        gh<_i227.TokenService>(),
+    gh.factory<_i341.CartViewModel>(
+      () => _i341.CartViewModel(
+        gh<_i1065.GetCartVendorsUseCase>(),
+        gh<_i925.GetCartUseCase>(),
+        gh<_i327.ClearCartUseCase>(),
+        gh<_i483.RemoveCartItemUseCase>(),
+        gh<_i8.UpdateCartItemQuantityUseCase>(),
+        gh<_i219.GuestCartSyncService>(),
       ),
     );
     gh.factoryParam<
@@ -645,6 +695,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i477.UpdateProfileUseCase>(
       () => _i477.UpdateProfileUseCase(gh<_i1006.ProfileRepository>()),
+    );
+    gh.factory<_i566.PaymentViewModel>(
+      () => _i566.PaymentViewModel(
+        gh<_i867.GetCheckoutSummaryUseCase>(),
+        gh<_i492.ApplyCheckoutPromoCodeUseCase>(),
+        gh<_i1066.RemoveCheckoutPromoCodeUseCase>(),
+        gh<_i859.PlaceOrderUseCase>(),
+        gh<_i525.GetCustomerAddressesUseCase>(),
+      ),
     );
     gh.factory<_i398.MyOrdersViewModel>(
       () => _i398.MyOrdersViewModel(
@@ -717,18 +776,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i840.GetHomeDynamicSectionsUseCase>(),
       ),
     );
-    gh.factory<_i492.ApplyCheckoutPromoCodeUseCase>(
-      () => _i492.ApplyCheckoutPromoCodeUseCase(gh<_i420.PaymentRepository>()),
+    gh.factory<_i17.GetCategoriesUseCase>(
+      () => _i17.GetCategoriesUseCase(gh<_i131.CategoryRepository>()),
     );
-    gh.factory<_i867.GetCheckoutSummaryUseCase>(
-      () => _i867.GetCheckoutSummaryUseCase(gh<_i420.PaymentRepository>()),
+    gh.factory<_i91.GetCategoryFiltersUseCase>(
+      () => _i91.GetCategoryFiltersUseCase(gh<_i131.CategoryRepository>()),
     );
-    gh.factory<_i859.PlaceOrderUseCase>(
-      () => _i859.PlaceOrderUseCase(gh<_i420.PaymentRepository>()),
+    gh.factory<_i127.GetCategoryProductsUseCase>(
+      () => _i127.GetCategoryProductsUseCase(gh<_i131.CategoryRepository>()),
     );
-    gh.factory<_i1066.RemoveCheckoutPromoCodeUseCase>(
+    gh.factory<_i737.GetCategorySubcategoriesUseCase>(
       () =>
-          _i1066.RemoveCheckoutPromoCodeUseCase(gh<_i420.PaymentRepository>()),
+          _i737.GetCategorySubcategoriesUseCase(gh<_i131.CategoryRepository>()),
+    );
+    gh.factory<_i45.GetShoppingProductsUseCase>(
+      () => _i45.GetShoppingProductsUseCase(gh<_i131.CategoryRepository>()),
     );
     gh.factory<_i393.OrderDetailsViewModel>(
       () => _i393.OrderDetailsViewModel(gh<_i372.GetOrderDetailsUseCase>()),
@@ -795,16 +857,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i916.NotificationsRepository>(),
       ),
     );
-    gh.factory<_i341.CartViewModel>(
-      () => _i341.CartViewModel(
-        gh<_i1065.GetCartVendorsUseCase>(),
-        gh<_i925.GetCartUseCase>(),
-        gh<_i327.ClearCartUseCase>(),
-        gh<_i483.RemoveCartItemUseCase>(),
-        gh<_i8.UpdateCartItemQuantityUseCase>(),
-        gh<_i219.GuestCartSyncService>(),
-      ),
-    );
     gh.factoryParam<_i1008.BrandDetailsCubit, _i1044.BrandModel, dynamic>(
       (_brand, _) => _i1008.BrandDetailsCubit(
         gh<_i504.GetBrandFiltersUseCase>(),
@@ -833,15 +885,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i690.MarkAllNotificationsAsReadUseCase>(),
       ),
     );
-    gh.factory<_i566.PaymentViewModel>(
-      () => _i566.PaymentViewModel(
-        gh<_i867.GetCheckoutSummaryUseCase>(),
-        gh<_i492.ApplyCheckoutPromoCodeUseCase>(),
-        gh<_i1066.RemoveCheckoutPromoCodeUseCase>(),
-        gh<_i859.PlaceOrderUseCase>(),
-        gh<_i525.GetCustomerAddressesUseCase>(),
-      ),
-    );
     gh.factory<_i996.ResetPasswordUseCase>(
       () => _i996.ResetPasswordUseCase(
         repository: gh<_i491.ResetPasswordRepository>(),
@@ -866,6 +909,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i823.NotificationDeviceService>(),
         gh<_i219.GuestCartSyncService>(),
         gh<_i64.GuestFavoritesSyncService>(),
+      ),
+    );
+    gh.factory<_i228.CategoryViewModel>(
+      () => _i228.CategoryViewModel(
+        getCategoriesUseCase: gh<_i17.GetCategoriesUseCase>(),
+        getCategoryFiltersUseCase: gh<_i91.GetCategoryFiltersUseCase>(),
+        getCategorySubcategoriesUseCase:
+            gh<_i737.GetCategorySubcategoriesUseCase>(),
+        getCategoryProductsUseCase: gh<_i127.GetCategoryProductsUseCase>(),
+        getShoppingProductsUseCase: gh<_i45.GetShoppingProductsUseCase>(),
+        navigationService: gh<_i900.CategoryNavigationService>(),
+        favoriteSyncService: gh<_i761.FavoriteSyncService>(),
       ),
     );
     gh.factory<_i558.LoginRepository>(

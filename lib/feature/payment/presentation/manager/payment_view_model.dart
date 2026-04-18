@@ -57,12 +57,6 @@ class PaymentViewModel extends Cubit<PaymentState> {
         _handleAddressSelectionResult(event.result);
       case PaymentHandleAddAddressCompletedEvent():
         _loadCheckoutData();
-      case PaymentHandleWebViewResultEvent():
-        _handleWebViewResult(
-          result: event.result,
-          fallbackErrorMessage: event.fallbackErrorMessage,
-          pendingMessage: event.pendingMessage,
-        );
       case PaymentClearFeedbackEvent():
         emit(
           state.copyWith(clearActionFailure: true, clearFeedbackMessage: true),
@@ -324,89 +318,6 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     emit(state.copyWith(clearUiEffect: true));
     _refreshSummary(addressId: result);
-  }
-
-  void _handleWebViewResult({
-    required Map<String, String?>? result,
-    required String fallbackErrorMessage,
-    required String pendingMessage,
-  }) {
-    emit(state.copyWith(clearUiEffect: true));
-    if (result == null) {
-      return;
-    }
-
-    final paymentStatus = _resolveWebViewPaymentStatus(result);
-    final paymentMessage = result['message'];
-    final callbackOrderId = result['orderId'];
-    final orderId = callbackOrderId ?? state.placedOrder?.order.id;
-
-    if (paymentStatus == 'failed') {
-      emit(
-        state.copyWith(
-          uiEffect: ShowPaymentErrorEffect(
-            paymentMessage ?? fallbackErrorMessage,
-          ),
-        ),
-      );
-      return;
-    }
-
-    if (paymentStatus == 'pending') {
-      emit(
-        state.copyWith(
-          uiEffect: ShowPaymentInfoEffect(paymentMessage ?? pendingMessage),
-        ),
-      );
-      return;
-    }
-
-    if (paymentStatus == 'success' && orderId != null && orderId.isNotEmpty) {
-      emit(state.copyWith(uiEffect: NavigateToPaymentSuccessEffect(orderId)));
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        uiEffect: ShowPaymentErrorEffect(
-          paymentMessage ?? fallbackErrorMessage,
-        ),
-      ),
-    );
-  }
-
-  String? _resolveWebViewPaymentStatus(Map<String, String?> result) {
-    final directStatus = result['status']?.trim().toLowerCase();
-    if (directStatus == 'success' ||
-        directStatus == 'failed' ||
-        directStatus == 'pending') {
-      return directStatus;
-    }
-
-    final rawPaymentStatus = result['paymentStatus']?.trim().toLowerCase();
-    if (rawPaymentStatus == 'paid' ||
-        rawPaymentStatus == 'success' ||
-        rawPaymentStatus == 'succeeded') {
-      return 'success';
-    }
-
-    if (rawPaymentStatus == 'failed' ||
-        rawPaymentStatus == 'unpaid' ||
-        rawPaymentStatus == 'canceled' ||
-        rawPaymentStatus == 'cancelled') {
-      return 'failed';
-    }
-
-    if (rawPaymentStatus == 'pending' || rawPaymentStatus == 'processing') {
-      return 'pending';
-    }
-
-    final orderStatus = result['orderStatus']?.trim().toLowerCase();
-    if (orderStatus?.contains('pending') ?? false) {
-      return 'pending';
-    }
-
-    return null;
   }
 
   String? _resolvePaymentMethodCode(

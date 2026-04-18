@@ -8,6 +8,7 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
@@ -18,7 +19,7 @@ import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_cubit.dart'
 import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_state.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model_factory.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
 import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
@@ -75,11 +76,7 @@ class MainShellState extends State<MainShell> {
       cartViewModel: getItInstance(),
       favoritesViewModel: FavoritesViewModel(favoritesRepository),
       profileViewModel: getItInstance<ProfileViewModel>(),
-      categoryViewModel: CategoryViewModel(
-        getItInstance<ApiServices>(),
-        CategoryNavigationService(),
-        FavoriteSyncService(),
-      ),
+      categoryViewModel: createCategoryViewModel(),
       tokenService: getItInstance<TokenService>(),
     )..initialize();
     _navBadgeCubit = NavBadgeCubit(
@@ -132,6 +129,10 @@ class MainShellState extends State<MainShell> {
   void _onItemTapped(int index) {
     if (index == 1) {
       CategoryNavigationService().consumePendingExternalSelection();
+    }
+
+    if (index == 2) {
+      CartNavigationService().notifyTabChanged();
     }
 
     if (_selectedIndex != index) {

@@ -1,17 +1,7 @@
-import 'dart:developer' as developer;
-
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
-import 'package:zadana_user_v3/core/services/cart_refresh_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_view_model.dart';
@@ -21,71 +11,96 @@ import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_add
 class PaymentScreenEffectHandler {
   const PaymentScreenEffectHandler._();
 
-  static Future<void> _clearCartRelatedCache() async {
-    final cacheInvalidator = CartCacheInvalidator(getIt<CacheStore>());
-    await cacheInvalidator.clearCartCache();
-    await cacheInvalidator.clearCheckoutSummaryCache();
+  static const String _paymentStatusSuccess = 'success';
+  static const String _paymentStatusFailed = 'failed';
+  static const String _paymentStatusPending = 'pending';
+
+  static Future<void> _navigateToPaymentSuccess(
+    BuildContext context,
+    String orderId,
+  ) async {
+    await Navigator.of(
+      context,
+    ).pushReplacementNamed(AppRoutes.paymentSuccess, arguments: orderId);
   }
 
-  static Future<bool> _isBackendCartEmpty() async {
-    final result = await getIt<GetCartUseCase>().call();
-
-    switch (result) {
-      case ApiSuccessResult():
-        return result.data.summary.totalQuantity == 0;
-      case ApiErrorResult():
-        developer.log(
-          'Could not verify backend cart state: ${result.failure.errorMessage}',
-          name: 'PaymentScreenEffectHandler',
-        );
-        return false;
-    }
-  }
-
-  static void _requestCartRefresh() {
-    CartCountSyncService().requestRefresh();
-    CartRefreshService().notifyCartChanged();
-  }
-
-  static Future<void> _waitForBackendCartRefresh() async {
-    const verificationDelays = <Duration>[
-      Duration.zero,
-      Duration(milliseconds: 400),
-      Duration(milliseconds: 900),
-      Duration(milliseconds: 1400),
-    ];
-
-    for (final delay in verificationDelays) {
-      if (delay > Duration.zero) {
-        await Future<void>.delayed(delay);
-      }
-
-      _requestCartRefresh();
-
-      if (await _isBackendCartEmpty()) {
-        developer.log(
-          'Backend cart is empty after successful payment refresh.',
-          name: 'PaymentScreenEffectHandler',
-        );
-        return;
-      }
+  static Future<void> _handlePaymentCallbackResult({
+    required BuildContext context,
+    required PaymentCallbackResult? result,
+    required String fallbackErrorMessage,
+    required String pendingMessage,
+    required String? fallbackOrderId,
+  }) async {
+    if (result == null) {
+      return;
     }
 
-    developer.log(
-      'Backend cart still has items after payment retries. '
-      'No local clear will be forced.',
-      name: 'PaymentScreenEffectHandler',
+    final paymentStatus = _resolvePaymentCallbackStatus(result);
+    final paymentMessage = result['message'];
+    final callbackOrderId = result['orderId'];
+    final orderId = callbackOrderId ?? fallbackOrderId;
+
+    if (paymentStatus == _paymentStatusFailed) {
+      CustomSnackbar.showError(
+        context: context,
+        message: paymentMessage ?? fallbackErrorMessage,
+      );
+      return;
+    }
+
+    if (paymentStatus == _paymentStatusPending) {
+      CustomSnackbar.showInfo(
+        context: context,
+        message: paymentMessage ?? pendingMessage,
+      );
+      return;
+    }
+
+    if (paymentStatus == _paymentStatusSuccess &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await _navigateToPaymentSuccess(context, orderId);
+      return;
+    }
+
+    CustomSnackbar.showError(
+      context: context,
+      message: paymentMessage ?? fallbackErrorMessage,
     );
   }
 
-  static Future<void> _syncCartAfterSuccessfulPayment() async {
-    await _clearCartRelatedCache();
-    await getIt<GuestCartSyncService>().clearPendingItems();
-    await _waitForBackendCartRefresh();
-    developer.log(
-      'Cart cache invalidated after successful payment and refresh requested.',
-      name: 'PaymentScreenEffectHandler',
-    );
+  static String? _resolvePaymentCallbackStatus(PaymentCallbackResult result) {
+    final directStatus = result['status']?.trim().toLowerCase();
+    if (directStatus == _paymentStatusSuccess ||
+        directStatus == _paymentStatusFailed ||
+        directStatus == _paymentStatusPending) {
+      return directStatus;
+    }
+
+    final rawPaymentStatus = result['paymentStatus']?.trim().toLowerCase();
+    if (rawPaymentStatus == 'paid' ||
+        rawPaymentStatus == 'success' ||
+        rawPaymentStatus == 'succeeded') {
+      return _paymentStatusSuccess;
+    }
+
+    if (rawPaymentStatus == 'failed' ||
+        rawPaymentStatus == 'unpaid' ||
+        rawPaymentStatus == 'canceled' ||
+        rawPaymentStatus == 'cancelled') {
+      return _paymentStatusFailed;
+    }
+
+    if (rawPaymentStatus == 'pending' || rawPaymentStatus == 'processing') {
+      return _paymentStatusPending;
+    }
+
+    final orderStatus = result['orderStatus']?.trim().toLowerCase();
+    if (orderStatus?.contains('pending') ?? false) {
+      return _paymentStatusPending;
+    }
+
+    return null;
   }
 
   static Future<void> handle({
@@ -143,6 +158,7 @@ class PaymentScreenEffectHandler {
     }
 
     if (effect is OpenPaymentWebViewEffect) {
+      final placedOrderId = state.placedOrder?.order.id;
       viewModel.doIntent(const PaymentClearPlacedOrderEvent());
       viewModel.doIntent(const PaymentClearUiEffectEvent());
       final paymentResult = await Navigator.push<PaymentCallbackResult>(
@@ -153,12 +169,12 @@ class PaymentScreenEffectHandler {
       );
 
       if (!context.mounted) return;
-      viewModel.doIntent(
-        PaymentHandleWebViewResultEvent(
-          result: paymentResult,
-          fallbackErrorMessage: l10n.error_other_desc,
-          pendingMessage: l10n.order_pending,
-        ),
+      await _handlePaymentCallbackResult(
+        context: context,
+        result: paymentResult,
+        fallbackErrorMessage: l10n.error_other_desc,
+        pendingMessage: l10n.order_pending,
+        fallbackOrderId: placedOrderId,
       );
       return;
     }
@@ -166,13 +182,8 @@ class PaymentScreenEffectHandler {
     if (effect is NavigateToPaymentSuccessEffect) {
       viewModel.doIntent(const PaymentClearPlacedOrderEvent());
       viewModel.doIntent(const PaymentClearUiEffectEvent());
-      await _syncCartAfterSuccessfulPayment();
       if (!context.mounted) return;
-      Navigator.pushReplacementNamed(
-        context,
-        AppRoutes.paymentSuccess,
-        arguments: effect.orderId,
-      );
+      await _navigateToPaymentSuccess(context, effect.orderId);
       return;
     }
 

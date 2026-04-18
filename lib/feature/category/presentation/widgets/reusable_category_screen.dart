@@ -57,6 +57,13 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.errorFailure,
     this.onRetryError,
     this.onSearchTap,
+    this.isSearchActive = false,
+    this.showSearchResults = false,
+    this.searchController,
+    this.searchFocusNode,
+    this.onSearchChanged,
+    this.onSearchClose,
+    this.searchResults,
   });
 
   final List<CategoryEntity> categories;
@@ -97,6 +104,13 @@ class ReusableCategoryScreen extends StatefulWidget {
   final Failure? errorFailure;
   final VoidCallback? onRetryError;
   final VoidCallback? onSearchTap;
+  final bool isSearchActive;
+  final bool showSearchResults;
+  final TextEditingController? searchController;
+  final FocusNode? searchFocusNode;
+  final ValueChanged<String>? onSearchChanged;
+  final VoidCallback? onSearchClose;
+  final Widget? searchResults;
 
   @override
   State<ReusableCategoryScreen> createState() => _ReusableCategoryScreenState();
@@ -347,12 +361,15 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
 
     return Scaffold(
       backgroundColor: color.surface,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
             CategoryContent(
               categories: widget.categories,
               showCategoryChips: false,
+              isSearchActive: widget.isSearchActive,
+              showSearchResults: widget.showSearchResults,
               selectedCategory: widget.selectedCategory,
               selectedSubCategory: widget.selectedSubCategory,
               selectedSubCategoryId: widget.selectedSubCategoryId,
@@ -375,8 +392,15 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               errorFailure: widget.errorFailure,
               onRetryError: widget.onRetryError,
               onSearchTap: widget.onSearchTap,
+              searchController: widget.searchController,
+              searchFocusNode: widget.searchFocusNode,
+              onSearchChanged: widget.onSearchChanged,
+              onSearchClose: widget.onSearchClose,
+              searchResults: widget.searchResults,
             ),
-            if (!widget.isLoading)
+            if (!widget.isLoading &&
+                !widget.isSearchActive &&
+                !widget.showSearchResults)
               Positioned(
                 bottom: widget.bottomNavHeight + 20,
                 left: 45,

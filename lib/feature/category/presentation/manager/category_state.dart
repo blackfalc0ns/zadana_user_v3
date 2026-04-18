@@ -43,6 +43,11 @@ class CategoryState {
     this.retryAction = CategoryRetryAction.initialLoad,
     this.priceRange = const RangeValues(0, 1000),
     this.priceBounds = const RangeValues(0, 1000),
+    this.activeHeroProductId,
+    this.isSearchActive = false,
+    this.showSearchResults = false,
+    this.hasSearchQuery = false,
+    this.searchSessionVersion = 0,
   });
 
   final List<CategoryEntity> categories;
@@ -77,6 +82,11 @@ class CategoryState {
   final CategoryRetryAction retryAction;
   final RangeValues priceRange;
   final RangeValues priceBounds;
+  final String? activeHeroProductId;
+  final bool isSearchActive;
+  final bool showSearchResults;
+  final bool hasSearchQuery;
+  final int searchSessionVersion;
 
   List<String> get availableBrands => brandOptions
       .map((item) => item.name?.trim() ?? '')
@@ -156,6 +166,11 @@ class CategoryState {
     CategoryRetryAction? retryAction,
     RangeValues? priceRange,
     RangeValues? priceBounds,
+    Object? activeHeroProductId = const Object(),
+    bool? isSearchActive,
+    bool? showSearchResults,
+    bool? hasSearchQuery,
+    int? searchSessionVersion,
   }) {
     return CategoryState(
       categories: categories ?? this.categories,
@@ -223,6 +238,13 @@ class CategoryState {
       retryAction: retryAction ?? this.retryAction,
       priceRange: priceRange ?? this.priceRange,
       priceBounds: priceBounds ?? this.priceBounds,
+      activeHeroProductId: identical(activeHeroProductId, const Object())
+          ? this.activeHeroProductId
+          : activeHeroProductId as String?,
+      isSearchActive: isSearchActive ?? this.isSearchActive,
+      showSearchResults: showSearchResults ?? this.showSearchResults,
+      hasSearchQuery: hasSearchQuery ?? this.hasSearchQuery,
+      searchSessionVersion: searchSessionVersion ?? this.searchSessionVersion,
     );
   }
 }

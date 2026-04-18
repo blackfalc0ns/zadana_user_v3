@@ -56,18 +56,6 @@ class PaymentHandleAddAddressCompletedEvent extends PaymentEvent {
   const PaymentHandleAddAddressCompletedEvent();
 }
 
-class PaymentHandleWebViewResultEvent extends PaymentEvent {
-  const PaymentHandleWebViewResultEvent({
-    required this.result,
-    required this.fallbackErrorMessage,
-    required this.pendingMessage,
-  });
-
-  final Map<String, String?>? result;
-  final String fallbackErrorMessage;
-  final String pendingMessage;
-}
-
 class PaymentClearFeedbackEvent extends PaymentEvent {
   const PaymentClearFeedbackEvent();
 }

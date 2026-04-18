@@ -15,6 +15,8 @@ class CategoryContent extends StatelessWidget {
     super.key,
     required this.categories,
     this.showCategoryChips = true,
+    this.isSearchActive = false,
+    this.showSearchResults = false,
     required this.selectedCategory,
     required this.selectedSubCategory,
     this.selectedSubCategoryId,
@@ -37,10 +39,17 @@ class CategoryContent extends StatelessWidget {
     this.errorFailure,
     this.onRetryError,
     this.onSearchTap,
+    this.searchController,
+    this.searchFocusNode,
+    this.onSearchChanged,
+    this.onSearchClose,
+    this.searchResults,
   });
 
   final List<CategoryEntity> categories;
   final bool showCategoryChips;
+  final bool isSearchActive;
+  final bool showSearchResults;
   final String selectedCategory;
   final String selectedSubCategory;
   final String? selectedSubCategoryId;
@@ -63,6 +72,11 @@ class CategoryContent extends StatelessWidget {
   final Failure? errorFailure;
   final VoidCallback? onRetryError;
   final VoidCallback? onSearchTap;
+  final TextEditingController? searchController;
+  final FocusNode? searchFocusNode;
+  final ValueChanged<String>? onSearchChanged;
+  final VoidCallback? onSearchClose;
+  final Widget? searchResults;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +88,14 @@ class CategoryContent extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(Spacing.md),
           color: color.surface,
-          child: SearchBarWidget(locale: locale, onTap: onSearchTap),
+          child: SearchBarWidget(
+            locale: locale,
+            onTap: onSearchTap,
+            controller: searchController,
+            focusNode: searchFocusNode,
+            onChanged: onSearchChanged,
+            onClose: onSearchClose,
+          ),
         ),
         if (showCategoryChips)
           CategoryChips(
@@ -96,21 +117,23 @@ class CategoryContent extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(bottom: bottomPadding),
-            child: ProductsGrid(
-              products: products,
-              subCategory: selectedSubCategory,
-              sortOption: selectedSortOption,
-              filters: selectedFilters,
-              selectedQuantity: selectedQuantity,
-              selectedBrand: selectedBrand,
-              priceRange: priceRange,
-              activeHeroProductId: activeHeroProductId,
-              onProductTap: onProductTap,
-              isLoading: isLoading,
-              emptyStateMessage: emptyStateMessage,
-              errorFailure: errorFailure,
-              onRetryError: onRetryError,
-            ),
+            child: showSearchResults && searchResults != null
+                ? searchResults!
+                : ProductsGrid(
+                    products: products,
+                    subCategory: selectedSubCategory,
+                    sortOption: selectedSortOption,
+                    filters: selectedFilters,
+                    selectedQuantity: selectedQuantity,
+                    selectedBrand: selectedBrand,
+                    priceRange: priceRange,
+                    activeHeroProductId: activeHeroProductId,
+                    onProductTap: onProductTap,
+                    isLoading: isLoading,
+                    emptyStateMessage: emptyStateMessage,
+                    errorFailure: errorFailure,
+                    onRetryError: onRetryError,
+                  ),
           ),
         ),
       ],

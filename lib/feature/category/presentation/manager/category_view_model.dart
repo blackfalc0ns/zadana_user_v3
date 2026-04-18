@@ -1,113 +1,165 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/core/network/api_services.dart';
-import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
-import 'package:zadana_user_v3/feature/category/data/mapper/category_products_mapper.dart';
-import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/category_products_request_entity.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/shopping_products_request_entity.dart';
+import 'package:zadana_user_v3/feature/category/domain/usecase/get_categories_usecase.dart';
+import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_filters_usecase.dart';
+import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_products_usecase.dart';
+import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_subcategories_usecase.dart';
+import 'package:zadana_user_v3/feature/category/domain/usecase/get_shopping_products_usecase.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_event.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_state.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_state_extensions.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model_support.dart';
 
+@injectable
 class CategoryViewModel extends Cubit<CategoryState> {
-  CategoryViewModel(
-    this._apiServices,
-    this._navigationService,
-    this._favoriteSyncService,
-  ) : super(const CategoryState());
+  CategoryViewModel({
+    required GetCategoriesUseCase getCategoriesUseCase,
+    required GetCategoryFiltersUseCase getCategoryFiltersUseCase,
+    required GetCategorySubcategoriesUseCase getCategorySubcategoriesUseCase,
+    required GetCategoryProductsUseCase getCategoryProductsUseCase,
+    required GetShoppingProductsUseCase getShoppingProductsUseCase,
+    required CategoryNavigationService navigationService,
+    required FavoriteSyncService favoriteSyncService,
+  }) : _getCategoriesUseCase = getCategoriesUseCase,
+       _getCategoryFiltersUseCase = getCategoryFiltersUseCase,
+       _getCategorySubcategoriesUseCase = getCategorySubcategoriesUseCase,
+       _getCategoryProductsUseCase = getCategoryProductsUseCase,
+       _getShoppingProductsUseCase = getShoppingProductsUseCase,
+       _navigationService = navigationService,
+       _favoriteSyncService = favoriteSyncService,
+       super(const CategoryState());
 
-  final ApiServices _apiServices;
+  final GetCategoriesUseCase _getCategoriesUseCase;
+  final GetCategoryFiltersUseCase _getCategoryFiltersUseCase;
+  final GetCategorySubcategoriesUseCase _getCategorySubcategoriesUseCase;
+  final GetCategoryProductsUseCase _getCategoryProductsUseCase;
+  final GetShoppingProductsUseCase _getShoppingProductsUseCase;
   final CategoryNavigationService _navigationService;
   final FavoriteSyncService _favoriteSyncService;
+
+  void doIntent(CategoryEvent event) {
+    switch (event) {
+      case CategoryInitializeEvent():
+        loadInitialData();
+      case CategorySelectCategoryByNameEvent():
+        selectCategoryByName(event.categoryName);
+      case CategorySelectSubCategoryEvent():
+        selectSubCategory(event.subCategory);
+      case CategoryApplySortEvent():
+        applySort(event.sortValue);
+      case CategoryApplyFiltersEvent():
+        applyFilters(event.filters);
+      case CategoryClearAllFiltersEvent():
+        clearAllFilters();
+      case CategoryRetryEvent():
+        retry();
+      case CategorySearchQueryChangedEvent():
+        _handleSearchQueryChanged(event.query);
+      case CategoryCloseSearchUiEvent():
+        _closeSearchUi();
+      case CategorySyncSearchPresentationEvent():
+        _syncSearchPresentation(event);
+      case CategoryRefreshSearchSessionEvent():
+        _refreshSearchSession();
+      case CategorySetActiveHeroProductEvent():
+        _setActiveHeroProduct(event.productId);
+    }
+  }
 
   void initialize() {
     _favoriteSyncService.addListener(_syncFavoriteState);
     _navigationService.addListener(_checkSelectedCategory);
-    unawaited(loadInitialData());
+    doIntent(const CategoryInitializeEvent());
+  }
+
+  void _handleSearchQueryChanged(String query) {
+    emit(state.withSearchQuery(query));
+  }
+
+  void _closeSearchUi() {
+    emit(state.closeSearchUi());
+  }
+
+  void _syncSearchPresentation(CategorySyncSearchPresentationEvent event) {
+    final hasQuery = event.query.trim().isNotEmpty;
+    emit(
+      state.syncSearchPresentation(
+        hasQuery: hasQuery,
+        isLoading: event.isLoading,
+        hasItems: event.hasItems,
+        hasFailure: event.hasFailure,
+      ),
+    );
+  }
+
+  void _refreshSearchSession() {
+    emit(state.copyWith(searchSessionVersion: state.searchSessionVersion + 1));
+  }
+
+  void _setActiveHeroProduct(String? productId) {
+    emit(state.copyWith(activeHeroProductId: productId));
   }
 
   Future<void> loadInitialData() async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-        failure: null,
-        retryAction: CategoryRetryAction.initialLoad,
-      ),
-    );
+    emit(state.startInitialLoad());
 
-    try {
-      final response = await _apiServices.getHomeCategories();
-      final categories = (response.items ?? const [])
-          .where(
-            (item) =>
-                (item.id ?? '').isNotEmpty && (item.name ?? '').isNotEmpty,
-          )
-          .map(
-            (item) => CategoryEntity(
-              id: item.id ?? '',
-              name: item.name ?? '',
-              imageAsset: item.imageUrl ?? '',
-              emoji: (item.name ?? '').substring(0, 1),
-            ),
-          )
-          .toList();
+    final result = await _getCategoriesUseCase();
 
-      emit(state.copyWith(categories: categories));
+    switch (result) {
+      case ApiSuccessResult<List<CategoryEntity>>():
+        final categories = result.data;
+        emit(state.copyWith(categories: categories));
 
-      final selectedFromHome = _navigationService.selectedCategory;
-      final selectedSubCategoryId = _navigationService.selectedSubCategoryId;
-      final selectedSubCategoryName =
-          _navigationService.selectedSubCategoryName;
-      final hasRequestedSubCategory =
-          (selectedSubCategoryId?.isNotEmpty ?? false) ||
-          (selectedSubCategoryName?.isNotEmpty ?? false);
-      final initialCategory = _resolveRequestedCategory(selectedFromHome);
+        final selectedFromHome = _navigationService.selectedCategory;
+        final selectedSubCategoryId = _navigationService.selectedSubCategoryId;
+        final selectedSubCategoryName =
+            _navigationService.selectedSubCategoryName;
+        final hasRequestedSubCategory =
+            CategoryViewModelSupport.hasRequestedSubCategory(
+              subCategoryId: selectedSubCategoryId,
+              subCategoryName: selectedSubCategoryName,
+            );
+        final initialCategory =
+            CategoryViewModelSupport.resolveRequestedCategory(
+              state.categories,
+              selectedFromHome,
+            );
 
-      if (selectedFromHome == null && !hasRequestedSubCategory) {
-        await _loadDefaultShoppingView(categories: categories);
-        return;
-      }
+        if (selectedFromHome == null && !hasRequestedSubCategory) {
+          await _loadDefaultShoppingView(categories: categories);
+          return;
+        }
 
-      if (selectedFromHome == null) {
-        await _loadDefaultShoppingView(categories: categories);
-        await _applyExternalSubCategorySelection(
-          subCategoryId: selectedSubCategoryId,
-          subCategoryName: selectedSubCategoryName,
-        );
+        if (selectedFromHome == null) {
+          await _loadDefaultShoppingView(categories: categories);
+          await _applyExternalSubCategorySelection(
+            subCategoryId: selectedSubCategoryId,
+            subCategoryName: selectedSubCategoryName,
+          );
+          _navigationService.clearSelectedCategory();
+          return;
+        }
+
+        if (initialCategory == null) {
+          emit(state.missingRequestedCategory());
+          return;
+        }
+
+        await selectCategory(initialCategory, fromOutside: true);
         _navigationService.clearSelectedCategory();
-        return;
-      }
-
-      if (initialCategory == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            errorMessage: 'لا توجد أقسام متاحة حاليًا',
-            failure: null,
-          ),
-        );
-        return;
-      }
-
-      await selectCategory(initialCategory, fromOutside: true);
-
-      _navigationService.clearSelectedCategory();
-    } catch (error) {
-      final failure = _mapFailure(error);
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: failure.code,
-          failure: failure,
-          retryAction: CategoryRetryAction.initialLoad,
-        ),
-      );
+      case ApiErrorResult<List<CategoryEntity>>():
+        emit(state.initialLoadFailed(result.failure));
     }
   }
 
@@ -117,98 +169,78 @@ class CategoryViewModel extends Cubit<CategoryState> {
     bool showAllSubCategories = false,
   }) async {
     emit(
-      state.copyWith(
-        selectedCategory: category.name,
-        selectedCategoryId: category.id,
-        selectedSubCategory: null,
-        selectedSubCategoryId: null,
-        subCategories: const [],
-        subCategoryCategoryMap: const {},
-        products: const [],
-        quantityOptions: const [],
-        brandOptions: const [],
-        productTypeOptions: const [],
-        partOptions: const [],
-        sortOptions: const [],
-        filterSelectedCategory: category.name,
-        filterSelectedQuantity: null,
-        filterSelectedBrand: null,
-        filterSelectedProductType: null,
-        filterSelectedPart: null,
-        selectedQuantityId: null,
-        selectedBrandId: null,
-        selectedProductTypeId: null,
-        selectedPartId: null,
-        priceBounds: const RangeValues(0, 1000),
-        priceRange: const RangeValues(0, 1000),
-        isCategoryPreselectedFromOutside: fromOutside,
+      state.selectingCategory(
+        category: category,
+        fromOutside: fromOutside,
         showAllSubCategories: showAllSubCategories,
-        isLoading: true,
-        isSubCategoriesLoading: true,
-        errorMessage: null,
-        failure: null,
-        retryAction: CategoryRetryAction.loadFiltersAndProducts,
       ),
     );
 
-    try {
-      if (showAllSubCategories) {
-        final categoryFilters = await Future.wait(
-          state.categories
-              .map((item) => _apiServices.getCategoryFilters(item.id))
-              .toList(growable: false),
-        );
-        final selectedFilters = categoryFilters.firstWhere(
-          (filters) => filters.category?.id == category.id,
-          orElse: () => categoryFilters.first,
-        );
-        final shoppingSubCategories = _buildShoppingSubCategories(
-          categories: state.categories,
-          categoryFilters: categoryFilters,
-        );
-        _applyCategoryFilters(
-          selectedFilters,
-          subCategories: shoppingSubCategories.subCategories,
-          subCategoryCategoryMap: shoppingSubCategories.categoryMap,
-        );
-      } else {
-        final results = await Future.wait<dynamic>([
-          _apiServices.getCategoryFilters(category.id),
-          _apiServices.getCategorySubcategories(category.id),
-        ]);
-        final filters = results[0] as CategoryFiltersResponseModelDto;
-        final subCategories = results[1] as List<CategorySubcategoryItemDto>;
-        _applyCategoryFilters(
-          filters,
-          subCategories: subCategories,
-          subCategoryCategoryMap: {
-            for (final item in subCategories)
-              if ((item.id ?? '').isNotEmpty) item.id!: category.id,
-          },
-        );
+    if (showAllSubCategories) {
+      final filtersResult = await _getFiltersForCategories(state.categories);
+
+      switch (filtersResult) {
+        case ApiSuccessResult<List<CategoryFiltersResponseModelDto>>():
+          final categoryFilters = filtersResult.data;
+          final selectedFilters = categoryFilters.firstWhere(
+            (filters) => filters.category?.id == category.id,
+            orElse: () => categoryFilters.first,
+          );
+          final shoppingSubCategories =
+              CategoryViewModelSupport.buildShoppingSubCategories(
+                categories: state.categories,
+                categoryFilters: categoryFilters,
+              );
+          _applyCategoryFilters(
+            selectedFilters,
+            subCategories: shoppingSubCategories.subCategories,
+            subCategoryCategoryMap: shoppingSubCategories.categoryMap,
+          );
+          await loadCategoryProducts();
+        case ApiErrorResult<List<CategoryFiltersResponseModelDto>>(
+          failure: final failure,
+        ):
+          _emitFiltersAndProductsFailure(failure);
       }
-      await loadCategoryProducts();
-    } catch (error) {
-      final failure = _mapFailure(error);
-      emit(
-        state.copyWith(
-          subCategories: const [],
-          products: const [],
-          quantityOptions: const [],
-          brandOptions: const [],
-          productTypeOptions: const [],
-          partOptions: const [],
-          sortOptions: const [],
-          selectedSubCategory: null,
-          selectedSubCategoryId: null,
-          isLoading: false,
-          isSubCategoriesLoading: false,
-          errorMessage: failure.code,
-          failure: failure,
-          retryAction: CategoryRetryAction.loadFiltersAndProducts,
-        ),
-      );
+      return;
     }
+
+    final filtersResult = await _getCategoryFiltersUseCase(category.id);
+    final subCategoriesResult = await _getCategorySubcategoriesUseCase(
+      category.id,
+    );
+
+    late final CategoryFiltersResponseModelDto filters;
+    switch (filtersResult) {
+      case ApiErrorResult<CategoryFiltersResponseModelDto>(
+        failure: final failure,
+      ):
+        _emitFiltersAndProductsFailure(failure);
+        return;
+      case ApiSuccessResult<CategoryFiltersResponseModelDto>(data: final data):
+        filters = data;
+    }
+
+    late final List<CategorySubcategoryItemDto> subCategories;
+    switch (subCategoriesResult) {
+      case ApiErrorResult<List<CategorySubcategoryItemDto>>(
+        failure: final failure,
+      ):
+        _emitFiltersAndProductsFailure(failure);
+        return;
+      case ApiSuccessResult<List<CategorySubcategoryItemDto>>(data: final data):
+        subCategories = data;
+    }
+
+    _applyCategoryFilters(
+      filters,
+      subCategories: subCategories,
+      subCategoryCategoryMap: {
+        for (final item in subCategories)
+          if ((item.id ?? '').isNotEmpty) item.id!: category.id,
+      },
+    );
+    await loadCategoryProducts();
   }
 
   Future<void> loadCategoryProducts({
@@ -224,73 +256,55 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _loadShoppingProducts(subcategoryId: effectiveSubCategoryId);
       return;
     }
+
     if (effectiveSubCategoryId == null || effectiveSubCategoryId.isEmpty) {
       final requestCategoryId =
           overrideCategoryId ??
-          _resolveCategoryIdForSubCategory(effectiveSubCategoryId) ??
+          CategoryViewModelSupport.resolveCategoryIdForSubCategory(
+            showAllSubCategories: state.showAllSubCategories,
+            subCategoryCategoryMap: state.subCategoryCategoryMap,
+            selectedCategoryId: state.selectedCategoryId,
+            subCategoryId: effectiveSubCategoryId,
+          ) ??
           state.selectedCategoryId;
       if (requestCategoryId == null || requestCategoryId.isEmpty) return;
       await _loadShoppingProducts();
       return;
     }
 
-    emit(
-      state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-        failure: null,
-        retryAction: CategoryRetryAction.loadProducts,
+    emit(state.startProductsLoad());
+
+    final result = await _getCategoryProductsUseCase(
+      CategoryProductsRequestEntity(
+        subCategoryId: effectiveSubCategoryId,
+        productTypeId: state.selectedProductTypeId,
+        partId: state.selectedPartId,
+        quantityId: state.selectedQuantityId,
+        brandId: state.selectedBrandId,
+        minPrice: state.priceRange.start,
+        maxPrice: state.priceRange.end,
+        sort: state.selectedSortOption.isEmpty
+            ? null
+            : state.selectedSortOption,
       ),
     );
 
-    try {
-      final response = await _apiServices.getCategoryProducts(
-        effectiveSubCategoryId,
-        state.selectedProductTypeId,
-        state.selectedPartId,
-        state.selectedQuantityId,
-        state.selectedBrandId,
-        state.priceRange.start,
-        state.priceRange.end,
-        state.selectedSortOption.isEmpty ? null : state.selectedSortOption,
-      );
-      final products = (response.items ?? const [])
-          .map((item) => item.toEntity())
-          .toList();
-
-      emit(
-        state.copyWith(
-          products: products,
-          isLoading: false,
-          errorMessage: null,
-          failure: null,
-        ),
-      );
-    } catch (error) {
-      final failure = _mapFailure(error);
-      emit(
-        state.copyWith(
-          products: const [],
-          isLoading: false,
-          errorMessage: failure.code,
-          failure: failure,
-          retryAction: CategoryRetryAction.loadProducts,
-        ),
-      );
+    switch (result) {
+      case ApiSuccessResult():
+        emit(state.productsLoaded(result.data));
+      case ApiErrorResult():
+        emit(state.productsLoadFailed(result.failure));
     }
   }
 
   void selectCategoryByName(String categoryName) {
     if (categoryName == state.selectedCategory) return;
 
-    final category = state.categories
-        .where((item) => item.name == categoryName)
-        .firstWhere(
-          (_) => true,
-          orElse: () =>
-              const CategoryEntity(id: '', name: '', imageAsset: '', emoji: ''),
-        );
-    if (category.id.isEmpty) return;
+    final category = CategoryViewModelSupport.findCategoryByName(
+      state.categories,
+      categoryName,
+    );
+    if (category == null) return;
 
     unawaited(selectCategory(category));
   }
@@ -313,9 +327,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
 
     emit(
-      state.copyWith(
-        selectedSubCategoryId: nextSubCategoryId,
-        selectedSubCategory: nextSubCategoryName,
+      state.selectSubCategory(
+        subCategoryId: nextSubCategoryId,
+        subCategoryName: nextSubCategoryName,
       ),
     );
 
@@ -352,21 +366,14 @@ class CategoryViewModel extends Cubit<CategoryState> {
         result['priceRange'] as RangeValues? ?? state.priceBounds;
 
     emit(
-      state.copyWith(
-        filterSelectedCategory: categoryName ?? state.filterSelectedCategory,
-        filterSelectedQuantity: quantity,
-        filterSelectedBrand: brand,
-        filterSelectedProductType: productType,
-        filterSelectedPart: part,
-        selectedSubCategoryId: subCategoryId,
-        selectedSubCategory: subCategoryName,
-        selectedQuantityId: _findOptionId(state.quantityOptions, quantity),
-        selectedBrandId: _findBrandId(brand),
-        selectedProductTypeId: _findOptionId(
-          state.productTypeOptions,
-          productType,
-        ),
-        selectedPartId: _findPartId(part),
+      state.applyFilterSelection(
+        categoryName: categoryName,
+        subCategoryId: subCategoryId,
+        subCategoryName: subCategoryName,
+        quantity: quantity,
+        brand: brand,
+        productType: productType,
+        part: part,
         priceRange: priceRange,
       ),
     );
@@ -379,14 +386,11 @@ class CategoryViewModel extends Cubit<CategoryState> {
     String? subCategoryId,
     String? subCategoryName,
   }) async {
-    final category = state.categories
-        .where((item) => item.name == categoryName)
-        .firstWhere(
-          (_) => true,
-          orElse: () =>
-              const CategoryEntity(id: '', name: '', imageAsset: '', emoji: ''),
-        );
-    if (category.id.isEmpty) return;
+    final category = CategoryViewModelSupport.findCategoryByName(
+      state.categories,
+      categoryName,
+    );
+    if (category == null) return;
 
     await selectCategory(category);
 
@@ -395,9 +399,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
 
     emit(
-      state.copyWith(
-        selectedSubCategoryId: subCategoryId,
-        selectedSubCategory: subCategoryName,
+      state.selectSubCategory(
+        subCategoryId: subCategoryId,
+        subCategoryName: subCategoryName,
       ),
     );
     await loadCategoryProducts(overrideSubCategoryId: subCategoryId);
@@ -409,22 +413,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
       return;
     }
 
-    emit(
-      state.copyWith(
-        filterSelectedCategory: state.isCategoryPreselectedFromOutside
-            ? state.selectedCategory
-            : null,
-        filterSelectedQuantity: null,
-        filterSelectedBrand: null,
-        filterSelectedProductType: null,
-        filterSelectedPart: null,
-        selectedQuantityId: null,
-        selectedBrandId: null,
-        selectedProductTypeId: null,
-        selectedPartId: null,
-        priceRange: state.priceBounds,
-      ),
-    );
+    emit(state.clearFilters());
     unawaited(loadCategoryProducts());
   }
 
@@ -440,13 +429,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
         }
         final category = state.categories.firstWhere(
           (item) => item.id == categoryId,
-          orElse: () => CategoryEntity(
+          orElse: () => CategoryViewModelSupport.buildFallbackCategory(
             id: categoryId,
             name: state.selectedCategory,
-            imageAsset: '',
-            emoji: state.selectedCategory.isNotEmpty
-                ? state.selectedCategory.substring(0, 1)
-                : '',
           ),
         );
         unawaited(
@@ -473,66 +458,15 @@ class CategoryViewModel extends Cubit<CategoryState> {
     List<CategorySubcategoryItemDto>? subCategories,
     Map<String, String>? subCategoryCategoryMap,
   }) {
-    final resolvedSubCategories =
-        (subCategories ?? filters.subcategories ?? const [])
-            .where(
-              (item) =>
-                  (item.id ?? '').isNotEmpty &&
-                  (item.name ?? '').trim().isNotEmpty,
-            )
-            .toList();
-    final quantityOptions = (filters.quantities ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList();
-    final brandOptions = (filters.brands ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList();
-    final productTypeOptions = (filters.productTypes ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList();
-    final partOptions = (filters.parts ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList();
-
-    final minPrice = filters.priceRange?.min ?? 0;
-    final maxPrice = filters.priceRange?.max ?? minPrice;
-    final normalizedMax = maxPrice >= minPrice ? maxPrice : minPrice;
-    final priceBounds = RangeValues(minPrice, normalizedMax);
+    final filtersState = CategoryViewModelSupport.resolveFiltersState(
+      filters,
+      subCategories: subCategories,
+    );
 
     emit(
-      state.copyWith(
-        subCategories: resolvedSubCategories,
-        quantityOptions: quantityOptions,
-        brandOptions: brandOptions,
-        productTypeOptions: productTypeOptions,
-        partOptions: partOptions,
-        sortOptions: (filters.sortOptions ?? const [])
-            .map(
-              (item) => {
-                'value': item.value ?? '',
-                'title': item.label ?? '',
-                'subtitle': null,
-              },
-            )
-            .where((item) => (item['value'] as String).isNotEmpty)
-            .toList(),
-        priceBounds: priceBounds,
-        priceRange: priceBounds,
-        subCategoryCategoryMap:
-            subCategoryCategoryMap ?? state.subCategoryCategoryMap,
-        isSubCategoriesLoading: false,
+      state.applyCategoryFilters(
+        filtersState,
+        subCategoryCategoryMap: subCategoryCategoryMap,
       ),
     );
   }
@@ -541,12 +475,18 @@ class CategoryViewModel extends Cubit<CategoryState> {
     required String subCategoryId,
     required String? subCategoryName,
   }) async {
-    final targetCategoryId = _resolveCategoryIdForSubCategory(subCategoryId);
+    final targetCategoryId =
+        CategoryViewModelSupport.resolveCategoryIdForSubCategory(
+          showAllSubCategories: state.showAllSubCategories,
+          subCategoryCategoryMap: state.subCategoryCategoryMap,
+          selectedCategoryId: state.selectedCategoryId,
+          subCategoryId: subCategoryId,
+        );
     if (targetCategoryId == null || targetCategoryId.isEmpty) {
       emit(
-        state.copyWith(
-          selectedSubCategoryId: subCategoryId,
-          selectedSubCategory: subCategoryName,
+        state.selectSubCategory(
+          subCategoryId: subCategoryId,
+          subCategoryName: subCategoryName,
         ),
       );
       await loadCategoryProducts(overrideSubCategoryId: subCategoryId);
@@ -555,246 +495,98 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     final category = state.categories.firstWhere(
       (item) => item.id == targetCategoryId,
-      orElse: () => CategoryEntity(
+      orElse: () => CategoryViewModelSupport.buildFallbackCategory(
         id: targetCategoryId,
         name: state.selectedCategory,
-        imageAsset: '',
         emoji: '',
       ),
     );
 
     emit(
-      state.copyWith(
-        selectedCategory: category.name,
-        selectedCategoryId: category.id,
-        filterSelectedCategory: category.name,
-        selectedSubCategoryId: subCategoryId,
-        selectedSubCategory: subCategoryName,
-        filterSelectedQuantity: null,
-        filterSelectedBrand: null,
-        filterSelectedProductType: null,
-        filterSelectedPart: null,
-        selectedQuantityId: null,
-        selectedBrandId: null,
-        selectedProductTypeId: null,
-        selectedPartId: null,
-        isLoading: true,
-        errorMessage: null,
-        failure: null,
-        retryAction: CategoryRetryAction.loadFiltersAndProducts,
+      state.selectShoppingSubCategory(
+        category: category,
+        subCategoryId: subCategoryId,
+        subCategoryName: subCategoryName,
       ),
     );
 
-    try {
-      final filters = await _apiServices.getCategoryFilters(targetCategoryId);
-      _applyCategoryFilters(
-        filters,
-        subCategories: state.subCategories,
-        subCategoryCategoryMap: state.subCategoryCategoryMap,
-      );
-      emit(
-        state.copyWith(
-          selectedSubCategoryId: subCategoryId,
-          selectedSubCategory: subCategoryName,
-        ),
-      );
-      await loadCategoryProducts(
-        overrideSubCategoryId: subCategoryId,
-        overrideCategoryId: targetCategoryId,
-      );
-    } catch (error) {
-      final failure = _mapFailure(error);
-      emit(
-        state.copyWith(
-          products: const [],
-          isLoading: false,
-          errorMessage: failure.code,
-          failure: failure,
-          retryAction: CategoryRetryAction.loadFiltersAndProducts,
-        ),
-      );
+    final filtersResult = await _getCategoryFiltersUseCase(targetCategoryId);
+
+    switch (filtersResult) {
+      case ApiSuccessResult<CategoryFiltersResponseModelDto>():
+        _applyCategoryFilters(
+          filtersResult.data,
+          subCategories: state.subCategories,
+          subCategoryCategoryMap: state.subCategoryCategoryMap,
+        );
+        emit(
+          state.selectSubCategory(
+            subCategoryId: subCategoryId,
+            subCategoryName: subCategoryName,
+          ),
+        );
+        await loadCategoryProducts(
+          overrideSubCategoryId: subCategoryId,
+          overrideCategoryId: targetCategoryId,
+        );
+      case ApiErrorResult<CategoryFiltersResponseModelDto>():
+        emit(state.filtersReloadFailed(filtersResult.failure));
     }
-  }
-
-  String? _resolveCategoryIdForSubCategory(String? subCategoryId) {
-    if (subCategoryId == null || subCategoryId.isEmpty) {
-      return state.selectedCategoryId;
-    }
-
-    return state.showAllSubCategories
-        ? state.subCategoryCategoryMap[subCategoryId] ??
-              state.selectedCategoryId
-        : state.selectedCategoryId;
-  }
-
-  _ShoppingSubCategoriesData _buildShoppingSubCategories({
-    required List<CategoryEntity> categories,
-    required List<CategoryFiltersResponseModelDto> categoryFilters,
-  }) {
-    final items = <CategorySubcategoryItemDto>[];
-    final categoryMap = <String, String>{};
-
-    for (var i = 0; i < categoryFilters.length; i++) {
-      final categoryId = i < categories.length
-          ? categories[i].id
-          : (categoryFilters[i].category?.id ?? '');
-      if (categoryId.isEmpty) continue;
-
-      for (final item in categoryFilters[i].subcategories ?? const []) {
-        final id = item.id ?? '';
-        final name = item.name?.trim() ?? '';
-        if (id.isEmpty || name.isEmpty || categoryMap.containsKey(id)) {
-          continue;
-        }
-        items.add(item);
-        categoryMap[id] = categoryId;
-      }
-    }
-
-    return _ShoppingSubCategoriesData(
-      subCategories: items,
-      categoryMap: categoryMap,
-    );
-  }
-
-  CategoryEntity? _resolveRequestedCategory(CategoryEntity? requested) {
-    if (requested == null) return null;
-
-    for (final category in state.categories) {
-      if (category.id == requested.id || category.name == requested.name) {
-        return category;
-      }
-    }
-
-    return null;
   }
 
   Future<void> _loadDefaultShoppingView({
     required List<CategoryEntity> categories,
   }) async {
-    emit(
-      state.copyWith(
-        categories: categories,
-        selectedCategory: '',
-        selectedCategoryId: null,
-        selectedSubCategory: null,
-        selectedSubCategoryId: null,
-        subCategories: const [],
-        subCategoryCategoryMap: const {},
-        products: const [],
-        quantityOptions: const [],
-        brandOptions: const [],
-        productTypeOptions: const [],
-        partOptions: const [],
-        sortOptions: const [],
-        filterSelectedCategory: null,
-        filterSelectedQuantity: null,
-        filterSelectedBrand: null,
-        filterSelectedProductType: null,
-        filterSelectedPart: null,
-        selectedQuantityId: null,
-        selectedBrandId: null,
-        selectedProductTypeId: null,
-        selectedPartId: null,
-        isCategoryPreselectedFromOutside: false,
-        showAllSubCategories: true,
-        priceBounds: const RangeValues(0, 1000),
-        priceRange: const RangeValues(0, 1000),
-        isLoading: true,
-        isSubCategoriesLoading: true,
-        errorMessage: null,
-        failure: null,
-        retryAction: CategoryRetryAction.initialLoad,
-      ),
-    );
+    emit(state.startDefaultShoppingView(categories));
 
-    try {
-      final categoryFilters = await Future.wait(
-        categories
-            .map((item) => _apiServices.getCategoryFilters(item.id))
-            .toList(growable: false),
-      );
-      final shoppingSubCategories = _buildShoppingSubCategories(
-        categories: categories,
-        categoryFilters: categoryFilters,
-      );
+    final filtersResult = await _getFiltersForCategories(categories);
 
-      emit(
-        state.copyWith(
-          subCategories: shoppingSubCategories.subCategories,
-          subCategoryCategoryMap: shoppingSubCategories.categoryMap,
-          isSubCategoriesLoading: false,
-        ),
-      );
+    switch (filtersResult) {
+      case ApiSuccessResult<List<CategoryFiltersResponseModelDto>>():
+        final shoppingSubCategories =
+            CategoryViewModelSupport.buildShoppingSubCategories(
+              categories: categories,
+              categoryFilters: filtersResult.data,
+            );
 
-      await _loadShoppingProducts();
-    } catch (error) {
-      final failure = _mapFailure(error);
-      emit(
-        state.copyWith(
-          products: const [],
-          subCategories: const [],
-          isLoading: false,
-          isSubCategoriesLoading: false,
-          errorMessage: failure.code,
-          failure: failure,
-          retryAction: CategoryRetryAction.initialLoad,
-        ),
-      );
+        emit(state.loadedShoppingSubCategories(shoppingSubCategories));
+
+        await _loadShoppingProducts();
+      case ApiErrorResult<List<CategoryFiltersResponseModelDto>>():
+        emit(state.defaultShoppingLoadFailed(filtersResult.failure));
     }
   }
 
   Future<void> _loadShoppingProducts({String? subcategoryId}) async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        errorMessage: null,
-        failure: null,
-        retryAction: CategoryRetryAction.loadProducts,
+    emit(state.startProductsLoad());
+
+    final hasPriceFilter = state.priceRange != state.priceBounds;
+    final result = await _getShoppingProductsUseCase(
+      ShoppingProductsRequestEntity(
+        categoryId: subcategoryId,
+        productTypeId: state.selectedProductTypeId,
+        partId: state.selectedPartId,
+        quantityId: state.selectedQuantityId,
+        brandId: state.selectedBrandId,
+        minPrice: hasPriceFilter ? state.priceRange.start : null,
+        maxPrice: hasPriceFilter ? state.priceRange.end : null,
+        sort: state.selectedSortOption.isEmpty
+            ? null
+            : state.selectedSortOption,
       ),
     );
 
-    try {
-      final hasPriceFilter = state.priceRange != state.priceBounds;
-      final response = await _apiServices.getShoppingProducts(
-        subcategoryId,
-        state.selectedProductTypeId,
-        state.selectedPartId,
-        state.selectedQuantityId,
-        state.selectedBrandId,
-        hasPriceFilter ? state.priceRange.start : null,
-        hasPriceFilter ? state.priceRange.end : null,
-        state.selectedSortOption.isEmpty ? null : state.selectedSortOption,
-        1,
-        20,
-      );
-
-      emit(
-        state.copyWith(
-          products: (response.items ?? const [])
-              .map((item) => item.toEntity())
-              .toList(),
-          isLoading: false,
-          errorMessage: null,
-          failure: null,
-        ),
-      );
-    } catch (error) {
-      final failure = _mapFailure(error);
-      emit(
-        state.copyWith(
-          products: const [],
-          isLoading: false,
-          errorMessage: failure.code,
-          failure: failure,
-          retryAction: CategoryRetryAction.loadProducts,
-        ),
-      );
+    switch (result) {
+      case ApiSuccessResult():
+        emit(state.productsLoaded(result.data));
+      case ApiErrorResult():
+        emit(state.productsLoadFailed(result.failure));
     }
   }
 
   void _checkSelectedCategory() {
-    final requested = _resolveRequestedCategory(
+    final requested = CategoryViewModelSupport.resolveRequestedCategory(
+      state.categories,
       _navigationService.selectedCategory,
     );
     if (requested == null) {
@@ -802,8 +594,10 @@ class CategoryViewModel extends Cubit<CategoryState> {
       final selectedSubCategoryName =
           _navigationService.selectedSubCategoryName;
       final hasRequestedSubCategory =
-          (selectedSubCategoryId?.isNotEmpty ?? false) ||
-          (selectedSubCategoryName?.isNotEmpty ?? false);
+          CategoryViewModelSupport.hasRequestedSubCategory(
+            subCategoryId: selectedSubCategoryId,
+            subCategoryName: selectedSubCategoryName,
+          );
 
       if (hasRequestedSubCategory) {
         if (state.categories.isEmpty) {
@@ -847,10 +641,12 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _loadDefaultShoppingView(categories: state.categories);
     }
 
-    final requestedSubCategory = _resolveRequestedSubCategory(
-      subCategoryId: subCategoryId,
-      subCategoryName: subCategoryName,
-    );
+    final requestedSubCategory =
+        CategoryViewModelSupport.resolveRequestedSubCategory(
+          state.subCategories,
+          subCategoryId: subCategoryId,
+          subCategoryName: subCategoryName,
+        );
     if (requestedSubCategory == null) {
       return;
     }
@@ -866,34 +662,6 @@ class CategoryViewModel extends Cubit<CategoryState> {
     );
   }
 
-  CategorySubcategoryItemDto? _resolveRequestedSubCategory({
-    String? subCategoryId,
-    String? subCategoryName,
-  }) {
-    final normalizedId = subCategoryId?.trim();
-    if (normalizedId != null && normalizedId.isNotEmpty) {
-      for (final subCategory in state.subCategories) {
-        if (subCategory.id == normalizedId) {
-          return subCategory;
-        }
-      }
-    }
-
-    final normalizedName = subCategoryName?.trim().toLowerCase();
-    if (normalizedName == null || normalizedName.isEmpty) {
-      return null;
-    }
-
-    for (final subCategory in state.subCategories) {
-      final candidateName = subCategory.name?.trim().toLowerCase();
-      if (candidateName == normalizedName) {
-        return subCategory;
-      }
-    }
-
-    return null;
-  }
-
   void _syncFavoriteState() {
     final productId = _favoriteSyncService.productId;
     final isFavorite = _favoriteSyncService.isFavorite;
@@ -901,52 +669,37 @@ class CategoryViewModel extends Cubit<CategoryState> {
     if (productId == null || isFavorite == null) return;
 
     emit(
-      state.copyWith(
-        products: state.products
-            .map(
-              (product) => product.id == productId
-                  ? product.copyWith(isFavorite: isFavorite)
-                  : product,
-            )
-            .toList(),
-      ),
+      state.syncFavoriteState(productId: productId, isFavorite: isFavorite),
     );
   }
 
-  String? _findOptionId(
-    List<CategoryFilterOptionDto> options,
-    String? selectedName,
-  ) {
-    if (selectedName == null || selectedName.isEmpty) return null;
-    return options
-        .where((item) => item.name == selectedName)
-        .map((item) => item.id)
-        .cast<String?>()
-        .firstWhere((_) => true, orElse: () => null);
+  Future<ApiResult<List<CategoryFiltersResponseModelDto>>>
+  _getFiltersForCategories(List<CategoryEntity> categories) async {
+    final results = await Future.wait(
+      categories
+          .map((item) => _getCategoryFiltersUseCase(item.id))
+          .toList(growable: false),
+    );
+
+    final filters = <CategoryFiltersResponseModelDto>[];
+    for (final result in results) {
+      switch (result) {
+        case ApiSuccessResult<CategoryFiltersResponseModelDto>():
+          filters.add(result.data);
+        case ApiErrorResult<CategoryFiltersResponseModelDto>():
+          return ApiErrorResult<List<CategoryFiltersResponseModelDto>>(
+            failure: result.failure,
+          );
+      }
+    }
+
+    return ApiSuccessResult<List<CategoryFiltersResponseModelDto>>(
+      data: filters,
+    );
   }
 
-  String? _findBrandId(String? selectedName) {
-    if (selectedName == null || selectedName.isEmpty) return null;
-    return state.brandOptions
-        .where((item) => item.name == selectedName)
-        .map((item) => item.id)
-        .cast<String?>()
-        .firstWhere((_) => true, orElse: () => null);
-  }
-
-  String? _findPartId(String? selectedName) {
-    if (selectedName == null || selectedName.isEmpty) return null;
-    return state.partOptions
-        .where((item) => item.name == selectedName)
-        .map((item) => item.id)
-        .cast<String?>()
-        .firstWhere((_) => true, orElse: () => null);
-  }
-
-  Failure _mapFailure(Object error) {
-    return error is DioException
-        ? ServerFailure.fromDioError(dioException: error)
-        : Failure(errorMessage: error.toString(), code: 'error_unknown');
+  void _emitFiltersAndProductsFailure(dynamic failure) {
+    emit(state.filtersAndProductsFailed(failure));
   }
 
   @override
@@ -955,14 +708,4 @@ class CategoryViewModel extends Cubit<CategoryState> {
     _navigationService.removeListener(_checkSelectedCategory);
     return super.close();
   }
-}
-
-class _ShoppingSubCategoriesData {
-  const _ShoppingSubCategoriesData({
-    required this.subCategories,
-    required this.categoryMap,
-  });
-
-  final List<CategorySubcategoryItemDto> subCategories;
-  final Map<String, String> categoryMap;
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +21,22 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
   final String callbackHost;
   final String callbackPath;
 
+  void _logWebViewEvent(String event, String url) {
+    debugPrint('[PaymentWebViewCubit] $event: $url');
+  }
+
+  Uri? _normalizeCallbackUri(Uri uri) {
+    if (!_isCallbackUri(uri)) {
+      return null;
+    }
+
+    if (uri.scheme.toLowerCase() == 'https') {
+      return uri;
+    }
+
+    return uri.replace(scheme: 'https');
+  }
+
   Future<void> initialize() async {
     emit(
       state.copyWith(
@@ -41,13 +55,23 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setNavigationDelegate(
           NavigationDelegate(
-            onNavigationRequest: (request) {
-              return _handleNavigationChange(request.url);
+            onNavigationRequest: (request) async {
+              _logWebViewEvent('onNavigationRequest', request.url);
+              return _handleNavigationChange(controller, request.url);
             },
             onProgress: _handleProgressChanged,
             onPageStarted: _handlePageStarted,
             onPageFinished: (url) => _handlePageFinished(controller, url),
-            onWebResourceError: (_) => emit(state.copyWith(hasError: true)),
+            onWebResourceError: (error) {
+              debugPrint(
+                '[PaymentWebViewCubit] onWebResourceError: '
+                'code=${error.errorCode}, '
+                'type=${error.errorType}, '
+                'description=${error.description}, '
+                'url=${error.url}',
+              );
+              emit(state.copyWith(hasError: true));
+            },
           ),
         );
 
@@ -91,9 +115,7 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
   }
 
   void _handlePageStarted(String url) {
-    final didHandleCallback = _handleCallbackUrl(url);
-    if (didHandleCallback) return;
-
+    _logWebViewEvent('onPageStarted', url);
     emit(state.copyWith(hasError: false));
   }
 
@@ -103,33 +125,44 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
   ) async {
     if (state.didCompleteCallback) return;
 
-    final callbackResult =
-        _extractCallbackResult(url) ??
-        await _extractCallbackResultFromPage(controller, url);
+    _logWebViewEvent('onPageFinished', url);
+
+    final callbackResult = _extractCallbackResult(url);
 
     if (callbackResult == null) return;
 
+    debugPrint(
+      '[PaymentWebViewCubit] Callback detected with status=${callbackResult['status']} '
+      'transactionId=${callbackResult['transactionId']} '
+      'message=${callbackResult['message']}',
+    );
+
+    // Give the backend callback a brief moment to finish any final side effects
+    // before closing the payment screen.
+    await Future<void>.delayed(const Duration(milliseconds: 1200));
     _finishWithResult(callbackResult);
   }
 
-  NavigationDecision _handleNavigationChange(String url) {
-    final callbackResult = _extractCallbackResult(url);
-    if (callbackResult != null) {
-      _finishWithResult(callbackResult);
+  Future<NavigationDecision> _handleNavigationChange(
+    WebViewController controller,
+    String url,
+  ) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      return NavigationDecision.navigate;
+    }
+
+    final normalizedCallbackUri = _normalizeCallbackUri(uri);
+    if (normalizedCallbackUri != null && normalizedCallbackUri != uri) {
+      debugPrint(
+        '[PaymentWebViewCubit] Rewriting callback URL to HTTPS: '
+        '$normalizedCallbackUri',
+      );
+      await controller.loadRequest(normalizedCallbackUri);
       return NavigationDecision.prevent;
     }
 
     return NavigationDecision.navigate;
-  }
-
-  bool _handleCallbackUrl(String url) {
-    final callbackResult = _extractCallbackResult(url);
-    if (callbackResult == null) {
-      return false;
-    }
-
-    _finishWithResult(callbackResult);
-    return true;
   }
 
   PaymentCallbackResult? _extractCallbackResult(String? currentUrl) {
@@ -146,38 +179,6 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
       return _buildCallbackResult(uri);
     } on FormatException catch (error) {
       debugPrint('Invalid payment callback URL: $error');
-      return null;
-    }
-  }
-
-  Future<PaymentCallbackResult?> _extractCallbackResultFromPage(
-    WebViewController controller,
-    String currentUrl,
-  ) async {
-    final uri = Uri.tryParse(currentUrl);
-    if (uri == null || !_isCallbackUri(uri)) {
-      return null;
-    }
-
-    try {
-      final rawBody = await controller.runJavaScriptReturningResult(
-        'window.document.body ? window.document.body.innerText : ""',
-      );
-      final bodyText = _normalizeJavaScriptResult(rawBody);
-      if (bodyText == null || bodyText.isEmpty) {
-        return null;
-      }
-
-      final decodedBody = jsonDecode(bodyText);
-      if (decodedBody is! Map) {
-        return null;
-      }
-
-      return _buildCallbackResultFromPayload(
-        decodedBody.cast<String, dynamic>(),
-      );
-    } catch (error) {
-      debugPrint('Failed to parse payment callback body: $error');
       return null;
     }
   }
@@ -218,59 +219,8 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     return <String, String?>{
       'status': status,
       'transactionId': _nullIfEmpty(queryParameters['id']),
-      'orderId': _nullIfEmpty(queryParameters['order']),
       'message': _nullIfEmpty(queryParameters['data.message']),
     };
-  }
-
-  PaymentCallbackResult? _buildCallbackResultFromPayload(
-    Map<String, dynamic> payload,
-  ) {
-    final paymentStatus = payload['paymentStatus']?.toString();
-    final orderStatus = payload['orderStatus']?.toString();
-    final resolvedStatus = _mapPayloadStatus(
-      paymentStatus: paymentStatus,
-      orderStatus: orderStatus,
-    );
-
-    if (resolvedStatus == null) {
-      return null;
-    }
-
-    return <String, String?>{
-      'status': resolvedStatus,
-      'paymentStatus': _nullIfEmpty(paymentStatus),
-      'orderStatus': _nullIfEmpty(orderStatus),
-      'paymentId': _nullIfEmpty(payload['paymentId']?.toString()),
-      'orderId': _nullIfEmpty(payload['orderId']?.toString()),
-      'message': _nullIfEmpty(payload['message']?.toString()),
-    };
-  }
-
-  String? _mapPayloadStatus({String? paymentStatus, String? orderStatus}) {
-    final normalizedPaymentStatus = paymentStatus?.trim().toLowerCase();
-    final normalizedOrderStatus = orderStatus?.trim().toLowerCase();
-
-    if (normalizedPaymentStatus == 'paid' ||
-        normalizedPaymentStatus == 'success' ||
-        normalizedPaymentStatus == 'succeeded') {
-      return _statusSuccess;
-    }
-
-    if (normalizedPaymentStatus == 'failed' ||
-        normalizedPaymentStatus == 'unpaid' ||
-        normalizedPaymentStatus == 'canceled' ||
-        normalizedPaymentStatus == 'cancelled') {
-      return _statusFailed;
-    }
-
-    if (normalizedPaymentStatus == 'pending' ||
-        normalizedPaymentStatus == 'processing' ||
-        (normalizedOrderStatus?.contains('pending') ?? false)) {
-      return _statusPending;
-    }
-
-    return null;
   }
 
   bool _isTrue(String? value) {
@@ -290,29 +240,6 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     }
 
     return normalizedValue;
-  }
-
-  String? _normalizeJavaScriptResult(Object? result) {
-    if (result == null) return null;
-
-    if (result is String) {
-      final trimmed = result.trim();
-      if (trimmed.isEmpty) return null;
-
-      try {
-        final decoded = jsonDecode(trimmed);
-        if (decoded is String) {
-          return decoded.trim();
-        }
-      } catch (_) {
-        return trimmed;
-      }
-
-      return trimmed;
-    }
-
-    final normalized = result.toString().trim();
-    return normalized.isEmpty ? null : normalized;
   }
 
   Future<void> _openInBrowserFallback() async {
