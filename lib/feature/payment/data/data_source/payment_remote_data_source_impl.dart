@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
 import 'package:zadana_user_v3/feature/payment/data/data_source/payment_remote_data_source.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_promo_result_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_summary_dto.dart';
@@ -17,9 +18,18 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   static const String _checkoutSummaryEndpoint = '/checkout/summary';
   static const String _promoCodeEndpoint = '/checkout/promo-code';
   static const String _ordersEndpoint = '/orders';
+  static const Map<String, String> _noStoreHeaders = {
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  };
+
+  CartCacheInvalidator get _cartCacheInvalidator =>
+      CartCacheInvalidator(getIt<CacheStore>());
 
   Options _noCacheOptions() {
     return Options(
+      headers: _noStoreHeaders,
       extra: CacheOptions(
         store: getIt<CacheStore>(),
         policy: CachePolicy.noCache,
@@ -32,6 +42,8 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     String? addressId,
     String? deliverySlotId,
   }) async {
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+
     final response = await _dio.get<Map<String, dynamic>>(
       _checkoutSummaryEndpoint,
       queryParameters: {
@@ -47,27 +59,48 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
 
   @override
   Future<CheckoutPromoResultDto> applyPromoCode(String code) async {
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+
     final response = await _dio.post<Map<String, dynamic>>(
       _promoCodeEndpoint,
       data: {'code': code},
+      options: _noCacheOptions(),
     );
 
-    return CheckoutPromoResultDto.fromJson(response.data ?? <String, dynamic>{});
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+
+    return CheckoutPromoResultDto.fromJson(
+      response.data ?? <String, dynamic>{},
+    );
   }
 
   @override
   Future<CheckoutPromoResultDto> removePromoCode() async {
-    final response = await _dio.delete<Map<String, dynamic>>(_promoCodeEndpoint);
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
 
-    return CheckoutPromoResultDto.fromJson(response.data ?? <String, dynamic>{});
+    final response = await _dio.delete<Map<String, dynamic>>(
+      _promoCodeEndpoint,
+      options: _noCacheOptions(),
+    );
+
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+
+    return CheckoutPromoResultDto.fromJson(
+      response.data ?? <String, dynamic>{},
+    );
   }
 
   @override
   Future<PlaceOrderResponseDto> placeOrder(PlaceOrderRequestDto request) async {
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+
     final response = await _dio.post<Map<String, dynamic>>(
       _ordersEndpoint,
       data: request.toJson(),
+      options: _noCacheOptions(),
     );
+
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
 
     return PlaceOrderResponseDto.fromJson(response.data ?? <String, dynamic>{});
   }

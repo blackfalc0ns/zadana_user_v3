@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_state.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
@@ -15,10 +16,16 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = getIt<CartViewModel>();
+    final viewModel = maybeReadBloc<CartViewModel>(context);
+    if (viewModel != null) {
+      return BlocProvider.value(
+        value: viewModel,
+        child: const _CartScreenView(),
+      );
+    }
 
     return BlocProvider(
-      create: (_) => viewModel
+      create: (_) => getIt<CartViewModel>()
         ..doIntent(const CartLoadVendorsEvent())
         ..doIntent(const CartLoadItemsEvent()),
       child: const _CartScreenView(),
@@ -34,7 +41,7 @@ class _CartScreenView extends StatefulWidget {
 }
 
 class _CartScreenViewState extends State<_CartScreenView>
-    with TickerProviderStateMixin, CartScreenMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver, CartScreenMixin {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;

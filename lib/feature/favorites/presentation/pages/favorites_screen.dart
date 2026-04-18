@@ -6,8 +6,8 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
-import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
@@ -22,135 +22,134 @@ import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_
 import 'package:zadana_user_v3/feature/favorites/presentation/widgets/favorites_loading_skeleton.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
-class FavoritesScreen extends StatefulWidget {
+class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
   @override
-  State<FavoritesScreen> createState() => _FavoritesScreenState();
+  Widget build(BuildContext context) {
+    final existingViewModel = maybeReadBloc<FavoritesViewModel>(context);
+    if (existingViewModel != null) {
+      return BlocProvider.value(
+        value: existingViewModel,
+        child: const _FavoritesScreenView(),
+      );
+    }
+
+    final getIt = GetIt.instance;
+    return BlocProvider(
+      create: (_) => FavoritesViewModel(
+        FavoritesRepository(
+          FavoritesRemoteDataSourceImpl(
+            getIt<ApiServices>(),
+            getIt<Dio>(),
+            getIt<TokenService>(),
+            getIt<DeviceIdService>(),
+          ),
+        ),
+      )..loadFavorites(),
+      child: const _FavoritesScreenView(),
+    );
+  }
 }
 
-class _FavoritesScreenState extends State<FavoritesScreen> {
-  late final FavoritesViewModel _viewModel;
+class _FavoritesScreenView extends StatelessWidget {
+  const _FavoritesScreenView();
 
-  @override
-  void initState() {
-    super.initState();
-    final getIt = GetIt.instance;
-    _viewModel = FavoritesViewModel(
-      FavoritesRepository(
-        FavoritesRemoteDataSourceImpl(
-          getIt<ApiServices>(),
-          getIt<Dio>(),
-          getIt<TokenService>(),
-          getIt<DeviceIdService>(),
-        ),
-      ),
-    )..loadFavorites();
-    FavoritesNavigationService().addListener(_reloadFavorites);
+  Future<void> _toggleFavorite(
+    BuildContext context,
+    FavoritesViewModel viewModel,
+    ProductModel product,
+  ) async {
+    viewModel.removeFavorite(product.id);
   }
 
-  @override
-  void dispose() {
-    FavoritesNavigationService().removeListener(_reloadFavorites);
-    _viewModel.close();
-    super.dispose();
-  }
-
-  void _reloadFavorites() {
-    _viewModel.loadFavorites();
-  }
-
-  Future<void> _toggleFavorite(ProductModel product) async {
-    _viewModel.removeFavorite(product.id);
-  }
-
-  Future<void> _addToCart(ProductModel product) {
+  Future<void> _addToCart(BuildContext context, ProductModel product) {
     return HomeProductCartHelper.addProductToCart(context, product);
   }
 
-  void _showClearDialog() {
+  void _showClearDialog(BuildContext context, FavoritesViewModel viewModel) {
     showClearAllDialog(
       context: context,
-      onConfirm: () => _viewModel.clearAllFavorites(),
+      onConfirm: () => viewModel.clearAllFavorites(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _viewModel,
-      child: BlocListener<FavoritesViewModel, FavoritesState>(
-        listenWhen: (previous, current) =>
-            previous.errorMessage != current.errorMessage ||
-            previous.successMessage != current.successMessage,
-        listener: (context, state) {
-          if (state.errorMessage != null) {
-            CustomSnackbar.showError(
-              context: context,
-              message: state.errorMessage!,
-            );
-            context.read<FavoritesViewModel>().clearError();
-          }
-          if (state.successMessage != null) {
-            CustomSnackbar.showSuccess(
-              context: context,
-              message: state.successMessage!,
-            );
-            context.read<FavoritesViewModel>().clearSuccess();
-          }
-        },
-        child: BlocBuilder<FavoritesViewModel, FavoritesState>(
-          builder: (context, state) {
-            final color = context.colorScheme;
-            final isEmpty = state.items.isEmpty;
-            final hasBlockingError = state.failure != null && isEmpty;
+    final viewModel = context.read<FavoritesViewModel>();
 
-            return Directionality(
-              textDirection: TextDirection.rtl,
-              child: Scaffold(
-                backgroundColor: color.surface,
-                appBar: FavoritesAppBar(
-                  itemCount: state.itemsCount,
-                  onClearAll: isEmpty ? null : _showClearDialog,
-                ),
-                body: state.isLoading
-                    ? const FavoritesLoadingSkeleton()
-                    : hasBlockingError
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: ApiErrorWidget.fromFailure(
-                            state.failure!,
-                            onRetry: () {
-                              context.read<FavoritesViewModel>().clearFailure();
-                              context
-                                  .read<FavoritesViewModel>()
-                                  .loadFavorites();
-                            },
-                          ),
-                        ),
-                      )
-                    : isEmpty
-                    ? FavoritesEmptyState(
-                        onStartShopping: () =>
-                            mainShellKey.currentState?.jumpToTab(0),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 90,
-                          left: 12,
-                          right: 12,
-                        ),
-                        child: FavoritesGrid(
-                          products: state.items,
-                          onAddToCart: _addToCart,
-                          onToggleFavorite: _toggleFavorite,
+    return BlocListener<FavoritesViewModel, FavoritesState>(
+      listenWhen: (previous, current) =>
+          previous.errorMessage != current.errorMessage ||
+          previous.successMessage != current.successMessage,
+      listener: (context, state) {
+        if (state.errorMessage != null) {
+          CustomSnackbar.showError(
+            context: context,
+            message: state.errorMessage!,
+          );
+          context.read<FavoritesViewModel>().clearError();
+        }
+        if (state.successMessage != null) {
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.successMessage!,
+          );
+          context.read<FavoritesViewModel>().clearSuccess();
+        }
+      },
+      child: BlocBuilder<FavoritesViewModel, FavoritesState>(
+        builder: (context, state) {
+          final color = context.colorScheme;
+          final isEmpty = state.items.isEmpty;
+          final hasBlockingError = state.failure != null && isEmpty;
+
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              backgroundColor: color.surface,
+              appBar: FavoritesAppBar(
+                itemCount: state.itemsCount,
+                onClearAll: isEmpty
+                    ? null
+                    : () => _showClearDialog(context, viewModel),
+              ),
+              body: state.isLoading
+                  ? const FavoritesLoadingSkeleton()
+                  : hasBlockingError
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ApiErrorWidget.fromFailure(
+                          state.failure!,
+                          onRetry: () {
+                            context.read<FavoritesViewModel>().clearFailure();
+                            context.read<FavoritesViewModel>().loadFavorites();
+                          },
                         ),
                       ),
-              ),
-            );
-          },
-        ),
+                    )
+                  : isEmpty
+                  ? FavoritesEmptyState(
+                      onStartShopping: () =>
+                          mainShellKey.currentState?.jumpToTab(0),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 90,
+                        left: 12,
+                        right: 12,
+                      ),
+                      child: FavoritesGrid(
+                        products: state.items,
+                        onAddToCart: (product) => _addToCart(context, product),
+                        onToggleFavorite: (product) =>
+                            _toggleFavorite(context, viewModel, product),
+                      ),
+                    ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -8,7 +8,6 @@ import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/token_interceptor.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/cart/data/data_source/cart_remote_data_source.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/cart_vendors_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/request/add_cart_item_request_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/request/update_cart_item_quantity_request_dto.dart';
@@ -16,6 +15,7 @@ import 'package:zadana_user_v3/feature/cart/data/models/response/add_cart_item_r
 import 'package:zadana_user_v3/feature/cart/data/models/response/clear_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/get_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/remove_cart_item_response_dto.dart';
+import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
 
 @Injectable(as: CartRemoteDataSource)
 class CartRemoteDataSourceImpl implements CartRemoteDataSource {
@@ -36,12 +36,18 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   CartCacheInvalidator get _cartCacheInvalidator =>
       CartCacheInvalidator(_cacheStore);
 
+  static const Map<String, String> _noStoreHeaders = {
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  };
+
   Options _noCacheOptions({
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
   }) {
     return Options(
-      headers: headers,
+      headers: {..._noStoreHeaders, ...?headers},
       extra: {
         ...?extra,
         ...CacheOptions(
@@ -54,9 +60,11 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
   Future<bool> _shouldFallbackToGuest(DioException error) async {
     final token = await _tokenService.getToken();
+    // Never mix authenticated and guest carts. If an authenticated request
+    // fails with 401, surface the error instead of silently reading the guest
+    // cart and showing stale items after checkout.
     return error.response?.statusCode == 401 &&
-        token != null &&
-        token.isNotEmpty;
+        (token == null || token.isEmpty);
   }
 
   Future<Options> _guestNoCacheOptions() async {
@@ -70,8 +78,14 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
     );
   }
 
+  Future<void> _clearCartReadCache() {
+    return _cartCacheInvalidator.clearCartCache();
+  }
+
   @override
   Future<CartVendorsResponseDto> getCartVendors() async {
+    await _clearCartReadCache();
+
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.cartVendors,
@@ -114,6 +128,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
   @override
   Future<GetCartResponseDto> getCart({String? vendorId}) async {
+    await _clearCartReadCache();
+
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.cart,

@@ -188,14 +188,10 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     final normalizedPath = uri.path.toLowerCase();
     final expectedPath = callbackPath.toLowerCase();
 
-    final isExactConfiguredCallback =
-        normalizedHost == expectedHost && normalizedPath == expectedPath;
-    if (isExactConfiguredCallback) {
-      return true;
-    }
-
-    return normalizedPath == '/api/payments/paymob/return' ||
-        normalizedPath == '/api/acceptance/post_pay';
+    // Treat only the backend callback as authoritative. Intermediate payment
+    // provider pages can report success before the backend finalizes the order
+    // and clears the cart.
+    return normalizedHost == expectedHost && normalizedPath == expectedPath;
   }
 
   PaymentCallbackResult? _buildCallbackResult(Uri uri) {
@@ -251,10 +247,7 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     };
   }
 
-  String? _mapPayloadStatus({
-    String? paymentStatus,
-    String? orderStatus,
-  }) {
+  String? _mapPayloadStatus({String? paymentStatus, String? orderStatus}) {
     final normalizedPaymentStatus = paymentStatus?.trim().toLowerCase();
     final normalizedOrderStatus = orderStatus?.trim().toLowerCase();
 
@@ -328,10 +321,7 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     final uri = Uri.tryParse(paymentUrl);
     if (uri == null) return;
 
-    final didOpen = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    final didOpen = await launchUrl(uri, mode: LaunchMode.externalApplication);
 
     emit(state.copyWith(didOpenExternalFallback: didOpen));
   }
@@ -339,11 +329,6 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
   void _finishWithResult(PaymentCallbackResult result) {
     if (state.didCompleteCallback) return;
 
-    emit(
-      state.copyWith(
-        callbackResult: result,
-        didCompleteCallback: true,
-      ),
-    );
+    emit(state.copyWith(callbackResult: result, didCompleteCallback: true));
   }
 }

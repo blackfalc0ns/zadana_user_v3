@@ -12,10 +12,12 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   final FavoritesRepository _repository;
   final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
 
-  Future<void> loadFavorites() async {
+  Future<void> loadFavorites({bool silent = false}) async {
+    final showBlockingLoader = !silent || state.items.isEmpty;
+
     emit(
       state.copyWith(
-        isLoading: true,
+        isLoading: showBlockingLoader,
         isSuccess: false,
         clearFailure: true,
         clearErrorMessage: true,

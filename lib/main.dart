@@ -16,8 +16,8 @@ import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+  await PushNotificationService.init();
   await getIt<NotificationDeviceService>().syncCurrentDeviceIfAuthenticated();
-  PushNotificationService.init();
   runApp(DevicePreview(builder: (context) => const MyApp()));
 }
 

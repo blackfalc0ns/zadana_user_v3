@@ -8,6 +8,7 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
+import 'package:zadana_user_v3/core/services/cart_refresh_service.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
@@ -176,6 +177,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
       case ApiSuccessResult():
         await _guestCartSyncService.cacheGuestCartItem(request);
         _cartCountSyncService.incrementBy(request.quantity);
+        CartRefreshService().notifyCartChanged();
         emit(
           state.copyWith(
             isAddingToCart: false,

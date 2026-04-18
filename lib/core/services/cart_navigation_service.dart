@@ -8,6 +8,7 @@ class CartNavigationService extends ChangeNotifier {
       CartNavigationService._internal();
 
   bool _clearStateRequested = false;
+  bool _reloadRequested = false;
 
   bool consumeClearStateRequest() {
     final shouldClear = _clearStateRequested;
@@ -15,8 +16,15 @@ class CartNavigationService extends ChangeNotifier {
     return shouldClear;
   }
 
-  void notifyTabChanged({bool clearState = false}) {
+  bool consumeReloadRequest() {
+    final shouldReload = _reloadRequested;
+    _reloadRequested = false;
+    return shouldReload;
+  }
+
+  void notifyTabChanged({bool clearState = false, bool reload = true}) {
     _clearStateRequested = _clearStateRequested || clearState;
+    _reloadRequested = _reloadRequested || reload;
     notifyListeners();
   }
 }

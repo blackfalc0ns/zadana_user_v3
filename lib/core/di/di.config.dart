@@ -607,7 +607,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i219.GuestCartSyncService(
         gh<_i460.SharedPreferences>(),
         gh<_i227.TokenService>(),
-        gh<_i448.AddCartItemUseCase>(),
       ),
     );
     gh.factoryParam<

@@ -8,22 +8,24 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
-import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
-import 'package:zadana_user_v3/core/services/favorites_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_cubit.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_state.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
 import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
+import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
 final GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
@@ -53,22 +55,36 @@ class MainShellState extends State<MainShell> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late final List<Widget?> _loadedScreens;
   late final NavBadgeCubit _navBadgeCubit;
+  late final AppSectionGlobalCubit _globalCubit;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex;
     _loadedScreens = List<Widget?>.filled(5, null);
-    _navBadgeCubit = NavBadgeCubit(
-      getIt<GetCartUseCase>(),
-      FavoritesRepository(
-        FavoritesRemoteDataSourceImpl(
-          getIt<ApiServices>(),
-          getIt<Dio>(),
-          getIt<TokenService>(),
-          getIt<DeviceIdService>(),
-        ),
+    final getItInstance = getIt;
+    final favoritesRepository = FavoritesRepository(
+      FavoritesRemoteDataSourceImpl(
+        getItInstance<ApiServices>(),
+        getItInstance<Dio>(),
+        getItInstance<TokenService>(),
+        getItInstance<DeviceIdService>(),
       ),
+    );
+    _globalCubit = AppSectionGlobalCubit(
+      cartViewModel: getItInstance(),
+      favoritesViewModel: FavoritesViewModel(favoritesRepository),
+      profileViewModel: getItInstance<ProfileViewModel>(),
+      categoryViewModel: CategoryViewModel(
+        getItInstance<ApiServices>(),
+        CategoryNavigationService(),
+        FavoriteSyncService(),
+      ),
+      tokenService: getItInstance<TokenService>(),
+    )..initialize();
+    _navBadgeCubit = NavBadgeCubit(
+      getItInstance<GetCartUseCase>(),
+      favoritesRepository,
       FavoriteSyncService(),
       CartCountSyncService(),
     )..loadCounts();
@@ -78,6 +94,7 @@ class MainShellState extends State<MainShell> {
   @override
   void dispose() {
     _navBadgeCubit.close();
+    _globalCubit.close();
     super.dispose();
   }
 
@@ -113,17 +130,8 @@ class MainShellState extends State<MainShell> {
   }
 
   void _onItemTapped(int index) {
-    final wasScreenLoaded = _loadedScreens[index] != null;
-
     if (index == 1) {
-      final isExternalCategorySelection = CategoryNavigationService()
-          .consumePendingExternalSelection();
-      if (!isExternalCategorySelection) {
-        CategoryNavigationService().notifyTabChanged();
-      }
-    }
-    if (index == 3 && _selectedIndex != 3) {
-      FavoritesNavigationService().notifyTabChanged();
+      CategoryNavigationService().consumePendingExternalSelection();
     }
 
     if (_selectedIndex != index) {
@@ -131,20 +139,10 @@ class MainShellState extends State<MainShell> {
         _ensureScreenLoaded(index);
         _selectedIndex = index;
       });
-      if (index == 2 && wasScreenLoaded) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          CartNavigationService().notifyTabChanged();
-        });
-      }
       return;
     }
 
     _ensureScreenLoaded(index);
-    if (index == 2) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        CartNavigationService().notifyTabChanged();
-      });
-    }
   }
 
   void jumpToTab(int index) {
@@ -164,33 +162,39 @@ class MainShellState extends State<MainShell> {
     };
   }
 
+  Widget _buildScreenForIndex(int index) {
+    final screen = _loadedScreens[index];
+    if (screen == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Offstage(
+      offstage: _selectedIndex != index,
+      child: HeroMode(enabled: _selectedIndex == index, child: screen),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomSafeInset = MediaQuery.paddingOf(context).bottom;
     final navItems = _buildNavItems(context);
 
-    return BlocProvider.value(
-      value: _navBadgeCubit,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _globalCubit),
+        BlocProvider.value(value: _navBadgeCubit),
+        BlocProvider.value(value: _globalCubit.cartViewModel),
+        BlocProvider.value(value: _globalCubit.favoritesViewModel),
+        BlocProvider.value(value: _globalCubit.profileViewModel),
+        BlocProvider.value(value: _globalCubit.categoryViewModel),
+      ],
       child: Scaffold(
         key: _scaffoldKey,
         drawer: const AppDrawer(),
         drawerEdgeDragWidth: 20,
         body: Stack(
           children: [
-            ...List.generate(_loadedScreens.length, (index) {
-              final screen = _loadedScreens[index];
-              if (screen == null) {
-                return const SizedBox.shrink();
-              }
-
-              return Offstage(
-                offstage: _selectedIndex != index,
-                child: HeroMode(
-                  enabled: _selectedIndex == index,
-                  child: screen,
-                ),
-              );
-            }),
+            ...List.generate(_loadedScreens.length, _buildScreenForIndex),
             Positioned(
               bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
               left: 12,

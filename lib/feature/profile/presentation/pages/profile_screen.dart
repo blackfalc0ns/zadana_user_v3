@@ -11,7 +11,10 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_dialogs.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_event.dart';
@@ -37,7 +40,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadNotificationsPreference() async {
-    final enabled = await getIt<NotificationDeviceService>().isNotificationsEnabled();
+    final enabled = await getIt<NotificationDeviceService>()
+        .isNotificationsEnabled();
     if (!mounted) return;
     setState(() => _notificationsEnabled = enabled);
   }
@@ -74,9 +78,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _isUpdatingNotifications = true;
     });
 
-    final result = await getIt<NotificationDeviceService>().setNotificationsEnabled(
-      value,
-    );
+    final result = await getIt<NotificationDeviceService>()
+        .setNotificationsEnabled(value);
 
     if (!mounted) return;
 
@@ -99,83 +102,106 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final globalCubit = maybeReadBloc<AppSectionGlobalCubit>(context);
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      body: FutureBuilder<bool>(
-        future: _resolveGuestMode(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const _ProfileLoadingSkeleton();
-          }
-
-          if (snapshot.data!) {
-            return GuestProfileDashboardContent(
-              l10n: l10n,
-              onLogin: () => Navigator.of(context).pushNamed(AppRoutes.login),
-              onSignUp: () => Navigator.of(context).pushNamed(AppRoutes.signUp),
-              onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),
-            );
-          }
-
-          return BlocProvider(
-            create: (_) =>
-                getIt<ProfileViewModel>()..doIntent(ProfileLoadEvent()),
-            child: BlocBuilder<ProfileViewModel, ProfileState>(
+      body: globalCubit != null
+          ? BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
+              bloc: globalCubit,
               builder: (context, state) {
-                if (state.isLoading && state.profileResponse == null) {
+                if (!state.isAuthResolved) {
                   return const _ProfileLoadingSkeleton();
                 }
 
-                if (state.failure != null && state.profileResponse == null) {
-                  return ApiErrorWidget.fromFailure(
-                    state.failure!,
-                    onRetry: () => context.read<ProfileViewModel>().doIntent(
-                      ProfileLoadEvent(),
-                    ),
-                  );
+                if (state.isGuest) {
+                  return _buildGuestContent(context, l10n);
                 }
 
-                final profile = state.profileResponse;
-                if (profile == null) {
-                  return GuestProfileDashboardContent(
-                    l10n: l10n,
-                    onLogin: () =>
-                        Navigator.of(context).pushNamed(AppRoutes.login),
-                    onSignUp: () =>
-                        Navigator.of(context).pushNamed(AppRoutes.signUp),
-                    onLanguageTap: () =>
-                        DrawerDialogs.showLanguageDialog(context),
-                  );
+                final sharedViewModel = maybeReadBloc<ProfileViewModel>(
+                  context,
+                );
+                if (sharedViewModel == null) {
+                  return const _ProfileLoadingSkeleton();
                 }
 
-                return ProfileDashboardContent(
-                  l10n: l10n,
-                  profile: profile,
-                  notificationsEnabled: _notificationsEnabled,
-                  notificationsUpdating: _isUpdatingNotifications,
-                  onEditTap: () async {
-                    final updatedProfile = await Navigator.of(
-                      context,
-                    ).pushNamed(AppRoutes.profileDetails, arguments: profile);
-                    if (!context.mounted ||
-                        updatedProfile is! ProfileResponseEntity) {
-                      return;
-                    }
-                    context.read<ProfileViewModel>().doIntent(
-                      ProfileSetLocalDataEvent(updatedProfile),
-                    );
-                  },
-                  onNotificationsChanged: _handleNotificationsChanged,
-                  onLanguageTap: () =>
-                      DrawerDialogs.showLanguageDialog(context),
-                  onLogout: () => _showLogoutDialog(context, l10n),
+                return BlocProvider.value(
+                  value: sharedViewModel,
+                  child: _buildAuthenticatedContent(l10n),
+                );
+              },
+            )
+          : FutureBuilder<bool>(
+              future: _resolveGuestMode(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const _ProfileLoadingSkeleton();
+                }
+
+                if (snapshot.data!) {
+                  return _buildGuestContent(context, l10n);
+                }
+
+                return BlocProvider(
+                  create: (_) =>
+                      getIt<ProfileViewModel>()..doIntent(ProfileLoadEvent()),
+                  child: _buildAuthenticatedContent(l10n),
                 );
               },
             ),
+    );
+  }
+
+  Widget _buildGuestContent(BuildContext context, AppLocalizations l10n) {
+    return GuestProfileDashboardContent(
+      l10n: l10n,
+      onLogin: () => Navigator.of(context).pushNamed(AppRoutes.login),
+      onSignUp: () => Navigator.of(context).pushNamed(AppRoutes.signUp),
+      onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),
+    );
+  }
+
+  Widget _buildAuthenticatedContent(AppLocalizations l10n) {
+    return BlocBuilder<ProfileViewModel, ProfileState>(
+      builder: (context, state) {
+        if (state.isLoading && state.profileResponse == null) {
+          return const _ProfileLoadingSkeleton();
+        }
+
+        if (state.failure != null && state.profileResponse == null) {
+          return ApiErrorWidget.fromFailure(
+            state.failure!,
+            onRetry: () =>
+                context.read<ProfileViewModel>().doIntent(ProfileLoadEvent()),
           );
-        },
-      ),
+        }
+
+        final profile = state.profileResponse;
+        if (profile == null) {
+          return const _ProfileLoadingSkeleton();
+        }
+
+        return ProfileDashboardContent(
+          l10n: l10n,
+          profile: profile,
+          notificationsEnabled: _notificationsEnabled,
+          notificationsUpdating: _isUpdatingNotifications,
+          onEditTap: () async {
+            final updatedProfile = await Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.profileDetails, arguments: profile);
+            if (!context.mounted || updatedProfile is! ProfileResponseEntity) {
+              return;
+            }
+            context.read<ProfileViewModel>().doIntent(
+              ProfileSetLocalDataEvent(updatedProfile),
+            );
+          },
+          onNotificationsChanged: _handleNotificationsChanged,
+          onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),
+          onLogout: () => _showLogoutDialog(context, l10n),
+        );
+      },
     );
   }
 }

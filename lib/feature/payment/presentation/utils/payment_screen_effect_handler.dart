@@ -1,17 +1,17 @@
 import 'dart:developer' as developer;
 
-import 'package:flutter/material.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
-import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
+import 'package:zadana_user_v3/core/services/cart_refresh_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/clear_cart_usecase.dart';
+import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_view_model.dart';
@@ -27,26 +27,65 @@ class PaymentScreenEffectHandler {
     await cacheInvalidator.clearCheckoutSummaryCache();
   }
 
-  static Future<void> _syncCartAfterSuccessfulPayment() async {
-    final clearCartResult = await getIt<ClearCartUseCase>().call();
-    switch (clearCartResult) {
+  static Future<bool> _isBackendCartEmpty() async {
+    final result = await getIt<GetCartUseCase>().call();
+
+    switch (result) {
       case ApiSuccessResult():
-        developer.log(
-          'Backend cart cleared after successful payment.',
-          name: 'PaymentScreenEffectHandler',
-        );
+        return result.data.summary.totalQuantity == 0;
       case ApiErrorResult():
         developer.log(
-          'Failed to clear backend cart after successful payment: '
-          '${clearCartResult.failure.errorMessage}',
+          'Could not verify backend cart state: ${result.failure.errorMessage}',
           name: 'PaymentScreenEffectHandler',
         );
+        return false;
+    }
+  }
+
+  static void _requestCartRefresh() {
+    CartCountSyncService().requestRefresh();
+    CartRefreshService().notifyCartChanged();
+  }
+
+  static Future<void> _waitForBackendCartRefresh() async {
+    const verificationDelays = <Duration>[
+      Duration.zero,
+      Duration(milliseconds: 400),
+      Duration(milliseconds: 900),
+      Duration(milliseconds: 1400),
+    ];
+
+    for (final delay in verificationDelays) {
+      if (delay > Duration.zero) {
+        await Future<void>.delayed(delay);
+      }
+
+      _requestCartRefresh();
+
+      if (await _isBackendCartEmpty()) {
+        developer.log(
+          'Backend cart is empty after successful payment refresh.',
+          name: 'PaymentScreenEffectHandler',
+        );
+        return;
+      }
     }
 
+    developer.log(
+      'Backend cart still has items after payment retries. '
+      'No local clear will be forced.',
+      name: 'PaymentScreenEffectHandler',
+    );
+  }
+
+  static Future<void> _syncCartAfterSuccessfulPayment() async {
     await _clearCartRelatedCache();
     await getIt<GuestCartSyncService>().clearPendingItems();
-    CartCountSyncService().setCount(0);
-    CartNavigationService().notifyTabChanged(clearState: true);
+    await _waitForBackendCartRefresh();
+    developer.log(
+      'Cart cache invalidated after successful payment and refresh requested.',
+      name: 'PaymentScreenEffectHandler',
+    );
   }
 
   static Future<void> handle({
@@ -128,6 +167,7 @@ class PaymentScreenEffectHandler {
       viewModel.doIntent(const PaymentClearPlacedOrderEvent());
       viewModel.doIntent(const PaymentClearUiEffectEvent());
       await _syncCartAfterSuccessfulPayment();
+      if (!context.mounted) return;
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.paymentSuccess,

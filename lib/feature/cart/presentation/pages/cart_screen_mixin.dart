@@ -21,7 +21,8 @@ import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen_view_
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
 
-mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
+mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
+    implements WidgetsBindingObserver {
   static const Duration quantityDebounceDuration = Duration(milliseconds: 500);
   static const Duration vendorPriceAnimationDelay = Duration(milliseconds: 250);
 
@@ -39,6 +40,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     viewModel = context.read<CartViewModel>();
     cartNavigationService = CartNavigationService()
       ..addListener(handleCartTabChanged);
@@ -51,10 +53,17 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     cartNavigationService.removeListener(handleCartTabChanged);
     clearPendingQuantityUpdates();
     animations.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted || state != AppLifecycleState.resumed) return;
+    reloadCartData();
   }
 
   CartState get cartState => context.read<CartViewModel>().state;
@@ -68,14 +77,20 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
 
   void handleCartTabChanged() {
     final shouldClearState = _consumePendingClearStateRequest();
+    final shouldReload = _consumePendingReloadRequest();
+
     if (shouldClearState) {
       clearPendingQuantityUpdates();
       viewModel.doIntent(const CartResetAfterCheckoutEvent());
       resetVendorSelection();
     }
 
+    if (!shouldReload) return;
+
+    if (!shouldClearState) {
+      resetVendorSelection();
+    }
     reloadCartData();
-    resetVendorSelection();
   }
 
   void reloadCartData() {
@@ -85,16 +100,31 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
   }
 
   void _processPendingCartNavigationRequest() {
-    if (!_consumePendingClearStateRequest()) return;
+    final shouldClearState = _consumePendingClearStateRequest();
+    final shouldReload = _consumePendingReloadRequest();
 
-    clearPendingQuantityUpdates();
-    viewModel.doIntent(const CartResetAfterCheckoutEvent());
-    resetVendorSelection();
+    if (!shouldClearState && !shouldReload) return;
+
+    if (shouldClearState) {
+      clearPendingQuantityUpdates();
+      viewModel.doIntent(const CartResetAfterCheckoutEvent());
+      resetVendorSelection();
+    }
+
+    if (!shouldReload) return;
+
+    if (!shouldClearState) {
+      resetVendorSelection();
+    }
     reloadCartData();
   }
 
   bool _consumePendingClearStateRequest() {
     return cartNavigationService.consumeClearStateRequest();
+  }
+
+  bool _consumePendingReloadRequest() {
+    return cartNavigationService.consumeReloadRequest();
   }
 
   Future<void> refreshCart() async {
