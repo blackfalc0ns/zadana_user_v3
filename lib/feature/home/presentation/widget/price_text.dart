@@ -31,20 +31,20 @@ class PriceText extends StatelessWidget {
         style ??
         getBoldStyle(
           fontFamily: FontConstant.cairo,
-          fontSize: (compact ? FontSize.size12 : FontSize.size14) * fontScale,
+          fontSize: (compact ? FontSize.size13 : FontSize.size14) * fontScale,
           color: AppColors.primary,
         );
-    final currencyStyle = getSemiBoldStyle(
+    final currencyStyle = getBoldStyle(
       fontFamily: FontConstant.cairo,
-      fontSize: (compact ? FontSize.size8 : FontSize.size9) * fontScale,
+      fontSize: (compact ? FontSize.size9 : FontSize.size10) * fontScale,
       color: AppColors.primary,
     );
-    final oldPriceStyle = AppTextStyles.bodySmall.copyWith(
+    final oldPriceStyle = AppTextStyles.bodyLarge.copyWith(
       decoration: TextDecoration.lineThrough,
       decorationThickness: 1.2,
       color: AppColors.textHint,
-      fontSize: (compact ? 8 : 9.5) * fontScale,
-      height: 0.95,
+      fontSize: (compact ? 11 : 12) * fontScale,
+      height: 1,
     );
     final currencyLabel = unit ?? locale.currency;
 

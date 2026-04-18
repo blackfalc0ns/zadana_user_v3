@@ -100,7 +100,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    final cardWidth = (MediaQuery.sizeOf(context).width / 2.4).clamp(
+    final cardWidth = (MediaQuery.sizeOf(context).width / 2.2).clamp(
       140.0,
       200.0,
     );
@@ -112,7 +112,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
           Container(
             width: cardWidth,
             constraints: const BoxConstraints(minHeight: 78),
-            padding: const EdgeInsets.all(Spacing.sm),
+            padding: const EdgeInsets.all(Spacing.xs),
             decoration: BoxDecoration(
               color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(Spacing.cardRadius),

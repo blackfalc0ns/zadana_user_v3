@@ -59,7 +59,7 @@ class HomeProductSectionContent extends StatelessWidget {
         );
       case HomeProductSectionTheme.compact:
         return SizedBox(
-          height: 78,
+          height: 85,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,

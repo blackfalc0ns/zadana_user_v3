@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -33,22 +34,23 @@ class CustomFilterChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-      
         padding: const EdgeInsets.symmetric(
           horizontal: Spacing.md,
           vertical: Spacing.xs,
         ),
         decoration: BoxDecoration(
+          border: Border.all(color: AppColors.lightGrey),
+          boxShadow: [
+            BoxShadow(
+              color: color.shadow.withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
           color: isSelected
               ? (selectedColor ?? color.primary)
-              : (backgroundColor ?? color.surfaceContainerHigh),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? (selectedColor ?? color.primary)
-                : (borderColor ?? color.outline),
-            width: .5,
-          ),
+              : (AppColors.white),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
