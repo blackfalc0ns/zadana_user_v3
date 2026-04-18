@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "672703351545",
+    "project_id": "zadana-c3796",
+    "storage_bucket": "zadana-c3796.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672703351545:android:aa6991c7c1501bfd607028",
+        "android_client_info": {
+          "package_name": "com.example.zadana_user_v3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAU00qzY-ssgp3u0NhtfK8hN7NxwIvD6NE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
