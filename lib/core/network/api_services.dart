@@ -47,6 +47,13 @@ import 'package:zadana_user_v3/feature/home/data/models/special_offers/home_spec
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notification_action_response_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notification_device_preferences_request_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notification_devices_response_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notification_unread_count_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notifications_page_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/register_notification_device_request_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/unregister_notification_device_request_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
@@ -121,8 +128,7 @@ abstract class ApiServices {
 
   @GET(EndPoints.categoryProducts)
   Future<CategoryProductsResponseModelDto> getCategoryProducts(
-    @Path('categoryId') String categoryId,
-    @Query('subcategory_id') String? subcategoryId,
+    @Path('subCategoryId') String subCategoryId,
     @Query('product_type_id') String? productTypeId,
     @Query('part_id') String? partId,
     @Query('quantity_id') String? quantityId,
@@ -293,4 +299,43 @@ abstract class ApiServices {
 
   @GET(EndPoints.orderDetails)
   Future<OrderDetailsDto> getOrderDetails(@Path('orderId') String orderId);
+
+  @GET(EndPoints.notifications)
+  Future<NotificationsPageDto> getNotifications(
+    @Query('page') int page,
+    @Query('per_page') int perPage,
+    @Query('type') String? type,
+    @Query('is_read') bool? isRead,
+    @Query('from_utc') String? fromUtc,
+    @Query('to_utc') String? toUtc,
+  );
+
+  @GET(EndPoints.notificationsUnreadCount)
+  Future<NotificationUnreadCountDto> getNotificationsUnreadCount();
+
+  @POST('${EndPoints.notifications}/{notificationId}/read')
+  Future<NotificationActionResponseDto> markNotificationAsRead(
+    @Path('notificationId') String notificationId,
+  );
+
+  @POST(EndPoints.notificationsReadAll)
+  Future<NotificationActionResponseDto> markAllNotificationsAsRead();
+
+  @GET(EndPoints.notificationDevices)
+  Future<NotificationDevicesResponseDto> getNotificationDevices();
+
+  @POST(EndPoints.notificationDevicesRegister)
+  Future<void> registerNotificationDevice(
+    @Body() RegisterNotificationDeviceRequestDto request,
+  );
+
+  @PUT(EndPoints.notificationDevicesPreferences)
+  Future<void> updateNotificationDevicePreferences(
+    @Body() NotificationDevicePreferencesRequestDto request,
+  );
+
+  @POST(EndPoints.notificationDevicesUnregister)
+  Future<NotificationActionResponseDto> unregisterNotificationDevice(
+    @Body() UnregisterNotificationDeviceRequestDto request,
+  );
 }

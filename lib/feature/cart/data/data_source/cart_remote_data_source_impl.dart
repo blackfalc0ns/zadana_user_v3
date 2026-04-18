@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
@@ -7,6 +8,7 @@ import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/token_interceptor.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/cart/data/data_source/cart_remote_data_source.dart';
+import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/cart_vendors_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/request/add_cart_item_request_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/request/update_cart_item_quantity_request_dto.dart';
@@ -20,38 +22,68 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   const CartRemoteDataSourceImpl(
     this._apiServices,
     this._dio,
+    this._cacheStore,
     this._tokenService,
     this._deviceIdService,
   );
 
   final ApiServices _apiServices;
   final Dio _dio;
+  final CacheStore _cacheStore;
   final TokenService _tokenService;
   final DeviceIdService _deviceIdService;
+
+  CartCacheInvalidator get _cartCacheInvalidator =>
+      CartCacheInvalidator(_cacheStore);
+
+  Options _noCacheOptions({
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+  }) {
+    return Options(
+      headers: headers,
+      extra: {
+        ...?extra,
+        ...CacheOptions(
+          store: _cacheStore,
+          policy: CachePolicy.noCache,
+        ).toExtra(),
+      },
+    );
+  }
+
+  Future<bool> _shouldFallbackToGuest(DioException error) async {
+    final token = await _tokenService.getToken();
+    return error.response?.statusCode == 401 &&
+        token != null &&
+        token.isNotEmpty;
+  }
+
+  Future<Options> _guestNoCacheOptions() async {
+    final deviceId = await _deviceIdService.getOrCreateDeviceId();
+    return _noCacheOptions(
+      headers: {NetworkConstants.deviceIdHeader: deviceId},
+      extra: {
+        TokenInterceptor.skipAuthKey: true,
+        DeviceIdInterceptor.forceDeviceIdKey: true,
+      },
+    );
+  }
 
   @override
   Future<CartVendorsResponseDto> getCartVendors() async {
     try {
-      return await _apiServices.getCartVendors();
-    } on DioException catch (error) {
-      final token = await _tokenService.getToken();
-      final shouldFallbackToGuest =
-          error.response?.statusCode == 401 &&
-          token != null &&
-          token.isNotEmpty;
-
-      if (!shouldFallbackToGuest) rethrow;
-
-      final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.cartVendors,
-        options: Options(
-          headers: {NetworkConstants.deviceIdHeader: deviceId},
-          extra: {
-            TokenInterceptor.skipAuthKey: true,
-            DeviceIdInterceptor.forceDeviceIdKey: true,
-          },
-        ),
+        options: _noCacheOptions(),
+      );
+      return CartVendorsResponseDto.fromJson(response.data ?? {});
+    } on DioException catch (error) {
+      if (!await _shouldFallbackToGuest(error)) rethrow;
+
+      final response = await _dio.get<Map<String, dynamic>>(
+        EndPoints.cartVendors,
+        options: await _guestNoCacheOptions(),
       );
 
       return CartVendorsResponseDto.fromJson(response.data ?? {});
@@ -63,29 +95,19 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
     AddCartItemRequestDto request,
   ) async {
     try {
-      return await _apiServices.addCartItem(request);
+      final response = await _apiServices.addCartItem(request);
+      await _cartCacheInvalidator.clearCartCache();
+      return response;
     } on DioException catch (error) {
-      final token = await _tokenService.getToken();
-      final shouldFallbackToGuest =
-          error.response?.statusCode == 401 &&
-          token != null &&
-          token.isNotEmpty;
+      if (!await _shouldFallbackToGuest(error)) rethrow;
 
-      if (!shouldFallbackToGuest) rethrow;
-
-      final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.post<Map<String, dynamic>>(
         EndPoints.cartItems,
         data: request.toJson(),
-        options: Options(
-          headers: {NetworkConstants.deviceIdHeader: deviceId},
-          extra: {
-            TokenInterceptor.skipAuthKey: true,
-            DeviceIdInterceptor.forceDeviceIdKey: true,
-          },
-        ),
+        options: await _guestNoCacheOptions(),
       );
 
+      await _cartCacheInvalidator.clearCartCache();
       return AddCartItemResponseDto.fromJson(response.data ?? {});
     }
   }
@@ -93,29 +115,23 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<GetCartResponseDto> getCart({String? vendorId}) async {
     try {
-      return await _apiServices.getCart(vendorId);
-    } on DioException catch (error) {
-      final token = await _tokenService.getToken();
-      final shouldFallbackToGuest =
-          error.response?.statusCode == 401 &&
-          token != null &&
-          token.isNotEmpty;
-
-      if (!shouldFallbackToGuest) rethrow;
-
-      final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.cart,
         queryParameters: {
           if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
         },
-        options: Options(
-          headers: {NetworkConstants.deviceIdHeader: deviceId},
-          extra: {
-            TokenInterceptor.skipAuthKey: true,
-            DeviceIdInterceptor.forceDeviceIdKey: true,
-          },
-        ),
+        options: _noCacheOptions(),
+      );
+      return GetCartResponseDto.fromJson(response.data ?? {});
+    } on DioException catch (error) {
+      if (!await _shouldFallbackToGuest(error)) rethrow;
+
+      final response = await _dio.get<Map<String, dynamic>>(
+        EndPoints.cart,
+        queryParameters: {
+          if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        },
+        options: await _guestNoCacheOptions(),
       );
 
       return GetCartResponseDto.fromJson(response.data ?? {});
@@ -125,28 +141,20 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<ClearCartResponseDto> clearCart() async {
     try {
-      return await _apiServices.clearCart();
+      final response = await _apiServices.clearCart();
+      await _cartCacheInvalidator.clearCartCache();
+      await _cartCacheInvalidator.clearCheckoutSummaryCache();
+      return response;
     } on DioException catch (error) {
-      final token = await _tokenService.getToken();
-      final shouldFallbackToGuest =
-          error.response?.statusCode == 401 &&
-          token != null &&
-          token.isNotEmpty;
+      if (!await _shouldFallbackToGuest(error)) rethrow;
 
-      if (!shouldFallbackToGuest) rethrow;
-
-      final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.delete<Map<String, dynamic>>(
         EndPoints.cart,
-        options: Options(
-          headers: {NetworkConstants.deviceIdHeader: deviceId},
-          extra: {
-            TokenInterceptor.skipAuthKey: true,
-            DeviceIdInterceptor.forceDeviceIdKey: true,
-          },
-        ),
+        options: await _guestNoCacheOptions(),
       );
 
+      await _cartCacheInvalidator.clearCartCache();
+      await _cartCacheInvalidator.clearCheckoutSummaryCache();
       return ClearCartResponseDto.fromJson(response.data ?? {});
     }
   }
@@ -154,28 +162,20 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<RemoveCartItemResponseDto> removeCartItem(String itemId) async {
     try {
-      return await _apiServices.removeCartItem(itemId);
+      final response = await _apiServices.removeCartItem(itemId);
+      await _cartCacheInvalidator.clearCartCache();
+      await _cartCacheInvalidator.clearCheckoutSummaryCache();
+      return response;
     } on DioException catch (error) {
-      final token = await _tokenService.getToken();
-      final shouldFallbackToGuest =
-          error.response?.statusCode == 401 &&
-          token != null &&
-          token.isNotEmpty;
+      if (!await _shouldFallbackToGuest(error)) rethrow;
 
-      if (!shouldFallbackToGuest) rethrow;
-
-      final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.delete<Map<String, dynamic>>(
         '${EndPoints.cartItems}/$itemId',
-        options: Options(
-          headers: {NetworkConstants.deviceIdHeader: deviceId},
-          extra: {
-            TokenInterceptor.skipAuthKey: true,
-            DeviceIdInterceptor.forceDeviceIdKey: true,
-          },
-        ),
+        options: await _guestNoCacheOptions(),
       );
 
+      await _cartCacheInvalidator.clearCartCache();
+      await _cartCacheInvalidator.clearCheckoutSummaryCache();
       return RemoveCartItemResponseDto.fromJson(response.data ?? {});
     }
   }
@@ -183,9 +183,16 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<AddCartItemResponseDto> updateCartItemQuantity(
     String itemId,
-    String? _,
+    String? vendorId,
     UpdateCartItemQuantityRequestDto request,
   ) async {
-    return _apiServices.updateCartItemQuantity(itemId, null, request);
+    final response = await _apiServices.updateCartItemQuantity(
+      itemId,
+      vendorId,
+      request,
+    );
+    await _cartCacheInvalidator.clearCartCache();
+    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+    return response;
   }
 }

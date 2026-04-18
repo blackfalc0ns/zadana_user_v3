@@ -212,6 +212,32 @@ import '../../feature/my_orders/presentation/manager/my_orders_view_model.dart'
     as _i398;
 import '../../feature/my_orders/presentation/manager/order_details_view_model.dart'
     as _i393;
+import '../../feature/notifications/data/data_source/notifications_remote_data_source.dart'
+    as _i1071;
+import '../../feature/notifications/data/data_source/notifications_remote_data_source_impl.dart'
+    as _i559;
+import '../../feature/notifications/data/repo/notifications_repository_impl.dart'
+    as _i319;
+import '../../feature/notifications/domain/repo/notifications_repository.dart'
+    as _i916;
+import '../../feature/notifications/domain/usecase/get_notification_devices_usecase.dart'
+    as _i570;
+import '../../feature/notifications/domain/usecase/get_notification_unread_count_usecase.dart'
+    as _i850;
+import '../../feature/notifications/domain/usecase/get_notifications_usecase.dart'
+    as _i519;
+import '../../feature/notifications/domain/usecase/mark_all_notifications_as_read_usecase.dart'
+    as _i690;
+import '../../feature/notifications/domain/usecase/mark_notification_as_read_usecase.dart'
+    as _i138;
+import '../../feature/notifications/domain/usecase/register_notification_device_usecase.dart'
+    as _i296;
+import '../../feature/notifications/domain/usecase/unregister_notification_device_usecase.dart'
+    as _i1029;
+import '../../feature/notifications/domain/usecase/update_notification_device_preferences_usecase.dart'
+    as _i439;
+import '../../feature/notifications/presentation/manager/notifications_view_model.dart'
+    as _i683;
 import '../../feature/payment/data/data_source/payment_remote_data_source.dart'
     as _i844;
 import '../../feature/payment/data/data_source/payment_remote_data_source_impl.dart'
@@ -278,6 +304,8 @@ import '../services/device_id_interceptor.dart' as _i930;
 import '../services/device_id_service.dart' as _i148;
 import '../services/language_interceptor.dart' as _i32;
 import '../services/language_service.dart' as _i819;
+import '../services/notification_device_service.dart' as _i823;
+import '../services/push_token_service.dart' as _i92;
 import '../services/token_interceptor.dart' as _i1056;
 import '../services/token_service.dart' as _i227;
 
@@ -331,6 +359,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i148.DeviceIdService>(
       () => _i148.DeviceIdService(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i92.PushTokenService>(
+      () => _i92.PushTokenService(gh<_i460.SharedPreferences>()),
     );
     gh.factory<_i408.LocationDataSource>(
       () => _i1072.LocationDataSourceImpl(
@@ -404,6 +435,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i304.ProductDetailsRemoteDataSource>(
       () => _i704.ProductDetailsRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i1071.NotificationsRemoteDataSource>(
+      () => _i559.NotificationsRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
     gh.factory<_i730.HomeRemoteDataSource>(
       () => _i1072.HomeRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
@@ -425,6 +459,15 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i1065.CustomerAddressesRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i1034.CartRemoteDataSource>(
+      () => _i640.CartRemoteDataSourceImpl(
+        gh<_i804.ApiServices>(),
+        gh<_i361.Dio>(),
+        gh<_i695.CacheStore>(),
+        gh<_i227.TokenService>(),
+        gh<_i148.DeviceIdService>(),
+      ),
+    );
     gh.factory<_i881.ForgetPasswordRepository>(
       () => _i384.ForgetPasswordRepositoryImpl(
         gh<_i596.ForgetPasswordRemoteDataSource>(),
@@ -432,6 +475,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1069.ProductSearchRemoteDataSource>(
       () => _i324.ProductSearchRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
+    gh.factory<_i435.CartRepository>(
+      () => _i132.CartRepositoryImpl(gh<_i1034.CartRemoteDataSource>()),
     );
     gh.factory<_i230.CustomerAddressesRepository>(
       () => _i237.CustomerAddressesRepositoryImpl(
@@ -463,14 +509,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i230.CustomerAddressesRepository>(),
       ),
     );
-    gh.factory<_i1034.CartRemoteDataSource>(
-      () => _i640.CartRemoteDataSourceImpl(
-        gh<_i804.ApiServices>(),
-        gh<_i361.Dio>(),
-        gh<_i227.TokenService>(),
-        gh<_i148.DeviceIdService>(),
-      ),
-    );
     gh.factory<_i31.LogoutRepository>(
       () => _i691.LogoutRepositoryImpl(gh<_i609.LogoutRemoteDataSource>()),
     );
@@ -481,6 +519,24 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i426.LogoutUseCase>(
       () => _i426.LogoutUseCase(repository: gh<_i31.LogoutRepository>()),
+    );
+    gh.factory<_i448.AddCartItemUseCase>(
+      () => _i448.AddCartItemUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i327.ClearCartUseCase>(
+      () => _i327.ClearCartUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i925.GetCartUseCase>(
+      () => _i925.GetCartUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i1065.GetCartVendorsUseCase>(
+      () => _i1065.GetCartVendorsUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i483.RemoveCartItemUseCase>(
+      () => _i483.RemoveCartItemUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i8.UpdateCartItemQuantityUseCase>(
+      () => _i8.UpdateCartItemQuantityUseCase(gh<_i435.CartRepository>()),
     );
     gh.factory<_i227.HomeRepository>(
       () => _i311.HomeRepositoryImpl(gh<_i730.HomeRemoteDataSource>()),
@@ -541,6 +597,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i552.SearchProductsUseCase>(
       () => _i552.SearchProductsUseCase(gh<_i685.ProductSearchRepository>()),
+    );
+    gh.factory<_i916.NotificationsRepository>(
+      () => _i319.NotificationsRepositoryImpl(
+        gh<_i1071.NotificationsRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i219.GuestCartSyncService>(
+      () => _i219.GuestCartSyncService(
+        gh<_i460.SharedPreferences>(),
+        gh<_i227.TokenService>(),
+        gh<_i448.AddCartItemUseCase>(),
+      ),
     );
     gh.factoryParam<
       _i655.ProductSearchViewModel,
@@ -631,9 +699,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i296.GetBrandProductsUseCase>(
       () => _i296.GetBrandProductsUseCase(gh<_i2.BrandRepository>()),
     );
-    gh.factory<_i435.CartRepository>(
-      () => _i132.CartRepositoryImpl(gh<_i1034.CartRemoteDataSource>()),
-    );
     gh.factoryParam<_i122.RecommendedProductsCubit, String, dynamic>(
       (title, _) => _i122.RecommendedProductsCubit(
         gh<_i394.GetHomeRecommendedUseCase>(),
@@ -681,32 +746,64 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i934.ForgetPasswordViewModel>(
       () => _i934.ForgetPasswordViewModel(gh<_i732.ForgetPasswordUseCase>()),
     );
-    gh.factory<_i448.AddCartItemUseCase>(
-      () => _i448.AddCartItemUseCase(gh<_i435.CartRepository>()),
-    );
-    gh.factory<_i327.ClearCartUseCase>(
-      () => _i327.ClearCartUseCase(gh<_i435.CartRepository>()),
-    );
-    gh.factory<_i925.GetCartUseCase>(
-      () => _i925.GetCartUseCase(gh<_i435.CartRepository>()),
-    );
-    gh.factory<_i1065.GetCartVendorsUseCase>(
-      () => _i1065.GetCartVendorsUseCase(gh<_i435.CartRepository>()),
-    );
-    gh.factory<_i483.RemoveCartItemUseCase>(
-      () => _i483.RemoveCartItemUseCase(gh<_i435.CartRepository>()),
-    );
-    gh.factory<_i8.UpdateCartItemQuantityUseCase>(
-      () => _i8.UpdateCartItemQuantityUseCase(gh<_i435.CartRepository>()),
+    gh.factory<_i31.ProductDetailsCubit>(
+      () => _i31.ProductDetailsCubit(
+        productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
+        addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
+        getCartUseCase: gh<_i925.GetCartUseCase>(),
+        guestCartSyncService: gh<_i219.GuestCartSyncService>(),
+        languageService: gh<_i819.LanguageService>(),
+      ),
     );
     gh.factory<_i166.RegisterUseCase>(
       () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
     );
-    gh.lazySingleton<_i219.GuestCartSyncService>(
-      () => _i219.GuestCartSyncService(
-        gh<_i460.SharedPreferences>(),
-        gh<_i227.TokenService>(),
-        gh<_i448.AddCartItemUseCase>(),
+    gh.factory<_i570.GetNotificationDevicesUseCase>(
+      () => _i570.GetNotificationDevicesUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i850.GetNotificationUnreadCountUseCase>(
+      () => _i850.GetNotificationUnreadCountUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i519.GetNotificationsUseCase>(
+      () => _i519.GetNotificationsUseCase(gh<_i916.NotificationsRepository>()),
+    );
+    gh.factory<_i690.MarkAllNotificationsAsReadUseCase>(
+      () => _i690.MarkAllNotificationsAsReadUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i138.MarkNotificationAsReadUseCase>(
+      () => _i138.MarkNotificationAsReadUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i296.RegisterNotificationDeviceUseCase>(
+      () => _i296.RegisterNotificationDeviceUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i1029.UnregisterNotificationDeviceUseCase>(
+      () => _i1029.UnregisterNotificationDeviceUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i439.UpdateNotificationDevicePreferencesUseCase>(
+      () => _i439.UpdateNotificationDevicePreferencesUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i341.CartViewModel>(
+      () => _i341.CartViewModel(
+        gh<_i1065.GetCartVendorsUseCase>(),
+        gh<_i925.GetCartUseCase>(),
+        gh<_i327.ClearCartUseCase>(),
+        gh<_i483.RemoveCartItemUseCase>(),
+        gh<_i8.UpdateCartItemQuantityUseCase>(),
+        gh<_i219.GuestCartSyncService>(),
       ),
     );
     gh.factoryParam<_i1008.BrandDetailsCubit, _i1044.BrandModel, dynamic>(
@@ -729,6 +826,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i477.UpdateProfileUseCase>(),
       ),
     );
+    gh.factory<_i683.NotificationsViewModel>(
+      () => _i683.NotificationsViewModel(
+        gh<_i519.GetNotificationsUseCase>(),
+        gh<_i850.GetNotificationUnreadCountUseCase>(),
+        gh<_i138.MarkNotificationAsReadUseCase>(),
+        gh<_i690.MarkAllNotificationsAsReadUseCase>(),
+      ),
+    );
     gh.factory<_i566.PaymentViewModel>(
       () => _i566.PaymentViewModel(
         gh<_i867.GetCheckoutSummaryUseCase>(),
@@ -743,22 +848,23 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i491.ResetPasswordRepository>(),
       ),
     );
-    gh.factory<_i31.ProductDetailsCubit>(
-      () => _i31.ProductDetailsCubit(
-        productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
-        addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
-        getCartUseCase: gh<_i925.GetCartUseCase>(),
-        guestCartSyncService: gh<_i219.GuestCartSyncService>(),
-        languageService: gh<_i819.LanguageService>(),
+    gh.lazySingleton<_i823.NotificationDeviceService>(
+      () => _i823.NotificationDeviceService(
+        gh<_i460.SharedPreferences>(),
+        gh<_i227.TokenService>(),
+        gh<_i92.PushTokenService>(),
+        gh<_i148.DeviceIdService>(),
+        gh<_i819.LanguageService>(),
+        gh<_i296.RegisterNotificationDeviceUseCase>(),
+        gh<_i439.UpdateNotificationDevicePreferencesUseCase>(),
+        gh<_i1029.UnregisterNotificationDeviceUseCase>(),
       ),
-    );
-    gh.factory<_i330.RegisterViewModel>(
-      () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
     );
     gh.factory<_i415.VerifyOtpRepository>(
       () => _i548.VerifyOtpRepositoryImpl(
         gh<_i698.VerifyOtpRemoteDataSource>(),
         gh<_i227.TokenService>(),
+        gh<_i823.NotificationDeviceService>(),
         gh<_i219.GuestCartSyncService>(),
         gh<_i64.GuestFavoritesSyncService>(),
       ),
@@ -767,19 +873,16 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i94.LoginRepositoryImpl(
         gh<_i952.LoginRemoteDataSource>(),
         gh<_i227.TokenService>(),
+        gh<_i823.NotificationDeviceService>(),
         gh<_i219.GuestCartSyncService>(),
         gh<_i64.GuestFavoritesSyncService>(),
       ),
     );
-    gh.factory<_i341.CartViewModel>(
-      () => _i341.CartViewModel(
-        gh<_i1065.GetCartVendorsUseCase>(),
-        gh<_i925.GetCartUseCase>(),
-        gh<_i327.ClearCartUseCase>(),
-        gh<_i483.RemoveCartItemUseCase>(),
-        gh<_i8.UpdateCartItemQuantityUseCase>(),
-        gh<_i219.GuestCartSyncService>(),
-      ),
+    gh.factory<_i330.RegisterViewModel>(
+      () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
+    );
+    gh.factory<_i851.VerifyOtpUseCase>(
+      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
@@ -787,14 +890,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i248.LoginUseCase>(
       () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
     );
-    gh.factory<_i851.VerifyOtpUseCase>(
-      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
+    gh.factory<_i718.VerifyOtpViewModel>(
+      () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),
     );
     gh.factory<_i955.LoginViewModel>(
       () => _i955.LoginViewModel(gh<_i248.LoginUseCase>()),
-    );
-    gh.factory<_i718.VerifyOtpViewModel>(
-      () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),
     );
     return this;
   }

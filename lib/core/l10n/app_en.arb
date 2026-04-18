@@ -281,6 +281,17 @@
   "language": "Language",
   "notifications": "Notifications",
   "notifications_empty_title": "No notifications",
+  "notifications_empty_description": "You are all caught up for now. New order and account updates will appear here.",
+  "notifications_mark_all_read": "Mark all read",
+  "notifications_preferences_saved": "Notification preferences saved",
+  "notifications_unread_count": "{count, plural, =0{No unread notifications} =1{1 unread notification} other{{count} unread notifications}}",
+  "@notifications_unread_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "brand_product_count": "{count} products",
   "@brand_product_count": {
     "placeholders": {

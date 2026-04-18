@@ -20,7 +20,7 @@ abstract class EndPoints {
   static const String categorySubcategories =
       '/categories/{categoryId}/subcategories';
   static const String categoryFilters = '/categories/{categoryId}/filters';
-  static const String categoryProducts = '/categories/{categoryId}/products';
+  static const String categoryProducts = '/categories/{subCategoryId}/products';
   static const String shoppingProducts = '/categories/products';
   static const String productsSearch = '/products/search';
   static const String productDetails = '/products/{productId}';
@@ -46,4 +46,14 @@ abstract class EndPoints {
   static const String completedOrders = '/orders/completed';
   static const String returnedOrders = '/orders/returns';
   static const String orderDetails = '/orders/{orderId}';
+  static const String notifications = '/notifications';
+  static const String notificationsUnreadCount = '/notifications/unread-count';
+  static const String notificationsReadAll = '/notifications/read-all';
+  static const String notificationDevices = '/notifications/devices';
+  static const String notificationDevicesRegister =
+      '/notifications/devices/register';
+  static const String notificationDevicesPreferences =
+      '/notifications/devices/preferences';
+  static const String notificationDevicesUnregister =
+      '/notifications/devices/unregister';
 }

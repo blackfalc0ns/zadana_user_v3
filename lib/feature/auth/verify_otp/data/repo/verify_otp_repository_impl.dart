@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/mapper/mapper_verify_otp.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
@@ -16,12 +17,14 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
   const VerifyOtpRepositoryImpl(
     this._remoteDataSource,
     this._tokenService,
+    this._notificationDeviceService,
     this._guestCartSyncService,
     this._guestFavoritesSyncService,
   );
 
   final VerifyOtpRemoteDataSource _remoteDataSource;
   final TokenService _tokenService;
+  final NotificationDeviceService _notificationDeviceService;
   final GuestCartSyncService _guestCartSyncService;
   final GuestFavoritesSyncService _guestFavoritesSyncService;
 
@@ -39,6 +42,7 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
         await _tokenService.saveRefreshToken(refreshToken);
         await _guestCartSyncService.syncPendingItemsIfAuthenticated();
         await _guestFavoritesSyncService.syncPendingFavoritesIfAuthenticated();
+        await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();
       }
 
       return result.toEntity();

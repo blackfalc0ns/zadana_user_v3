@@ -758,6 +758,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications_empty_title => 'لا توجد إشعارات';
 
   @override
+  String get notifications_empty_description =>
+      'أنت متابع كل جديد حاليًا. ستظهر هنا تحديثات الطلبات والتنبيهات المهمة أولًا بأول.';
+
+  @override
+  String get notifications_mark_all_read => 'تحديد الكل كمقروء';
+
+  @override
+  String get notifications_preferences_saved => 'تم حفظ تفضيلات الإشعارات';
+
+  @override
+  String notifications_unread_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count إشعار غير مقروء',
+      many: '$count إشعارًا غير مقروء',
+      few: '$count إشعارات غير مقروءة',
+      two: 'إشعاران غير مقروءين',
+      one: 'إشعار واحد غير مقروء',
+      zero: 'لا توجد إشعارات غير مقروءة',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String brand_product_count(int count) {
     return '$count منتج';
   }

@@ -3,6 +3,48 @@ import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_addres
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 
+sealed class PaymentUiEffect {
+  const PaymentUiEffect();
+}
+
+class OpenAddressSelectorEffect extends PaymentUiEffect {
+  const OpenAddressSelectorEffect();
+}
+
+class OpenAddAddressEffect extends PaymentUiEffect {
+  const OpenAddAddressEffect();
+}
+
+class OpenPaymentWebViewEffect extends PaymentUiEffect {
+  const OpenPaymentWebViewEffect(this.paymentUrl);
+
+  final String paymentUrl;
+}
+
+class NavigateToPaymentSuccessEffect extends PaymentUiEffect {
+  const NavigateToPaymentSuccessEffect(this.orderId);
+
+  final String orderId;
+}
+
+class ShowPaymentSuccessEffect extends PaymentUiEffect {
+  const ShowPaymentSuccessEffect(this.message);
+
+  final String message;
+}
+
+class ShowPaymentErrorEffect extends PaymentUiEffect {
+  const ShowPaymentErrorEffect(this.message);
+
+  final String message;
+}
+
+class ShowPaymentInfoEffect extends PaymentUiEffect {
+  const ShowPaymentInfoEffect(this.message);
+
+  final String message;
+}
+
 class PaymentState {
   const PaymentState({
     this.isLoadingSummary = false,
@@ -19,6 +61,7 @@ class PaymentState {
     this.actionFailure,
     this.feedbackMessage,
     this.placedOrder,
+    this.uiEffect,
   });
 
   final bool isLoadingSummary;
@@ -35,6 +78,7 @@ class PaymentState {
   final Failure? actionFailure;
   final String? feedbackMessage;
   final PlaceOrderResponseEntity? placedOrder;
+  final PaymentUiEffect? uiEffect;
 
   bool get isBusy =>
       isLoadingSummary ||
@@ -46,7 +90,9 @@ class PaymentState {
   String? get selectedAddressId => checkoutSummary?.selectedAddress?.id;
 
   String? get selectedDeliverySlotId {
-    final selected = checkoutSummary?.deliverySlots.where((item) => item.isSelected);
+    final selected = checkoutSummary?.deliverySlots.where(
+      (item) => item.isSelected,
+    );
     if (selected == null || selected.isEmpty) return null;
     return selected.first.id;
   }
@@ -73,6 +119,7 @@ class PaymentState {
     Failure? actionFailure,
     String? feedbackMessage,
     PlaceOrderResponseEntity? placedOrder,
+    PaymentUiEffect? uiEffect,
     bool clearCheckoutSummary = false,
     bool clearSummaryFailure = false,
     bool clearAddressesFailure = false,
@@ -80,6 +127,7 @@ class PaymentState {
     bool clearFeedbackMessage = false,
     bool clearPlacedOrder = false,
     bool clearSelectedPaymentMethodCode = false,
+    bool clearUiEffect = false,
   }) {
     return PaymentState(
       isLoadingSummary: isLoadingSummary ?? this.isLoadingSummary,
@@ -108,6 +156,7 @@ class PaymentState {
           ? null
           : feedbackMessage ?? this.feedbackMessage,
       placedOrder: clearPlacedOrder ? null : placedOrder ?? this.placedOrder,
+      uiEffect: clearUiEffect ? null : uiEffect ?? this.uiEffect,
     );
   }
 }

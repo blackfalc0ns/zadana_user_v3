@@ -51,15 +51,26 @@ class PaymentViewModel extends Cubit<PaymentState> {
         _removePromoCode();
       case PaymentPlaceOrderEvent():
         _placeOrder();
+      case PaymentRequestAddressSelectionEvent():
+        emit(state.copyWith(uiEffect: const OpenAddressSelectorEffect()));
+      case PaymentHandleAddressSelectionResultEvent():
+        _handleAddressSelectionResult(event.result);
+      case PaymentHandleAddAddressCompletedEvent():
+        _loadCheckoutData();
+      case PaymentHandleWebViewResultEvent():
+        _handleWebViewResult(
+          result: event.result,
+          fallbackErrorMessage: event.fallbackErrorMessage,
+          pendingMessage: event.pendingMessage,
+        );
       case PaymentClearFeedbackEvent():
         emit(
-          state.copyWith(
-            clearActionFailure: true,
-            clearFeedbackMessage: true,
-          ),
+          state.copyWith(clearActionFailure: true, clearFeedbackMessage: true),
         );
       case PaymentClearPlacedOrderEvent():
         emit(state.copyWith(clearPlacedOrder: true));
+      case PaymentClearUiEffectEvent():
+        emit(state.copyWith(clearUiEffect: true));
     }
   }
 
@@ -109,7 +120,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
           clearAddressesFailure: true,
         );
       case ApiErrorResult<List<CustomerAddressEntity>>():
-        nextState = nextState.copyWith(addressesFailure: addressesResult.failure);
+        nextState = nextState.copyWith(
+          addressesFailure: addressesResult.failure,
+        );
     }
 
     emit(nextState);
@@ -203,10 +216,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
         );
       case ApiErrorResult():
         emit(
-          state.copyWith(
-            isApplyingPromo: false,
-            actionFailure: result.failure,
-          ),
+          state.copyWith(isApplyingPromo: false, actionFailure: result.failure),
         );
     }
   }
@@ -239,10 +249,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
         );
       case ApiErrorResult():
         emit(
-          state.copyWith(
-            isRemovingPromo: false,
-            actionFailure: result.failure,
-          ),
+          state.copyWith(isRemovingPromo: false, actionFailure: result.failure),
         );
     }
   }
@@ -286,21 +293,120 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     switch (result) {
       case ApiSuccessResult():
+        final iframeUrl = result.data.payment?.iframeUrl ?? '';
         emit(
           state.copyWith(
             isPlacingOrder: false,
             placedOrder: result.data,
+            uiEffect: iframeUrl.isNotEmpty
+                ? OpenPaymentWebViewEffect(iframeUrl)
+                : NavigateToPaymentSuccessEffect(result.data.order.id),
             clearActionFailure: true,
           ),
         );
       case ApiErrorResult():
         emit(
-          state.copyWith(
-            isPlacingOrder: false,
-            actionFailure: result.failure,
-          ),
+          state.copyWith(isPlacingOrder: false, actionFailure: result.failure),
         );
     }
+  }
+
+  void _handleAddressSelectionResult(String? result) {
+    if (result == null) {
+      emit(state.copyWith(clearUiEffect: true));
+      return;
+    }
+
+    if (result == 'add_new_address') {
+      emit(state.copyWith(uiEffect: const OpenAddAddressEffect()));
+      return;
+    }
+
+    emit(state.copyWith(clearUiEffect: true));
+    _refreshSummary(addressId: result);
+  }
+
+  void _handleWebViewResult({
+    required Map<String, String?>? result,
+    required String fallbackErrorMessage,
+    required String pendingMessage,
+  }) {
+    emit(state.copyWith(clearUiEffect: true));
+    if (result == null) {
+      return;
+    }
+
+    final paymentStatus = _resolveWebViewPaymentStatus(result);
+    final paymentMessage = result['message'];
+    final callbackOrderId = result['orderId'];
+    final orderId = callbackOrderId ?? state.placedOrder?.order.id;
+
+    if (paymentStatus == 'failed') {
+      emit(
+        state.copyWith(
+          uiEffect: ShowPaymentErrorEffect(
+            paymentMessage ?? fallbackErrorMessage,
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (paymentStatus == 'pending') {
+      emit(
+        state.copyWith(
+          uiEffect: ShowPaymentInfoEffect(paymentMessage ?? pendingMessage),
+        ),
+      );
+      return;
+    }
+
+    if (paymentStatus == 'success' && orderId != null && orderId.isNotEmpty) {
+      emit(state.copyWith(uiEffect: NavigateToPaymentSuccessEffect(orderId)));
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        uiEffect: ShowPaymentErrorEffect(
+          paymentMessage ?? fallbackErrorMessage,
+        ),
+      ),
+    );
+  }
+
+  String? _resolveWebViewPaymentStatus(Map<String, String?> result) {
+    final directStatus = result['status']?.trim().toLowerCase();
+    if (directStatus == 'success' ||
+        directStatus == 'failed' ||
+        directStatus == 'pending') {
+      return directStatus;
+    }
+
+    final rawPaymentStatus = result['paymentStatus']?.trim().toLowerCase();
+    if (rawPaymentStatus == 'paid' ||
+        rawPaymentStatus == 'success' ||
+        rawPaymentStatus == 'succeeded') {
+      return 'success';
+    }
+
+    if (rawPaymentStatus == 'failed' ||
+        rawPaymentStatus == 'unpaid' ||
+        rawPaymentStatus == 'canceled' ||
+        rawPaymentStatus == 'cancelled') {
+      return 'failed';
+    }
+
+    if (rawPaymentStatus == 'pending' || rawPaymentStatus == 'processing') {
+      return 'pending';
+    }
+
+    final orderStatus = result['orderStatus']?.trim().toLowerCase();
+    if (orderStatus?.contains('pending') ?? false) {
+      return 'pending';
+    }
+
+    return null;
   }
 
   String? _resolvePaymentMethodCode(

@@ -10,6 +10,8 @@ abstract class AppConstants {
   static const String pendingGuestCartItemsKey = 'pendingGuestCartItemsKey';
   static const String pendingGuestFavoriteProductIdsKey =
       'pendingGuestFavoriteProductIdsKey';
+  static const String notificationsEnabledKey = 'notificationsEnabledKey';
+  static const String fcmTokenKey = 'fcmTokenKey';
 
   // 🔹 Localization Keys
   static const String languageCode = 'languageCode';

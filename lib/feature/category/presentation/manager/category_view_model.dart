@@ -224,12 +224,15 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _loadShoppingProducts(subcategoryId: effectiveSubCategoryId);
       return;
     }
-
-    final requestCategoryId =
-        overrideCategoryId ??
-        _resolveCategoryIdForSubCategory(effectiveSubCategoryId) ??
-        state.selectedCategoryId;
-    if (requestCategoryId == null || requestCategoryId.isEmpty) return;
+    if (effectiveSubCategoryId == null || effectiveSubCategoryId.isEmpty) {
+      final requestCategoryId =
+          overrideCategoryId ??
+          _resolveCategoryIdForSubCategory(effectiveSubCategoryId) ??
+          state.selectedCategoryId;
+      if (requestCategoryId == null || requestCategoryId.isEmpty) return;
+      await _loadShoppingProducts();
+      return;
+    }
 
     emit(
       state.copyWith(
@@ -242,7 +245,6 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     try {
       final response = await _apiServices.getCategoryProducts(
-        requestCategoryId,
         effectiveSubCategoryId,
         state.selectedProductTypeId,
         state.selectedPartId,

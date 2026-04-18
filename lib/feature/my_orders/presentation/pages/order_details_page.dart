@@ -10,9 +10,11 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_deta
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_loading_view.dart';
 
 class OrderDetailsPage extends StatelessWidget {
-  const OrderDetailsPage({super.key, required this.order});
+  const OrderDetailsPage({super.key, this.order, this.orderId})
+    : assert(order != null || orderId != null);
 
-  final OrderUiModel order;
+  final OrderUiModel? order;
+  final String? orderId;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class OrderDetailsPage extends StatelessWidget {
           context.read<OrderDetailsViewModel>().clearFeedback();
         },
         builder: (context, state) {
+          final targetOrderId = order?.id ?? orderId!;
           if (state.isLoading && state.order == null) {
             return const OrderDetailsLoadingView();
           }
@@ -44,8 +47,7 @@ class OrderDetailsPage extends StatelessWidget {
           if (state.failure != null && state.order == null) {
             return ApiErrorWidget.fromFailure(
               state.failure!,
-              onRetry: () =>
-                  context.read<OrderDetailsViewModel>().load(order.id),
+              onRetry: () => context.read<OrderDetailsViewModel>().load(targetOrderId),
             );
           }
 
@@ -63,14 +65,14 @@ class OrderDetailsPage extends StatelessWidget {
             onCancel: () =>
                 context.read<OrderDetailsViewModel>().handleCancelPressed(
                   context,
-                  fallbackStatus: order.status,
-                  fallbackTotalPrice: order.totalPrice,
+                  fallbackStatus: order?.status ?? orderDetails.status,
+                  fallbackTotalPrice: order?.totalPrice ?? orderDetails.totalPrice,
                 ),
             onComplaint: () =>
                 context.read<OrderDetailsViewModel>().handleComplaintPressed(
                   context,
-                  fallbackStatus: order.status,
-                  fallbackTotalPrice: order.totalPrice,
+                  fallbackStatus: order?.status ?? orderDetails.status,
+                  fallbackTotalPrice: order?.totalPrice ?? orderDetails.totalPrice,
                 ),
           );
         },

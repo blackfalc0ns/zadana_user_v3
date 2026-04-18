@@ -775,6 +775,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications_empty_title => 'No notifications';
 
   @override
+  String get notifications_empty_description =>
+      'You are all caught up for now. New order and account updates will appear here.';
+
+  @override
+  String get notifications_mark_all_read => 'Mark all read';
+
+  @override
+  String get notifications_preferences_saved =>
+      'Notification preferences saved';
+
+  @override
+  String notifications_unread_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread notifications',
+      one: '1 unread notification',
+      zero: 'No unread notifications',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String brand_product_count(int count) {
     return '$count products';
   }

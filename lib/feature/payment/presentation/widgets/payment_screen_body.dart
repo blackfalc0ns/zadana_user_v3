@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/sections/checkout_content_section.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_bottom_action.dart';
+
+class PaymentScreenBody extends StatelessWidget {
+  const PaymentScreenBody({
+    super.key,
+    required this.state,
+    required this.fadeAnimation,
+    required this.slideAnimation,
+    required this.onRetry,
+    required this.onChangeAddress,
+    required this.onDeliverySlotChanged,
+    required this.onPaymentMethodChanged,
+    required this.onApplyPromoCode,
+    required this.onRemovePromoCode,
+    required this.onPlaceOrder,
+  });
+
+  final PaymentState state;
+  final Animation<double> fadeAnimation;
+  final Animation<Offset> slideAnimation;
+  final VoidCallback onRetry;
+  final VoidCallback onChangeAddress;
+  final ValueChanged<String> onDeliverySlotChanged;
+  final ValueChanged<String> onPaymentMethodChanged;
+  final ValueChanged<String> onApplyPromoCode;
+  final VoidCallback onRemovePromoCode;
+  final VoidCallback onPlaceOrder;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final checkoutSummary = state.checkoutSummary;
+
+    if (state.isLoadingSummary && checkoutSummary == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.summaryFailure != null && checkoutSummary == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: ApiErrorWidget.fromFailure(
+            state.summaryFailure!,
+            onRetry: onRetry,
+          ),
+        ),
+      );
+    }
+
+    if (checkoutSummary == null) {
+      return EmptyStateWidget(
+        title: l10n.cart_empty_description,
+        description: l10n.cart_empty_message,
+        icon: Icons.shopping_cart_outlined,
+      );
+    }
+
+    final currency = localizePaymentCurrency(
+      l10n,
+      checkoutSummary.summary.currency,
+    );
+
+    return Column(
+      children: [
+        Expanded(
+          child: FadeTransition(
+            opacity: fadeAnimation,
+            child: SlideTransition(
+              position: slideAnimation,
+              child: CheckoutContentSection(
+                checkoutSummary: checkoutSummary,
+                addresses: state.addresses,
+                selectedPaymentMethodCode: state.selectedPaymentMethodCode,
+                isLoadingAddresses: state.isLoadingAddresses,
+                addressesFailure: state.addressesFailure,
+                isRefreshingSummary: state.isRefreshingSummary,
+                isPromoLoading: state.isApplyingPromo || state.isRemovingPromo,
+                onChangeAddress: onChangeAddress,
+                onDeliverySlotChanged: onDeliverySlotChanged,
+                onPaymentMethodChanged: onPaymentMethodChanged,
+                onApplyPromoCode: onApplyPromoCode,
+                onRemovePromoCode: onRemovePromoCode,
+              ),
+            ),
+          ),
+        ),
+        PaymentBottomAction(
+          buttonText: state.isPlacingOrder
+              ? l10n.processing
+              : '${l10n.checkout} - ${checkoutSummary.summary.total.toStringAsFixed(2)} $currency',
+          isLoading: state.isPlacingOrder,
+          onPressed: state.canPlaceOrder ? onPlaceOrder : null,
+        ),
+      ],
+    );
+  }
+}

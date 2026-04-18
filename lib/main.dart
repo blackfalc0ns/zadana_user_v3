@@ -9,10 +9,12 @@ import 'package:zadana_user_v3/core/general_cubit/general_state.dart';
 import 'package:zadana_user_v3/core/general_cubit/local_cubit.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
+import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+  await getIt<NotificationDeviceService>().syncCurrentDeviceIfAuthenticated();
   runApp(DevicePreview(builder: (context) => const MyApp()));
 }
 

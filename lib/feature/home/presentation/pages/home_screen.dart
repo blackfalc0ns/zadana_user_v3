@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
@@ -60,6 +61,7 @@ class _HomeScreenView extends StatelessWidget {
       appBar: HomeAppBar(
         onMenuTap: onMenuTap,
         onSearchTap: () => _openShoppingSearch(context),
+        onNotificationsTap: () => _openNotifications(context),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -172,5 +174,11 @@ class _HomeScreenView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openNotifications(BuildContext context) async {
+    await Navigator.of(context).pushNamed(AppRoutes.notifications);
+    if (!context.mounted) return;
+    context.read<HomeViewModel>().doIntent(const HomeLoadEvent());
   }
 }

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/feature/payment/data/data_source/payment_remote_data_source.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_promo_result_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_summary_dto.dart';
@@ -16,6 +18,15 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   static const String _promoCodeEndpoint = '/checkout/promo-code';
   static const String _ordersEndpoint = '/orders';
 
+  Options _noCacheOptions() {
+    return Options(
+      extra: CacheOptions(
+        store: getIt<CacheStore>(),
+        policy: CachePolicy.noCache,
+      ).toExtra(),
+    );
+  }
+
   @override
   Future<CheckoutSummaryDto> getCheckoutSummary({
     String? addressId,
@@ -28,6 +39,7 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
         if (deliverySlotId != null && deliverySlotId.isNotEmpty)
           'delivery_slot_id': deliverySlotId,
       },
+      options: _noCacheOptions(),
     );
 
     return CheckoutSummaryDto.fromJson(response.data ?? <String, dynamic>{});

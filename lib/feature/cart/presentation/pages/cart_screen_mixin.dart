@@ -43,6 +43,10 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
     cartNavigationService = CartNavigationService()
       ..addListener(handleCartTabChanged);
     animations = CartAnimations(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _processPendingCartNavigationRequest();
+    });
   }
 
   @override
@@ -63,6 +67,13 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
   );
 
   void handleCartTabChanged() {
+    final shouldClearState = _consumePendingClearStateRequest();
+    if (shouldClearState) {
+      clearPendingQuantityUpdates();
+      viewModel.doIntent(const CartResetAfterCheckoutEvent());
+      resetVendorSelection();
+    }
+
     reloadCartData();
     resetVendorSelection();
   }
@@ -71,6 +82,19 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider {
     viewModel
       ..doIntent(const CartLoadVendorsEvent())
       ..doIntent(const CartLoadItemsEvent());
+  }
+
+  void _processPendingCartNavigationRequest() {
+    if (!_consumePendingClearStateRequest()) return;
+
+    clearPendingQuantityUpdates();
+    viewModel.doIntent(const CartResetAfterCheckoutEvent());
+    resetVendorSelection();
+    reloadCartData();
+  }
+
+  bool _consumePendingClearStateRequest() {
+    return cartNavigationService.consumeClearStateRequest();
   }
 
   Future<void> refreshCart() async {

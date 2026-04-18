@@ -8,6 +8,8 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_dialogs.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
@@ -26,6 +28,19 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _notificationsEnabled = true;
+  bool _isUpdatingNotifications = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationsPreference();
+  }
+
+  Future<void> _loadNotificationsPreference() async {
+    final enabled = await getIt<NotificationDeviceService>().isNotificationsEnabled();
+    if (!mounted) return;
+    setState(() => _notificationsEnabled = enabled);
+  }
 
   Future<bool> _resolveGuestMode() async {
     final token = await getIt<TokenService>().getToken();
@@ -49,6 +64,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (shouldLogout == true && context.mounted) {
       await LogoutHelper.performLogout(context);
     }
+  }
+
+  Future<void> _handleNotificationsChanged(bool value) async {
+    if (_isUpdatingNotifications) return;
+
+    setState(() {
+      _notificationsEnabled = value;
+      _isUpdatingNotifications = true;
+    });
+
+    final result = await getIt<NotificationDeviceService>().setNotificationsEnabled(
+      value,
+    );
+
+    if (!mounted) return;
+
+    switch (result) {
+      case ApiSuccessResult<void>():
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.localization.notifications_preferences_saved),
+          ),
+        );
+      case ApiErrorResult<void>():
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result.failure.errorMessage)));
+    }
+
+    setState(() => _isUpdatingNotifications = false);
   }
 
   @override
@@ -108,6 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   l10n: l10n,
                   profile: profile,
                   notificationsEnabled: _notificationsEnabled,
+                  notificationsUpdating: _isUpdatingNotifications,
                   onEditTap: () async {
                     final updatedProfile = await Navigator.of(
                       context,
@@ -120,9 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileSetLocalDataEvent(updatedProfile),
                     );
                   },
-                  onNotificationsChanged: (value) {
-                    setState(() => _notificationsEnabled = value);
-                  },
+                  onNotificationsChanged: _handleNotificationsChanged,
                   onLanguageTap: () =>
                       DrawerDialogs.showLanguageDialog(context),
                   onLogout: () => _showLogoutDialog(context, l10n),
