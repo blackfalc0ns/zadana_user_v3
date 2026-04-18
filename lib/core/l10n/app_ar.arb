@@ -278,6 +278,17 @@
   "language": "اللغة",
   "notifications": "الإشعارات",
   "notifications_empty_title": "لا توجد إشعارات",
+  "notifications_empty_description": "أنت متابع كل جديد حاليًا. ستظهر هنا تحديثات الطلبات والتنبيهات المهمة أولًا بأول.",
+  "notifications_mark_all_read": "تحديد الكل كمقروء",
+  "notifications_preferences_saved": "تم حفظ تفضيلات الإشعارات",
+  "notifications_unread_count": "{count, plural, =0{لا توجد إشعارات غير مقروءة} =1{إشعار واحد غير مقروء} =2{إشعاران غير مقروءين} few{{count} إشعارات غير مقروءة} many{{count} إشعارًا غير مقروء} other{{count} إشعار غير مقروء}}",
+  "@notifications_unread_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "brand_product_count": "{count} منتج",
   "@brand_product_count": {
     "placeholders": {

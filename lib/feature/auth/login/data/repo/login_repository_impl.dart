@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/login/data/mapper/mapper_login.dart';
 import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
@@ -16,12 +17,14 @@ class LoginRepositoryImpl implements LoginRepository {
   const LoginRepositoryImpl(
     this._remoteDataSource,
     this._tokenService,
+    this._notificationDeviceService,
     this._guestCartSyncService,
     this._guestFavoritesSyncService,
   );
 
   final LoginRemoteDataSource _remoteDataSource;
   final TokenService _tokenService;
+  final NotificationDeviceService _notificationDeviceService;
   final GuestCartSyncService _guestCartSyncService;
   final GuestFavoritesSyncService _guestFavoritesSyncService;
 
@@ -36,6 +39,7 @@ class LoginRepositoryImpl implements LoginRepository {
       await _tokenService.saveRefreshToken(result.tokens.refreshToken);
       await _guestCartSyncService.syncPendingItemsIfAuthenticated();
       await _guestFavoritesSyncService.syncPendingFavoritesIfAuthenticated();
+      await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();
 
       return result.toEntity();
     });

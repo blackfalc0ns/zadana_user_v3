@@ -24,6 +24,10 @@ class CartRetryItemsEvent extends CartEvent {
   final String? vendorId;
 }
 
+class CartResetAfterCheckoutEvent extends CartEvent {
+  const CartResetAfterCheckoutEvent();
+}
+
 class CartClearAllEvent extends CartEvent {
   const CartClearAllEvent();
 }

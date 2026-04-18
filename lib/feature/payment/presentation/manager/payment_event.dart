@@ -42,10 +42,40 @@ class PaymentPlaceOrderEvent extends PaymentEvent {
   const PaymentPlaceOrderEvent();
 }
 
+class PaymentRequestAddressSelectionEvent extends PaymentEvent {
+  const PaymentRequestAddressSelectionEvent();
+}
+
+class PaymentHandleAddressSelectionResultEvent extends PaymentEvent {
+  const PaymentHandleAddressSelectionResultEvent(this.result);
+
+  final String? result;
+}
+
+class PaymentHandleAddAddressCompletedEvent extends PaymentEvent {
+  const PaymentHandleAddAddressCompletedEvent();
+}
+
+class PaymentHandleWebViewResultEvent extends PaymentEvent {
+  const PaymentHandleWebViewResultEvent({
+    required this.result,
+    required this.fallbackErrorMessage,
+    required this.pendingMessage,
+  });
+
+  final Map<String, String?>? result;
+  final String fallbackErrorMessage;
+  final String pendingMessage;
+}
+
 class PaymentClearFeedbackEvent extends PaymentEvent {
   const PaymentClearFeedbackEvent();
 }
 
 class PaymentClearPlacedOrderEvent extends PaymentEvent {
   const PaymentClearPlacedOrderEvent();
+}
+
+class PaymentClearUiEffectEvent extends PaymentEvent {
+  const PaymentClearUiEffectEvent();
 }

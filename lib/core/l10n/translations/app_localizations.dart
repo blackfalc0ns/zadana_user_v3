@@ -1514,6 +1514,30 @@ abstract class AppLocalizations {
   /// **'No notifications'**
   String get notifications_empty_title;
 
+  /// No description provided for @notifications_empty_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You are all caught up for now. New order and account updates will appear here.'**
+  String get notifications_empty_description;
+
+  /// No description provided for @notifications_mark_all_read.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notifications_mark_all_read;
+
+  /// No description provided for @notifications_preferences_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification preferences saved'**
+  String get notifications_preferences_saved;
+
+  /// No description provided for @notifications_unread_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No unread notifications} =1{1 unread notification} other{{count} unread notifications}}'**
+  String notifications_unread_count(int count);
+
   /// No description provided for @brand_product_count.
   ///
   /// In en, this message translates to:

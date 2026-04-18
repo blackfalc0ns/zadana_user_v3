@@ -44,6 +44,8 @@ class CartViewModel extends Cubit<CartState> {
         _loadItems(event.vendorId);
       case CartRetryItemsEvent():
         _loadItems(event.vendorId);
+      case CartResetAfterCheckoutEvent():
+        _resetAfterCheckout();
       case CartClearAllEvent():
         _clearCart();
       case CartRemoveItemEvent():
@@ -77,6 +79,34 @@ class CartViewModel extends Cubit<CartState> {
       state.copyWith(
         clearUpdateQuantityErrorMessage: true,
         clearUpdatedQuantityItemId: true,
+      ),
+    );
+  }
+
+  void _resetAfterCheckout() {
+    emit(
+      state.copyWith(
+        vendors: const [],
+        items: const [],
+        summary: const CartSummaryEntity(itemsCount: 0, totalQuantity: 0),
+        loadedVendorId: '',
+        isLoadingVendors: false,
+        isVendorsSuccess: true,
+        isLoadingItems: false,
+        isItemsSuccess: true,
+        isClearingCart: false,
+        isRemovingItem: false,
+        clearClearCartSuccessMessage: true,
+        clearClearCartErrorMessage: true,
+        clearRemoveItemSuccessMessage: true,
+        clearRemoveItemErrorMessage: true,
+        clearRemovedItemId: true,
+        clearUpdateQuantityErrorMessage: true,
+        clearUpdatedQuantityItemId: true,
+        clearVendorsErrorMessage: true,
+        clearItemsErrorMessage: true,
+        clearVendorsFailure: true,
+        clearItemsFailure: true,
       ),
     );
   }

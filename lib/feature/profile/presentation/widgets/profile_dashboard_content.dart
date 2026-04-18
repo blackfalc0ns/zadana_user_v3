@@ -15,6 +15,7 @@ class ProfileDashboardContent extends StatelessWidget {
     required this.l10n,
     required this.profile,
     required this.notificationsEnabled,
+    required this.notificationsUpdating,
     required this.onNotificationsChanged,
     required this.onLanguageTap,
     required this.onLogout,
@@ -24,6 +25,7 @@ class ProfileDashboardContent extends StatelessWidget {
   final AppLocalizations l10n;
   final ProfileResponseEntity profile;
   final bool notificationsEnabled;
+  final bool notificationsUpdating;
   final ValueChanged<bool> onNotificationsChanged;
   final VoidCallback onLanguageTap;
   final VoidCallback onLogout;
@@ -84,9 +86,11 @@ class ProfileDashboardContent extends StatelessWidget {
               subtitle: l10n.profile_notifications_subtitle,
               trailing: Switch(
                 value: notificationsEnabled,
-                onChanged: onNotificationsChanged,
+                onChanged: notificationsUpdating ? null : onNotificationsChanged,
               ),
-              onTap: () => onNotificationsChanged(!notificationsEnabled),
+              onTap: notificationsUpdating
+                  ? () {}
+                  : () => onNotificationsChanged(!notificationsEnabled),
             ),
             _ProfileActionItem(
               icon: Icons.lock_outline_rounded,
