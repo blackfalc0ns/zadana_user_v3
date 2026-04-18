@@ -29,18 +29,11 @@ class OrderCardHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${l10n.order_number}: ${order.id}',
+                '${l10n.my_orders_order_date}: ${formatOrderDate(order.createdAt)}',
                 style: getSemiBoldStyle(
                   fontSize: FontSize.size15,
                   fontFamily: FontConstant.cairo,
                   color: colors.onSurface,
-                ),
-              ),
-              Text(
-                '${l10n.my_orders_order_date}: ${formatOrderDate(order.createdAt)}',
-                style: getRegularStyle(
-                  fontFamily: FontConstant.cairo,
-                  color: colors.onSurfaceVariant,
                 ),
               ),
             ],

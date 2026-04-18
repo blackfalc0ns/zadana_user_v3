@@ -1352,16 +1352,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_active_orders => 'ما عندك طلبات حالية';
 
   @override
-  String get no_previous_orders => 'ما عندك طلبات سابقة';
+  String get no_previous_orders => 'لا يوجد طلبات سابقة';
 
   @override
-  String get no_returning_orders => 'ما عندك طلبات قيد الإرجاع';
+  String get no_returning_orders => 'لا يوجد طلبات قيد الارجاع';
 
   @override
   String get my_orders_order_date => 'تاريخ الطلب';
 
   @override
+  String get my_orders_created_at => 'تم الإنشاء بتاريخ';
+
+  @override
   String get my_orders_items => 'المنتجات';
+
+  @override
+  String get my_orders_items_count => 'عدد المنتجات';
+
+  @override
+  String get my_orders_piece_count => 'عدد القطع';
+
+  @override
+  String get my_orders_unit_price => 'سعر القطعة';
+
+  @override
+  String my_orders_quantity_badge(int quantity) {
+    return '$quantity x';
+  }
 
   @override
   String get my_orders_view_details => 'عرض التفاصيل';
@@ -1377,6 +1394,106 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_reorder_button => 'إعادة الطلب';
+
+  @override
+  String get my_orders_return_request => 'طلب إرجاع';
+
+  @override
+  String get my_orders_follow_up => 'متابعة';
+
+  @override
+  String get my_orders_submit_complaint => 'تقديم شكوى';
+
+  @override
+  String get my_orders_details_title => 'تفاصيل الطلب';
+
+  @override
+  String get my_orders_order_summary_title => 'ملخص الطلب';
+
+  @override
+  String get my_orders_delivery_otp_title => 'رمز التسليم';
+
+  @override
+  String get my_orders_view_otp => 'عرض رمز OTP';
+
+  @override
+  String get my_orders_complaint_status_title => 'حالة الشكوى';
+
+  @override
+  String get my_orders_cancel_sheet_title => 'إلغاء الطلب';
+
+  @override
+  String get my_orders_cancel_sheet_subtitle =>
+      'يرجى اختيار سبب الإلغاء قبل تأكيد الطلب';
+
+  @override
+  String get my_orders_cancel_sheet_reason_label => 'سبب الإلغاء';
+
+  @override
+  String get my_orders_cancel_sheet_note_hint =>
+      'اكتب ملاحظة إضافية (اختياري)...';
+
+  @override
+  String get my_orders_cancel_sheet_back => 'تراجع';
+
+  @override
+  String get my_orders_cancel_sheet_confirm => 'تأكيد الإلغاء';
+
+  @override
+  String get my_orders_cancel_reason_delay => 'تأخر في تجهيز الطلب';
+
+  @override
+  String get my_orders_cancel_reason_changed_mind => 'غيرت رأيي';
+
+  @override
+  String get my_orders_cancel_reason_modify_order => 'أريد تعديل الطلب';
+
+  @override
+  String get my_orders_cancel_reason_ordered_by_mistake => 'طلبت بالخطأ';
+
+  @override
+  String get my_orders_cancel_reason_price_not_suitable => 'السعر غير مناسب';
+
+  @override
+  String get my_orders_cancel_reason_other => 'أخرى';
+
+  @override
+  String get my_orders_complaint_sheet_title => 'تقديم شكوى';
+
+  @override
+  String get my_orders_complaint_sheet_subtitle =>
+      'اكتب تفاصيل المشكلة وأرفق صورًا إن لزم';
+
+  @override
+  String get my_orders_complaint_sheet_hint => 'اكتب تفاصيل الشكوى';
+
+  @override
+  String get my_orders_complaint_sheet_attach_images => 'إرفاق صور';
+
+  @override
+  String my_orders_complaint_sheet_attached_images(int count) {
+    return 'تم إرفاق $count صورة';
+  }
+
+  @override
+  String get my_orders_complaint_sheet_send => 'إرسال';
+
+  @override
+  String my_orders_cancelled_feedback(String reason) {
+    return 'تم إلغاء الطلب: $reason';
+  }
+
+  @override
+  String get my_orders_complaint_submitted_feedback => 'تم تقديم الشكوى';
+
+  @override
+  String get my_orders_complaint_received => 'تم استلام الشكوى';
+
+  @override
+  String get my_orders_complaint_under_review => 'الشكوى تحت المراجعة';
+
+  @override
+  String get my_orders_complaint_resolved => 'تم حل الشكوى';
 
   @override
   String get order_pending => 'قيد التنفيذ';

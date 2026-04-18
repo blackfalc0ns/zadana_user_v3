@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/my_orders_state.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_details_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_card.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_empty_state.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_loading_widget.dart';
 
 class OrdersHeroHeader extends StatelessWidget {
   const OrdersHeroHeader({super.key, required this.subtitle});
@@ -81,10 +86,9 @@ class OrdersOverviewRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Row(
       spacing: Spacing.md,
-      // runSpacing: Spacing.md,
       children: [
         Flexible(
-          child: _OrdersOverviewChip(
+          child: OrdersOverviewChip(
             label: l10n.active_orders_tab,
             count: activeCount,
             icon: Icons.flash_on_rounded,
@@ -92,7 +96,7 @@ class OrdersOverviewRow extends StatelessWidget {
           ),
         ),
         Flexible(
-          child: _OrdersOverviewChip(
+          child: OrdersOverviewChip(
             label: l10n.completed_orders_tab,
             count: completedCount,
             icon: Icons.verified_rounded,
@@ -100,7 +104,7 @@ class OrdersOverviewRow extends StatelessWidget {
           ),
         ),
         Flexible(
-          child: _OrdersOverviewChip(
+          child: OrdersOverviewChip(
             label: l10n.returned_orders_tab,
             count: returningCount,
             icon: Icons.restore_outlined,
@@ -115,34 +119,76 @@ class OrdersOverviewRow extends StatelessWidget {
 class OrdersTabContent extends StatelessWidget {
   const OrdersTabContent({
     super.key,
-    required this.orders,
+    required this.section,
     required this.emptyTitle,
     required this.emptyIcon,
-    required this.isCompleted,
+    required this.onRetry,
+    required this.onLoadMore,
   });
 
-  final List<OrderUiModel> orders;
+  final OrdersTabState section;
   final String emptyTitle;
   final IconData emptyIcon;
-  final bool isCompleted;
+  final Future<void> Function() onRetry;
+  final Future<void> Function() onLoadMore;
 
   @override
   Widget build(BuildContext context) {
-    if (orders.isEmpty) {
-      return OrdersEmptyState(title: emptyTitle, icon: emptyIcon);
+    if (section.isLoading && section.items.isEmpty) {
+      return const OrdersLoadingWidget();
     }
-    return ListView.separated(
-      itemCount: orders.length,
-      separatorBuilder: (_, _) => const SizedBox(height: Spacing.md),
-      itemBuilder: (context, index) => OrderCard(
-        order: orders[index],
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => OrderDetailsPage(order: orders[index]),
-            ),
-          );
+
+    if (section.failure != null && section.items.isEmpty) {
+      return ApiErrorWidget.fromFailure(section.failure!, onRetry: onRetry);
+    }
+
+    if (section.items.isEmpty) {
+      return EmptyStateWidget(
+        title: emptyTitle,
+        description: AppLocalizations.of(context)!.my_orders_subtitle,
+        icon: emptyIcon,
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: onRetry,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification.metrics.axis == Axis.vertical &&
+              notification.metrics.extentAfter <= 320) {
+            onLoadMore();
+          }
+          return false;
         },
+        child: ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: section.items.length + (section.isLoadingMore ? 1 : 0),
+          separatorBuilder: (_, _) => const SizedBox(height: Spacing.md),
+          itemBuilder: (context, index) {
+            if (index >= section.items.length) {
+              return const SizedBox(
+                height: 180,
+                child: OrdersLoadingWidget(itemCount: 1),
+              );
+            }
+
+            final order = section.items[index];
+            return OrderCard(
+              order: order,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) =>
+                          getIt<OrderDetailsViewModel>()..load(order.id),
+                      child: OrderDetailsPage(order: order),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -170,8 +216,9 @@ class OrdersErrorState extends StatelessWidget {
   }
 }
 
-class _OrdersOverviewChip extends StatelessWidget {
-  const _OrdersOverviewChip({
+class OrdersOverviewChip extends StatelessWidget {
+  const OrdersOverviewChip({
+    super.key,
     required this.label,
     required this.count,
     required this.icon,

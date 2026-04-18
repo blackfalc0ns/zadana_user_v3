@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/skeleton_state_widget.dart';
 
 class OrdersLoadingWidget extends StatelessWidget {
   const OrdersLoadingWidget({super.key, this.itemCount = 4});
@@ -7,63 +8,65 @@ class OrdersLoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme;
-
-    return ListView.separated(
-      itemCount: itemCount,
-      separatorBuilder: (_, _) => const SizedBox(height: Spacing.md),
-      itemBuilder: (context, index) {
-        return Container(
-          padding: const EdgeInsets.all(Spacing.base),
-          decoration: BoxDecoration(
-            color: color.surface,
-            borderRadius: BorderRadius.circular(Spacing.xl),
-            border: Border.all(
-              color: color.outlineVariant.withValues(alpha: .45),
+    return SkeletonStateWidget(
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: itemCount,
+        separatorBuilder: (_, _) => const SizedBox(height: Spacing.md),
+        itemBuilder: (context, index) {
+          final color = Theme.of(context).colorScheme;
+          return Container(
+            padding: const EdgeInsets.all(Spacing.base),
+            decoration: BoxDecoration(
+              color: color.surface,
+              borderRadius: BorderRadius.circular(Spacing.xl),
+              border: Border.all(
+                color: color.outlineVariant.withValues(alpha: .45),
+              ),
             ),
-          ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _SkeletonIconBox(),
-                  SizedBox(width: Spacing.md),
-                  Expanded(child: _SkeletonLine(width: 140)),
-                  SizedBox(width: Spacing.md),
-                  _SkeletonPill(),
-                ],
-              ),
-              SizedBox(height: Spacing.base),
-              _SkeletonLine(width: 130),
-              SizedBox(height: Spacing.sm),
-              _SkeletonLine(width: 180),
-              SizedBox(height: Spacing.base),
-              Row(
-                children: [
-                  Expanded(child: _SkeletonLine(width: 120)),
-                  SizedBox(width: Spacing.md),
-                  _SkeletonPill(),
-                ],
-              ),
-              SizedBox(height: Spacing.base),
-              Row(
-                children: [
-                  Expanded(child: _SkeletonButton()),
-                  SizedBox(width: Spacing.sm),
-                  Expanded(child: _SkeletonButton()),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SkeletonIconBox(),
+                    SizedBox(width: Spacing.md),
+                    Expanded(child: SkeletonLine(width: 140)),
+                    SizedBox(width: Spacing.md),
+                    SkeletonPill(),
+                  ],
+                ),
+                SizedBox(height: Spacing.base),
+                SkeletonLine(width: 130),
+                SizedBox(height: Spacing.sm),
+                SkeletonLine(width: 180),
+                SizedBox(height: Spacing.base),
+                Row(
+                  children: [
+                    Expanded(child: SkeletonLine(width: 120)),
+                    SizedBox(width: Spacing.md),
+                    SkeletonPill(),
+                  ],
+                ),
+                SizedBox(height: Spacing.base),
+                Row(
+                  children: [
+                    Expanded(child: SkeletonButton()),
+                    SizedBox(width: Spacing.sm),
+                    Expanded(child: SkeletonButton()),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-class _SkeletonLine extends StatelessWidget {
-  const _SkeletonLine({required this.width});
+class SkeletonLine extends StatelessWidget {
+  const SkeletonLine({super.key, required this.width});
   final double width;
 
   @override
@@ -80,8 +83,8 @@ class _SkeletonLine extends StatelessWidget {
   }
 }
 
-class _SkeletonPill extends StatelessWidget {
-  const _SkeletonPill();
+class SkeletonPill extends StatelessWidget {
+  const SkeletonPill({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,8 +100,8 @@ class _SkeletonPill extends StatelessWidget {
   }
 }
 
-class _SkeletonButton extends StatelessWidget {
-  const _SkeletonButton();
+class SkeletonButton extends StatelessWidget {
+  const SkeletonButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +116,8 @@ class _SkeletonButton extends StatelessWidget {
   }
 }
 
-class _SkeletonIconBox extends StatelessWidget {
-  const _SkeletonIconBox();
+class SkeletonIconBox extends StatelessWidget {
+  const SkeletonIconBox({super.key});
 
   @override
   Widget build(BuildContext context) {

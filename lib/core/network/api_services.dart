@@ -45,6 +45,8 @@ import 'package:zadana_user_v3/feature/home/data/models/featured/home_featured_r
 import 'package:zadana_user_v3/feature/home/data/models/recommended/home_recommended_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/special_offers/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
@@ -270,4 +272,25 @@ abstract class ApiServices {
     @Query('vendor_id') String? vendorId,
     @Body() UpdateCartItemQuantityRequestDto request,
   );
+
+  @GET(EndPoints.activeOrders)
+  Future<PaginatedOrdersResponseDto> getActiveOrders(
+    @Query('page') int page,
+    @Query('per_page') int perPage,
+  );
+
+  @GET(EndPoints.completedOrders)
+  Future<PaginatedOrdersResponseDto> getCompletedOrders(
+    @Query('page') int page,
+    @Query('per_page') int perPage,
+  );
+
+  @GET(EndPoints.returnedOrders)
+  Future<PaginatedOrdersResponseDto> getReturnedOrders(
+    @Query('page') int page,
+    @Query('per_page') int perPage,
+  );
+
+  @GET(EndPoints.orderDetails)
+  Future<OrderDetailsDto> getOrderDetails(@Path('orderId') String orderId);
 }

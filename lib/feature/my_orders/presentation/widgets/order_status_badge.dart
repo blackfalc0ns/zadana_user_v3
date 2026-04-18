@@ -12,7 +12,7 @@ class OrderStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = _statusColors(Theme.of(context).colorScheme, status);
+    final colors = orderStatusColors(Theme.of(context).colorScheme, status);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -21,56 +21,44 @@ class OrderStatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        _statusLabel(l10n, status),
+        orderStatusLabel(l10n, status),
         style: getMediumStyle(fontFamily: FontConstant.cairo, color: colors.$2),
       ),
     );
   }
+}
 
-  (Color, Color) _statusColors(ColorScheme scheme, OrderStatus status) {
-    switch (status) {
-      case OrderStatus.delivered:
-        return (const Color(0xFFE7F8EE), const Color(0xFF157347));
-      case OrderStatus.processing:
-        return (
-          AppColors.secondary.withValues(alpha: .14),
-          AppColors.secondary,
-        );
-      case OrderStatus.cancelled:
-        return (const Color(0xFFFDECEC), const Color(0xFFC62828));
-      case OrderStatus.shipped:
-        return (
-          AppColors.secondary.withValues(alpha: .14),
-          AppColors.secondary,
-        );
-      case OrderStatus.pending:
-        return (
-          AppColors.secondary.withValues(alpha: .14),
-          AppColors.secondary,
-        );
-
-      case OrderStatus.returning:
-        return (
-          AppColors.secondary.withValues(alpha: .14),
-          AppColors.secondary,
-        );
-    }
+(Color, Color) orderStatusColors(ColorScheme scheme, OrderStatus status) {
+  switch (status) {
+    case OrderStatus.delivered:
+      return (const Color(0xFFE7F8EE), const Color(0xFF157347));
+    case OrderStatus.processing:
+    case OrderStatus.shipped:
+    case OrderStatus.pending:
+    case OrderStatus.returning:
+      return (AppColors.secondary.withValues(alpha: .14), AppColors.secondary);
+    case OrderStatus.cancelled:
+      return (const Color(0xFFFDECEC), const Color(0xFFC62828));
+    case OrderStatus.unknown:
+      return (
+        scheme.surfaceContainerHighest.withValues(alpha: .5),
+        scheme.onSurfaceVariant,
+      );
   }
+}
 
-  String _statusLabel(AppLocalizations l10n, OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return l10n.order_pending;
-      case OrderStatus.processing:
-        return l10n.order_pending;
-      case OrderStatus.shipped:
-        return l10n.order_pending;
-      case OrderStatus.delivered:
-        return l10n.order_delivered;
-      case OrderStatus.cancelled:
-        return l10n.order_cancelled;
-      case OrderStatus.returning:
-        return l10n.order_returning;
-    }
+String orderStatusLabel(AppLocalizations l10n, OrderStatus status) {
+  switch (status) {
+    case OrderStatus.delivered:
+      return l10n.order_delivered;
+    case OrderStatus.cancelled:
+      return l10n.order_cancelled;
+    case OrderStatus.returning:
+      return l10n.order_returning;
+    case OrderStatus.pending:
+    case OrderStatus.processing:
+    case OrderStatus.shipped:
+    case OrderStatus.unknown:
+      return l10n.order_pending;
   }
 }

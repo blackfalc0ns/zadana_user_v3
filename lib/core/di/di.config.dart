@@ -193,6 +193,25 @@ import '../../feature/location/domain/usecase/search_locations_usecase.dart'
     as _i903;
 import '../../feature/location/presentation/manager/location_view_model.dart'
     as _i343;
+import '../../feature/my_orders/data/data_source/my_orders_remote_data_source.dart'
+    as _i739;
+import '../../feature/my_orders/data/data_source/my_orders_remote_data_source_impl.dart'
+    as _i635;
+import '../../feature/my_orders/data/repo/my_orders_repository_impl.dart'
+    as _i871;
+import '../../feature/my_orders/domain/repo/my_orders_repository.dart' as _i858;
+import '../../feature/my_orders/domain/usecase/get_active_orders_usecase.dart'
+    as _i149;
+import '../../feature/my_orders/domain/usecase/get_completed_orders_usecase.dart'
+    as _i166;
+import '../../feature/my_orders/domain/usecase/get_order_details_usecase.dart'
+    as _i372;
+import '../../feature/my_orders/domain/usecase/get_returned_orders_usecase.dart'
+    as _i816;
+import '../../feature/my_orders/presentation/manager/my_orders_view_model.dart'
+    as _i398;
+import '../../feature/my_orders/presentation/manager/order_details_view_model.dart'
+    as _i393;
 import '../../feature/payment/data/data_source/payment_remote_data_source.dart'
     as _i844;
 import '../../feature/payment/data/data_source/payment_remote_data_source_impl.dart'
@@ -379,6 +398,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i484.BrandRemoteDataSource>(
       () => _i1061.BrandRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
+    gh.factory<_i739.MyOrdersRemoteDataSource>(
+      () => _i635.MyOrdersRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
     gh.factory<_i304.ProductDetailsRemoteDataSource>(
       () => _i704.ProductDetailsRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
@@ -387,6 +409,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i371.ProfileRemoteDataSource>(
       () => _i544.ProfileRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
+    gh.factory<_i858.MyOrdersRepository>(
+      () => _i871.MyOrdersRepositoryImpl(gh<_i739.MyOrdersRemoteDataSource>()),
     );
     gh.factory<_i888.ProductDetailsRepository>(
       () => _i1028.ProductDetailsRepositoryImpl(
@@ -531,6 +556,18 @@ extension GetItInjectableX on _i174.GetIt {
       (title, _) =>
           _i372.BrandsListingCubit(gh<_i446.GetHomeBrandsUseCase>(), title),
     );
+    gh.factory<_i149.GetActiveOrdersUseCase>(
+      () => _i149.GetActiveOrdersUseCase(gh<_i858.MyOrdersRepository>()),
+    );
+    gh.factory<_i166.GetCompletedOrdersUseCase>(
+      () => _i166.GetCompletedOrdersUseCase(gh<_i858.MyOrdersRepository>()),
+    );
+    gh.factory<_i372.GetOrderDetailsUseCase>(
+      () => _i372.GetOrderDetailsUseCase(gh<_i858.MyOrdersRepository>()),
+    );
+    gh.factory<_i816.GetReturnedOrdersUseCase>(
+      () => _i816.GetReturnedOrdersUseCase(gh<_i858.MyOrdersRepository>()),
+    );
     gh.factory<_i732.ForgetPasswordUseCase>(
       () => _i732.ForgetPasswordUseCase(
         repository: gh<_i881.ForgetPasswordRepository>(),
@@ -541,6 +578,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i477.UpdateProfileUseCase>(
       () => _i477.UpdateProfileUseCase(gh<_i1006.ProfileRepository>()),
+    );
+    gh.factory<_i398.MyOrdersViewModel>(
+      () => _i398.MyOrdersViewModel(
+        gh<_i149.GetActiveOrdersUseCase>(),
+        gh<_i166.GetCompletedOrdersUseCase>(),
+        gh<_i816.GetReturnedOrdersUseCase>(),
+      ),
     );
     gh.factoryParam<_i110.SpecialOffersProductsCubit, String, dynamic>(
       (title, _) => _i110.SpecialOffersProductsCubit(
@@ -621,6 +665,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1066.RemoveCheckoutPromoCodeUseCase>(
       () =>
           _i1066.RemoveCheckoutPromoCodeUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i393.OrderDetailsViewModel>(
+      () => _i393.OrderDetailsViewModel(gh<_i372.GetOrderDetailsUseCase>()),
     );
     gh.factoryParam<_i908.BestSellingProductsCubit, String, dynamic>(
       (title, _) => _i908.BestSellingProductsCubit(

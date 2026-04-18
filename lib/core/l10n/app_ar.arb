@@ -405,8 +405,72 @@
   "completed_orders_tab": "السابقة",
   "returned_orders_tab" : "المرتجعات",
   "no_active_orders": "ما عندك طلبات حالية",
-  "no_previous_orders": "ما عندك طلبات سابقة",
-  "no_returning_orders": "ما عندك طلبات قيد الإرجاع",
+  "no_previous_orders": "لا يوجد طلبات سابقة",
+  "no_returning_orders": "لا يوجد طلبات قيد الارجاع",
+  "my_orders_order_date": "تاريخ الطلب",
+  "my_orders_created_at": "تم الإنشاء بتاريخ",
+  "my_orders_items": "المنتجات",
+  "my_orders_items_count": "عدد المنتجات",
+  "my_orders_piece_count": "عدد القطع",
+  "my_orders_unit_price": "سعر القطعة",
+  "my_orders_quantity_badge": "{quantity} x",
+  "@my_orders_quantity_badge": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "my_orders_view_details": "عرض التفاصيل",
+  "my_orders_cancel_order": "إلغاء الطلب",
+  "my_orders_reorder": "إعادة الطلب",
+  "my_orders_rate_order": "قيّم الطلب",
+  "my_orders_reorder_button": "إعادة الطلب",
+  "my_orders_return_request": "طلب إرجاع",
+  "my_orders_follow_up": "متابعة",
+  "my_orders_submit_complaint": "تقديم شكوى",
+  "my_orders_details_title": "تفاصيل الطلب",
+  "my_orders_order_summary_title": "ملخص الطلب",
+  "my_orders_delivery_otp_title": "رمز التسليم",
+  "my_orders_view_otp": "عرض رمز OTP",
+  "my_orders_complaint_status_title": "حالة الشكوى",
+  "my_orders_cancel_sheet_title": "إلغاء الطلب",
+  "my_orders_cancel_sheet_subtitle": "يرجى اختيار سبب الإلغاء قبل تأكيد الطلب",
+  "my_orders_cancel_sheet_reason_label": "سبب الإلغاء",
+  "my_orders_cancel_sheet_note_hint": "اكتب ملاحظة إضافية (اختياري)...",
+  "my_orders_cancel_sheet_back": "تراجع",
+  "my_orders_cancel_sheet_confirm": "تأكيد الإلغاء",
+  "my_orders_cancel_reason_delay": "تأخر في تجهيز الطلب",
+  "my_orders_cancel_reason_changed_mind": "غيرت رأيي",
+  "my_orders_cancel_reason_modify_order": "أريد تعديل الطلب",
+  "my_orders_cancel_reason_ordered_by_mistake": "طلبت بالخطأ",
+  "my_orders_cancel_reason_price_not_suitable": "السعر غير مناسب",
+  "my_orders_cancel_reason_other": "أخرى",
+  "my_orders_complaint_sheet_title": "تقديم شكوى",
+  "my_orders_complaint_sheet_subtitle": "اكتب تفاصيل المشكلة وأرفق صورًا إن لزم",
+  "my_orders_complaint_sheet_hint": "اكتب تفاصيل الشكوى",
+  "my_orders_complaint_sheet_attach_images": "إرفاق صور",
+  "my_orders_complaint_sheet_attached_images": "تم إرفاق {count} صورة",
+  "@my_orders_complaint_sheet_attached_images": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "my_orders_complaint_sheet_send": "إرسال",
+  "my_orders_cancelled_feedback": "تم إلغاء الطلب: {reason}",
+  "@my_orders_cancelled_feedback": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "my_orders_complaint_submitted_feedback": "تم تقديم الشكوى",
+  "my_orders_complaint_received": "تم استلام الشكوى",
+  "my_orders_complaint_under_review": "الشكوى تحت المراجعة",
+  "my_orders_complaint_resolved": "تم حل الشكوى",
 
   "order_pending": "قيد التنفيذ",
   "order_shipped": "انشحن",
@@ -481,13 +545,6 @@
   "locationPermissionDeniedForever": "تم رفض إذن الموقع نهائيًا",
   "locationServicesDisabled": "خدمات الموقع مقفلة",
   "more_expensive_by": "أغلى بـ",
-  "my_orders_cancel_order": "إلغاء الطلب",
-  "my_orders_items": "المنتجات",
-  "my_orders_order_date": "تاريخ الطلب",
-  "my_orders_rate_order": "قيّم الطلب",
-  "my_orders_reorder": "إعادة الطلب",
-  "my_orders_view_details": "عرض التفاصيل",
-  "my_orders_reorder_button": "إعادة الطلب",
   "natural_100": "طبيعي 100%",
   "no": "لا",
   "not_available": "غير متوفر",

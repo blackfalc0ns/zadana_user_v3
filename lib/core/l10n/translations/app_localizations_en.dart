@@ -1390,7 +1390,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get my_orders_order_date => 'Order Date';
 
   @override
+  String get my_orders_created_at => 'Created At';
+
+  @override
   String get my_orders_items => 'Items';
+
+  @override
+  String get my_orders_items_count => 'Items Count';
+
+  @override
+  String get my_orders_piece_count => 'Pieces';
+
+  @override
+  String get my_orders_unit_price => 'Unit Price';
+
+  @override
+  String my_orders_quantity_badge(int quantity) {
+    return '$quantity x';
+  }
 
   @override
   String get my_orders_view_details => 'View Details';
@@ -1406,6 +1423,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get my_orders_reorder_button => 'Reorder';
+
+  @override
+  String get my_orders_return_request => 'Return Request';
+
+  @override
+  String get my_orders_follow_up => 'Follow Up';
+
+  @override
+  String get my_orders_submit_complaint => 'Submit Complaint';
+
+  @override
+  String get my_orders_details_title => 'Order Details';
+
+  @override
+  String get my_orders_order_summary_title => 'Order Summary';
+
+  @override
+  String get my_orders_delivery_otp_title => 'Delivery OTP';
+
+  @override
+  String get my_orders_view_otp => 'View OTP';
+
+  @override
+  String get my_orders_complaint_status_title => 'Complaint Status';
+
+  @override
+  String get my_orders_cancel_sheet_title => 'Cancel Order';
+
+  @override
+  String get my_orders_cancel_sheet_subtitle =>
+      'Please choose a cancellation reason before confirming the request';
+
+  @override
+  String get my_orders_cancel_sheet_reason_label => 'Cancellation Reason';
+
+  @override
+  String get my_orders_cancel_sheet_note_hint =>
+      'Write an additional note (optional)...';
+
+  @override
+  String get my_orders_cancel_sheet_back => 'Back';
+
+  @override
+  String get my_orders_cancel_sheet_confirm => 'Confirm Cancellation';
+
+  @override
+  String get my_orders_cancel_reason_delay => 'Delay in preparing the order';
+
+  @override
+  String get my_orders_cancel_reason_changed_mind => 'I changed my mind';
+
+  @override
+  String get my_orders_cancel_reason_modify_order =>
+      'I want to modify the order';
+
+  @override
+  String get my_orders_cancel_reason_ordered_by_mistake =>
+      'I ordered by mistake';
+
+  @override
+  String get my_orders_cancel_reason_price_not_suitable =>
+      'The price is not suitable';
+
+  @override
+  String get my_orders_cancel_reason_other => 'Other';
+
+  @override
+  String get my_orders_complaint_sheet_title => 'Submit Complaint';
+
+  @override
+  String get my_orders_complaint_sheet_subtitle =>
+      'Write the issue details and attach images if needed';
+
+  @override
+  String get my_orders_complaint_sheet_hint => 'Write complaint details';
+
+  @override
+  String get my_orders_complaint_sheet_attach_images => 'Attach Images';
+
+  @override
+  String my_orders_complaint_sheet_attached_images(int count) {
+    return '$count image(s) attached';
+  }
+
+  @override
+  String get my_orders_complaint_sheet_send => 'Send';
+
+  @override
+  String my_orders_cancelled_feedback(String reason) {
+    return 'Order cancelled: $reason';
+  }
+
+  @override
+  String get my_orders_complaint_submitted_feedback => 'Complaint submitted';
+
+  @override
+  String get my_orders_complaint_received => 'Complaint Received';
+
+  @override
+  String get my_orders_complaint_under_review => 'Complaint Under Review';
+
+  @override
+  String get my_orders_complaint_resolved => 'Complaint Resolved';
 
   @override
   String get order_pending => 'Pending';

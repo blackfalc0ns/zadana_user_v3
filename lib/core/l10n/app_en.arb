@@ -515,12 +515,69 @@
   "no_previous_orders": "No previous orders",
   "no_returning_orders": "No orders in return process",
   "my_orders_order_date": "Order Date",
+  "my_orders_created_at": "Created At",
   "my_orders_items": "Items",
+  "my_orders_items_count": "Items Count",
+  "my_orders_piece_count": "Pieces",
+  "my_orders_unit_price": "Unit Price",
+  "my_orders_quantity_badge": "{quantity} x",
+  "@my_orders_quantity_badge": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "my_orders_view_details": "View Details",
   "my_orders_cancel_order": "Cancel Order",
   "my_orders_reorder": "Reorder",
   "my_orders_rate_order": "Rate Order",
   "my_orders_reorder_button": "Reorder",
+  "my_orders_return_request": "Return Request",
+  "my_orders_follow_up": "Follow Up",
+  "my_orders_submit_complaint": "Submit Complaint",
+  "my_orders_details_title": "Order Details",
+  "my_orders_order_summary_title": "Order Summary",
+  "my_orders_delivery_otp_title": "Delivery OTP",
+  "my_orders_view_otp": "View OTP",
+  "my_orders_complaint_status_title": "Complaint Status",
+  "my_orders_cancel_sheet_title": "Cancel Order",
+  "my_orders_cancel_sheet_subtitle": "Please choose a cancellation reason before confirming the request",
+  "my_orders_cancel_sheet_reason_label": "Cancellation Reason",
+  "my_orders_cancel_sheet_note_hint": "Write an additional note (optional)...",
+  "my_orders_cancel_sheet_back": "Back",
+  "my_orders_cancel_sheet_confirm": "Confirm Cancellation",
+  "my_orders_cancel_reason_delay": "Delay in preparing the order",
+  "my_orders_cancel_reason_changed_mind": "I changed my mind",
+  "my_orders_cancel_reason_modify_order": "I want to modify the order",
+  "my_orders_cancel_reason_ordered_by_mistake": "I ordered by mistake",
+  "my_orders_cancel_reason_price_not_suitable": "The price is not suitable",
+  "my_orders_cancel_reason_other": "Other",
+  "my_orders_complaint_sheet_title": "Submit Complaint",
+  "my_orders_complaint_sheet_subtitle": "Write the issue details and attach images if needed",
+  "my_orders_complaint_sheet_hint": "Write complaint details",
+  "my_orders_complaint_sheet_attach_images": "Attach Images",
+  "my_orders_complaint_sheet_attached_images": "{count} image(s) attached",
+  "@my_orders_complaint_sheet_attached_images": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "my_orders_complaint_sheet_send": "Send",
+  "my_orders_cancelled_feedback": "Order cancelled: {reason}",
+  "@my_orders_cancelled_feedback": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "my_orders_complaint_submitted_feedback": "Complaint submitted",
+  "my_orders_complaint_received": "Complaint Received",
+  "my_orders_complaint_under_review": "Complaint Under Review",
+  "my_orders_complaint_resolved": "Complaint Resolved",
   "order_pending": "Pending",
   "order_shipped": "Shipped",
   "order_delivered": "Delivered",

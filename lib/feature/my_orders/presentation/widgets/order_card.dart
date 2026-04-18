@@ -41,7 +41,7 @@ class OrderCard extends StatelessWidget {
           children: [
             OrderCardHeader(order: order, l10n: l10n),
             const SizedBox(height: Spacing.sm),
-            _OrderCardSummary(
+            OrderCardSummary(
               itemsLabel: l10n.my_orders_items,
               itemsValue: '${order.itemsCount} ${l10n.item}',
               totalLabel: l10n.total,
@@ -55,8 +55,9 @@ class OrderCard extends StatelessWidget {
   }
 }
 
-class _OrderCardSummary extends StatelessWidget {
-  const _OrderCardSummary({
+class OrderCardSummary extends StatelessWidget {
+  const OrderCardSummary({
+    super.key,
     required this.itemsLabel,
     required this.itemsValue,
     required this.totalLabel,
@@ -83,7 +84,7 @@ class _OrderCardSummary extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _SummaryInfo(label: itemsLabel, value: itemsValue),
+            child: SummaryInfo(label: itemsLabel, value: itemsValue),
           ),
           Container(
             width: 1,
@@ -91,7 +92,7 @@ class _OrderCardSummary extends StatelessWidget {
             color: colors.primary.withValues(alpha: .14),
           ),
           Expanded(
-            child: _SummaryInfo(
+            child: SummaryInfo(
               label: totalLabel,
               value: totalValue,
               alignEnd: true,
@@ -103,8 +104,9 @@ class _OrderCardSummary extends StatelessWidget {
   }
 }
 
-class _SummaryInfo extends StatelessWidget {
-  const _SummaryInfo({
+class SummaryInfo extends StatelessWidget {
+  const SummaryInfo({
+    super.key,
     required this.label,
     required this.value,
     this.alignEnd = false,

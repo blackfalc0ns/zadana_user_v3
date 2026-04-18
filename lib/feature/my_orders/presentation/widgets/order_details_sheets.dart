@@ -2,58 +2,68 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_widgets.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_components.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
 
 class OrderCancelResult {
-  const OrderCancelResult({required this.reason, required this.note});
+  const OrderCancelResult({
+    required this.reason,
+    required this.note,
+    required this.feedbackMessage,
+  });
 
   final String reason;
   final String note;
+  final String feedbackMessage;
 }
 
 class OrderComplaintResult {
   const OrderComplaintResult({
     required this.message,
     required this.attachments,
+    required this.feedbackMessage,
   });
 
   final String message;
   final List<PlatformFile> attachments;
+  final String feedbackMessage;
 }
 
 Future<OrderCancelResult?> showOrderCancelSheet({
   required BuildContext context,
-  required String orderId,
   required OrderStatus status,
   required String total,
   required String initialNote,
 }) async {
-  const reasons = [
-    'تأخر في تجهيز الطلب',
-    'غيرت رأيي',
-    'أريد تعديل الطلب',
-    'طلبت بالخطأ',
-    'السعر غير مناسب',
-    'أخرى',
+  final l10n = AppLocalizations.of(context)!;
+  final reasons = [
+    l10n.my_orders_cancel_reason_delay,
+    l10n.my_orders_cancel_reason_changed_mind,
+    l10n.my_orders_cancel_reason_modify_order,
+    l10n.my_orders_cancel_reason_ordered_by_mistake,
+    l10n.my_orders_cancel_reason_price_not_suitable,
+    l10n.my_orders_cancel_reason_other,
   ];
   String? selectedReason;
   final noteController = TextEditingController(text: initialNote);
+
   return showModalBottomSheet<OrderCancelResult>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) => StatefulBuilder(
       builder: (context, setSheetState) => BottomSheetScaffold(
-        title: 'إلغاء الطلب',
-        subtitle: 'يرجى اختيار سبب الإلغاء قبل تأكيد الطلب',
-        summary: OrderMiniCard(orderId: orderId, status: status, total: total),
+        title: l10n.my_orders_cancel_sheet_title,
+        subtitle: l10n.my_orders_cancel_sheet_subtitle,
+        summary: OrderMiniCard(status: status, total: total),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'سبب الإلغاء',
-              style: TextStyle(fontWeight: FontWeight.w700),
+            Text(
+              l10n.my_orders_cancel_sheet_reason_label,
+              style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: Spacing.sm),
             ...reasons.map(
@@ -66,12 +76,12 @@ Future<OrderCancelResult?> showOrderCancelSheet({
             const SizedBox(height: Spacing.sm),
             SheetTextField(
               controller: noteController,
-              hintText: 'اكتب ملاحظة إضافية (اختياري)...',
+              hintText: l10n.my_orders_cancel_sheet_note_hint,
             ),
           ],
         ),
-        secondaryActionLabel: 'تراجع',
-        primaryActionLabel: 'تأكيد الإلغاء',
+        secondaryActionLabel: l10n.my_orders_cancel_sheet_back,
+        primaryActionLabel: l10n.my_orders_cancel_sheet_confirm,
         primaryColor: AppColors.error,
         onSecondaryTap: () => Navigator.pop(context),
         onPrimaryTap: selectedReason == null
@@ -81,6 +91,9 @@ Future<OrderCancelResult?> showOrderCancelSheet({
                 OrderCancelResult(
                   reason: selectedReason!,
                   note: noteController.text.trim(),
+                  feedbackMessage: l10n.my_orders_cancelled_feedback(
+                    selectedReason!,
+                  ),
                 ),
               ),
       ),
@@ -90,26 +103,27 @@ Future<OrderCancelResult?> showOrderCancelSheet({
 
 Future<OrderComplaintResult?> showOrderComplaintSheet({
   required BuildContext context,
-  required String orderId,
   required OrderStatus status,
   required String total,
 }) {
+  final l10n = AppLocalizations.of(context)!;
   final controller = TextEditingController();
   List<PlatformFile> attachments = [];
+
   return showModalBottomSheet<OrderComplaintResult>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) => StatefulBuilder(
       builder: (context, setSheetState) => BottomSheetScaffold(
-        title: 'تقديم شكوى',
-        subtitle: 'اكتب تفاصيل المشكلة وأرفق صورًا إن لزم',
-        summary: OrderMiniCard(orderId: orderId, status: status, total: total),
+        title: l10n.my_orders_complaint_sheet_title,
+        subtitle: l10n.my_orders_complaint_sheet_subtitle,
+        summary: OrderMiniCard(status: status, total: total),
         body: Column(
           children: [
             SheetTextField(
               controller: controller,
-              hintText: 'اكتب تفاصيل الشكوى',
+              hintText: l10n.my_orders_complaint_sheet_hint,
               maxLines: 5,
             ),
             const SizedBox(height: Spacing.sm),
@@ -128,8 +142,10 @@ Future<OrderComplaintResult?> showOrderComplaintSheet({
                 icon: const Icon(Icons.image_outlined),
                 label: Text(
                   attachments.isEmpty
-                      ? 'إرفاق صور'
-                      : 'تم إرفاق ${attachments.length} صورة',
+                      ? l10n.my_orders_complaint_sheet_attach_images
+                      : l10n.my_orders_complaint_sheet_attached_images(
+                          attachments.length,
+                        ),
                 ),
               ),
             ),
@@ -139,15 +155,19 @@ Future<OrderComplaintResult?> showOrderComplaintSheet({
             ],
           ],
         ),
-        secondaryActionLabel: 'إلغاء',
-        primaryActionLabel: 'إرسال',
+        secondaryActionLabel: l10n.cancel,
+        primaryActionLabel: l10n.my_orders_complaint_sheet_send,
         onSecondaryTap: () => Navigator.pop(context),
         onPrimaryTap: () {
           final value = controller.text.trim();
           if (value.isEmpty) return;
           Navigator.pop(
             context,
-            OrderComplaintResult(message: value, attachments: attachments),
+            OrderComplaintResult(
+              message: value,
+              attachments: attachments,
+              feedbackMessage: l10n.my_orders_complaint_submitted_feedback,
+            ),
           );
         },
       ),

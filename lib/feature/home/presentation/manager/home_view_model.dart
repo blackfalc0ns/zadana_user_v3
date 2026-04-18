@@ -50,10 +50,24 @@ class HomeViewModel extends Cubit<HomeState> {
   final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
   final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
 
+  Future<void> loadInitial() async {
+    await Future.wait([
+      _getHomeAppBar(),
+      _getHomeBanners(),
+      _getHomeCategories(),
+      _getHomeBestSelling(),
+      _getHomeBrands(),
+      _getHomeRecommended(),
+      _getHomeFeatured(),
+      _getHomeSpecialOffers(),
+      _getHomeDynamicSections(),
+    ]);
+  }
+
   void doIntent(HomeEvent event) {
     switch (event) {
       case HomeLoadEvent():
-        _getHomeAppBar();
+        loadInitial();
       case HomeBannerLoadEvent():
         _getHomeBanners();
       case HomeCategoriesLoadEvent():
@@ -71,7 +85,7 @@ class HomeViewModel extends Cubit<HomeState> {
       case HomeDynamicSectionLoadEvent():
         _getHomeDynamicSections();
       case HomeRetryEvent():
-        _getHomeAppBar();
+        loadInitial();
       case HomeBannerRetryEvent():
         _getHomeBanners();
       case HomeCategoriesRetryEvent():

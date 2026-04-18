@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/data/fake_orders_data.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_loading_widget.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/my_orders_state.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/my_orders_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_page_sections.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/orders_tab_bar.dart';
 
@@ -13,12 +14,24 @@ class MyOrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<MyOrdersViewModel>()..loadInitial(),
+      child: const _MyOrdersView(),
+    );
+  }
+}
+
+class _MyOrdersView extends StatelessWidget {
+  const _MyOrdersView();
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: colors.surfaceContainerLowest,
+      
         appBar: CustomAppBar(title: l10n.my_orders_title),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -27,75 +40,57 @@ class MyOrdersPage extends StatelessWidget {
             Spacing.base,
             Spacing.lg,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const OrdersTabBar(),
-              const SizedBox(height: Spacing.base),
-              Expanded(
-                child: FutureBuilder<List<OrderUiModel>>(
-                  future: FakeOrdersData.getOrders(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return const TabBarView(
-                        children: [
-                          OrdersLoadingWidget(),
-                          OrdersLoadingWidget(),
-                          OrdersLoadingWidget(),
-                        ],
-                      );
-                    }
-                    if (snapshot.hasError) {
-                      return OrdersErrorState(message: l10n.error_unknown);
-                    }
-                    final orders = snapshot.data ?? const <OrderUiModel>[];
-                    final activeOrders = orders
-                        .where((order) => order.status.isActive)
-                        .toList();
-                    final completedOrders = orders
-                        .where((order) => order.status.isCompleted)
-                        .toList();
-                    final returningOrders = orders
-                        .where((order) => order.status.isReturning)
-                        .toList();
-                    return Column(
+          child: BlocBuilder<MyOrdersViewModel, MyOrdersState>(
+            builder: (context, state) {
+              final viewModel = context.read<MyOrdersViewModel>();
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const OrdersTabBar(),
+                  const SizedBox(height: Spacing.base),
+                  OrdersOverviewRow(
+                    activeCount: state.active.total,
+                    completedCount: state.completed.total,
+                    returningCount: state.returned.total,
+                  ),
+                  const SizedBox(height: Spacing.base),
+                  Expanded(
+                    child: TabBarView(
                       children: [
-                        OrdersOverviewRow(
-                          activeCount: activeOrders.length,
-                          completedCount: completedOrders.length,
-                          returningCount: returningOrders.length,
+                        OrdersTabContent(
+                          section: state.active,
+                          emptyTitle: l10n.no_active_orders,
+                          emptyIcon: Icons.local_shipping_outlined,
+                          onRetry: () =>
+                              viewModel.refreshTab(OrdersTabType.active),
+                          onLoadMore: () =>
+                              viewModel.loadMore(OrdersTabType.active),
                         ),
-                        const SizedBox(height: Spacing.base),
-                        Expanded(
-                          child: TabBarView(
-                            children: [
-                              OrdersTabContent(
-                                orders: activeOrders,
-                                emptyTitle: l10n.no_active_orders,
-                                emptyIcon: Icons.local_shipping_outlined,
-                                isCompleted: false,
-                              ),
-                              OrdersTabContent(
-                                orders: completedOrders,
-                                emptyTitle: l10n.no_previous_orders,
-                                emptyIcon: Icons.receipt_long_outlined,
-                                isCompleted: true,
-                              ),
-                              OrdersTabContent(
-                                orders: returningOrders,
-                                emptyTitle: l10n.no_returning_orders,
-                                emptyIcon: Icons.restore_outlined,
-                                isCompleted: false,
-                              ),
-                            ],
-                          ),
+                        OrdersTabContent(
+                          section: state.completed,
+                          emptyTitle: l10n.no_previous_orders,
+                          emptyIcon: Icons.receipt_long_outlined,
+                          onRetry: () =>
+                              viewModel.refreshTab(OrdersTabType.completed),
+                          onLoadMore: () =>
+                              viewModel.loadMore(OrdersTabType.completed),
+                        ),
+                        OrdersTabContent(
+                          section: state.returned,
+                          emptyTitle: l10n.no_returning_orders,
+                          emptyIcon: Icons.restore_outlined,
+                          onRetry: () =>
+                              viewModel.refreshTab(OrdersTabType.returned),
+                          onLoadMore: () =>
+                              viewModel.loadMore(OrdersTabType.returned),
                         ),
                       ],
-                    );
-                  },
-                ),
-              ),
-            ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

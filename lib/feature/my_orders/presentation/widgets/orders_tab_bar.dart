@@ -19,16 +19,16 @@ class OrdersTabBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.surface,
         borderRadius: BorderRadius.circular(Spacing.lg),
-        border: Border.all(color: color.outline.withOpacity(0.2)),
+        border: Border.all(color: color.outline.withValues(alpha: 0.2)),
       ),
       child: TabBar(
         dividerColor: Colors.transparent,
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
-          color: color.primaryContainer,
+          color: color.primary,
           borderRadius: BorderRadius.circular(Spacing.md),
         ),
-        labelColor: color.primary,
+        labelColor: color.onPrimary,
         unselectedLabelColor: color.onSurfaceVariant,
         labelStyle: getBoldStyle(
           fontSize: FontSize.size14,

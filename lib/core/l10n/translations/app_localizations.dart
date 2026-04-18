@@ -2690,11 +2690,41 @@ abstract class AppLocalizations {
   /// **'Order Date'**
   String get my_orders_order_date;
 
+  /// No description provided for @my_orders_created_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Created At'**
+  String get my_orders_created_at;
+
   /// No description provided for @my_orders_items.
   ///
   /// In en, this message translates to:
   /// **'Items'**
   String get my_orders_items;
+
+  /// No description provided for @my_orders_items_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Items Count'**
+  String get my_orders_items_count;
+
+  /// No description provided for @my_orders_piece_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Pieces'**
+  String get my_orders_piece_count;
+
+  /// No description provided for @my_orders_unit_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Price'**
+  String get my_orders_unit_price;
+
+  /// No description provided for @my_orders_quantity_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'{quantity} x'**
+  String my_orders_quantity_badge(int quantity);
 
   /// No description provided for @my_orders_view_details.
   ///
@@ -2725,6 +2755,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reorder'**
   String get my_orders_reorder_button;
+
+  /// No description provided for @my_orders_return_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Return Request'**
+  String get my_orders_return_request;
+
+  /// No description provided for @my_orders_follow_up.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Up'**
+  String get my_orders_follow_up;
+
+  /// No description provided for @my_orders_submit_complaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Complaint'**
+  String get my_orders_submit_complaint;
+
+  /// No description provided for @my_orders_details_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get my_orders_details_title;
+
+  /// No description provided for @my_orders_order_summary_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Summary'**
+  String get my_orders_order_summary_title;
+
+  /// No description provided for @my_orders_delivery_otp_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery OTP'**
+  String get my_orders_delivery_otp_title;
+
+  /// No description provided for @my_orders_view_otp.
+  ///
+  /// In en, this message translates to:
+  /// **'View OTP'**
+  String get my_orders_view_otp;
+
+  /// No description provided for @my_orders_complaint_status_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint Status'**
+  String get my_orders_complaint_status_title;
+
+  /// No description provided for @my_orders_cancel_sheet_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Order'**
+  String get my_orders_cancel_sheet_title;
+
+  /// No description provided for @my_orders_cancel_sheet_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a cancellation reason before confirming the request'**
+  String get my_orders_cancel_sheet_subtitle;
+
+  /// No description provided for @my_orders_cancel_sheet_reason_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancellation Reason'**
+  String get my_orders_cancel_sheet_reason_label;
+
+  /// No description provided for @my_orders_cancel_sheet_note_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an additional note (optional)...'**
+  String get my_orders_cancel_sheet_note_hint;
+
+  /// No description provided for @my_orders_cancel_sheet_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get my_orders_cancel_sheet_back;
+
+  /// No description provided for @my_orders_cancel_sheet_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Cancellation'**
+  String get my_orders_cancel_sheet_confirm;
+
+  /// No description provided for @my_orders_cancel_reason_delay.
+  ///
+  /// In en, this message translates to:
+  /// **'Delay in preparing the order'**
+  String get my_orders_cancel_reason_delay;
+
+  /// No description provided for @my_orders_cancel_reason_changed_mind.
+  ///
+  /// In en, this message translates to:
+  /// **'I changed my mind'**
+  String get my_orders_cancel_reason_changed_mind;
+
+  /// No description provided for @my_orders_cancel_reason_modify_order.
+  ///
+  /// In en, this message translates to:
+  /// **'I want to modify the order'**
+  String get my_orders_cancel_reason_modify_order;
+
+  /// No description provided for @my_orders_cancel_reason_ordered_by_mistake.
+  ///
+  /// In en, this message translates to:
+  /// **'I ordered by mistake'**
+  String get my_orders_cancel_reason_ordered_by_mistake;
+
+  /// No description provided for @my_orders_cancel_reason_price_not_suitable.
+  ///
+  /// In en, this message translates to:
+  /// **'The price is not suitable'**
+  String get my_orders_cancel_reason_price_not_suitable;
+
+  /// No description provided for @my_orders_cancel_reason_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get my_orders_cancel_reason_other;
+
+  /// No description provided for @my_orders_complaint_sheet_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Complaint'**
+  String get my_orders_complaint_sheet_title;
+
+  /// No description provided for @my_orders_complaint_sheet_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the issue details and attach images if needed'**
+  String get my_orders_complaint_sheet_subtitle;
+
+  /// No description provided for @my_orders_complaint_sheet_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write complaint details'**
+  String get my_orders_complaint_sheet_hint;
+
+  /// No description provided for @my_orders_complaint_sheet_attach_images.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach Images'**
+  String get my_orders_complaint_sheet_attach_images;
+
+  /// No description provided for @my_orders_complaint_sheet_attached_images.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} image(s) attached'**
+  String my_orders_complaint_sheet_attached_images(int count);
+
+  /// No description provided for @my_orders_complaint_sheet_send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get my_orders_complaint_sheet_send;
+
+  /// No description provided for @my_orders_cancelled_feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Order cancelled: {reason}'**
+  String my_orders_cancelled_feedback(String reason);
+
+  /// No description provided for @my_orders_complaint_submitted_feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint submitted'**
+  String get my_orders_complaint_submitted_feedback;
+
+  /// No description provided for @my_orders_complaint_received.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint Received'**
+  String get my_orders_complaint_received;
+
+  /// No description provided for @my_orders_complaint_under_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint Under Review'**
+  String get my_orders_complaint_under_review;
+
+  /// No description provided for @my_orders_complaint_resolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint Resolved'**
+  String get my_orders_complaint_resolved;
 
   /// No description provided for @order_pending.
   ///
