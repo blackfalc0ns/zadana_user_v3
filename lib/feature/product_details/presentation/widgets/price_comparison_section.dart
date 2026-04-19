@@ -64,7 +64,7 @@ class PriceComparisonSection extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 132,
+            height: 138,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 4),

@@ -28,6 +28,7 @@ class VerifyOtpScreen extends StatelessWidget {
       child: BlocListener<VerifyOtpViewModel, VerifyOtpState>(
         listener: _handleStateChanges,
         child: AuthExperienceShell(
+          isLoading: context.watch<VerifyOtpViewModel>().state.isLoading,
           showBackButton: true,
           heroBadge: locale.otp_hero_badge,
           heroTitle: locale.otp_screen_title,

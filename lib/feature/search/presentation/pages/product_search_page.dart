@@ -67,37 +67,41 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _viewModel,
-      child: Scaffold(
-        appBar: CustomAppBar(title: widget.params.title),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Spacing.md,
-                  Spacing.sm,
-                  Spacing.md,
-                  Spacing.sm,
-                ),
-                child: ProductSearchInput(
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  hintText: widget.params.hintText,
-                  onChanged: (value) => _viewModel.doIntent(
-                    ProductSearchQueryChangedEvent(value),
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.translucent,
+        child: Scaffold(
+          appBar: CustomAppBar(title: widget.params.title),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.md,
+                    Spacing.sm,
+                    Spacing.md,
+                    Spacing.sm,
+                  ),
+                  child: ProductSearchInput(
+                    controller: _controller,
+                    focusNode: _focusNode,
+                    hintText: widget.params.hintText,
+                    onChanged: (value) => _viewModel.doIntent(
+                      ProductSearchQueryChangedEvent(value),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ProductSearchResultsView(
-                  scrollController: _scrollController,
-                  onRetry: () =>
-                      _viewModel.doIntent(const ProductSearchRetryEvent()),
-                  onRefresh: () async =>
-                      _viewModel.doIntent(const ProductSearchRefreshEvent()),
+                Expanded(
+                  child: ProductSearchResultsView(
+                    scrollController: _scrollController,
+                    onRetry: () =>
+                        _viewModel.doIntent(const ProductSearchRetryEvent()),
+                    onRefresh: () async =>
+                        _viewModel.doIntent(const ProductSearchRefreshEvent()),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class ProductBottomActions extends StatelessWidget {
   const ProductBottomActions({
@@ -37,6 +39,7 @@ class ProductBottomActions extends StatelessWidget {
         top: false,
         child: Row(
           children: [
+          
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: isAddingToCart ? null : onAddToCart,
@@ -61,6 +64,7 @@ class ProductBottomActions extends StatelessWidget {
                   minimumSize: const Size.fromHeight(46),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   textStyle: const TextStyle(
+                    fontFamily: FontConstant.cairo,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -82,7 +86,10 @@ class ProductBottomActions extends StatelessWidget {
                     horizontal: 14,
                     vertical: 12,
                   ),
-                  textStyle: const TextStyle(fontSize: 14),
+                  textStyle: const TextStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: 14,
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -108,6 +115,7 @@ class ProductBottomActions extends StatelessWidget {
                     Text(
                       l10n.nav_cart,
                       style: const TextStyle(
+                        fontFamily: FontConstant.cairo,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -146,6 +154,7 @@ class _CartCountBadge extends StatelessWidget {
           displayCount,
           textAlign: TextAlign.center,
           style: const TextStyle(
+            fontFamily: FontConstant.cairo,
             color: Colors.white,
             fontSize: 8.5,
             fontWeight: FontWeight.w700,

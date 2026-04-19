@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart'
     as error_widgets;
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
@@ -30,6 +31,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final existingViewModel = maybeReadBloc<HomeViewModel>(context);
+    if (existingViewModel != null) {
+      return BlocProvider.value(
+        value: existingViewModel,
+        child: _HomeScreenView(onMenuTap: onMenuTap),
+      );
+    }
+
     final viewModel = getIt<HomeViewModel>();
 
     return BlocProvider(
@@ -71,10 +80,12 @@ class _HomeScreenView extends StatelessWidget {
           builder: (context, state) {
             final showGlobalError =
                 !state.isLoading &&
+                state.hasStartedLoadingContent &&
                 !state.hasAnyData &&
                 state.firstFailure != null;
             final showEmptyState =
                 !state.isLoading &&
+                state.hasStartedLoadingContent &&
                 !state.hasAnyData &&
                 state.firstFailure == null;
 
@@ -169,7 +180,6 @@ class _HomeScreenView extends StatelessWidget {
           params: ProductSearchParams(
             title: l10n.search_marketplace_title,
             hintText: l10n.search_hint,
-            autofocus: true,
           ),
         ),
       ),

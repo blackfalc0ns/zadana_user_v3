@@ -7,25 +7,27 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
-import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
-import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_cubit.dart';
-import 'package:zadana_user_v3/feature/app_section/manager/nav_badge_state.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
+import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
+import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model_factory.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_cubit.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
 import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_details_usecase.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
@@ -55,7 +57,7 @@ class MainShellState extends State<MainShell> {
   late int _selectedIndex;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   late final List<Widget?> _loadedScreens;
-  late final NavBadgeCubit _navBadgeCubit;
+  late final List<bool> _requestedInitialData;
   late final AppSectionGlobalCubit _globalCubit;
 
   @override
@@ -63,6 +65,7 @@ class MainShellState extends State<MainShell> {
     super.initState();
     _selectedIndex = widget.initialIndex;
     _loadedScreens = List<Widget?>.filled(5, null);
+    _requestedInitialData = List<bool>.filled(5, false);
     final getItInstance = getIt;
     final favoritesRepository = FavoritesRepository(
       FavoritesRemoteDataSourceImpl(
@@ -73,24 +76,23 @@ class MainShellState extends State<MainShell> {
       ),
     );
     _globalCubit = AppSectionGlobalCubit(
+      homeViewModel: getItInstance<HomeViewModel>(),
       cartViewModel: getItInstance(),
       favoritesViewModel: FavoritesViewModel(favoritesRepository),
       profileViewModel: getItInstance<ProfileViewModel>(),
-      categoryViewModel: createCategoryViewModel(),
+      categoryViewModel: getItInstance<CategoryViewModel>(),
       tokenService: getItInstance<TokenService>(),
+      favoritesRepository: favoritesRepository,
+      getCartUseCase: getItInstance<GetCartUseCase>(),
+      productDetailsUseCase: getItInstance<ProductDetailsUseCase>(),
+      addCartItemUseCase: getItInstance<AddCartItemUseCase>(),
+      guestCartSyncService: getItInstance<GuestCartSyncService>(),
     )..initialize();
-    _navBadgeCubit = NavBadgeCubit(
-      getItInstance<GetCartUseCase>(),
-      favoritesRepository,
-      FavoriteSyncService(),
-      CartCountSyncService(),
-    )..loadCounts();
     _ensureScreenLoaded(_selectedIndex);
   }
 
   @override
   void dispose() {
-    _navBadgeCubit.close();
     _globalCubit.close();
     super.dispose();
   }
@@ -153,6 +155,8 @@ class MainShellState extends State<MainShell> {
   void openDrawer() => _scaffoldKey.currentState?.openDrawer();
 
   void _ensureScreenLoaded(int index) {
+    final isFirstLoad = _loadedScreens[index] == null;
+
     _loadedScreens[index] ??= switch (index) {
       0 => HomeScreen(onMenuTap: openDrawer),
       1 => const CategoryScreen(),
@@ -161,6 +165,35 @@ class MainShellState extends State<MainShell> {
       4 => const ProfileScreen(),
       _ => const SizedBox.shrink(),
     };
+
+    if (isFirstLoad) {
+      _ensureTabDataLoaded(index);
+    }
+  }
+
+  void _ensureTabDataLoaded(int index) {
+    if (_requestedInitialData[index]) return;
+    _requestedInitialData[index] = true;
+
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        _globalCubit.categoryViewModel.initialize();
+        break;
+      case 2:
+        final loadedVendorId = _globalCubit.cartViewModel.state.loadedVendorId;
+        _globalCubit.cartViewModel
+          ..doIntent(const CartLoadVendorsEvent())
+          ..doIntent(CartLoadItemsEvent(vendorId: loadedVendorId));
+        break;
+      case 3:
+        _globalCubit.favoritesViewModel.loadFavorites();
+        break;
+      case 4:
+        _globalCubit.refreshProfileAuthState();
+        break;
+    }
   }
 
   Widget _buildScreenForIndex(int index) {
@@ -183,7 +216,7 @@ class MainShellState extends State<MainShell> {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _globalCubit),
-        BlocProvider.value(value: _navBadgeCubit),
+        BlocProvider.value(value: _globalCubit.homeViewModel),
         BlocProvider.value(value: _globalCubit.cartViewModel),
         BlocProvider.value(value: _globalCubit.favoritesViewModel),
         BlocProvider.value(value: _globalCubit.profileViewModel),
@@ -200,7 +233,7 @@ class MainShellState extends State<MainShell> {
               bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
               left: 12,
               right: 12,
-              child: BlocBuilder<NavBadgeCubit, NavBadgeState>(
+              child: BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
                 builder: (context, state) {
                   return CustomBottomNavBar(
                     selectedIndex: _selectedIndex,

@@ -21,6 +21,7 @@ class ReusableCategoryScreen extends StatefulWidget {
     super.key,
     required this.categories,
     required this.selectedCategory,
+    this.selectedCategoryId,
     required this.selectedSubCategory,
     required this.selectedSortOption,
     required this.selectedFilters,
@@ -64,10 +65,15 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.onSearchChanged,
     this.onSearchClose,
     this.searchResults,
+    this.onSearchActionTap,
+    this.searchActionIcon = Icons.tune_rounded,
+    this.searchActionTooltip,
+    this.isSearchActionDestructive = false,
   });
 
   final List<CategoryEntity> categories;
   final String selectedCategory;
+  final String? selectedCategoryId;
   final String selectedSubCategory;
   final String selectedSortOption;
   final List<String> selectedFilters;
@@ -111,6 +117,10 @@ class ReusableCategoryScreen extends StatefulWidget {
   final ValueChanged<String>? onSearchChanged;
   final VoidCallback? onSearchClose;
   final Widget? searchResults;
+  final VoidCallback? onSearchActionTap;
+  final IconData searchActionIcon;
+  final String? searchActionTooltip;
+  final bool isSearchActionDestructive;
 
   @override
   State<ReusableCategoryScreen> createState() => _ReusableCategoryScreenState();
@@ -203,6 +213,27 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     return null;
   }
 
+  CategoryEntity? _findCategoryById(String? categoryId) {
+    if (categoryId == null || categoryId.isEmpty) return null;
+
+    for (final category in widget.categories) {
+      if (category.id == categoryId) {
+        return category;
+      }
+    }
+
+    return null;
+  }
+
+  String? _findCategoryNameById(String? categoryId) {
+    return _findCategoryById(categoryId)?.name;
+  }
+
+  String? _resolveTempFilterCategoryId() {
+    return _findCategoryByName(_tempFilterCategory)?.id ??
+        widget.selectedCategoryId;
+  }
+
   String? _findProductTypeIdByName(String? productTypeName) {
     if (productTypeName == null || productTypeName.isEmpty) return null;
 
@@ -234,10 +265,10 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   }
 
   Future<void> _loadTempCategoryFilters(
-    String? categoryName,
+    String? categoryId,
     StateSetter setSheetState,
   ) async {
-    final category = _findCategoryByName(categoryName);
+    final category = _findCategoryById(categoryId);
 
     if (category == null) {
       setSheetState(_resetTempFilters);
@@ -371,6 +402,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               isSearchActive: widget.isSearchActive,
               showSearchResults: widget.showSearchResults,
               selectedCategory: widget.selectedCategory,
+              selectedCategoryId: widget.selectedCategoryId,
               selectedSubCategory: widget.selectedSubCategory,
               selectedSubCategoryId: widget.selectedSubCategoryId,
               selectedSortOption: widget.selectedSortOption,
@@ -397,6 +429,10 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               onSearchChanged: widget.onSearchChanged,
               onSearchClose: widget.onSearchClose,
               searchResults: widget.searchResults,
+              onSearchActionTap: widget.onSearchActionTap,
+              searchActionIcon: widget.searchActionIcon,
+              searchActionTooltip: widget.searchActionTooltip,
+              isSearchActionDestructive: widget.isSearchActionDestructive,
             ),
             if (!widget.isLoading &&
                 !widget.isSearchActive &&
@@ -451,7 +487,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                     .where((item) => item.isNotEmpty)
                                     .toList(growable: false),
                                 parts: _visibleTempParts(),
-                                selectedCategory: _tempFilterCategory,
+                                selectedCategoryId:
+                                    _resolveTempFilterCategoryId(),
                                 selectedSubCategoryId: _tempSubCategoryId,
                                 selectedQuantity: _tempFilterQuantity,
                                 selectedBrand: _tempFilterBrand,
@@ -459,19 +496,21 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                                 selectedPart: _tempFilterPart,
                                 priceRange: _tempPriceRange,
                                 priceBounds: _tempPriceBounds,
-                                onCategorySelected: (category) async {
+                                onCategorySelected: (categoryId) async {
                                   setSheetState(() {
-                                    _tempFilterCategory = category;
+                                    _tempFilterCategory = _findCategoryNameById(
+                                      categoryId,
+                                    );
                                     _tempFilterQuantity = null;
                                     _tempFilterBrand = null;
                                     _tempFilterProductType = null;
                                     _tempFilterPart = null;
                                   });
                                   await _loadTempCategoryFilters(
-                                    category,
+                                    categoryId,
                                     setSheetState,
                                   );
-                                  if (category != null) {
+                                  if (categoryId != null) {
                                     _scrollSheetTo(sheetScrollController, 170);
                                   }
                                 },
@@ -505,6 +544,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                               ),
                             ],
                             onApply: () => Navigator.pop(sheetContext, {
+                              'categoryId': _resolveTempFilterCategoryId(),
                               'category': _tempFilterCategory,
                               'subCategoryId': _tempSubCategoryId,
                               'subCategoryName': _tempSubCategoryName,

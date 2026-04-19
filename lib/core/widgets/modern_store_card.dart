@@ -57,7 +57,7 @@ class ModernStoreCard extends StatelessWidget {
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
+            padding: const EdgeInsets.fromLTRB(10, 12, 10, 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -66,7 +66,7 @@ class ModernStoreCard extends StatelessWidget {
                   icon: icon,
                   isLowest: isLowest,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Text(
                   storeName,
                   maxLines: 1,
@@ -99,9 +99,9 @@ class ModernStoreCard extends StatelessWidget {
                       height: 1.1,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                 ] else
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 14),
                 Text(
                   '${PriceFormatter.formatPrice(price)} ${locale.currency}',
                   maxLines: 1,
@@ -110,7 +110,7 @@ class ModernStoreCard extends StatelessWidget {
                   style: TextStyle(
                     color: isLowest ? color.primary : color.onSurface,
                     fontWeight: FontWeight.w900,
-                    fontSize: 15,
+                    fontSize: 14,
                     fontFamily: 'Cairo',
                     height: 1.1,
                   ),
@@ -154,8 +154,8 @@ class _StoreLogo extends StatelessWidget {
     final color = context.colorScheme;
 
     return Container(
-      width: 40,
-      height: 40,
+      width: 36,
+      height: 36,
       decoration: BoxDecoration(
         color: isLowest ? color.primaryContainer : color.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(10),
@@ -171,14 +171,14 @@ class _StoreLogo extends StatelessWidget {
               child: Image.asset(
                 storeImage!,
                 fit: BoxFit.contain,
-                width: 40,
-                height: 40,
+                width: 36,
+                height: 36,
               ),
             )
           : Icon(
               icon,
               color: isLowest ? color.primary : color.onSurfaceVariant,
-              size: 20,
+              size: 18,
             ),
     );
   }

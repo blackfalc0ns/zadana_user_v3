@@ -229,6 +229,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل دخول';
 
   @override
+  String get continue_as_guest => 'الدخول كزائر';
+
+  @override
   String get name_is_required => 'الاسم مطلوب!';
 
   @override
@@ -969,6 +972,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get delete_item_confirm => 'تبغى تحذف المنتج؟';
+
+  @override
+  String get delete_category_title => 'حذف التصنيف';
+
+  @override
+  String get delete_category_confirm => 'هل تريد حذف التصنيف؟';
+
+  @override
+  String get delete_category_tooltip => 'حذف التصنيف المختار';
 
   @override
   String get available_vendors => 'المتاجر';

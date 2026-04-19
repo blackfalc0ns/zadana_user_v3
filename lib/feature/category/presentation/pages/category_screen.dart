@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_event.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_state.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model_factory.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/reusable_category_screen.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/search/domain/entities/product_search_params.dart';
@@ -35,6 +35,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   ProductSearchViewModel? _searchViewModel;
   StreamSubscription<ProductSearchState>? _searchStateSubscription;
   String? _searchScopeSubCategoryId;
+  bool _isSearchActive = false;
 
   @override
   void initState() {
@@ -57,6 +58,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   Future<void> _openProductDetails(ProductModel product) async {
+    _searchFocusNode.unfocus();
+    FocusScope.of(context).unfocus();
+
     context.read<CategoryViewModel>().doIntent(
       CategorySetActiveHeroProductEvent(product.id),
     );
@@ -109,7 +113,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   void _ensureSearchViewModel(BuildContext context, CategoryState state) {
-    final categoryViewModel = context.read<CategoryViewModel>();
     final nextScopeSubCategoryId = _resolveSearchCategoryId(state);
     if (_searchViewModel != null &&
         _searchScopeSubCategoryId == nextScopeSubCategoryId) {
@@ -120,42 +123,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _searchViewModel = getIt<ProductSearchViewModel>(
       param1: _buildSearchParams(context, state),
     );
-    _attachSearchStateListener(_searchViewModel!, categoryViewModel);
+    _attachSearchStateListener(_searchViewModel!);
     _searchScopeSubCategoryId = nextScopeSubCategoryId;
-    categoryViewModel.doIntent(const CategoryRefreshSearchSessionEvent());
     if (previousViewModel != null) {
       unawaited(previousViewModel.close());
     }
+    setState(() {});
   }
 
-  void _attachSearchStateListener(
-    ProductSearchViewModel viewModel,
-    CategoryViewModel categoryViewModel,
-  ) {
+  void _attachSearchStateListener(ProductSearchViewModel viewModel) {
     unawaited(_searchStateSubscription?.cancel());
-    categoryViewModel.doIntent(
-      CategorySyncSearchPresentationEvent(
-        query: viewModel.state.query,
-        isLoading: viewModel.state.isLoading,
-        hasItems: viewModel.state.items.isNotEmpty,
-        hasFailure: viewModel.state.failure != null,
-      ),
-    );
     _searchStateSubscription = viewModel.stream.listen((_) {
       if (!mounted) return;
-      categoryViewModel.doIntent(
-        CategorySyncSearchPresentationEvent(
-          query: viewModel.state.query,
-          isLoading: viewModel.state.isLoading,
-          hasItems: viewModel.state.items.isNotEmpty,
-          hasFailure: viewModel.state.failure != null,
-        ),
-      );
+      setState(() {});
     });
   }
 
   void _openInlineSearch(BuildContext context, CategoryState state) {
     _ensureSearchViewModel(context, state);
+    setState(() {
+      _isSearchActive = true;
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -168,26 +156,58 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _searchController.clear();
     _searchViewModel?.doIntent(const ProductSearchQueryChangedEvent(''));
     _searchFocusNode.unfocus();
-    context.read<CategoryViewModel>().doIntent(
-      const CategoryCloseSearchUiEvent(),
-    );
+    setState(() {
+      _isSearchActive = false;
+    });
   }
 
   void _handleSearchChanged(String value) {
-    context.read<CategoryViewModel>().doIntent(
-      CategorySearchQueryChangedEvent(value),
-    );
     _searchViewModel?.doIntent(ProductSearchQueryChangedEvent(value));
   }
 
+  Future<void> _confirmResetSelection(BuildContext context) async {
+    final l10n = context.localization;
+    final viewModel = context.read<CategoryViewModel>();
+    final errorColor = context.colorScheme.error;
+    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
+      context: context,
+      title: l10n.delete_category_title,
+      message: l10n.delete_category_confirm,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.no,
+      icon: Icons.delete_outline_rounded,
+      accentColor: errorColor,
+    );
+
+    if (!mounted || !confirmed) {
+      return;
+    }
+
+    viewModel.doIntent(const CategoryResetSelectionEvent());
+  }
+
   void _handleCategoryStateChanged(BuildContext context, CategoryState state) {
-    if (!state.isSearchActive) return;
+    if (!_isSearchActive) return;
 
     final nextScopeSubCategoryId = _resolveSearchCategoryId(state);
     if (_searchViewModel == null ||
         _searchScopeSubCategoryId != nextScopeSubCategoryId) {
       _ensureSearchViewModel(context, state);
     }
+  }
+
+  bool _showSearchResults() {
+    final viewModel = _searchViewModel;
+    if (!_isSearchActive || viewModel == null) {
+      return false;
+    }
+
+    final searchState = viewModel.state;
+    final hasQuery = searchState.query.trim().isNotEmpty;
+    return hasQuery &&
+        !(searchState.isLoading &&
+            searchState.items.isEmpty &&
+            searchState.failure == null);
   }
 
   Widget _buildSearchResults() {
@@ -218,7 +238,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
 
     return BlocProvider(
-      create: (_) => createCategoryViewModel()..initialize(),
+      create: (_) => getIt<CategoryViewModel>()..initialize(),
       child: _buildContent(),
     );
   }
@@ -227,11 +247,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return BlocConsumer<CategoryViewModel, CategoryState>(
       listener: _handleCategoryStateChanged,
       builder: (context, state) {
+        final showSearchResults = _showSearchResults();
+        final hasSearchQuery = _searchController.text.trim().isNotEmpty;
+        final hasSelectedCategory =
+            (state.selectedCategoryId?.isNotEmpty ?? false) ||
+            (state.selectedSubCategoryId?.isNotEmpty ?? false);
         return ReusableCategoryScreen(
           categories: state.categories,
-          isSearchActive: state.isSearchActive,
-          showSearchResults: state.showSearchResults,
+          isSearchActive: _isSearchActive,
+          showSearchResults: showSearchResults,
           selectedCategory: state.selectedCategory,
+          selectedCategoryId: state.selectedCategoryId,
           selectedSubCategory: state.selectedSubCategory ?? '',
           selectedSubCategoryId: state.selectedSubCategoryId,
           selectedSortOption: state.selectedSortOption,
@@ -257,9 +283,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           onRetryError: () => context.read<CategoryViewModel>().doIntent(
             const CategoryRetryEvent(),
           ),
-          onCategorySelected: (categoryName) => context
+          onCategorySelected: (categoryId) => context
               .read<CategoryViewModel>()
-              .doIntent(CategorySelectCategoryByNameEvent(categoryName)),
+              .doIntent(CategorySelectCategoryEvent(categoryId)),
           onSubCategorySelected: (subCategory) => context
               .read<CategoryViewModel>()
               .doIntent(CategorySelectSubCategoryEvent(subCategory)),
@@ -284,9 +310,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
           searchController: _searchController,
           searchFocusNode: _searchFocusNode,
           onSearchChanged: _handleSearchChanged,
-          onSearchClose: (state.isSearchActive || state.hasSearchQuery)
+          onSearchClose: (_isSearchActive || hasSearchQuery)
               ? _closeInlineSearch
               : null,
+          onSearchActionTap: hasSelectedCategory
+              ? () => _confirmResetSelection(context)
+              : null,
+          searchActionIcon: hasSelectedCategory
+              ? Icons.delete_outline_rounded
+              : Icons.tune_rounded,
+          searchActionTooltip: hasSelectedCategory
+              ? context.localization.delete_category_tooltip
+              : null,
+          isSearchActionDestructive: hasSelectedCategory,
           searchResults: _buildSearchResults(),
         );
       },

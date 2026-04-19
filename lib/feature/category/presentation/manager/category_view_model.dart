@@ -1,25 +1,25 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
-import 'package:zadana_user_v3/feature/category/domain/entities/category_products_request_entity.dart';
-import 'package:zadana_user_v3/feature/category/domain/entities/shopping_products_request_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_categories_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_filters_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_products_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_subcategories_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_shopping_products_usecase.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_event.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_filters_service.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_helpers.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_loader_service.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_navigation_handler.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_products_service.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_state.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_state_extensions.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model_support.dart';
+import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 @injectable
 class CategoryViewModel extends Cubit<CategoryState> {
@@ -30,134 +30,61 @@ class CategoryViewModel extends Cubit<CategoryState> {
     required GetCategoryProductsUseCase getCategoryProductsUseCase,
     required GetShoppingProductsUseCase getShoppingProductsUseCase,
     required CategoryNavigationService navigationService,
-    required FavoriteSyncService favoriteSyncService,
-  }) : _getCategoriesUseCase = getCategoriesUseCase,
-       _getCategoryFiltersUseCase = getCategoryFiltersUseCase,
-       _getCategorySubcategoriesUseCase = getCategorySubcategoriesUseCase,
-       _getCategoryProductsUseCase = getCategoryProductsUseCase,
-       _getShoppingProductsUseCase = getShoppingProductsUseCase,
+  }) : _loaderService = CategoryLoaderService(
+         getCategoriesUseCase: getCategoriesUseCase,
+         getCategoryFiltersUseCase: getCategoryFiltersUseCase,
+         getCategorySubcategoriesUseCase: getCategorySubcategoriesUseCase,
+       ),
+       _productsService = CategoryProductsService(
+         getCategoryProductsUseCase: getCategoryProductsUseCase,
+         getShoppingProductsUseCase: getShoppingProductsUseCase,
+       ),
+       _filtersService = const CategoryFiltersService(),
+       _navigationHandler = CategoryNavigationHandler(navigationService),
        _navigationService = navigationService,
-       _favoriteSyncService = favoriteSyncService,
        super(const CategoryState());
 
-  final GetCategoriesUseCase _getCategoriesUseCase;
-  final GetCategoryFiltersUseCase _getCategoryFiltersUseCase;
-  final GetCategorySubcategoriesUseCase _getCategorySubcategoriesUseCase;
-  final GetCategoryProductsUseCase _getCategoryProductsUseCase;
-  final GetShoppingProductsUseCase _getShoppingProductsUseCase;
+  final CategoryLoaderService _loaderService;
+  final CategoryProductsService _productsService;
+  final CategoryFiltersService _filtersService;
+  final CategoryNavigationHandler _navigationHandler;
   final CategoryNavigationService _navigationService;
-  final FavoriteSyncService _favoriteSyncService;
-
-  void doIntent(CategoryEvent event) {
-    switch (event) {
-      case CategoryInitializeEvent():
-        loadInitialData();
-      case CategorySelectCategoryByNameEvent():
-        selectCategoryByName(event.categoryName);
-      case CategorySelectSubCategoryEvent():
-        selectSubCategory(event.subCategory);
-      case CategoryApplySortEvent():
-        applySort(event.sortValue);
-      case CategoryApplyFiltersEvent():
-        applyFilters(event.filters);
-      case CategoryClearAllFiltersEvent():
-        clearAllFilters();
-      case CategoryRetryEvent():
-        retry();
-      case CategorySearchQueryChangedEvent():
-        _handleSearchQueryChanged(event.query);
-      case CategoryCloseSearchUiEvent():
-        _closeSearchUi();
-      case CategorySyncSearchPresentationEvent():
-        _syncSearchPresentation(event);
-      case CategoryRefreshSearchSessionEvent():
-        _refreshSearchSession();
-      case CategorySetActiveHeroProductEvent():
-        _setActiveHeroProduct(event.productId);
-    }
-  }
 
   void initialize() {
-    _favoriteSyncService.addListener(_syncFavoriteState);
     _navigationService.addListener(_checkSelectedCategory);
     doIntent(const CategoryInitializeEvent());
   }
 
-  void _handleSearchQueryChanged(String query) {
-    emit(state.withSearchQuery(query));
-  }
-
-  void _closeSearchUi() {
-    emit(state.closeSearchUi());
-  }
-
-  void _syncSearchPresentation(CategorySyncSearchPresentationEvent event) {
-    final hasQuery = event.query.trim().isNotEmpty;
-    emit(
-      state.syncSearchPresentation(
-        hasQuery: hasQuery,
-        isLoading: event.isLoading,
-        hasItems: event.hasItems,
-        hasFailure: event.hasFailure,
-      ),
-    );
-  }
-
-  void _refreshSearchSession() {
-    emit(state.copyWith(searchSessionVersion: state.searchSessionVersion + 1));
-  }
-
-  void _setActiveHeroProduct(String? productId) {
-    emit(state.copyWith(activeHeroProductId: productId));
+  void doIntent(CategoryEvent event) {
+    switch (event) {
+      case CategoryInitializeEvent():
+        unawaited(loadInitialData());
+      case CategorySelectCategoryEvent():
+        selectCategoryById(event.categoryId);
+      case CategorySelectSubCategoryEvent():
+        unawaited(selectSubCategory(event.subCategory));
+      case CategoryApplySortEvent():
+        _applySort(event.sortValue);
+      case CategoryApplyFiltersEvent():
+        unawaited(applyFilters(event.filters));
+      case CategoryClearAllFiltersEvent():
+        _clearAllFilters();
+      case CategoryResetSelectionEvent():
+        unawaited(_resetSelection());
+      case CategoryRetryEvent():
+        unawaited(retry());
+      case CategorySetActiveHeroProductEvent():
+        emit(state.copyWith(activeHeroProductId: event.productId));
+    }
   }
 
   Future<void> loadInitialData() async {
     emit(state.startInitialLoad());
 
-    final result = await _getCategoriesUseCase();
-
+    final result = await _loaderService.loadInitialCategories();
     switch (result) {
       case ApiSuccessResult<List<CategoryEntity>>():
-        final categories = result.data;
-        emit(state.copyWith(categories: categories));
-
-        final selectedFromHome = _navigationService.selectedCategory;
-        final selectedSubCategoryId = _navigationService.selectedSubCategoryId;
-        final selectedSubCategoryName =
-            _navigationService.selectedSubCategoryName;
-        final hasRequestedSubCategory =
-            CategoryViewModelSupport.hasRequestedSubCategory(
-              subCategoryId: selectedSubCategoryId,
-              subCategoryName: selectedSubCategoryName,
-            );
-        final initialCategory =
-            CategoryViewModelSupport.resolveRequestedCategory(
-              state.categories,
-              selectedFromHome,
-            );
-
-        if (selectedFromHome == null && !hasRequestedSubCategory) {
-          await _loadDefaultShoppingView(categories: categories);
-          return;
-        }
-
-        if (selectedFromHome == null) {
-          await _loadDefaultShoppingView(categories: categories);
-          await _applyExternalSubCategorySelection(
-            subCategoryId: selectedSubCategoryId,
-            subCategoryName: selectedSubCategoryName,
-          );
-          _navigationService.clearSelectedCategory();
-          return;
-        }
-
-        if (initialCategory == null) {
-          emit(state.missingRequestedCategory());
-          return;
-        }
-
-        await selectCategory(initialCategory, fromOutside: true);
-        _navigationService.clearSelectedCategory();
+        await _handleInitialLoadSuccess(result.data);
       case ApiErrorResult<List<CategoryEntity>>():
         emit(state.initialLoadFailed(result.failure));
     }
@@ -176,240 +103,157 @@ class CategoryViewModel extends Cubit<CategoryState> {
       ),
     );
 
-    if (showAllSubCategories) {
-      final filtersResult = await _getFiltersForCategories(state.categories);
+    final result = await _loaderService.loadCategorySelection(
+      categories: state.categories,
+      category: category,
+      showAllSubCategories: showAllSubCategories,
+    );
 
-      switch (filtersResult) {
-        case ApiSuccessResult<List<CategoryFiltersResponseModelDto>>():
-          final categoryFilters = filtersResult.data;
-          final selectedFilters = categoryFilters.firstWhere(
-            (filters) => filters.category?.id == category.id,
-            orElse: () => categoryFilters.first,
-          );
-          final shoppingSubCategories =
-              CategoryViewModelSupport.buildShoppingSubCategories(
-                categories: state.categories,
-                categoryFilters: categoryFilters,
-              );
-          _applyCategoryFilters(
-            selectedFilters,
-            subCategories: shoppingSubCategories.subCategories,
-            subCategoryCategoryMap: shoppingSubCategories.categoryMap,
-          );
-          await loadCategoryProducts();
-        case ApiErrorResult<List<CategoryFiltersResponseModelDto>>(
-          failure: final failure,
-        ):
-          _emitFiltersAndProductsFailure(failure);
-      }
+    switch (result) {
+      case CategorySelectionLoadSuccess():
+        _emitCategoryFilters(
+          result.data.filters,
+          subCategories: result.data.subCategories,
+          subCategoryCategoryMap: result.data.subCategoryCategoryMap,
+        );
+        await loadCategoryProducts();
+      case CategorySelectionLoadFailure():
+        emit(state.filtersAndProductsFailed(result.failure));
+    }
+  }
+
+  void selectCategoryById(String categoryId) {
+    if (categoryId == state.selectedCategoryId) {
       return;
     }
 
-    final filtersResult = await _getCategoryFiltersUseCase(category.id);
-    final subCategoriesResult = await _getCategorySubcategoriesUseCase(
-      category.id,
-    );
-
-    late final CategoryFiltersResponseModelDto filters;
-    switch (filtersResult) {
-      case ApiErrorResult<CategoryFiltersResponseModelDto>(
-        failure: final failure,
-      ):
-        _emitFiltersAndProductsFailure(failure);
-        return;
-      case ApiSuccessResult<CategoryFiltersResponseModelDto>(data: final data):
-        filters = data;
+    final category = findCategoryById(state.categories, categoryId);
+    if (category == null) {
+      return;
     }
 
-    late final List<CategorySubcategoryItemDto> subCategories;
-    switch (subCategoriesResult) {
-      case ApiErrorResult<List<CategorySubcategoryItemDto>>(
-        failure: final failure,
-      ):
-        _emitFiltersAndProductsFailure(failure);
-        return;
-      case ApiSuccessResult<List<CategorySubcategoryItemDto>>(data: final data):
-        subCategories = data;
+    unawaited(selectCategory(category));
+  }
+
+  Future<void> selectSubCategory(
+    CategorySubcategoryItemDto? subCategory,
+  ) async {
+    final nextSelection = _filtersService.resolveSubCategorySelection(
+      state,
+      subCategory,
+    );
+
+    if (state.showAllSubCategories && nextSelection.id != null) {
+      await _selectShoppingSubCategory(
+        subCategoryId: nextSelection.id!,
+        subCategoryName: nextSelection.name,
+      );
+      return;
     }
 
-    _applyCategoryFilters(
-      filters,
-      subCategories: subCategories,
-      subCategoryCategoryMap: {
-        for (final item in subCategories)
-          if ((item.id ?? '').isNotEmpty) item.id!: category.id,
-      },
+    emit(
+      state.selectSubCategory(
+        subCategoryId: nextSelection.id,
+        subCategoryName: nextSelection.name,
+      ),
     );
+    await loadCategoryProducts(overrideSubCategoryId: nextSelection.id);
+  }
+
+  Future<void> applyFilters(Map<String, dynamic>? result) async {
+    if (result == null) {
+      return;
+    }
+
+    final selection = _filtersService.fromMap(
+      result,
+      fallbackPriceRange: state.priceBounds,
+    );
+
+    if (_shouldChangeCategory(selection)) {
+      await _applyCategoryChangeFromFilters(selection);
+      return;
+    }
+
+    emit(
+      state.applyFilterSelection(
+        categoryName: selection.categoryName,
+        subCategoryId: selection.subCategoryId,
+        subCategoryName: selection.subCategoryName,
+        quantity: selection.quantity,
+        brand: selection.brand,
+        productType: selection.productType,
+        part: selection.part,
+        priceRange: selection.priceRange,
+      ),
+    );
+
     await loadCategoryProducts();
+  }
+
+  Future<void> retry() async {
+    switch (state.retryAction) {
+      case CategoryRetryAction.initialLoad:
+        await loadInitialData();
+      case CategoryRetryAction.loadFiltersAndProducts:
+        await _retryFiltersAndProducts();
+      case CategoryRetryAction.loadProducts:
+        if (state.needsDefaultShoppingRetry) {
+          await loadDefaultShoppingView(categories: state.categories);
+          return;
+        }
+        await loadCategoryProducts();
+    }
   }
 
   Future<void> loadCategoryProducts({
     String? overrideSubCategoryId,
     String? overrideCategoryId,
   }) async {
-    final effectiveSubCategoryId =
-        overrideSubCategoryId ?? state.selectedSubCategoryId;
-    final isShoppingMode =
-        state.showAllSubCategories && !state.isCategoryPreselectedFromOutside;
-
-    if (isShoppingMode) {
-      await _loadShoppingProducts(subcategoryId: effectiveSubCategoryId);
-      return;
-    }
-
-    if (effectiveSubCategoryId == null || effectiveSubCategoryId.isEmpty) {
-      final requestCategoryId =
-          overrideCategoryId ??
-          CategoryViewModelSupport.resolveCategoryIdForSubCategory(
-            showAllSubCategories: state.showAllSubCategories,
-            subCategoryCategoryMap: state.subCategoryCategoryMap,
-            selectedCategoryId: state.selectedCategoryId,
-            subCategoryId: effectiveSubCategoryId,
-          ) ??
-          state.selectedCategoryId;
-      if (requestCategoryId == null || requestCategoryId.isEmpty) return;
-      await _loadShoppingProducts();
-      return;
-    }
-
     emit(state.startProductsLoad());
 
-    final result = await _getCategoryProductsUseCase(
-      CategoryProductsRequestEntity(
-        subCategoryId: effectiveSubCategoryId,
-        productTypeId: state.selectedProductTypeId,
-        partId: state.selectedPartId,
-        quantityId: state.selectedQuantityId,
-        brandId: state.selectedBrandId,
-        minPrice: state.priceRange.start,
-        maxPrice: state.priceRange.end,
-        sort: state.selectedSortOption.isEmpty
-            ? null
-            : state.selectedSortOption,
-      ),
+    final result = await _productsService.loadProducts(
+      state: state,
+      overrideSubCategoryId: overrideSubCategoryId,
+      overrideCategoryId: overrideCategoryId,
     );
 
+    _handleProductsResult(result);
+  }
+
+  Future<void> loadDefaultShoppingView({
+    required List<CategoryEntity> categories,
+  }) async {
+    emit(state.startDefaultShoppingView(categories));
+
+    final result = await _loaderService.loadDefaultShoppingData(
+      categories: categories,
+    );
     switch (result) {
-      case ApiSuccessResult():
-        emit(state.productsLoaded(result.data));
-      case ApiErrorResult():
-        emit(state.productsLoadFailed(result.failure));
+      case DefaultShoppingLoadSuccess():
+        emit(state.loadedShoppingSubCategories(result.data));
+        await loadCategoryProducts();
+      case DefaultShoppingLoadFailure():
+        emit(state.defaultShoppingLoadFailed(result.failure));
     }
   }
 
-  void selectCategoryByName(String categoryName) {
-    if (categoryName == state.selectedCategory) return;
-
-    final category = CategoryViewModelSupport.findCategoryByName(
-      state.categories,
-      categoryName,
-    );
-    if (category == null) return;
-
-    unawaited(selectCategory(category));
+  void syncFavorite({required String productId, required bool isFavorite}) {
+    emit(state.syncFavoriteState(productId: productId, isFavorite: isFavorite));
   }
 
-  void selectSubCategory(CategorySubcategoryItemDto? subCategory) {
-    final subCategoryId = subCategory?.id;
-    final subCategoryName = subCategory?.name;
-    final isSameSubCategory = state.selectedSubCategoryId == subCategoryId;
-    final nextSubCategoryId = isSameSubCategory ? null : subCategoryId;
-    final nextSubCategoryName = isSameSubCategory ? null : subCategoryName;
-
-    if (state.showAllSubCategories && nextSubCategoryId != null) {
-      unawaited(
-        _selectShoppingSubCategory(
-          subCategoryId: nextSubCategoryId,
-          subCategoryName: nextSubCategoryName,
-        ),
-      );
-      return;
-    }
-
-    emit(
-      state.selectSubCategory(
-        subCategoryId: nextSubCategoryId,
-        subCategoryName: nextSubCategoryName,
-      ),
-    );
-
-    unawaited(loadCategoryProducts(overrideSubCategoryId: nextSubCategoryId));
+  void setActiveHeroProduct(String? productId) {
+    doIntent(CategorySetActiveHeroProductEvent(productId));
   }
 
-  void applySort(String? sortValue) {
+  void _applySort(String? sortValue) {
     emit(state.copyWith(selectedSortOption: sortValue ?? ''));
     unawaited(loadCategoryProducts());
   }
 
-  void applyFilters(Map<String, dynamic>? result) {
-    if (result == null) return;
-
-    final categoryName = result['category'] as String?;
-    final subCategoryId = result['subCategoryId'] as String?;
-    final subCategoryName = result['subCategoryName'] as String?;
-    if (categoryName != null && categoryName != state.selectedCategory) {
-      unawaited(
-        _applyCategoryChangeFromFilters(
-          categoryName: categoryName,
-          subCategoryId: subCategoryId,
-          subCategoryName: subCategoryName,
-        ),
-      );
-      return;
-    }
-
-    final quantity = result['quantity'] as String?;
-    final brand = result['brand'] as String?;
-    final productType = result['productType'] as String?;
-    final part = result['part'] as String?;
-    final priceRange =
-        result['priceRange'] as RangeValues? ?? state.priceBounds;
-
-    emit(
-      state.applyFilterSelection(
-        categoryName: categoryName,
-        subCategoryId: subCategoryId,
-        subCategoryName: subCategoryName,
-        quantity: quantity,
-        brand: brand,
-        productType: productType,
-        part: part,
-        priceRange: priceRange,
-      ),
-    );
-
-    unawaited(loadCategoryProducts());
-  }
-
-  Future<void> _applyCategoryChangeFromFilters({
-    required String categoryName,
-    String? subCategoryId,
-    String? subCategoryName,
-  }) async {
-    final category = CategoryViewModelSupport.findCategoryByName(
-      state.categories,
-      categoryName,
-    );
-    if (category == null) return;
-
-    await selectCategory(category);
-
-    if (subCategoryId == null || subCategoryId.isEmpty) {
-      return;
-    }
-
-    emit(
-      state.selectSubCategory(
-        subCategoryId: subCategoryId,
-        subCategoryName: subCategoryName,
-      ),
-    );
-    await loadCategoryProducts(overrideSubCategoryId: subCategoryId);
-  }
-
-  void clearAllFilters() {
-    if (state.showAllSubCategories && !state.isCategoryPreselectedFromOutside) {
-      unawaited(_loadDefaultShoppingView(categories: state.categories));
+  void _clearAllFilters() {
+    if (state.needsDefaultShoppingRetry) {
+      unawaited(loadDefaultShoppingView(categories: state.categories));
       return;
     }
 
@@ -417,71 +261,186 @@ class CategoryViewModel extends Cubit<CategoryState> {
     unawaited(loadCategoryProducts());
   }
 
-  void retry() {
-    switch (state.retryAction) {
-      case CategoryRetryAction.initialLoad:
-        unawaited(loadInitialData());
-      case CategoryRetryAction.loadFiltersAndProducts:
-        final categoryId = state.selectedCategoryId;
-        if (categoryId == null || categoryId.isEmpty) {
-          unawaited(loadInitialData());
-          return;
-        }
-        final category = state.categories.firstWhere(
-          (item) => item.id == categoryId,
-          orElse: () => CategoryViewModelSupport.buildFallbackCategory(
-            id: categoryId,
-            name: state.selectedCategory,
-          ),
-        );
-        unawaited(
-          selectCategory(
-            category,
-            fromOutside: state.isCategoryPreselectedFromOutside,
-            showAllSubCategories: state.showAllSubCategories,
-          ),
-        );
-      case CategoryRetryAction.loadProducts:
-        if (state.showAllSubCategories &&
-            !state.isCategoryPreselectedFromOutside &&
-            (state.selectedCategoryId == null ||
-                state.selectedCategoryId!.isEmpty)) {
-          unawaited(_loadDefaultShoppingView(categories: state.categories));
-          return;
-        }
-        unawaited(loadCategoryProducts());
+  Future<void> _resetSelection() async {
+    _navigationHandler.clearSelectedCategory();
+
+    if (state.categories.isEmpty) {
+      await loadInitialData();
+      return;
     }
+
+    await loadDefaultShoppingView(categories: state.categories);
   }
 
-  void _applyCategoryFilters(
-    CategoryFiltersResponseModelDto filters, {
-    List<CategorySubcategoryItemDto>? subCategories,
-    Map<String, String>? subCategoryCategoryMap,
-  }) {
-    final filtersState = CategoryViewModelSupport.resolveFiltersState(
-      filters,
-      subCategories: subCategories,
+  Future<void> _checkSelectedCategory() async {
+    final requestedCategory = _navigationHandler.resolveRequestedCategory(
+      state.categories,
     );
+    if (requestedCategory != null) {
+      await selectCategory(requestedCategory, fromOutside: true);
+      _navigationHandler.clearSelectedCategory();
+      return;
+    }
+
+    final requestedSubCategory = _navigationHandler
+        .requestedSubCategorySelection();
+    if (requestedSubCategory != null) {
+      if (state.categories.isEmpty) {
+        await loadInitialData();
+        return;
+      }
+
+      await _applyExternalSubCategorySelection(
+        subCategoryId: requestedSubCategory.subCategoryId,
+        subCategoryName: requestedSubCategory.subCategoryName,
+      );
+      _navigationHandler.clearSelectedCategory();
+      return;
+    }
+
+    if (!_navigationHandler.consumeResetToDefault()) {
+      return;
+    }
+
+    if (state.categories.isEmpty) {
+      await loadInitialData();
+      return;
+    }
+
+    await loadDefaultShoppingView(categories: state.categories);
+  }
+
+  Future<void> _handleInitialLoadSuccess(
+    List<CategoryEntity> categories,
+  ) async {
+    emit(state.copyWith(categories: categories));
+
+    final requestedSubCategory = _navigationHandler
+        .requestedSubCategorySelection();
+    final requestedCategory = _navigationHandler.resolveRequestedCategory(
+      categories,
+    );
+    final rawRequestedCategory = _navigationHandler.requestedCategory;
+
+    if (rawRequestedCategory == null) {
+      await loadDefaultShoppingView(categories: categories);
+      if (requestedSubCategory == null) {
+        return;
+      }
+
+      await _applyExternalSubCategorySelection(
+        subCategoryId: requestedSubCategory.subCategoryId,
+        subCategoryName: requestedSubCategory.subCategoryName,
+      );
+      _navigationHandler.clearSelectedCategory();
+      return;
+    }
+
+    if (requestedCategory == null) {
+      emit(state.missingRequestedCategory());
+      return;
+    }
+
+    await selectCategory(requestedCategory, fromOutside: true);
+    _navigationHandler.clearSelectedCategory();
+  }
+
+  Future<void> _applyCategoryChangeFromFilters(
+    CategoryFilterSelection selection,
+  ) async {
+    final category =
+        (selection.categoryId != null && selection.categoryId!.isNotEmpty)
+        ? findCategoryById(state.categories, selection.categoryId!)
+        : findCategoryByName(state.categories, selection.categoryName ?? '');
+    if (category == null) {
+      return;
+    }
+
+    await selectCategory(category);
+    if (selection.subCategoryId == null || selection.subCategoryId!.isEmpty) {
+      return;
+    }
 
     emit(
-      state.applyCategoryFilters(
-        filtersState,
-        subCategoryCategoryMap: subCategoryCategoryMap,
+      state.selectSubCategory(
+        subCategoryId: selection.subCategoryId,
+        subCategoryName: selection.subCategoryName,
       ),
     );
+    await loadCategoryProducts(overrideSubCategoryId: selection.subCategoryId);
+  }
+
+  Future<void> _applyExternalSubCategorySelection({
+    String? subCategoryId,
+    String? subCategoryName,
+  }) async {
+    if (state.categories.isEmpty) {
+      return;
+    }
+
+    if (!state.showAllSubCategories || state.isCategoryPreselectedFromOutside) {
+      await loadDefaultShoppingView(categories: state.categories);
+    }
+
+    final requestedSubCategory = _navigationHandler.resolveRequestedSubCategory(
+      state.subCategories,
+      subCategoryId: subCategoryId,
+      subCategoryName: subCategoryName,
+    );
+    final resolvedSubCategoryId = requestedSubCategory?.id;
+    if (resolvedSubCategoryId != null && resolvedSubCategoryId.isNotEmpty) {
+      await _selectShoppingSubCategory(
+        subCategoryId: resolvedSubCategoryId,
+        subCategoryName: requestedSubCategory?.name,
+      );
+      return;
+    }
+
+    final result = await _loaderService.loadExternalSubCategorySelection(
+      categories: state.categories,
+      subCategoryId: subCategoryId,
+      subCategoryName: subCategoryName,
+    );
+    switch (result) {
+      case ExternalSubCategoryLoadSuccess():
+        emit(
+          state.selectShoppingSubCategory(
+            category: result.category,
+            subCategoryId: result.subCategory.id!,
+            subCategoryName: result.subCategory.name,
+          ),
+        );
+        _emitCategoryFilters(
+          result.data.filters,
+          subCategories: result.data.subCategories,
+          subCategoryCategoryMap: result.data.subCategoryCategoryMap,
+        );
+        emit(
+          state.selectSubCategory(
+            subCategoryId: result.subCategory.id,
+            subCategoryName: result.subCategory.name,
+          ),
+        );
+        await loadCategoryProducts(
+          overrideSubCategoryId: result.subCategory.id,
+          overrideCategoryId: result.category.id,
+        );
+      case ExternalSubCategoryLoadFailure():
+        emit(state.filtersReloadFailed(result.failure));
+      case ExternalSubCategoryNotFound():
+        return;
+    }
   }
 
   Future<void> _selectShoppingSubCategory({
     required String subCategoryId,
     required String? subCategoryName,
   }) async {
-    final targetCategoryId =
-        CategoryViewModelSupport.resolveCategoryIdForSubCategory(
-          showAllSubCategories: state.showAllSubCategories,
-          subCategoryCategoryMap: state.subCategoryCategoryMap,
-          selectedCategoryId: state.selectedCategoryId,
-          subCategoryId: subCategoryId,
-        );
+    final targetCategoryId = _navigationHandler.resolveTargetCategoryId(
+      state,
+      subCategoryId,
+    );
+
     if (targetCategoryId == null || targetCategoryId.isEmpty) {
       emit(
         state.selectSubCategory(
@@ -495,10 +454,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
     final category = state.categories.firstWhere(
       (item) => item.id == targetCategoryId,
-      orElse: () => CategoryViewModelSupport.buildFallbackCategory(
+      orElse: () => buildFallbackCategory(
         id: targetCategoryId,
         name: state.selectedCategory,
-        emoji: '',
       ),
     );
 
@@ -510,14 +468,17 @@ class CategoryViewModel extends Cubit<CategoryState> {
       ),
     );
 
-    final filtersResult = await _getCategoryFiltersUseCase(targetCategoryId);
-
-    switch (filtersResult) {
-      case ApiSuccessResult<CategoryFiltersResponseModelDto>():
-        _applyCategoryFilters(
-          filtersResult.data,
-          subCategories: state.subCategories,
-          subCategoryCategoryMap: state.subCategoryCategoryMap,
+    final result = await _loaderService.loadFiltersForCategory(
+      categoryId: targetCategoryId,
+      subCategories: state.subCategories,
+      subCategoryCategoryMap: state.subCategoryCategoryMap,
+    );
+    switch (result) {
+      case CategoryFiltersReloadSuccess():
+        _emitCategoryFilters(
+          result.data.filters,
+          subCategories: result.data.subCategories,
+          subCategoryCategoryMap: result.data.subCategoryCategoryMap,
         );
         emit(
           state.selectSubCategory(
@@ -529,182 +490,64 @@ class CategoryViewModel extends Cubit<CategoryState> {
           overrideSubCategoryId: subCategoryId,
           overrideCategoryId: targetCategoryId,
         );
-      case ApiErrorResult<CategoryFiltersResponseModelDto>():
-        emit(state.filtersReloadFailed(filtersResult.failure));
+      case CategoryFiltersReloadFailure():
+        emit(state.filtersReloadFailed(result.failure));
     }
   }
 
-  Future<void> _loadDefaultShoppingView({
-    required List<CategoryEntity> categories,
-  }) async {
-    emit(state.startDefaultShoppingView(categories));
-
-    final filtersResult = await _getFiltersForCategories(categories);
-
-    switch (filtersResult) {
-      case ApiSuccessResult<List<CategoryFiltersResponseModelDto>>():
-        final shoppingSubCategories =
-            CategoryViewModelSupport.buildShoppingSubCategories(
-              categories: categories,
-              categoryFilters: filtersResult.data,
-            );
-
-        emit(state.loadedShoppingSubCategories(shoppingSubCategories));
-
-        await _loadShoppingProducts();
-      case ApiErrorResult<List<CategoryFiltersResponseModelDto>>():
-        emit(state.defaultShoppingLoadFailed(filtersResult.failure));
+  Future<void> _retryFiltersAndProducts() async {
+    final categoryId = state.selectedCategoryId;
+    if (categoryId == null || categoryId.isEmpty) {
+      await loadInitialData();
+      return;
     }
-  }
 
-  Future<void> _loadShoppingProducts({String? subcategoryId}) async {
-    emit(state.startProductsLoad());
-
-    final hasPriceFilter = state.priceRange != state.priceBounds;
-    final result = await _getShoppingProductsUseCase(
-      ShoppingProductsRequestEntity(
-        categoryId: subcategoryId,
-        productTypeId: state.selectedProductTypeId,
-        partId: state.selectedPartId,
-        quantityId: state.selectedQuantityId,
-        brandId: state.selectedBrandId,
-        minPrice: hasPriceFilter ? state.priceRange.start : null,
-        maxPrice: hasPriceFilter ? state.priceRange.end : null,
-        sort: state.selectedSortOption.isEmpty
-            ? null
-            : state.selectedSortOption,
-      ),
+    final category = state.categories.firstWhere(
+      (item) => item.id == categoryId,
+      orElse: () =>
+          buildFallbackCategory(id: categoryId, name: state.selectedCategory),
     );
 
+    await selectCategory(
+      category,
+      fromOutside: state.isCategoryPreselectedFromOutside,
+      showAllSubCategories: state.showAllSubCategories,
+    );
+  }
+
+  void _emitCategoryFilters(
+    CategoryFiltersResponseModelDto filters, {
+    List<CategorySubcategoryItemDto>? subCategories,
+    Map<String, String>? subCategoryCategoryMap,
+  }) {
+    emit(
+      state.applyCategoryFilters(
+        _filtersService.prepareFilters(filters, subCategories: subCategories),
+        subCategoryCategoryMap: subCategoryCategoryMap,
+      ),
+    );
+  }
+
+  void _handleProductsResult(ApiResult<List<ProductModel>> result) {
     switch (result) {
-      case ApiSuccessResult():
+      case ApiSuccessResult<List<ProductModel>>():
         emit(state.productsLoaded(result.data));
-      case ApiErrorResult():
+      case ApiErrorResult<List<ProductModel>>():
         emit(state.productsLoadFailed(result.failure));
     }
   }
 
-  void _checkSelectedCategory() {
-    final requested = CategoryViewModelSupport.resolveRequestedCategory(
-      state.categories,
-      _navigationService.selectedCategory,
-    );
-    if (requested == null) {
-      final selectedSubCategoryId = _navigationService.selectedSubCategoryId;
-      final selectedSubCategoryName =
-          _navigationService.selectedSubCategoryName;
-      final hasRequestedSubCategory =
-          CategoryViewModelSupport.hasRequestedSubCategory(
-            subCategoryId: selectedSubCategoryId,
-            subCategoryName: selectedSubCategoryName,
-          );
-
-      if (hasRequestedSubCategory) {
-        if (state.categories.isEmpty) {
-          unawaited(loadInitialData());
-          return;
-        }
-
-        unawaited(
-          _applyExternalSubCategorySelection(
-            subCategoryId: selectedSubCategoryId,
-            subCategoryName: selectedSubCategoryName,
-          ),
-        );
-        _navigationService.clearSelectedCategory();
-        return;
-      }
-
-      if (_navigationService.consumeResetToDefault()) {
-        if (state.categories.isEmpty) {
-          unawaited(loadInitialData());
-          return;
-        }
-        unawaited(_loadDefaultShoppingView(categories: state.categories));
-      }
-      return;
+  bool _shouldChangeCategory(CategoryFilterSelection selection) {
+    if (selection.categoryId != null) {
+      return selection.categoryId != state.selectedCategoryId;
     }
 
-    unawaited(selectCategory(requested, fromOutside: true));
-    _navigationService.clearSelectedCategory();
-  }
-
-  Future<void> _applyExternalSubCategorySelection({
-    String? subCategoryId,
-    String? subCategoryName,
-  }) async {
-    if (state.categories.isEmpty) {
-      return;
-    }
-
-    if (!state.showAllSubCategories || state.isCategoryPreselectedFromOutside) {
-      await _loadDefaultShoppingView(categories: state.categories);
-    }
-
-    final requestedSubCategory =
-        CategoryViewModelSupport.resolveRequestedSubCategory(
-          state.subCategories,
-          subCategoryId: subCategoryId,
-          subCategoryName: subCategoryName,
-        );
-    if (requestedSubCategory == null) {
-      return;
-    }
-
-    final resolvedSubCategoryId = requestedSubCategory.id;
-    if (resolvedSubCategoryId == null || resolvedSubCategoryId.isEmpty) {
-      return;
-    }
-
-    await _selectShoppingSubCategory(
-      subCategoryId: resolvedSubCategoryId,
-      subCategoryName: requestedSubCategory.name,
-    );
-  }
-
-  void _syncFavoriteState() {
-    final productId = _favoriteSyncService.productId;
-    final isFavorite = _favoriteSyncService.isFavorite;
-
-    if (productId == null || isFavorite == null) return;
-
-    emit(
-      state.syncFavoriteState(productId: productId, isFavorite: isFavorite),
-    );
-  }
-
-  Future<ApiResult<List<CategoryFiltersResponseModelDto>>>
-  _getFiltersForCategories(List<CategoryEntity> categories) async {
-    final results = await Future.wait(
-      categories
-          .map((item) => _getCategoryFiltersUseCase(item.id))
-          .toList(growable: false),
-    );
-
-    final filters = <CategoryFiltersResponseModelDto>[];
-    for (final result in results) {
-      switch (result) {
-        case ApiSuccessResult<CategoryFiltersResponseModelDto>():
-          filters.add(result.data);
-        case ApiErrorResult<CategoryFiltersResponseModelDto>():
-          return ApiErrorResult<List<CategoryFiltersResponseModelDto>>(
-            failure: result.failure,
-          );
-      }
-    }
-
-    return ApiSuccessResult<List<CategoryFiltersResponseModelDto>>(
-      data: filters,
-    );
-  }
-
-  void _emitFiltersAndProductsFailure(dynamic failure) {
-    emit(state.filtersAndProductsFailed(failure));
+    return selection.categoryName != null &&
+        selection.categoryName != state.selectedCategory;
   }
 
   @override
   Future<void> close() {
-    _favoriteSyncService.removeListener(_syncFavoriteState);
     _navigationService.removeListener(_checkSelectedCategory);
     return super.close();
   }

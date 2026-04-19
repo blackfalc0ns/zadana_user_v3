@@ -153,8 +153,8 @@ import '../../feature/category/domain/usecase/get_category_subcategories_usecase
     as _i737;
 import '../../feature/category/domain/usecase/get_shopping_products_usecase.dart'
     as _i45;
-import '../../feature/category/presentation/manager/category_view_model.dart'
-    as _i228;
+import '../../feature/category/presentation/manager/category_cubit.dart'
+    as _i729;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
     as _i691;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source_impl.dart'
@@ -322,7 +322,6 @@ import '../network/osm_api_services.dart' as _i777;
 import '../services/category_navigation_service.dart' as _i900;
 import '../services/device_id_interceptor.dart' as _i930;
 import '../services/device_id_service.dart' as _i148;
-import '../services/favorite_sync_service.dart' as _i761;
 import '../services/language_interceptor.dart' as _i32;
 import '../services/language_service.dart' as _i819;
 import '../services/notification_device_service.dart' as _i823;
@@ -377,6 +376,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i819.LanguageService>(
       () => _i819.LanguageService(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i900.CategoryNavigationService>(
+      () => _i900.CategoryNavigationService(),
     );
     gh.lazySingleton<_i148.DeviceIdService>(
       () => _i148.DeviceIdService(gh<_i460.SharedPreferences>()),
@@ -885,6 +887,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i690.MarkAllNotificationsAsReadUseCase>(),
       ),
     );
+    gh.factory<_i729.CategoryViewModel>(
+      () => _i729.CategoryViewModel(
+        getCategoriesUseCase: gh<_i17.GetCategoriesUseCase>(),
+        getCategoryFiltersUseCase: gh<_i91.GetCategoryFiltersUseCase>(),
+        getCategorySubcategoriesUseCase:
+            gh<_i737.GetCategorySubcategoriesUseCase>(),
+        getCategoryProductsUseCase: gh<_i127.GetCategoryProductsUseCase>(),
+        getShoppingProductsUseCase: gh<_i45.GetShoppingProductsUseCase>(),
+        navigationService: gh<_i900.CategoryNavigationService>(),
+      ),
+    );
     gh.factory<_i996.ResetPasswordUseCase>(
       () => _i996.ResetPasswordUseCase(
         repository: gh<_i491.ResetPasswordRepository>(),
@@ -909,18 +922,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i823.NotificationDeviceService>(),
         gh<_i219.GuestCartSyncService>(),
         gh<_i64.GuestFavoritesSyncService>(),
-      ),
-    );
-    gh.factory<_i228.CategoryViewModel>(
-      () => _i228.CategoryViewModel(
-        getCategoriesUseCase: gh<_i17.GetCategoriesUseCase>(),
-        getCategoryFiltersUseCase: gh<_i91.GetCategoryFiltersUseCase>(),
-        getCategorySubcategoriesUseCase:
-            gh<_i737.GetCategorySubcategoriesUseCase>(),
-        getCategoryProductsUseCase: gh<_i127.GetCategoryProductsUseCase>(),
-        getShoppingProductsUseCase: gh<_i45.GetShoppingProductsUseCase>(),
-        navigationService: gh<_i900.CategoryNavigationService>(),
-        favoriteSyncService: gh<_i761.FavoriteSyncService>(),
       ),
     );
     gh.factory<_i558.LoginRepository>(

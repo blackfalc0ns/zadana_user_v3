@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -27,7 +28,22 @@ class DrawerFooter extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!isGuest) ...[
+          if (isGuest) ...[
+            AppButton.outlined(
+              height: 40,
+              text: locale.login,
+              color: color.primary,
+              textColor: color.primary,
+              onPressed: () {
+                Navigator.pop(context);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!context.mounted) return;
+                  Navigator.of(context).pushNamed(AppRoutes.login);
+                });
+              },
+            ),
+            const SizedBox(height: Spacing.xss),
+          ] else ...[
             AppButton.outlined(
               height: 40,
               text: locale.logout,

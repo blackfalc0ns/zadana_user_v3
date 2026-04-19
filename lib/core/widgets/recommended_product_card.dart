@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
@@ -6,6 +7,7 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
 
@@ -63,11 +65,14 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
     }
 
     setState(() => _isSubmittingFavorite = true);
+    final globalCubit = context.read<AppSectionGlobalCubit>();
     final result = _isFavorite
         ? await HomeProductFavoritesHelper.removeProductFromFavorites(
+            globalCubit,
             widget.product,
           )
         : await HomeProductFavoritesHelper.addProductToFavorites(
+            globalCubit,
             widget.product,
           );
     if (!mounted) return;

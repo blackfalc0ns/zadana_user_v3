@@ -43,6 +43,7 @@ class Assets {
 
   // Lottie
   static const String emptyCart = '$_lottie/empty_cart.json';
+  static const String loading = '$_lottie/loading_animation.json';
 
   // Icons (SVG)
   static const String icHome = '$_icons/ic_home.svg';

@@ -14,7 +14,7 @@ class HomeSearchBar extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.autofocus = false,
-    this.padding = const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+    this.padding = const EdgeInsets.symmetric(horizontal: Spacing.base),
     this.backgroundColor,
   });
 

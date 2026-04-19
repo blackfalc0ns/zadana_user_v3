@@ -237,6 +237,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
+  String get continue_as_guest => 'Continue as guest';
+
+  @override
   String get name_is_required => 'Name is required!';
 
   @override
@@ -989,6 +992,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get delete_item_confirm =>
       'Do you want to remove this item from your cart?';
+
+  @override
+  String get delete_category_title => 'Delete category';
+
+  @override
+  String get delete_category_confirm =>
+      'Do you want to delete the selected category?';
+
+  @override
+  String get delete_category_tooltip => 'Delete selected category';
 
   @override
   String get available_vendors => 'Available Vendors';

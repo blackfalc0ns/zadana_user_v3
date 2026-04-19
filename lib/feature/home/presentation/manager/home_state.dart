@@ -41,6 +41,33 @@ class HomeState {
       specialOffersSection.isLoading ||
       dynamicSection.isLoading;
 
+  bool get hasStartedLoadingContent {
+    return bannerSection.isLoading ||
+        bannerSection.isSuccess ||
+        bannerSection.failure != null ||
+        categoriesSection.isLoading ||
+        categoriesSection.isSuccess ||
+        categoriesSection.failure != null ||
+        bestSellingSection.isLoading ||
+        bestSellingSection.isSuccess ||
+        bestSellingSection.failure != null ||
+        brandsSection.isLoading ||
+        brandsSection.isSuccess ||
+        brandsSection.failure != null ||
+        recommendedSection.isLoading ||
+        recommendedSection.isSuccess ||
+        recommendedSection.failure != null ||
+        featuredSection.isLoading ||
+        featuredSection.isSuccess ||
+        featuredSection.failure != null ||
+        specialOffersSection.isLoading ||
+        specialOffersSection.isSuccess ||
+        specialOffersSection.failure != null ||
+        dynamicSection.isLoading ||
+        dynamicSection.isSuccess ||
+        dynamicSection.failure != null;
+  }
+
   bool get hasAnyData {
     return (bannerSection.data?.items.isNotEmpty ?? false) ||
         (categoriesSection.data?.items.isNotEmpty ?? false) ||

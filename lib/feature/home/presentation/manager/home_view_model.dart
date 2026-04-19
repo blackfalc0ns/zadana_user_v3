@@ -1,8 +1,8 @@
 import 'dart:developer' as developer;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_best_selling_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_explore_more_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_featured_entity.dart';
@@ -33,9 +33,7 @@ class HomeViewModel extends Cubit<HomeState> {
     this._getHomeFeaturedProductsUseCase,
     this._getHomeSpecialOffersUseCase,
     this._getHomeDynamicSectionsUseCase,
-  ) : super(const HomeState()) {
-    _favoriteSyncService.addListener(_syncFavoriteState);
-  }
+  ) : super(const HomeState());
   static const int _homeSectionPreviewTake = 5;
   static const int _homeBrandsPreviewTake = 8;
 
@@ -48,7 +46,6 @@ class HomeViewModel extends Cubit<HomeState> {
   final GetHomeFeaturedProductsUseCase _getHomeFeaturedProductsUseCase;
   final GetHomeSpecialOffersUseCase _getHomeSpecialOffersUseCase;
   final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
-  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
 
   Future<void> loadInitial() async {
     await Future.wait([
@@ -525,12 +522,10 @@ class HomeViewModel extends Cubit<HomeState> {
     }
   }
 
-  void _syncFavoriteState() {
-    final productId = _favoriteSyncService.productId;
-    final isFavorite = _favoriteSyncService.isFavorite;
-
-    if (productId == null || isFavorite == null) return;
-
+  void syncFavorite({
+    required String productId,
+    required bool isFavorite,
+  }) {
     emit(
       state.copyWith(
         bestSellingSection: state.bestSellingSection.copyWith(
@@ -672,11 +667,5 @@ class HomeViewModel extends Cubit<HomeState> {
           ),
         )
         .toList();
-  }
-
-  @override
-  Future<void> close() {
-    _favoriteSyncService.removeListener(_syncFavoriteState);
-    return super.close();
   }
 }

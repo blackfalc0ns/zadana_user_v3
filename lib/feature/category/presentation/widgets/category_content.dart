@@ -18,6 +18,7 @@ class CategoryContent extends StatelessWidget {
     this.isSearchActive = false,
     this.showSearchResults = false,
     required this.selectedCategory,
+    this.selectedCategoryId,
     required this.selectedSubCategory,
     this.selectedSubCategoryId,
     required this.selectedSortOption,
@@ -44,6 +45,10 @@ class CategoryContent extends StatelessWidget {
     this.onSearchChanged,
     this.onSearchClose,
     this.searchResults,
+    this.onSearchActionTap,
+    this.searchActionIcon = Icons.tune_rounded,
+    this.searchActionTooltip,
+    this.isSearchActionDestructive = false,
   });
 
   final List<CategoryEntity> categories;
@@ -51,6 +56,7 @@ class CategoryContent extends StatelessWidget {
   final bool isSearchActive;
   final bool showSearchResults;
   final String selectedCategory;
+  final String? selectedCategoryId;
   final String selectedSubCategory;
   final String? selectedSubCategoryId;
   final String selectedSortOption;
@@ -77,6 +83,10 @@ class CategoryContent extends StatelessWidget {
   final ValueChanged<String>? onSearchChanged;
   final VoidCallback? onSearchClose;
   final Widget? searchResults;
+  final VoidCallback? onSearchActionTap;
+  final IconData searchActionIcon;
+  final String? searchActionTooltip;
+  final bool isSearchActionDestructive;
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +105,16 @@ class CategoryContent extends StatelessWidget {
             focusNode: searchFocusNode,
             onChanged: onSearchChanged,
             onClose: onSearchClose,
+            onFilterTap: onSearchActionTap,
+            filterIcon: searchActionIcon,
+            filterTooltip: searchActionTooltip,
+            isFilterDestructive: isSearchActionDestructive,
           ),
         ),
         if (showCategoryChips)
           CategoryChips(
             categories: categories,
-            selectedCategory: selectedCategory,
+            selectedCategoryId: selectedCategoryId,
             onCategorySelected: onCategorySelected,
             isLoading: isLoading,
           ),

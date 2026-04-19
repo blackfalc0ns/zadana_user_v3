@@ -32,11 +32,7 @@ class AppButtonSwitch extends StatelessWidget {
           ),
         ],
       ),
-      child: AppButton(
-        onPressed: isLoading ? null : onPressed,
-        text: label,
-        isLoading: isLoading,
-      ),
+      child: AppButton(onPressed: isLoading ? null : onPressed, text: label),
     );
   }
 }

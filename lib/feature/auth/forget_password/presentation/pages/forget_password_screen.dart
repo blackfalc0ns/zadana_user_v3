@@ -40,6 +40,7 @@ class _ForgetPasswordView extends StatelessWidget {
             !state.isLoading && !state.isSuccess && state.failure != null;
 
         return AuthExperienceShell(
+          isLoading: state.isLoading,
           showBackButton: true,
           heroBadge: locale.forget_password_hero_badge,
           heroTitle: locale.forget_password_title,

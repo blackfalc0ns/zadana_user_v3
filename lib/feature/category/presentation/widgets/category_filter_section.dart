@@ -21,7 +21,7 @@ class CategoryFilterSection extends StatelessWidget {
     this.brands = const [],
     this.productTypes = const [],
     this.parts = const [],
-    this.selectedCategory,
+    this.selectedCategoryId,
     this.selectedSubCategoryId,
     this.selectedQuantity,
     this.selectedBrand,
@@ -45,7 +45,7 @@ class CategoryFilterSection extends StatelessWidget {
   final List<String> brands;
   final List<String> productTypes;
   final List<String> parts;
-  final String? selectedCategory;
+  final String? selectedCategoryId;
   final String? selectedSubCategoryId;
   final String? selectedQuantity;
   final String? selectedBrand;
@@ -76,7 +76,7 @@ class CategoryFilterSection extends StatelessWidget {
       sections.add(
         FilterCategorySection(
           categories: categories,
-          selectedCategory: selectedCategory,
+          selectedCategoryId: selectedCategoryId,
           onCategorySelected: (category) {
             onCategorySelected(category);
             onQuantitySelected(null);

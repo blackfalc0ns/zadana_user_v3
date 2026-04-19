@@ -10,12 +10,12 @@ class FilterCategorySection extends StatefulWidget {
   const FilterCategorySection({
     super.key,
     required this.categories,
-    required this.selectedCategory,
+    required this.selectedCategoryId,
     required this.onCategorySelected,
   });
 
   final List<CategoryEntity> categories;
-  final String? selectedCategory;
+  final String? selectedCategoryId;
   final Function(String?) onCategorySelected;
 
   @override
@@ -29,14 +29,14 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
   @override
   void initState() {
     super.initState();
-    localSelectedCategory = widget.selectedCategory;
+    localSelectedCategory = widget.selectedCategoryId;
   }
 
   @override
   void didUpdateWidget(FilterCategorySection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedCategory != oldWidget.selectedCategory) {
-      localSelectedCategory = widget.selectedCategory;
+    if (widget.selectedCategoryId != oldWidget.selectedCategoryId) {
+      localSelectedCategory = widget.selectedCategoryId;
     }
   }
 
@@ -77,14 +77,14 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
               itemCount: displayedCategories.length,
               itemBuilder: (context, index) {
                 final category = displayedCategories[index];
-                final isSelected = localSelectedCategory == category.name;
+                final isSelected = localSelectedCategory == category.id;
 
                 return CustomVerticalFilterChip(
                   label: category.name,
                   icon: category.emoji,
                   isSelected: isSelected,
                   onTap: () {
-                    final newSelection = isSelected ? null : category.name;
+                    final newSelection = isSelected ? null : category.id;
                     setState(() => localSelectedCategory = newSelection);
                     widget.onCategorySelected(newSelection);
                   },

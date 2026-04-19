@@ -83,14 +83,20 @@ class DrawerActions {
 
   static void handleContactUs(BuildContext context) {
     Navigator.pop(context);
-    // TODO: Navigate to contact us screen
-    print('Navigate to contact us');
+    // TODO: Navigate to contact us screen.
   }
 
   static void handleSupport(BuildContext context) {
     Navigator.pop(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.of(context).pushNamed(AppRoutes.helpSupport);
+    });
+  }
+
+  static void handleLogin(BuildContext context) {
+    Navigator.pop(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushNamed(AppRoutes.login);
     });
   }
 

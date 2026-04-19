@@ -35,6 +35,7 @@ class LoginScreen extends StatelessWidget {
               !state.isLoading && !state.isSuccess && state.failure != null;
 
           return AuthExperienceShell(
+            isLoading: state.isLoading,
             heroBadge: locale.login_hero_badge,
             heroTitle: locale.login_hero_title,
             heroSubtitle: locale.login_hero_subtitle,

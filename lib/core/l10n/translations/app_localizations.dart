@@ -506,6 +506,12 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
+  /// No description provided for @continue_as_guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as guest'**
+  String get continue_as_guest;
+
   /// No description provided for @name_is_required.
   ///
   /// In en, this message translates to:
@@ -1891,6 +1897,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Do you want to remove this item from your cart?'**
   String get delete_item_confirm;
+
+  /// No description provided for @delete_category_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete category'**
+  String get delete_category_title;
+
+  /// No description provided for @delete_category_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete the selected category?'**
+  String get delete_category_confirm;
+
+  /// No description provided for @delete_category_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected category'**
+  String get delete_category_tooltip;
 
   /// No description provided for @available_vendors.
   ///

@@ -13,10 +13,12 @@ class VerifyResetOtpForm extends StatefulWidget {
     super.key,
     required this.identifier,
     required this.onSuccess,
+    this.onLoadingChanged,
   });
 
   final String identifier;
   final void Function(String otpCode) onSuccess;
+  final ValueChanged<bool>? onLoadingChanged;
 
   @override
   State<VerifyResetOtpForm> createState() => _VerifyResetOtpFormState();
@@ -100,10 +102,12 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
     }
 
     setState(() => _isLoading = true);
+    widget.onLoadingChanged?.call(true);
 
     await Future.delayed(const Duration(seconds: 2));
 
     setState(() => _isLoading = false);
+    widget.onLoadingChanged?.call(false);
 
     if (mounted) {
       widget.onSuccess(otpCode);
@@ -124,45 +128,46 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
     final localizations = AppLocalizations.of(context)!;
     final color = context.colorScheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '${localizations.otp_code_sent_to} ${widget.identifier}',
-          style: getMediumStyle(
-            fontSize: FontSize.size14,
-            fontFamily: FontConstant.cairo,
-            color: color.primary,
+    return AbsorbPointer(
+      absorbing: _isLoading,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${localizations.otp_code_sent_to} ${widget.identifier}',
+            style: getMediumStyle(
+              fontSize: FontSize.size14,
+              fontFamily: FontConstant.cairo,
+              color: color.primary,
+            ),
           ),
-        ),
-        const SizedBox(height: Spacing.lg),
-
-        Row(
-          textDirection: TextDirection.ltr,
-          children: List.generate(4, (index) {
-            return Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: index > 0 ? 4.0 : 0.0),
-                child: OtpInputField(
-                  controller: controllers[index],
-                  focusNode: focusNodes[index],
-                  nextFocusNode: index < 3 ? focusNodes[index + 1] : null,
-                  previousFocusNode: index > 0 ? focusNodes[index - 1] : null,
-                  onChanged: (_) => setState(() {}),
+          const SizedBox(height: Spacing.lg),
+          Row(
+            textDirection: TextDirection.ltr,
+            children: List.generate(4, (index) {
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: index > 0 ? 4.0 : 0.0),
+                  child: OtpInputField(
+                    controller: controllers[index],
+                    focusNode: focusNodes[index],
+                    nextFocusNode: index < 3 ? focusNodes[index + 1] : null,
+                    previousFocusNode: index > 0 ? focusNodes[index - 1] : null,
+                    onChanged: (_) => setState(() {}),
+                  ),
                 ),
-              ),
-            );
-          }),
-        ),
-        const SizedBox(height: Spacing.lg),
-
-        AppButtonSwitch(
-          label: localizations.otp_verify_button,
-          onPressed: isOtpComplete ? () => _submitOtp(context) : () {},
-          isLoading: _isLoading,
-        ),
-        const SizedBox(height: Spacing.base),
-      ],
+              );
+            }),
+          ),
+          const SizedBox(height: Spacing.lg),
+          AppButtonSwitch(
+            label: localizations.otp_verify_button,
+            onPressed: isOtpComplete ? () => _submitOtp(context) : () {},
+            isLoading: _isLoading,
+          ),
+          const SizedBox(height: Spacing.base),
+        ],
+      ),
     );
   }
 }

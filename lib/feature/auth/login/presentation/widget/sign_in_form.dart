@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/core/widgets/custom_text_field.dart';
 import 'package:zadana_user_v3/feature/auth/login/domain/entities/login_request_entity.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_event.dart';
@@ -116,6 +117,19 @@ class _LoginFormState extends State<LoginForm> {
                 label: locale.btn_login,
                 onPressed: () => _onSubmit(context),
                 isLoading: state.isLoading,
+              ),
+              const SizedBox(height: Spacing.sm),
+              AppButton.outlined(
+                text: locale.continue_as_guest,
+                onPressed: state.isLoading
+                    ? null
+                    : () => context.pushNamedAndRemoveUntil(
+                        AppRoutes.mainShell,
+                        predicate: (Route<dynamic> route) => false,
+                      ),
+                color: color.primary.withValues(alpha: 0.55),
+                textColor: color.primary,
+                height: 52,
               ),
               const SizedBox(height: Spacing.base),
             ],

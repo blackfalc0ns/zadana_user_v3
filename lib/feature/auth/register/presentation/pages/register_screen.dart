@@ -49,6 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               !state.isLoading && !state.isSuccess && state.failure != null;
 
           return AuthExperienceShell(
+            isLoading: state.isLoading,
             showBackButton: true,
             heroBadge: locale.register_hero_badge,
             heroTitle: locale.register_screen_title,

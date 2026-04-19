@@ -29,6 +29,7 @@ class ProductSearchInput extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           onChanged: onChanged,
+          onTapOutside: (_) => focusNode.unfocus(),
           textInputAction: TextInputAction.search,
           textAlign: isRtl ? TextAlign.right : TextAlign.left,
           textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,

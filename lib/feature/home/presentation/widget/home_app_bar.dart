@@ -75,7 +75,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     const SizedBox(width: Spacing.md),
                     _ActionButton(
                       notificationCount: homeResponse?.notificationsCount ?? 0,
-                      onTap: onNotificationsTap ?? onLocationTap,
+                      onTap: onNotificationsTap,
                       isPrimary: true,
                     ),
                   ],
@@ -86,7 +86,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   onChanged: onSearchChanged,
                   onTap: onSearchTap,
                   readOnly: onSearchTap != null,
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
                   onFilterTap: () {},
                 ),
                 const SizedBox(height: 6),
@@ -150,7 +150,8 @@ class _ActionButton extends StatelessWidget {
           child: isPrimary
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Stack(
+                child: Stack(
+                    clipBehavior: Clip.none,
                     alignment: Alignment.topRight,
                     children: [
                       Center(
@@ -165,11 +166,14 @@ class _ActionButton extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        bottom: 14,
-                        right: 0,
+                        top: -3,
+                        right: -3,
                         child: Container(
-                          width: 13,
-                          height: 13,
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
                           decoration: BoxDecoration(
                             color: color.error,
                             borderRadius: BorderRadius.circular(32),
@@ -183,7 +187,8 @@ class _ActionButton extends StatelessWidget {
                               style: getBoldStyle(
                                 fontFamily: FontConstant.cairo,
                                 color: color.onError,
-                                fontSize: 8,
+                                fontSize: 7,
+                               
                               ),
                             ),
                           ),

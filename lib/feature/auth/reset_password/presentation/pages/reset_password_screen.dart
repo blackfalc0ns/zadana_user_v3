@@ -44,6 +44,7 @@ class _ResetPasswordView extends StatelessWidget {
             !state.isLoading && !state.isSuccess && state.failure != null;
 
         return AuthExperienceShell(
+          isLoading: state.isLoading,
           showBackButton: true,
           heroBadge: locale.reset_password_hero_badge,
           heroTitle: locale.reset_password_title,

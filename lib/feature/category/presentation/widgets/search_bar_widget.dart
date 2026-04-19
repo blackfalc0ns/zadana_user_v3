@@ -18,6 +18,9 @@ class SearchBarWidget extends StatelessWidget {
     this.onChanged,
     this.onClose,
     this.onFilterTap,
+    this.filterIcon = Icons.tune_rounded,
+    this.filterTooltip,
+    this.isFilterDestructive = false,
   });
 
   final AppLocalizations locale;
@@ -27,6 +30,9 @@ class SearchBarWidget extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final VoidCallback? onClose;
   final VoidCallback? onFilterTap;
+  final IconData filterIcon;
+  final String? filterTooltip;
+  final bool isFilterDestructive;
 
   bool get _isInteractiveSearch =>
       controller != null && focusNode != null && onChanged != null;
@@ -34,6 +40,7 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final actionColor = isFilterDestructive ? color.error : color.primary;
 
     return Container(
       height: 40,
@@ -83,36 +90,17 @@ class SearchBarWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          suffixIcon: (value.text.isEmpty && onClose == null)
+                          suffixIcon: value.text.isEmpty
                               ? null
-                              : SizedBox(
-                                  width: onClose == null ? 48 : 88,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (value.text.isNotEmpty)
-                                        IconButton(
-                                          onPressed: () {
-                                            controller!.clear();
-                                            onChanged!('');
-                                          },
-                                          icon: Icon(
-                                            Icons.close_rounded,
-                                            color: color.onSurfaceVariant,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      if (onClose != null)
-                                        IconButton(
-                                          onPressed: onClose,
-                                          icon: Icon(
-                                            Icons.arrow_forward_rounded,
-                                            color: color.onSurfaceVariant,
-                                            size: 22,
-                                          ),
-                                        ),
-                                    ],
+                              : IconButton(
+                                  onPressed: () {
+                                    controller!.clear();
+                                    onChanged!('');
+                                  },
+                                  icon: Icon(
+                                    Icons.close_rounded,
+                                    color: color.onSurfaceVariant,
+                                    size: 20,
                                   ),
                                 ),
                           border: InputBorder.none,
@@ -164,19 +152,44 @@ class SearchBarWidget extends StatelessWidget {
                   ),
           ),
           if (onFilterTap != null)
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              width: 42,
-              height: 48,
-              decoration: BoxDecoration(
-                //  color: color.primary,
-                border: Border.all(color: color.primary),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: IconButton(
-                onPressed: onFilterTap,
-                icon: Icon(Icons.tune, color: color.onPrimary, size: 24),
-                padding: EdgeInsets.zero,
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 6, start: 2),
+              child: Material(
+                color: actionColor.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                child: InkWell(
+                  onTap: onFilterTap,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Ink(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: actionColor.withValues(alpha: 0.22),
+                      ),
+                      gradient: LinearGradient(
+                        colors: [
+                          actionColor.withValues(alpha: 0.14),
+                          actionColor.withValues(alpha: 0.06),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: actionColor.withValues(alpha: 0.10),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Tooltip(
+                      message: filterTooltip ?? '',
+                      child: Icon(filterIcon, color: actionColor, size: 21),
+                    ),
+                  ),
+                ),
               ),
             ),
         ],

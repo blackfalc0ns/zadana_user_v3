@@ -10,13 +10,13 @@ class CategoryChips extends StatelessWidget {
   const CategoryChips({
     super.key,
     required this.categories,
-    required this.selectedCategory,
+    required this.selectedCategoryId,
     required this.onCategorySelected,
     this.isLoading = false,
   });
 
   final List<CategoryEntity> categories;
-  final String selectedCategory;
+  final String? selectedCategoryId;
   final Function(String) onCategorySelected;
   final bool isLoading;
 
@@ -39,13 +39,13 @@ class CategoryChips extends StatelessWidget {
         separatorBuilder: (context, index) => const SizedBox(width: Spacing.sm),
         itemBuilder: (context, index) {
           final category = categories[index];
-          final isSelected = category.name == selectedCategory;
+          final isSelected = category.id == selectedCategoryId;
 
           return CategoryChip(
             label: category.name,
             emoji: category.emoji,
             isSelected: isSelected,
-            onTap: () => onCategorySelected(category.name),
+            onTap: () => onCategorySelected(category.id),
           );
         },
       ),

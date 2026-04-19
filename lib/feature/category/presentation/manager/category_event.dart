@@ -8,16 +8,16 @@ class CategoryInitializeEvent extends CategoryEvent {
   const CategoryInitializeEvent();
 }
 
-class CategorySelectCategoryByNameEvent extends CategoryEvent {
-  const CategorySelectCategoryByNameEvent(this.categoryName);
+class CategorySelectCategoryEvent extends CategoryEvent {
+  const CategorySelectCategoryEvent(this.categoryId);
 
-  final String categoryName;
+  final String categoryId;
 }
 
 class CategorySelectSubCategoryEvent extends CategoryEvent {
   const CategorySelectSubCategoryEvent(this.subCategory);
 
-  final CategorySubcategoryItemDto subCategory;
+  final CategorySubcategoryItemDto? subCategory;
 }
 
 class CategoryApplySortEvent extends CategoryEvent {
@@ -36,36 +36,12 @@ class CategoryClearAllFiltersEvent extends CategoryEvent {
   const CategoryClearAllFiltersEvent();
 }
 
+class CategoryResetSelectionEvent extends CategoryEvent {
+  const CategoryResetSelectionEvent();
+}
+
 class CategoryRetryEvent extends CategoryEvent {
   const CategoryRetryEvent();
-}
-
-class CategorySearchQueryChangedEvent extends CategoryEvent {
-  const CategorySearchQueryChangedEvent(this.query);
-
-  final String query;
-}
-
-class CategoryCloseSearchUiEvent extends CategoryEvent {
-  const CategoryCloseSearchUiEvent();
-}
-
-class CategorySyncSearchPresentationEvent extends CategoryEvent {
-  const CategorySyncSearchPresentationEvent({
-    required this.query,
-    required this.isLoading,
-    required this.hasItems,
-    required this.hasFailure,
-  });
-
-  final String query;
-  final bool isLoading;
-  final bool hasItems;
-  final bool hasFailure;
-}
-
-class CategoryRefreshSearchSessionEvent extends CategoryEvent {
-  const CategoryRefreshSearchSessionEvent();
 }
 
 class CategorySetActiveHeroProductEvent extends CategoryEvent {

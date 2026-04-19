@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 
 /// Service to manage moving from home categories to the shopping tab.
+@lazySingleton
 class CategoryNavigationService extends ChangeNotifier {
   factory CategoryNavigationService() => _instance;
 

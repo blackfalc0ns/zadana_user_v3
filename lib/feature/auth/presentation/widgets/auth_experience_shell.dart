@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 
 class AuthExperienceShell extends StatelessWidget {
   const AuthExperienceShell({
@@ -17,6 +18,7 @@ class AuthExperienceShell extends StatelessWidget {
     this.sectionIcon = Icons.lock_outline_rounded,
     this.footer,
     this.showBackButton = false,
+    this.isLoading = false,
   });
 
   final String heroBadge;
@@ -29,6 +31,7 @@ class AuthExperienceShell extends StatelessWidget {
   final Widget body;
   final Widget? footer;
   final bool showBackButton;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -38,47 +41,57 @@ class AuthExperienceShell extends StatelessWidget {
       body: Stack(
         children: [
           const _AuthBackground(),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                Spacing.base,
-                Spacing.base,
-                Spacing.base,
-                Spacing.xl,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (showBackButton) ...[
-                    Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: _AuthBackButton(
-                        onTap: () => Navigator.of(context).maybePop(),
+          AbsorbPointer(
+            absorbing: isLoading,
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(
+                  Spacing.base,
+                  Spacing.base,
+                  Spacing.base,
+                  Spacing.xl,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (showBackButton) ...[
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: _AuthBackButton(
+                          onTap: () => Navigator.of(context).maybePop(),
+                        ),
                       ),
+                      const SizedBox(height: Spacing.xs),
+                    ],
+                    _HeroHeader(
+                      badge: heroBadge,
+                      title: heroTitle,
+                      subtitle: heroSubtitle,
                     ),
-                    const SizedBox(height: Spacing.xs),
+                    const SizedBox(height: Spacing.sm),
+                    _FormCard(
+                      badge: sectionBadge,
+                      title: sectionTitle,
+                      description: sectionDescription,
+                      icon: sectionIcon,
+                      child: body,
+                    ),
+                    if (footer != null) ...[
+                      const SizedBox(height: Spacing.base),
+                      Center(child: footer),
+                    ],
                   ],
-                  _HeroHeader(
-                    badge: heroBadge,
-                    title: heroTitle,
-                    subtitle: heroSubtitle,
-                  ),
-                  const SizedBox(height: Spacing.sm),
-                  _FormCard(
-                    badge: sectionBadge,
-                    title: sectionTitle,
-                    description: sectionDescription,
-                    icon: sectionIcon,
-                    child: body,
-                  ),
-                  if (footer != null) ...[
-                    const SizedBox(height: Spacing.base),
-                    Center(child: footer),
-                  ],
-                ],
+                ),
               ),
             ),
           ),
+          if (isLoading)
+            Positioned.fill(
+              child: ColoredBox(
+                color: color.scrim.withValues(alpha: 0.18),
+                child: const CustomProgressIndicator(size: 72),
+              ),
+            ),
         ],
       ),
     );
