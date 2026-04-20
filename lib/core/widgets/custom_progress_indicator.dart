@@ -3,19 +3,31 @@ import 'package:lottie/lottie.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 
 class CustomProgressIndicator extends StatelessWidget {
-  const CustomProgressIndicator({super.key, this.size = 100.0});
   final double size;
+
+  const CustomProgressIndicator({super.key, this.size = 100.0});
 
   @override
   Widget build(BuildContext context) {
-    final double effectiveSize = size * 2.6;
-
     return Center(
-      child: Lottie.asset(
-        Assets.loading,
-        width: effectiveSize,
-        height: effectiveSize,
-        fit: BoxFit.contain,
+      child: Card(
+        color: Colors.grey[650],
+        margin: const EdgeInsets.all(16),
+        elevation: 0,
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Transform.scale(
+            scale: 2.99,
+            child: Lottie.asset(
+              Assets.loading,
+              width: size,
+              height: size,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
       ),
     );
   }

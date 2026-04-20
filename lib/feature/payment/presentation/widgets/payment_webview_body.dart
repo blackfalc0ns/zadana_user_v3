@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_webview_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_webview_error_view.dart';
 

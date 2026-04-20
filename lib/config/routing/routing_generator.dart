@@ -85,12 +85,14 @@ class RouteGenerator {
       case AppRoutes.editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
       case AppRoutes.home:
+        mainShellKey = GlobalKey<MainShellState>();
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => MainShell(key: mainShellKey),
         );
       case AppRoutes.mainShell:
         final initialIndex = settings.arguments as int? ?? 0;
+        mainShellKey = GlobalKey<MainShellState>();
         return MaterialPageRoute(
           settings: settings,
           builder: (_) =>

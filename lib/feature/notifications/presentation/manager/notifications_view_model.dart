@@ -4,8 +4,8 @@ import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_page_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_query_entity.dart';
-import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notifications_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notification_unread_count_usecase.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notifications_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/mark_all_notifications_as_read_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/mark_notification_as_read_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/manager/notifications_state.dart';
@@ -131,7 +131,6 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
     final result = await _getNotificationsUseCase(
       NotificationsQueryEntity(
         page: nextPage,
-        perPage: AppConstants.defaultPageSize,
       ),
     );
 

@@ -31,7 +31,7 @@ import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_de
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
-final GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
+GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
 const double kMainShellBottomNavHeight = 75.0;
 const double kMainShellBottomNavBottomOffset = 12.0;
 const double kMainShellBottomNavTopMargin = 5.0;
