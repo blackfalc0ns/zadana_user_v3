@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
@@ -43,11 +41,16 @@ class SearchBarWidget extends StatelessWidget {
     final actionColor = isFilterDestructive ? color.error : color.primary;
 
     return Container(
-      height: 40,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: color.surfaceContainerLowest,
-        border: Border.all(color: AppColors.border, width: .1),
-        borderRadius: BorderRadius.circular(Spacing.cardRadius),
+        boxShadow: [
+          BoxShadow(
+            color: color.shadow.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(25),
       ),
       child: Row(
         children: [
@@ -76,17 +79,14 @@ class SearchBarWidget extends StatelessWidget {
                             color: color.onSurface.withValues(alpha: 0.5),
                           ),
                           prefixIcon: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: SvgPicture.asset(
-                                Assets.searchNormal,
-                                width: 16,
-                                height: 16,
-                                colorFilter: ColorFilter.mode(
-                                  color.onSurfaceVariant,
-                                  BlendMode.srcIn,
-                                ),
+                            padding: const EdgeInsets.all(12.0),
+                            child: SvgPicture.asset(
+                              Assets.searchNormal,
+                              width: 16,
+                              height: 16,
+                              colorFilter: ColorFilter.mode(
+                                color.onSurfaceVariant,
+                                BlendMode.srcIn,
                               ),
                             ),
                           ),
@@ -103,10 +103,15 @@ class SearchBarWidget extends StatelessWidget {
                                     size: 20,
                                   ),
                                 ),
-                          border: InputBorder.none,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: color.surfaceContainerLowest,
                           contentPadding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.md,
-                            vertical: Spacing.sm,
+                            horizontal: 16,
+                            vertical: 12,
                           ),
                         ),
                       );
@@ -129,67 +134,48 @@ class SearchBarWidget extends StatelessWidget {
                         color: color.onSurface.withValues(alpha: 0.5),
                       ),
                       prefixIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: SvgPicture.asset(
-                            Assets.searchNormal,
-                            width: 16,
-                            height: 16,
-                            colorFilter: ColorFilter.mode(
-                              color.onSurfaceVariant,
-                              BlendMode.srcIn,
-                            ),
+                        padding: const EdgeInsets.all(12.0),
+                        child: SvgPicture.asset(
+                          Assets.searchNormal,
+                          width: 16,
+                          height: 16,
+                          colorFilter: ColorFilter.mode(
+                            color.onSurfaceVariant,
+                            BlendMode.srcIn,
                           ),
                         ),
                       ),
-                      border: InputBorder.none,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: color.surfaceContainerLowest,
                       contentPadding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.md,
-                        vertical: Spacing.sm,
+                        horizontal: 16,
+                        vertical: 12,
                       ),
                     ),
                   ),
           ),
           if (onFilterTap != null)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(end: 6, start: 2),
-              child: Material(
-                color: actionColor.withValues(alpha: 0.08),
+            Container(
+              width: 44,
+              height: 44,
+              margin: const EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                color: actionColor,
                 borderRadius: BorderRadius.circular(12),
-                child: InkWell(
-                  onTap: onFilterTap,
-                  borderRadius: BorderRadius.circular(12),
-                  child: Ink(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: actionColor.withValues(alpha: 0.22),
-                      ),
-                      gradient: LinearGradient(
-                        colors: [
-                          actionColor.withValues(alpha: 0.14),
-                          actionColor.withValues(alpha: 0.06),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: actionColor.withValues(alpha: 0.10),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Tooltip(
-                      message: filterTooltip ?? '',
-                      child: Icon(filterIcon, color: actionColor, size: 21),
-                    ),
-                  ),
-                ),
+              ),
+              child: IconButton(
+                tooltip: filterTooltip,
+                icon: Icon(filterIcon, color: color.onPrimary, size: 20),
+                onPressed: () {
+                  focusNode?.unfocus();
+                  onClose?.call();
+                  onFilterTap!();
+                },
+                padding: EdgeInsets.zero,
               ),
             ),
         ],

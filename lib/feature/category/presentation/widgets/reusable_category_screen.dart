@@ -385,6 +385,117 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     });
   }
 
+  void _openFilterBottomSheet(BuildContext context) {
+    _resetTempFilters();
+    final locale = context.localization;
+    final sheetScrollController = ScrollController();
+
+    _showBottomSheet(
+      context,
+      (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          return CustomFilterBottomSheet(
+            title: locale.filter_title,
+            cancelLabel: locale.cancel,
+            clearAllLabel: locale.clear_all,
+            applyLabel: locale.apply,
+            scrollController: sheetScrollController,
+            children: [
+              CategoryFilterSection(
+                showCategorySection: widget.showCategoryFilterSection,
+                categories: widget.categories,
+                subCategories: _tempSubCategories,
+                quantities: _tempQuantityOptions
+                    .map((item) => item.name?.trim() ?? '')
+                    .where((item) => item.isNotEmpty)
+                    .toList(),
+                brands: _tempBrandOptions
+                    .map((item) => item.name?.trim() ?? '')
+                    .where((item) => item.isNotEmpty)
+                    .toList(growable: false),
+                productTypes: _tempProductTypeOptions
+                    .map((item) => item.name?.trim() ?? '')
+                    .where((item) => item.isNotEmpty)
+                    .toList(growable: false),
+                parts: _visibleTempParts(),
+                selectedCategoryId: _resolveTempFilterCategoryId(),
+                selectedSubCategoryId: _tempSubCategoryId,
+                selectedQuantity: _tempFilterQuantity,
+                selectedBrand: _tempFilterBrand,
+                selectedProductType: _tempFilterProductType,
+                selectedPart: _tempFilterPart,
+                priceRange: _tempPriceRange,
+                priceBounds: _tempPriceBounds,
+                onCategorySelected: (categoryId) async {
+                  setSheetState(() {
+                    _tempFilterCategory = _findCategoryNameById(categoryId);
+                    _tempFilterQuantity = null;
+                    _tempFilterBrand = null;
+                    _tempFilterProductType = null;
+                    _tempFilterPart = null;
+                  });
+                  await _loadTempCategoryFilters(categoryId, setSheetState);
+                  if (categoryId != null) {
+                    _scrollSheetTo(sheetScrollController, 170);
+                  }
+                },
+                onSubCategorySelected: (subCategory) {
+                  setSheetState(() {
+                    _tempSubCategoryId = subCategory?.id;
+                    _tempSubCategoryName = subCategory?.name;
+                  });
+                },
+                onQuantitySelected: (quantity) {
+                  setSheetState(() => _tempFilterQuantity = quantity);
+                  if (quantity != null) {
+                    _scrollSheetTo(sheetScrollController, 120);
+                  }
+                },
+                onBrandSelected: (brand) =>
+                    setSheetState(() => _tempFilterBrand = brand),
+                onProductTypeSelected: (productType) => setSheetState(() {
+                  _tempFilterProductType = productType;
+                  _tempFilterPart = null;
+                }),
+                onPartSelected: (part) =>
+                    setSheetState(() => _tempFilterPart = part),
+                onPriceRangeChanged: (values) =>
+                    setSheetState(() => _tempPriceRange = values),
+              ),
+            ],
+            onApply: () => Navigator.pop(sheetContext, {
+              'categoryId': _resolveTempFilterCategoryId(),
+              'category': _tempFilterCategory,
+              'subCategoryId': _tempSubCategoryId,
+              'subCategoryName': _tempSubCategoryName,
+              'quantity': _tempFilterQuantity,
+              'brand': _tempFilterBrand,
+              'productType': _tempFilterProductType,
+              'part': _tempFilterPart,
+              'priceRange': _tempPriceRange,
+            }),
+            onClearAll: () {
+              setSheetState(() {
+                _tempFilterCategory = widget.showCategoryFilterSection
+                    ? null
+                    : widget.selectedCategory;
+                _tempFilterQuantity = null;
+                _tempFilterBrand = null;
+                _tempFilterProductType = null;
+                _tempFilterPart = null;
+                _tempSubCategoryId = null;
+                _tempSubCategoryName = null;
+                _tempPriceRange = widget.priceBounds;
+              });
+              widget.onClearAllFilters();
+            },
+          );
+        },
+      ),
+      (result) => widget.onFilterChanged(result),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
@@ -429,9 +540,11 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               onSearchChanged: widget.onSearchChanged,
               onSearchClose: widget.onSearchClose,
               searchResults: widget.searchResults,
-              onSearchActionTap: widget.onSearchActionTap,
+              onSearchActionTap:
+                  widget.onSearchActionTap ?? () => _openFilterBottomSheet(context),
               searchActionIcon: widget.searchActionIcon,
-              searchActionTooltip: widget.searchActionTooltip,
+              searchActionTooltip:
+                  widget.searchActionTooltip ?? locale.filter_button,
               isSearchActionDestructive: widget.isSearchActionDestructive,
             ),
             if (!widget.isLoading &&
@@ -455,127 +568,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     ),
                     (result) => widget.onSortChanged(result),
                   ),
-                  onFilterPressed: () {
-                    _resetTempFilters();
-                    final sheetScrollController = ScrollController();
-                    _showBottomSheet(
-                      context,
-                      (sheetContext) => StatefulBuilder(
-                        builder: (sheetContext, setSheetState) {
-                          return CustomFilterBottomSheet(
-                            title: locale.filter_title,
-                            cancelLabel: locale.cancel,
-                            clearAllLabel: locale.clear_all,
-                            applyLabel: locale.apply,
-                            scrollController: sheetScrollController,
-                            children: [
-                              CategoryFilterSection(
-                                showCategorySection:
-                                    widget.showCategoryFilterSection,
-                                categories: widget.categories,
-                                subCategories: _tempSubCategories,
-                                quantities: _tempQuantityOptions
-                                    .map((item) => item.name?.trim() ?? '')
-                                    .where((item) => item.isNotEmpty)
-                                    .toList(),
-                                brands: _tempBrandOptions
-                                    .map((item) => item.name?.trim() ?? '')
-                                    .where((item) => item.isNotEmpty)
-                                    .toList(growable: false),
-                                productTypes: _tempProductTypeOptions
-                                    .map((item) => item.name?.trim() ?? '')
-                                    .where((item) => item.isNotEmpty)
-                                    .toList(growable: false),
-                                parts: _visibleTempParts(),
-                                selectedCategoryId:
-                                    _resolveTempFilterCategoryId(),
-                                selectedSubCategoryId: _tempSubCategoryId,
-                                selectedQuantity: _tempFilterQuantity,
-                                selectedBrand: _tempFilterBrand,
-                                selectedProductType: _tempFilterProductType,
-                                selectedPart: _tempFilterPart,
-                                priceRange: _tempPriceRange,
-                                priceBounds: _tempPriceBounds,
-                                onCategorySelected: (categoryId) async {
-                                  setSheetState(() {
-                                    _tempFilterCategory = _findCategoryNameById(
-                                      categoryId,
-                                    );
-                                    _tempFilterQuantity = null;
-                                    _tempFilterBrand = null;
-                                    _tempFilterProductType = null;
-                                    _tempFilterPart = null;
-                                  });
-                                  await _loadTempCategoryFilters(
-                                    categoryId,
-                                    setSheetState,
-                                  );
-                                  if (categoryId != null) {
-                                    _scrollSheetTo(sheetScrollController, 170);
-                                  }
-                                },
-                                onSubCategorySelected: (subCategory) {
-                                  setSheetState(() {
-                                    _tempSubCategoryId = subCategory?.id;
-                                    _tempSubCategoryName = subCategory?.name;
-                                  });
-                                },
-                                onQuantitySelected: (quantity) {
-                                  setSheetState(
-                                    () => _tempFilterQuantity = quantity,
-                                  );
-                                  if (quantity != null) {
-                                    _scrollSheetTo(sheetScrollController, 120);
-                                  }
-                                },
-                                onBrandSelected: (brand) => setSheetState(
-                                  () => _tempFilterBrand = brand,
-                                ),
-                                onProductTypeSelected: (productType) =>
-                                    setSheetState(() {
-                                      _tempFilterProductType = productType;
-                                      _tempFilterPart = null;
-                                    }),
-                                onPartSelected: (part) =>
-                                    setSheetState(() => _tempFilterPart = part),
-                                onPriceRangeChanged: (values) => setSheetState(
-                                  () => _tempPriceRange = values,
-                                ),
-                              ),
-                            ],
-                            onApply: () => Navigator.pop(sheetContext, {
-                              'categoryId': _resolveTempFilterCategoryId(),
-                              'category': _tempFilterCategory,
-                              'subCategoryId': _tempSubCategoryId,
-                              'subCategoryName': _tempSubCategoryName,
-                              'quantity': _tempFilterQuantity,
-                              'brand': _tempFilterBrand,
-                              'productType': _tempFilterProductType,
-                              'part': _tempFilterPart,
-                              'priceRange': _tempPriceRange,
-                            }),
-                            onClearAll: () {
-                              setSheetState(() {
-                                _tempFilterCategory =
-                                    widget.showCategoryFilterSection
-                                    ? null
-                                    : widget.selectedCategory;
-                                _tempFilterQuantity = null;
-                                _tempFilterBrand = null;
-                                _tempFilterProductType = null;
-                                _tempFilterPart = null;
-                                _tempSubCategoryId = null;
-                                _tempSubCategoryName = null;
-                                _tempPriceRange = widget.priceBounds;
-                              });
-                              widget.onClearAllFilters();
-                            },
-                          );
-                        },
-                      ),
-                      (result) => widget.onFilterChanged(result),
-                    );
-                  },
+                  onFilterPressed: () => _openFilterBottomSheet(context),
                   hasActiveFilters: widget.hasActiveFilters,
                 ),
               ),

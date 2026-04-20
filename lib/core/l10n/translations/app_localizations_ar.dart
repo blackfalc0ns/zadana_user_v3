@@ -1154,7 +1154,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_one_more_vendor => 'اختر متجر إضافي على الأقل';
 
   @override
-  String get compare_prices => 'قارن الأسعار';
+  String get compare_prices => 'سعر المنتج في المتجر';
 
   @override
   String get select_cheapest => 'اختيار';

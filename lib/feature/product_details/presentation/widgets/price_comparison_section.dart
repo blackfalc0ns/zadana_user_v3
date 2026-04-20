@@ -7,15 +7,9 @@ import 'package:zadana_user_v3/feature/product_details/domain/entities/product_v
 class PriceComparisonSection extends StatelessWidget {
   const PriceComparisonSection({
     super.key,
-    required this.basePrice,
-    this.oldPrice,
-    required this.currency,
     required this.vendorPrices,
   });
 
-  final double basePrice;
-  final double? oldPrice;
-  final String currency;
   final List<ProductVendorPriceEntity> vendorPrices;
 
   @override
@@ -72,29 +66,27 @@ class PriceComparisonSection extends StatelessWidget {
               separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (_, index) {
                 final store = stores[index];
-                final originalPrice = store['price'] as double;
-                final salePrice = store['new_price'] as double;
-                final isDiscounted = store['is_discounted'] as bool;
+                final originalPrice = store.oldPrice;
+                final salePrice = store.price;
+                final hasDiscount =
+                    store.isDiscounted &&
+                    originalPrice != null &&
+                    originalPrice > salePrice;
 
                 return SizedBox(
                   width: 145,
                   child: ModernStoreCard(
-                    storeName: store['name'] as String,
+                    storeName: store.name,
                     price: salePrice,
-                    isLowest: store['isLowest'] as bool,
-                    icon: store['icon'] as IconData,
-                    gradientColors: store['gradientColors'] as List<Color>,
-                    savings: store['savings'] as String?,
-                    discountPercentage:
-                        isDiscounted && originalPrice > salePrice
+                    isLowest: false,
+                    icon: Icons.store,
+                    gradientColors: const [],
+                    discountPercentage: hasDiscount
                         ? (((originalPrice - salePrice) / originalPrice) * 100)
                               .round()
                         : 0,
-                    isDiscounted: isDiscounted,
-                    oldPrice: isDiscounted && originalPrice > salePrice
-                        ? originalPrice
-                        : null,
-                    storeImage: store['image'] as String?,
+                    isDiscounted: hasDiscount,
+                    oldPrice: hasDiscount ? originalPrice : null,
                   ),
                 );
               },
@@ -105,57 +97,7 @@ class PriceComparisonSection extends StatelessWidget {
     );
   }
 
-  List<Map<String, dynamic>> _getStores(BuildContext context) {
-    if (vendorPrices.isEmpty) {
-      final effectiveOldPrice = (oldPrice != null && oldPrice! > basePrice)
-          ? oldPrice!
-          : basePrice;
-
-      return [
-        {
-          'name': context.localization.current_vendor,
-          'price': effectiveOldPrice,
-          'new_price': basePrice,
-          'isLowest': true,
-          'icon': Icons.store,
-          'image': null,
-          'gradientColors': [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-          ],
-          'savings': null,
-          'is_discounted': oldPrice != null && oldPrice! > basePrice,
-        },
-      ];
-    }
-
-    final lowestPrice = vendorPrices
-        .map((vendor) => vendor.price)
-        .reduce((a, b) => a < b ? a : b);
-
-    return vendorPrices.map((vendor) {
-      final originalPrice =
-          (vendor.oldPrice != null && vendor.oldPrice! > vendor.price)
-          ? vendor.oldPrice!
-          : vendor.price;
-
-      return {
-        'name': vendor.name,
-        'price': originalPrice,
-        'new_price': vendor.price,
-        'isLowest': vendor.price == lowestPrice,
-        'icon': Icons.store,
-        'image': null,
-        'gradientColors': [
-          Theme.of(context).colorScheme.primary,
-          Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-        ],
-        'savings': null,
-        'is_discounted':
-            vendor.isDiscounted &&
-            vendor.oldPrice != null &&
-            vendor.oldPrice! > vendor.price,
-      };
-    }).toList();
+  List<ProductVendorPriceEntity> _getStores(BuildContext context) {
+    return vendorPrices;
   }
 }

@@ -134,7 +134,7 @@ class MainShellState extends State<MainShell> {
     }
 
     if (index == 2) {
-      CartNavigationService().notifyTabChanged();
+      CartNavigationService().notifyTabChanged(reload: false);
     }
 
     if (_selectedIndex != index) {

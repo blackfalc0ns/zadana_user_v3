@@ -59,9 +59,6 @@ class ProductDetailsContent extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.base),
         PriceComparisonSection(
-          basePrice: basePrice,
-          oldPrice: oldPrice,
-          currency: currency,
           vendorPrices: vendorPrices,
         ),
         const SizedBox(height: Spacing.base),

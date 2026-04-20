@@ -79,8 +79,6 @@ class BrandHeader extends StatelessWidget {
   }
 
   Widget _buildBackButton(BuildContext context) {
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
-
     return Container(
       width: 42,
       height: 42,
@@ -88,16 +86,16 @@ class BrandHeader extends StatelessWidget {
         color: AppColors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(14),
       ),
-      child: IconButton(
-        icon: Icon(
-          isRtl
-              ? Icons.arrow_forward_ios_rounded
-              : Icons.arrow_back_ios_new_rounded,
+      child: IconTheme(
+        data: const IconThemeData(
           color: AppColors.white,
           size: 18,
         ),
-        onPressed: () => Navigator.pop(context),
-        padding: EdgeInsets.zero,
+        child: IconButton(
+          icon: const BackButtonIcon(),
+          onPressed: () => Navigator.pop(context),
+          padding: EdgeInsets.zero,
+        ),
       ),
     );
   }

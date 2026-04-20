@@ -8,13 +8,30 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
   BrandSearchBarDelegate({
     required this.brandName,
-    required this.onFilterPressed,
-    required this.onSearchTap,
+    required this.onActionPressed,
+    this.onSearchTap,
+    this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onClose,
+    this.actionIcon = Icons.tune_rounded,
+    this.actionTooltip,
+    this.isActionDestructive = false,
   });
 
   final String brandName;
-  final VoidCallback onFilterPressed;
-  final VoidCallback onSearchTap;
+  final VoidCallback onActionPressed;
+  final VoidCallback? onSearchTap;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onClose;
+  final IconData actionIcon;
+  final String? actionTooltip;
+  final bool isActionDestructive;
+
+  bool get _isInteractiveSearch =>
+      controller != null && focusNode != null && onChanged != null;
 
   @override
   double get minExtent => 80;
@@ -29,6 +46,7 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     final color = context.colorScheme;
+    final actionColor = isActionDestructive ? color.error : color.primary;
 
     return Container(
       padding: const EdgeInsets.only(top: 16),
@@ -38,66 +56,121 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: color.shadow.withValues(alpha: 0.08),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+             
               borderRadius: BorderRadius.circular(25),
             ),
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    readOnly: true,
-                    onTap: onSearchTap,
-                    decoration: InputDecoration(
-                      hintText: context.localization.search_in_brand_products(
-                        brandName,
-                      ),
-                      hintStyle: getRegularStyle(
-                        fontFamily: FontConstant.cairo,
-                        color: color.onSurfaceVariant,
-                      ),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: SvgPicture.asset(
-                          'assets/images/search-normal.svg',
-                          colorFilter: ColorFilter.mode(
-                            color.onSurfaceVariant,
-                            BlendMode.srcIn,
+                  child: _isInteractiveSearch
+                      ? ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller!,
+                          builder: (context, value, _) {
+                            return TextField(
+                              controller: controller,
+                              focusNode: focusNode,
+                              onTap: onSearchTap,
+                              onChanged: onChanged,
+                              textInputAction: TextInputAction.search,
+                              decoration: InputDecoration(
+                                hintText: context.localization
+                                    .search_in_brand_products(brandName),
+                                hintStyle: getRegularStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  color: color.onSurfaceVariant,
+                                ),
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: SvgPicture.asset(
+                                    'assets/images/search-normal.svg',
+                                    colorFilter: ColorFilter.mode(
+                                      color.onSurfaceVariant,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                suffixIcon: value.text.isEmpty
+                                    ? null
+                                    : IconButton(
+                                        onPressed: () {
+                                          controller!.clear();
+                                          onChanged!('');
+                                        },
+                                        icon: Icon(
+                                          Icons.close_rounded,
+                                          color: color.onSurfaceVariant,
+                                          size: 20,
+                                        ),
+                                      ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: color.surfaceContainerLowest,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: color.onSurface,
+                              ),
+                            );
+                          },
+                        )
+                      : TextField(
+                          readOnly: true,
+                          onTap: onSearchTap,
+                          decoration: InputDecoration(
+                            hintText: context.localization
+                                .search_in_brand_products(brandName),
+                            hintStyle: getRegularStyle(
+                              fontFamily: FontConstant.cairo,
+                              color: color.onSurfaceVariant,
+                            ),
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: SvgPicture.asset(
+                                'assets/images/search-normal.svg',
+                                colorFilter: ColorFilter.mode(
+                                  color.onSurfaceVariant,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: color.surfaceContainerLowest,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: color.onSurface,
                           ),
                         ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: color.surfaceContainerLowest,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: color.onSurface,
-                    ),
-                  ),
                 ),
                 Container(
                   width: 44,
                   height: 44,
                   margin: const EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
-                    color: color.primary,
+                    color: actionColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.tune, color: color.onPrimary, size: 20),
-                    onPressed: onFilterPressed,
+                    tooltip: actionTooltip,
+                    icon: Icon(actionIcon, color: color.onPrimary, size: 20),
+                    onPressed: () {
+                      focusNode?.unfocus();
+                      onClose?.call();
+                      onActionPressed();
+                    },
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -111,6 +184,6 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }

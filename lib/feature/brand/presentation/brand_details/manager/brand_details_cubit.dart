@@ -75,6 +75,17 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
     await _loadProducts();
   }
 
+  Future<void> clearSelectedCategory() async {
+    emit(
+      state.copyWith(
+        selectedCategoryId: null,
+        selectedSubcategoryId: null,
+        errorMessage: null,
+      ),
+    );
+    await _loadProducts();
+  }
+
   Future<void> applyFilters({
     String? categoryName,
     String? subcategoryName,
@@ -128,6 +139,8 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
   }
 
   BrandProductsRequestEntity _buildRequest() {
+    final hasActivePriceFilter = state.hasActivePriceFilter;
+
     return BrandProductsRequestEntity(
       brandId: _brand.id,
       brandName: _brand.name,
@@ -135,8 +148,8 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
       categoryId: state.selectedCategoryId,
       subcategoryId: state.selectedSubcategoryId,
       unitId: state.selectedUnitId,
-      minPrice: state.priceRange.start,
-      maxPrice: state.priceRange.end,
+      minPrice: hasActivePriceFilter ? state.priceRange.start : null,
+      maxPrice: hasActivePriceFilter ? state.priceRange.end : null,
       sort: state.selectedSortValue.isEmpty ? null : state.selectedSortValue,
     );
   }
