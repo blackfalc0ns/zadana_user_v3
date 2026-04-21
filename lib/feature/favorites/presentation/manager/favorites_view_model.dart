@@ -1,16 +1,24 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
-import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/usecase/clear_favorites_usecase.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/usecase/get_favorites_usecase.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/usecase/remove_favorite_usecase.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_state.dart';
 
+@injectable
 class FavoritesViewModel extends Cubit<FavoritesState> {
-  FavoritesViewModel(this._repository) : super(const FavoritesState());
+  FavoritesViewModel(
+    this._getFavoritesUseCase,
+    this._removeFavoriteUseCase,
+    this._clearFavoritesUseCase,
+  ) : super(const FavoritesState());
 
-  final FavoritesRepository _repository;
-  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
+  final GetFavoritesUseCase _getFavoritesUseCase;
+  final RemoveFavoriteUseCase _removeFavoriteUseCase;
+  final ClearFavoritesUseCase _clearFavoritesUseCase;
 
   Future<void> loadFavorites({bool silent = false}) async {
     final showBlockingLoader = !silent || state.items.isEmpty;
@@ -26,7 +34,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
 
     developer.log('Loading favorites', name: 'FavoritesViewModel');
 
-    final result = await _repository.getFavorites();
+    final result = await _getFavoritesUseCase();
 
     switch (result) {
       case ApiSuccessResult():
@@ -61,14 +69,10 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   }
 
   Future<void> removeFavorite(String productId) async {
-    final result = await _repository.removeFavorite(productId);
+    final result = await _removeFavoriteUseCase(productId);
 
     switch (result) {
       case ApiSuccessResult():
-        _favoriteSyncService.notifyFavoriteChanged(
-          productId: productId,
-          isFavorite: false,
-        );
         final updatedItems = state.items
             .where((item) => item.id != productId)
             .toList();
@@ -107,16 +111,12 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
       ),
     );
 
-    final result = await _repository.clearFavorites();
+    final result = await _clearFavoritesUseCase(
+      productIds: currentItems.map((item) => item.id),
+    );
 
     switch (result) {
       case ApiSuccessResult():
-        for (final item in currentItems) {
-          _favoriteSyncService.notifyFavoriteChanged(
-            productId: item.id,
-            isFavorite: false,
-          );
-        }
         emit(
           state.copyWith(
             isClearing: false,

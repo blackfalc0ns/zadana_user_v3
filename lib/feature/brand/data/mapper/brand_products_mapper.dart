@@ -1,7 +1,7 @@
 import 'package:zadana_user_v3/core/network/network_constants.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_products_applied_filters_dto.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_products_item_model_dto.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_products_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/products/brand_products_applied_filters_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/products/brand_products_item_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/products/brand_products_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_applied_filters_entity.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_product_model.dart';
@@ -43,7 +43,8 @@ extension BrandProductsResponseModelDtoMapper on BrandProductsResponseModelDto {
   }
 }
 
-extension BrandProductsAppliedFiltersDtoMapper on BrandProductsAppliedFiltersDto {
+extension BrandProductsAppliedFiltersDtoMapper
+    on BrandProductsAppliedFiltersDto {
   BrandAppliedFiltersEntity toEntity() {
     return BrandAppliedFiltersEntity(
       categoryId: categoryId,

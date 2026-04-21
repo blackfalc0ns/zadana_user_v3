@@ -1,8 +1,18 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/network/network_constants.dart';
+import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
+import 'package:zadana_user_v3/core/services/device_id_service.dart';
+import 'package:zadana_user_v3/core/services/token_interceptor.dart';
+import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/cart/data/data_source/cart_remote_data_source.dart';
 import 'package:zadana_user_v3/feature/cart/data/mapper/add_cart_item_mapper.dart';
 import 'package:zadana_user_v3/feature/cart/data/mapper/cart_vendor_mapper.dart';
+import 'package:zadana_user_v3/feature/cart/data/models/response/get_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendors_entity.dart';
@@ -12,11 +22,18 @@ import 'package:zadana_user_v3/feature/cart/domain/entities/remove_cart_item_res
 import 'package:zadana_user_v3/feature/cart/domain/entities/update_cart_item_quantity_request_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 
-@Injectable(as: CartRepository)
+@LazySingleton(as: CartRepository)
 class CartRepositoryImpl implements CartRepository {
-  const CartRepositoryImpl(this._remoteDataSource);
+  CartRepositoryImpl(this._remoteDataSource);
 
   final CartRemoteDataSource _remoteDataSource;
+  final StreamController<CartMutationEvent> _mutationController =
+      StreamController<CartMutationEvent>.broadcast();
+  Dio get _dio => GetIt.instance<Dio>();
+  TokenService get _tokenService => GetIt.instance<TokenService>();
+  DeviceIdService get _deviceIdService => GetIt.instance<DeviceIdService>();
+  @override
+  Stream<CartMutationEvent> get mutations => _mutationController.stream;
 
   @override
   Future<ApiResult<CartVendorsEntity>> getCartVendors() async {
@@ -32,15 +49,45 @@ class CartRepositoryImpl implements CartRepository {
   ) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.addCartItem(request.toDto());
-      return response.toEntity();
+      final entity = response.toEntity();
+      _emitMutation(
+        CartMutationEvent.adjustCount(request.quantity, refreshRequested: true),
+      );
+      return entity;
     });
+  }
+
+  @override
+  Future<void> syncGuestCartIfAuthenticated() async {
+    final token = await _tokenService.getToken();
+    if (token == null || token.isEmpty) return;
+
+    final guestCart = await _loadGuestCart();
+    if (guestCart == null || guestCart.items.isEmpty) {
+      return;
+    }
+
+    for (final item in guestCart.items) {
+      final result = await addCartItem(
+        AddCartItemRequestEntity(
+          productId: item.productId,
+          quantity: item.quantity,
+        ),
+      );
+
+      if (result is ApiSuccessResult<AddCartItemResponseEntity>) {
+        await _deleteGuestCartItem(item.id);
+      }
+    }
   }
 
   @override
   Future<ApiResult<GetCartResponseEntity>> getCart({String? vendorId}) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getCart(vendorId: vendorId);
-      return response.toEntity();
+      final entity = response.toEntity();
+      _emitMutation(CartMutationEvent.setCount(entity.summary.totalQuantity));
+      return entity;
     });
   }
 
@@ -48,7 +95,9 @@ class CartRepositoryImpl implements CartRepository {
   Future<ApiResult<ClearCartResponseEntity>> clearCart() async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.clearCart();
-      return response.toEntity();
+      final entity = response.toEntity();
+      _emitMutation(const CartMutationEvent.setCount(0));
+      return entity;
     });
   }
 
@@ -58,7 +107,9 @@ class CartRepositoryImpl implements CartRepository {
   ) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.removeCartItem(itemId);
-      return response.toEntity();
+      final entity = response.toEntity();
+      _emitMutation(CartMutationEvent.setCount(entity.summary.totalQuantity));
+      return entity;
     });
   }
 
@@ -74,7 +125,45 @@ class CartRepositoryImpl implements CartRepository {
         vendorId,
         request.toDto(),
       );
-      return response.toEntity();
+      final entity = response.toEntity();
+      _emitMutation(CartMutationEvent.setCount(entity.summary.totalQuantity));
+      return entity;
     });
+  }
+
+  Future<GetCartResponseDto?> _loadGuestCart() async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      EndPoints.cart,
+      options: await _guestOptions(),
+    );
+
+    final data = response.data;
+    if (data == null) {
+      return null;
+    }
+
+    return GetCartResponseDto.fromJson(data);
+  }
+
+  Future<void> _deleteGuestCartItem(String itemId) async {
+    await _dio.delete<void>(
+      '${EndPoints.cartItems}/$itemId',
+      options: await _guestOptions(),
+    );
+  }
+
+  Future<Options> _guestOptions() async {
+    final deviceId = await _deviceIdService.getOrCreateDeviceId();
+    return Options(
+      headers: {NetworkConstants.deviceIdHeader: deviceId},
+      extra: {
+        TokenInterceptor.skipAuthKey: true,
+        DeviceIdInterceptor.forceDeviceIdKey: true,
+      },
+    );
+  }
+
+  void _emitMutation(CartMutationEvent event) {
+    _mutationController.add(event);
   }
 }

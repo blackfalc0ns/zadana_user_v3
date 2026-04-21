@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
+import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/search/domain/entities/product_search_entity.dart';
 import 'package:zadana_user_v3/feature/search/domain/entities/product_search_params.dart';
 import 'package:zadana_user_v3/feature/search/domain/entities/product_search_request_entity.dart';
@@ -17,7 +18,9 @@ class ProductSearchViewModel extends Cubit<ProductSearchState> {
     this._searchProductsUseCase,
     @factoryParam this._params,
   ) : super(const ProductSearchState()) {
-    _favoriteSyncService.addListener(_syncFavoriteState);
+    _favoritesSubscription = _favoritesRepository.mutations.listen(
+      _syncFavoriteState,
+    );
     _submitInitialQuery();
   }
 
@@ -26,9 +29,11 @@ class ProductSearchViewModel extends Cubit<ProductSearchState> {
 
   final SearchProductsUseCase _searchProductsUseCase;
   final ProductSearchParams _params;
-  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
+  final FavoritesRepository _favoritesRepository =
+      GetIt.instance<FavoritesRepository>();
 
   Timer? _debounce;
+  StreamSubscription<FavoriteMutationEvent>? _favoritesSubscription;
   int _page = 1;
   int _requestSequence = 0;
 
@@ -169,17 +174,15 @@ class ProductSearchViewModel extends Cubit<ProductSearchState> {
     await _search(state.query, reset: state.items.isEmpty);
   }
 
-  void _syncFavoriteState() {
-    final productId = _favoriteSyncService.productId;
-    final isFavorite = _favoriteSyncService.isFavorite;
-    if (productId == null || isFavorite == null) return;
+  void _syncFavoriteState(FavoriteMutationEvent event) {
+    final affectedIds = event.productIds.toSet();
 
     emit(
       state.copyWith(
         items: state.items
             .map(
-              (item) => item.id == productId
-                  ? item.copyWith(isFavorite: isFavorite)
+              (item) => affectedIds.contains(item.id)
+                  ? item.copyWith(isFavorite: event.isFavorite)
                   : item,
             )
             .toList(),
@@ -190,7 +193,7 @@ class ProductSearchViewModel extends Cubit<ProductSearchState> {
   @override
   Future<void> close() {
     _debounce?.cancel();
-    _favoriteSyncService.removeListener(_syncFavoriteState);
+    _favoritesSubscription?.cancel();
     return super.close();
   }
 }

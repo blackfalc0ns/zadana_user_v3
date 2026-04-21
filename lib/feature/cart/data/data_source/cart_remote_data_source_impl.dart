@@ -15,7 +15,6 @@ import 'package:zadana_user_v3/feature/cart/data/models/response/add_cart_item_r
 import 'package:zadana_user_v3/feature/cart/data/models/response/clear_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/get_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/remove_cart_item_response_dto.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/cart_cache_invalidator.dart';
 
 @Injectable(as: CartRemoteDataSource)
 class CartRemoteDataSourceImpl implements CartRemoteDataSource {
@@ -32,9 +31,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   final CacheStore _cacheStore;
   final TokenService _tokenService;
   final DeviceIdService _deviceIdService;
-
-  CartCacheInvalidator get _cartCacheInvalidator =>
-      CartCacheInvalidator(_cacheStore);
+  static const String _checkoutSummaryEndpoint = '/checkout/summary';
 
   static const Map<String, String> _noStoreHeaders = {
     'Cache-Control': 'no-store, no-cache, must-revalidate',
@@ -79,7 +76,21 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   }
 
   Future<void> _clearCartReadCache() {
-    return _cartCacheInvalidator.clearCartCache();
+    return _clearCachedPath(EndPoints.cart);
+  }
+
+  Future<void> _clearCheckoutSummaryCache() {
+    return _clearCachedPath(_checkoutSummaryEndpoint);
+  }
+
+  Future<void> _clearCachedPath(String endpoint) {
+    return _cacheStore.deleteFromPath(_buildEndpointPattern(endpoint));
+  }
+
+  RegExp _buildEndpointPattern(String endpoint) {
+    return RegExp(
+      '^${RegExp.escape('${NetworkConstants.baseUrl}$endpoint')}(?:[/?].*)?\$',
+    );
   }
 
   @override
@@ -110,7 +121,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   ) async {
     try {
       final response = await _apiServices.addCartItem(request);
-      await _cartCacheInvalidator.clearCartCache();
+      await _clearCartReadCache();
       return response;
     } on DioException catch (error) {
       if (!await _shouldFallbackToGuest(error)) rethrow;
@@ -121,7 +132,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         options: await _guestNoCacheOptions(),
       );
 
-      await _cartCacheInvalidator.clearCartCache();
+      await _clearCartReadCache();
       return AddCartItemResponseDto.fromJson(response.data ?? {});
     }
   }
@@ -158,8 +169,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   Future<ClearCartResponseDto> clearCart() async {
     try {
       final response = await _apiServices.clearCart();
-      await _cartCacheInvalidator.clearCartCache();
-      await _cartCacheInvalidator.clearCheckoutSummaryCache();
+      await _clearCartReadCache();
+      await _clearCheckoutSummaryCache();
       return response;
     } on DioException catch (error) {
       if (!await _shouldFallbackToGuest(error)) rethrow;
@@ -169,8 +180,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         options: await _guestNoCacheOptions(),
       );
 
-      await _cartCacheInvalidator.clearCartCache();
-      await _cartCacheInvalidator.clearCheckoutSummaryCache();
+      await _clearCartReadCache();
+      await _clearCheckoutSummaryCache();
       return ClearCartResponseDto.fromJson(response.data ?? {});
     }
   }
@@ -179,8 +190,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   Future<RemoveCartItemResponseDto> removeCartItem(String itemId) async {
     try {
       final response = await _apiServices.removeCartItem(itemId);
-      await _cartCacheInvalidator.clearCartCache();
-      await _cartCacheInvalidator.clearCheckoutSummaryCache();
+      await _clearCartReadCache();
+      await _clearCheckoutSummaryCache();
       return response;
     } on DioException catch (error) {
       if (!await _shouldFallbackToGuest(error)) rethrow;
@@ -190,8 +201,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         options: await _guestNoCacheOptions(),
       );
 
-      await _cartCacheInvalidator.clearCartCache();
-      await _cartCacheInvalidator.clearCheckoutSummaryCache();
+      await _clearCartReadCache();
+      await _clearCheckoutSummaryCache();
       return RemoveCartItemResponseDto.fromJson(response.data ?? {});
     }
   }
@@ -207,8 +218,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       vendorId,
       request,
     );
-    await _cartCacheInvalidator.clearCartCache();
-    await _cartCacheInvalidator.clearCheckoutSummaryCache();
+    await _clearCartReadCache();
+    await _clearCheckoutSummaryCache();
     return response;
   }
 }

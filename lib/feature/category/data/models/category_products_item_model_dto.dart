@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'category_products_item_model_dto.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class CategoryProductsItemModelDto {
   const CategoryProductsItemModelDto({
     this.id,
@@ -14,22 +19,9 @@ class CategoryProductsItemModelDto {
     this.isDiscounted,
   });
 
-  factory CategoryProductsItemModelDto.fromJson(Map<String, dynamic> json) {
-    return CategoryProductsItemModelDto(
-      id: json['id'] as String?,
-      name: json['name'] as String?,
-      store: json['store'] as String?,
-      price: (json['price'] as num?)?.toDouble(),
-      oldPrice: (json['old_price'] as num?)?.toDouble(),
-      imageUrl: json['image_url'] as String?,
-      rating: (json['rating'] as num?)?.toDouble(),
-      reviewCount: json['review_count'] as int?,
-      discount: json['discount'] as String?,
-      isFavorite: json['is_favorite'] as bool?,
-      unit: json['unit'] as String?,
-      isDiscounted: json['is_discounted'] as bool?,
-    );
-  }
+  factory CategoryProductsItemModelDto.fromJson(Map<String, dynamic> json) =>
+      _$CategoryProductsItemModelDtoFromJson(json);
+
   final String? id;
   final String? name;
   final String? store;
@@ -42,4 +34,6 @@ class CategoryProductsItemModelDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+
+  Map<String, dynamic> toJson() => _$CategoryProductsItemModelDtoToJson(this);
 }

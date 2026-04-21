@@ -1,10 +1,11 @@
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/mapper/mapper_verify_otp.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
-import 'package:zadana_user_v3/feature/favorites/data/services/guest_favorites_sync_service.dart';
+import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
+import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import '../../domain/entities/verify_otp_request_entity.dart';
 import '../../domain/entities/verify_otp_response_entity.dart';
 import '../../domain/repo/verify_otp_repository.dart';
@@ -18,15 +19,14 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
     this._remoteDataSource,
     this._tokenService,
     this._notificationDeviceService,
-    this._guestCartSyncService,
-    this._guestFavoritesSyncService,
   );
 
   final VerifyOtpRemoteDataSource _remoteDataSource;
   final TokenService _tokenService;
   final NotificationDeviceService _notificationDeviceService;
-  final GuestCartSyncService _guestCartSyncService;
-  final GuestFavoritesSyncService _guestFavoritesSyncService;
+  CartRepository get _cartRepository => GetIt.instance<CartRepository>();
+  FavoritesRepository get _favoritesRepository =>
+      GetIt.instance<FavoritesRepository>();
 
   @override
   Future<ApiResult<VerifyOtpResponseEntity>> verifyOtp(
@@ -40,8 +40,8 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
       if (accessToken != null && refreshToken != null) {
         await _tokenService.saveAccessToken(accessToken);
         await _tokenService.saveRefreshToken(refreshToken);
-        await _guestCartSyncService.syncPendingItemsIfAuthenticated();
-        await _guestFavoritesSyncService.syncPendingFavoritesIfAuthenticated();
+        await _cartRepository.syncGuestCartIfAuthenticated();
+        await _favoritesRepository.syncGuestFavoritesIfAuthenticated();
         await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();
       }
 

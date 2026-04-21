@@ -37,6 +37,8 @@ import '../../feature/addresses/domain/usecase/update_customer_address_usecase.d
     as _i563;
 import '../../feature/addresses/presentation/manager/customer_addresses_view_model.dart'
     as _i720;
+import '../../feature/app_section/manager/app_section_global_cubit.dart'
+    as _i162;
 import '../../feature/auth/forget_password/data/data_source/forget_password_remote_data_source.dart'
     as _i596;
 import '../../feature/auth/forget_password/data/data_source/forget_password_remote_data_source_impl.dart'
@@ -124,7 +126,6 @@ import '../../feature/cart/data/data_source/cart_remote_data_source.dart'
 import '../../feature/cart/data/data_source/cart_remote_data_source_impl.dart'
     as _i640;
 import '../../feature/cart/data/repo/cart_repository_impl.dart' as _i132;
-import '../../feature/cart/data/services/guest_cart_sync_service.dart' as _i219;
 import '../../feature/cart/domain/repo/cart_repository.dart' as _i435;
 import '../../feature/cart/domain/usecase/add_cart_item_usecase.dart' as _i448;
 import '../../feature/cart/domain/usecase/clear_cart_usecase.dart' as _i327;
@@ -155,6 +156,8 @@ import '../../feature/category/domain/usecase/get_shopping_products_usecase.dart
     as _i45;
 import '../../feature/category/presentation/manager/category_cubit.dart'
     as _i729;
+import '../../feature/category/presentation/manager/category_view_model.dart'
+    as _i228;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
     as _i691;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source_impl.dart'
@@ -171,8 +174,19 @@ import '../../feature/delivery_verification/domain/usecase/verify_delivery_otp_u
     as _i8;
 import '../../feature/delivery_verification/presentation/manager/delivery_otp_view_model.dart'
     as _i796;
-import '../../feature/favorites/data/services/guest_favorites_sync_service.dart'
-    as _i64;
+import '../../feature/favorites/data/data_source/favorites_remote_data_source.dart'
+    as _i480;
+import '../../feature/favorites/data/data_source/favorites_remote_data_source_impl.dart'
+    as _i346;
+import '../../feature/favorites/data/repo/favorites_repository.dart' as _i140;
+import '../../feature/favorites/domain/usecase/clear_favorites_usecase.dart'
+    as _i954;
+import '../../feature/favorites/domain/usecase/get_favorites_usecase.dart'
+    as _i253;
+import '../../feature/favorites/domain/usecase/remove_favorite_usecase.dart'
+    as _i314;
+import '../../feature/favorites/presentation/manager/favorites_view_model.dart'
+    as _i190;
 import '../../feature/home/data/data_source/home_remote_data_source.dart'
     as _i730;
 import '../../feature/home/data/data_source/home_remote_data_source_impl.dart'
@@ -355,8 +369,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => externalModules.flutterSecureStorage(),
     );
-    gh.lazySingleton<_i64.GuestFavoritesSyncService>(
-      () => _i64.GuestFavoritesSyncService(),
+    gh.lazySingleton<_i900.CategoryNavigationService>(
+      () => _i900.CategoryNavigationService(),
     );
     gh.factory<_i42.SharedPrefHelper>(
       () => _i42.SharedPrefHelper(gh<_i460.SharedPreferences>()),
@@ -377,9 +391,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i819.LanguageService>(
       () => _i819.LanguageService(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i900.CategoryNavigationService>(
-      () => _i900.CategoryNavigationService(),
-    );
     gh.lazySingleton<_i148.DeviceIdService>(
       () => _i148.DeviceIdService(gh<_i460.SharedPreferences>()),
     );
@@ -390,12 +401,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1072.LocationDataSourceImpl(
         gh<_i777.OsmApiServices>(),
         gh<_i367.LocationPermissionService>(),
-      ),
-    );
-    gh.lazySingleton<_i219.GuestCartSyncService>(
-      () => _i219.GuestCartSyncService(
-        gh<_i460.SharedPreferences>(),
-        gh<_i227.TokenService>(),
       ),
     );
     gh.factory<_i930.DeviceIdInterceptor>(
@@ -511,7 +516,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1069.ProductSearchRemoteDataSource>(
       () => _i324.ProductSearchRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
-    gh.factory<_i435.CartRepository>(
+    gh.lazySingleton<_i435.CartRepository>(
       () => _i132.CartRepositoryImpl(gh<_i1034.CartRemoteDataSource>()),
     );
     gh.factory<_i230.CustomerAddressesRepository>(
@@ -632,6 +637,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i691.DeliveryVerificationRemoteDataSource>(),
       ),
     );
+    gh.factory<_i480.FavoritesRemoteDataSource>(
+      () => _i346.FavoritesRemoteDataSourceImpl(
+        gh<_i804.ApiServices>(),
+        gh<_i361.Dio>(),
+        gh<_i227.TokenService>(),
+        gh<_i148.DeviceIdService>(),
+      ),
+    );
     gh.factory<_i131.CategoryRepository>(
       () => _i473.CategoryRepositoryImpl(gh<_i601.CategoryRemoteDataSource>()),
     );
@@ -649,16 +662,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i916.NotificationsRepository>(
       () => _i319.NotificationsRepositoryImpl(
         gh<_i1071.NotificationsRemoteDataSource>(),
-      ),
-    );
-    gh.factory<_i341.CartViewModel>(
-      () => _i341.CartViewModel(
-        gh<_i1065.GetCartVendorsUseCase>(),
-        gh<_i925.GetCartUseCase>(),
-        gh<_i327.ClearCartUseCase>(),
-        gh<_i483.RemoveCartItemUseCase>(),
-        gh<_i8.UpdateCartItemQuantityUseCase>(),
-        gh<_i219.GuestCartSyncService>(),
       ),
     );
     gh.factoryParam<
@@ -705,6 +708,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1066.RemoveCheckoutPromoCodeUseCase>(),
         gh<_i859.PlaceOrderUseCase>(),
         gh<_i525.GetCustomerAddressesUseCase>(),
+      ),
+    );
+    gh.factory<_i341.CartViewModel>(
+      () => _i341.CartViewModel(
+        gh<_i1065.GetCartVendorsUseCase>(),
+        gh<_i925.GetCartUseCase>(),
+        gh<_i327.ClearCartUseCase>(),
+        gh<_i483.RemoveCartItemUseCase>(),
+        gh<_i8.UpdateCartItemQuantityUseCase>(),
       ),
     );
     gh.factory<_i398.MyOrdersViewModel>(
@@ -794,6 +806,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i45.GetShoppingProductsUseCase>(
       () => _i45.GetShoppingProductsUseCase(gh<_i131.CategoryRepository>()),
     );
+    gh.lazySingleton<_i140.FavoritesRepository>(
+      () => _i140.FavoritesRepository(gh<_i480.FavoritesRemoteDataSource>()),
+    );
     gh.factory<_i393.OrderDetailsViewModel>(
       () => _i393.OrderDetailsViewModel(gh<_i372.GetOrderDetailsUseCase>()),
     );
@@ -814,7 +829,6 @@ extension GetItInjectableX on _i174.GetIt {
         productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
         addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
         getCartUseCase: gh<_i925.GetCartUseCase>(),
-        guestCartSyncService: gh<_i219.GuestCartSyncService>(),
         languageService: gh<_i819.LanguageService>(),
       ),
     );
@@ -879,6 +893,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i477.UpdateProfileUseCase>(),
       ),
     );
+    gh.factory<_i954.ClearFavoritesUseCase>(
+      () => _i954.ClearFavoritesUseCase(gh<_i140.FavoritesRepository>()),
+    );
+    gh.factory<_i253.GetFavoritesUseCase>(
+      () => _i253.GetFavoritesUseCase(gh<_i140.FavoritesRepository>()),
+    );
+    gh.factory<_i314.RemoveFavoriteUseCase>(
+      () => _i314.RemoveFavoriteUseCase(gh<_i140.FavoritesRepository>()),
+    );
     gh.factory<_i683.NotificationsViewModel>(
       () => _i683.NotificationsViewModel(
         gh<_i519.GetNotificationsUseCase>(),
@@ -887,8 +910,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i690.MarkAllNotificationsAsReadUseCase>(),
       ),
     );
-    gh.factory<_i729.CategoryViewModel>(
-      () => _i729.CategoryViewModel(
+    gh.factory<_i228.CategoryViewModel>(
+      () => _i228.CategoryViewModel(
         getCategoriesUseCase: gh<_i17.GetCategoriesUseCase>(),
         getCategoryFiltersUseCase: gh<_i91.GetCategoryFiltersUseCase>(),
         getCategorySubcategoriesUseCase:
@@ -915,41 +938,59 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1029.UnregisterNotificationDeviceUseCase>(),
       ),
     );
-    gh.factory<_i415.VerifyOtpRepository>(
-      () => _i548.VerifyOtpRepositoryImpl(
-        gh<_i698.VerifyOtpRemoteDataSource>(),
-        gh<_i227.TokenService>(),
-        gh<_i823.NotificationDeviceService>(),
-        gh<_i219.GuestCartSyncService>(),
-        gh<_i64.GuestFavoritesSyncService>(),
-      ),
-    );
     gh.factory<_i558.LoginRepository>(
       () => _i94.LoginRepositoryImpl(
         gh<_i952.LoginRemoteDataSource>(),
         gh<_i227.TokenService>(),
         gh<_i823.NotificationDeviceService>(),
-        gh<_i219.GuestCartSyncService>(),
-        gh<_i64.GuestFavoritesSyncService>(),
+      ),
+    );
+    gh.factory<_i248.LoginUseCase>(
+      () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
+    );
+    gh.factory<_i190.FavoritesViewModel>(
+      () => _i190.FavoritesViewModel(
+        gh<_i253.GetFavoritesUseCase>(),
+        gh<_i314.RemoveFavoriteUseCase>(),
+        gh<_i954.ClearFavoritesUseCase>(),
       ),
     );
     gh.factory<_i330.RegisterViewModel>(
       () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
     );
-    gh.factory<_i851.VerifyOtpUseCase>(
-      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
-    );
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
     );
-    gh.factory<_i248.LoginUseCase>(
-      () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
+    gh.factory<_i955.LoginViewModel>(
+      () => _i955.LoginViewModel(gh<_i248.LoginUseCase>()),
+    );
+    gh.factory<_i162.AppSectionGlobalCubit>(
+      () => _i162.AppSectionGlobalCubit(
+        homeViewModel: gh<_i495.HomeViewModel>(),
+        cartViewModel: gh<_i341.CartViewModel>(),
+        favoritesViewModel: gh<_i190.FavoritesViewModel>(),
+        profileViewModel: gh<_i701.ProfileViewModel>(),
+        categoryViewModel: gh<_i729.CategoryViewModel>(),
+        tokenService: gh<_i227.TokenService>(),
+        favoritesRepository: gh<_i140.FavoritesRepository>(),
+        cartRepository: gh<_i435.CartRepository>(),
+        getCartUseCase: gh<_i925.GetCartUseCase>(),
+        productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
+        addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
+      ),
+    );
+    gh.factory<_i415.VerifyOtpRepository>(
+      () => _i548.VerifyOtpRepositoryImpl(
+        gh<_i698.VerifyOtpRemoteDataSource>(),
+        gh<_i227.TokenService>(),
+        gh<_i823.NotificationDeviceService>(),
+      ),
+    );
+    gh.factory<_i851.VerifyOtpUseCase>(
+      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
     gh.factory<_i718.VerifyOtpViewModel>(
       () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),
-    );
-    gh.factory<_i955.LoginViewModel>(
-      () => _i955.LoginViewModel(gh<_i248.LoginUseCase>()),
     );
     return this;
   }

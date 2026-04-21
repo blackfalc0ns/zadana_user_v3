@@ -1,17 +1,17 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
-import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
-import 'package:zadana_user_v3/core/services/cart_refresh_service.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_details_entity.dart';
@@ -25,24 +25,21 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     required ProductDetailsUseCase productDetailsUseCase,
     required AddCartItemUseCase addCartItemUseCase,
     required GetCartUseCase getCartUseCase,
-    required GuestCartSyncService guestCartSyncService,
     required LanguageService languageService,
   }) : _productDetailsUseCase = productDetailsUseCase,
        _addCartItemUseCase = addCartItemUseCase,
        _getCartUseCase = getCartUseCase,
-       _guestCartSyncService = guestCartSyncService,
        _languageService = languageService,
        super(const ProductDetailsState());
 
   final ProductDetailsUseCase _productDetailsUseCase;
   final AddCartItemUseCase _addCartItemUseCase;
   final GetCartUseCase _getCartUseCase;
-  final GuestCartSyncService _guestCartSyncService;
   final LanguageService _languageService;
-  final CartCountSyncService _cartCountSyncService = CartCountSyncService();
+  final CartRepository _cartRepository = GetIt.instance<CartRepository>();
 
   String? _productId;
-  bool _isCartListenerAttached = false;
+  StreamSubscription<CartMutationEvent>? _cartMutationSubscription;
 
   AppLocalizations get _l10n {
     final languageCode = _languageService.getLanguageCode();
@@ -175,9 +172,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
 
     switch (result) {
       case ApiSuccessResult():
-        await _guestCartSyncService.cacheGuestCartItem(request);
-        _cartCountSyncService.incrementBy(request.quantity);
-        CartRefreshService().notifyCartChanged();
         emit(
           state.copyWith(
             isAddingToCart: false,
@@ -226,35 +220,29 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   }
 
   void _attachCartListenerIfNeeded() {
-    if (_isCartListenerAttached) return;
-    _cartCountSyncService.addListener(_handleCartCountChanged);
-    _isCartListenerAttached = true;
-  }
-
-  void _handleCartCountChanged() {
-    final absoluteCount = _cartCountSyncService.absoluteCount;
-    if (absoluteCount != null) {
-      emit(state.copyWith(cartCount: math.max(0, absoluteCount)));
-      return;
-    }
-
-    if (_cartCountSyncService.refreshRequested) {
-      _loadInitialCartCount();
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        cartCount: math.max(0, state.cartCount + _cartCountSyncService.delta),
-      ),
+    _cartMutationSubscription ??= _cartRepository.mutations.listen(
+      _handleCartMutation,
     );
   }
 
-  @override
-  Future<void> close() {
-    if (_isCartListenerAttached) {
-      _cartCountSyncService.removeListener(_handleCartCountChanged);
+  void _handleCartMutation(CartMutationEvent event) {
+    final absoluteCount = event.absoluteCount;
+    if (absoluteCount != null) {
+      emit(state.copyWith(cartCount: math.max(0, absoluteCount)));
+    } else if (event.delta != 0) {
+      emit(
+        state.copyWith(cartCount: math.max(0, state.cartCount + event.delta)),
+      );
     }
+
+    if (event.refreshRequested) {
+      _loadInitialCartCount();
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _cartMutationSubscription?.cancel();
     return super.close();
   }
 }

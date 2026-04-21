@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'category_products_applied_filters_dto.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class CategoryProductsAppliedFiltersDto {
   const CategoryProductsAppliedFiltersDto({
     this.subcategoryId,
@@ -10,20 +15,15 @@ class CategoryProductsAppliedFiltersDto {
 
   factory CategoryProductsAppliedFiltersDto.fromJson(
     Map<String, dynamic> json,
-  ) {
-    return CategoryProductsAppliedFiltersDto(
-      subcategoryId: json['subcategory_id'] as String?,
-      quantityId: json['quantity_id'] as String?,
-      brandId: json['brand_id'] as String?,
-      minPrice: (json['min_price'] as num?)?.toDouble(),
-      maxPrice: (json['max_price'] as num?)?.toDouble(),
-      sort: json['sort'] as String?,
-    );
-  }
+  ) => _$CategoryProductsAppliedFiltersDtoFromJson(json);
+
   final String? subcategoryId;
   final String? quantityId;
   final String? brandId;
   final double? minPrice;
   final double? maxPrice;
   final String? sort;
+
+  Map<String, dynamic> toJson() =>
+      _$CategoryProductsAppliedFiltersDtoToJson(this);
 }

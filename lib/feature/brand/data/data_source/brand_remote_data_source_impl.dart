@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/feature/brand/data/data_source/brand_remote_data_source.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_filters_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_products_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/filters/brand_filters_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/products/brand_products_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_products_request_entity.dart';
 
 @Injectable(as: BrandRemoteDataSource)

@@ -68,14 +68,16 @@ class BannerSkeleton extends StatelessWidget {
 }
 
 class ProductCardSkeleton extends StatelessWidget {
-  const ProductCardSkeleton({super.key});
+  const ProductCardSkeleton({super.key, this.width = 112});
+
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     final skeletonCardColor = SkeletonColors.card(context);
     final skeletonBorderColor = SkeletonColors.border(context);
     return Container(
-      width: 112,
+      width: width,
       decoration: BoxDecoration(
         color: skeletonCardColor,
         borderRadius: BorderRadius.circular(Spacing.cardRadius),

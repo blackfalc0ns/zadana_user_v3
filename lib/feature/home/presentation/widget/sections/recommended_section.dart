@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/layout/home_section_card_layout.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -19,6 +20,11 @@ class RecommendedSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
+    final viewportWidth = MediaQuery.sizeOf(context).width;
+    final cardWidth = HomeSectionCardLayout.compactCardWidth(viewportWidth);
+    final sectionHeight = HomeSectionCardLayout.compactSectionHeight(
+      viewportWidth,
+    );
 
     return BlocBuilder<HomeViewModel, HomeState>(
       buildWhen: (previous, current) =>
@@ -41,11 +47,15 @@ class RecommendedSection extends StatelessWidget {
                 },
               ),
               const SizedBox(height: Spacing.sm),
-              const SizedBox(
-                height: 66,
+              SizedBox(
+                height: sectionHeight,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Spacing.screenH),
-                  child: ShimmerEffect(child: _RecommendedItemsSkeleton()),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.screenH,
+                  ),
+                  child: ShimmerEffect(
+                    child: _RecommendedItemsSkeleton(cardWidth: cardWidth),
+                  ),
                 ),
               ),
             ],
@@ -85,7 +95,7 @@ class RecommendedSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.sm),
             SizedBox(
-              height: 66,
+              height: sectionHeight,
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.screenH,
@@ -102,6 +112,8 @@ class RecommendedSection extends StatelessWidget {
                   return RecommendedProductCard(
                     product: product,
                     heroTag: heroTag,
+                    cardWidth: cardWidth,
+                    minHeight: sectionHeight,
                     onTap: () =>
                         ProductNavigationHelper.navigateToProductDetails(
                           context,
@@ -124,7 +136,9 @@ class RecommendedSection extends StatelessWidget {
 }
 
 class _RecommendedItemsSkeleton extends StatelessWidget {
-  const _RecommendedItemsSkeleton();
+  const _RecommendedItemsSkeleton({required this.cardWidth});
+
+  final double cardWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -133,21 +147,18 @@ class _RecommendedItemsSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 3,
       separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-      itemBuilder: (_, _) => const _RecommendedCardSkeleton(),
+      itemBuilder: (_, _) => _RecommendedCardSkeleton(cardWidth: cardWidth),
     );
   }
 }
 
 class _RecommendedCardSkeleton extends StatelessWidget {
-  const _RecommendedCardSkeleton();
+  const _RecommendedCardSkeleton({required this.cardWidth});
+
+  final double cardWidth;
 
   @override
   Widget build(BuildContext context) {
-    final cardWidth = (MediaQuery.sizeOf(context).width / 2.4).clamp(
-      140.0,
-      200.0,
-    );
-
     return Container(
       width: cardWidth,
       padding: const EdgeInsets.all(Spacing.sm),

@@ -106,7 +106,6 @@ class _AuthBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Material(
       color: Colors.transparent,
@@ -130,12 +129,9 @@ class _AuthBackButton extends StatelessWidget {
               ),
             ],
           ),
-          child: Icon(
-            isRtl
-                ? Icons.arrow_forward_ios_rounded
-                : Icons.arrow_back_ios_new_rounded,
-            size: 18,
-            color: color.onSurface,
+          child: IconTheme(
+            data: IconThemeData(size: 18, color: color.onSurface),
+            child: const Center(child: Icon(Icons.arrow_back_ios_new_rounded)),
           ),
         ),
       ),

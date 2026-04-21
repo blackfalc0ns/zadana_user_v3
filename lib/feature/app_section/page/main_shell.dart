@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -6,29 +5,20 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/network/api_services.dart';
+import 'package:zadana_user_v3/core/general_cubit/general_state.dart';
+import 'package:zadana_user_v3/core/general_cubit/local_cubit.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
-import 'package:zadana_user_v3/core/services/device_id_service.dart';
-import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/app_drawer.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/pages/cart_screen.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_cubit.dart';
 import 'package:zadana_user_v3/feature/category/presentation/pages/category_screen.dart';
-import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
-import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/pages/favorites_screen.dart';
-import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
 import 'package:zadana_user_v3/feature/home/presentation/pages/home_screen.dart';
-import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_details_usecase.dart';
-import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_screen.dart';
 
 GlobalKey<MainShellState> mainShellKey = GlobalKey<MainShellState>();
@@ -67,27 +57,8 @@ class MainShellState extends State<MainShell> {
     _loadedScreens = List<Widget?>.filled(5, null);
     _requestedInitialData = List<bool>.filled(5, false);
     final getItInstance = getIt;
-    final favoritesRepository = FavoritesRepository(
-      FavoritesRemoteDataSourceImpl(
-        getItInstance<ApiServices>(),
-        getItInstance<Dio>(),
-        getItInstance<TokenService>(),
-        getItInstance<DeviceIdService>(),
-      ),
-    );
-    _globalCubit = AppSectionGlobalCubit(
-      homeViewModel: getItInstance<HomeViewModel>(),
-      cartViewModel: getItInstance(),
-      favoritesViewModel: FavoritesViewModel(favoritesRepository),
-      profileViewModel: getItInstance<ProfileViewModel>(),
-      categoryViewModel: getItInstance<CategoryViewModel>(),
-      tokenService: getItInstance<TokenService>(),
-      favoritesRepository: favoritesRepository,
-      getCartUseCase: getItInstance<GetCartUseCase>(),
-      productDetailsUseCase: getItInstance<ProductDetailsUseCase>(),
-      addCartItemUseCase: getItInstance<AddCartItemUseCase>(),
-      guestCartSyncService: getItInstance<GuestCartSyncService>(),
-    )..initialize();
+    getItInstance<FavoritesRepository>();
+    _globalCubit = getItInstance<AppSectionGlobalCubit>()..initialize();
     _ensureScreenLoaded(_selectedIndex);
   }
 
@@ -196,6 +167,18 @@ class MainShellState extends State<MainShell> {
     }
   }
 
+  void _refreshLocalizedContent() {
+    _globalCubit.homeViewModel.doIntent(const HomeRetryEvent());
+    _globalCubit.categoryViewModel.loadInitialData();
+
+    final loadedVendorId = _globalCubit.cartViewModel.state.loadedVendorId;
+    _globalCubit.cartViewModel
+      ..doIntent(const CartLoadVendorsEvent())
+      ..doIntent(CartLoadItemsEvent(vendorId: loadedVendorId));
+
+    _globalCubit.favoritesViewModel.loadFavorites(silent: true);
+  }
+
   Widget _buildScreenForIndex(int index) {
     final screen = _loadedScreens[index];
     if (screen == null) {
@@ -222,30 +205,36 @@ class MainShellState extends State<MainShell> {
         BlocProvider.value(value: _globalCubit.profileViewModel),
         BlocProvider.value(value: _globalCubit.categoryViewModel),
       ],
-      child: Scaffold(
-        key: _scaffoldKey,
-        drawer: const AppDrawer(),
-        drawerEdgeDragWidth: 20,
-        body: Stack(
-          children: [
-            ...List.generate(_loadedScreens.length, _buildScreenForIndex),
-            Positioned(
-              bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
-              left: 12,
-              right: 12,
-              child: BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
-                builder: (context, state) {
-                  return CustomBottomNavBar(
-                    selectedIndex: _selectedIndex,
-                    navItems: navItems,
-                    cartCount: state.cartCount,
-                    favoritesCount: state.favoritesCount,
-                    onItemSelected: _onItemTapped,
-                  );
-                },
+      child: BlocListener<LocaleThemeCubit, LocaleThemeState>(
+        listenWhen: (previous, current) =>
+            previous.locale.languageCode != current.locale.languageCode,
+        listener: (context, state) => _refreshLocalizedContent(),
+        child: Scaffold(
+          key: _scaffoldKey,
+          drawer: const AppDrawer(),
+          drawerEdgeDragWidth: 20,
+          body: Stack(
+            children: [
+              ...List.generate(_loadedScreens.length, _buildScreenForIndex),
+              Positioned(
+                bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
+                left: 12,
+                right: 12,
+                child:
+                    BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
+                      builder: (context, state) {
+                        return CustomBottomNavBar(
+                          selectedIndex: _selectedIndex,
+                          navItems: navItems,
+                          cartCount: state.cartCount,
+                          favoritesCount: state.favoritesCount,
+                          onItemSelected: _onItemTapped,
+                        );
+                      },
+                    ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

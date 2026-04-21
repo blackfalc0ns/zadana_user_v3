@@ -1,20 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/pagination/models/paginated_section_page_data.dart';
 import 'package:zadana_user_v3/core/pagination/models/paginated_section_state.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
+import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 abstract class HomePaginatedProductsCubit
     extends Cubit<PaginatedSectionState<ProductModel>> {
   HomePaginatedProductsCubit({required String initialTitle})
     : super(PaginatedSectionState<ProductModel>(title: initialTitle)) {
-    _favoriteSyncService.addListener(_syncFavoriteState);
+    _favoritesSubscription = _favoritesRepository.mutations.listen(
+      _syncFavoriteState,
+    );
   }
 
   static const int pageSize = 12;
 
-  final FavoriteSyncService _favoriteSyncService = FavoriteSyncService();
+  final FavoritesRepository _favoritesRepository =
+      GetIt.instance<FavoritesRepository>();
+  StreamSubscription<FavoriteMutationEvent>? _favoritesSubscription;
   int _currentTake = pageSize;
 
   Future<ApiResult<PaginatedSectionPageData<ProductModel>>> fetchSection(
@@ -81,17 +88,15 @@ abstract class HomePaginatedProductsCubit
     }
   }
 
-  void _syncFavoriteState() {
-    final productId = _favoriteSyncService.productId;
-    final isFavorite = _favoriteSyncService.isFavorite;
-    if (productId == null || isFavorite == null) return;
+  void _syncFavoriteState(FavoriteMutationEvent event) {
+    final affectedIds = event.productIds.toSet();
 
     emit(
       state.copyWith(
         items: state.items
             .map(
-              (item) => item.id == productId
-                  ? item.copyWith(isFavorite: isFavorite)
+              (item) => affectedIds.contains(item.id)
+                  ? item.copyWith(isFavorite: event.isFavorite)
                   : item,
             )
             .toList(),
@@ -101,7 +106,7 @@ abstract class HomePaginatedProductsCubit
 
   @override
   Future<void> close() {
-    _favoriteSyncService.removeListener(_syncFavoriteState);
+    _favoritesSubscription?.cancel();
     return super.close();
   }
 }

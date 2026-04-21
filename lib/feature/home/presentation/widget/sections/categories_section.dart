@@ -55,12 +55,13 @@ class CategoriesSection extends StatelessWidget {
             const SizedBox(height: Spacing.md),
             SizedBox(
               height: 102,
-              child: ListView.builder(
+              child: ListView.separated(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.screenH,
                 ),
                 scrollDirection: Axis.horizontal,
                 itemCount: items.length,
+                separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
                 itemBuilder: (_, index) {
                   return _HomeCategoryItem(category: items[index]);
                 },
@@ -96,9 +97,8 @@ class _HomeCategoryItem extends StatelessWidget {
         );
         mainShellKey.currentState?.jumpToTab(1);
       },
-      child: Container(
-        width: 76,
-        margin: const EdgeInsetsDirectional.only(end: Spacing.sm),
+      child: SizedBox(
+        width: 66,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -110,7 +110,6 @@ class _HomeCategoryItem extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: color.outline, width: .9),
               ),
-              padding: const EdgeInsets.all(10),
               child: ClipOval(
                 child: CachedNetworkImage(
                   imageUrl: category.imageUrl,
@@ -124,7 +123,7 @@ class _HomeCategoryItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: Spacing.sm),
             Text(
               category.name,
               style: getRegularStyle(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/layout/home_section_card_layout.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -19,6 +20,9 @@ class FeaturedProductsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
+    final sectionHeight = HomeSectionCardLayout.featuredSectionHeight(
+      MediaQuery.sizeOf(context).width,
+    );
 
     return BlocBuilder<HomeViewModel, HomeState>(
       buildWhen: (previous, current) =>
@@ -40,9 +44,9 @@ class FeaturedProductsSection extends StatelessWidget {
                 },
               ),
               const SizedBox(height: Spacing.md),
-              const SizedBox(
-                height: 285,
-                child: Padding(
+              SizedBox(
+                height: sectionHeight,
+                child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: Spacing.screenH),
                   child: ShimmerEffect(child: _FeaturedGridSkeleton()),
                 ),
@@ -82,7 +86,7 @@ class FeaturedProductsSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(
-              height: 285,
+              height: sectionHeight,
               child: GridView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.screenH,

@@ -16,17 +16,25 @@ class CategoryNavigationService extends ChangeNotifier {
   String? _selectedSubCategoryId;
   String? _selectedSubCategoryName;
   bool _shouldResetToDefault = false;
+  bool _shouldOpenSearch = false;
   bool _hasPendingExternalSelection = false;
 
   /// The category selected from the home screen.
   CategoryEntity? get selectedCategory => _selectedCategory;
   String? get selectedSubCategoryId => _selectedSubCategoryId;
   String? get selectedSubCategoryName => _selectedSubCategoryName;
+  bool get hasPendingSearchRequest => _shouldOpenSearch;
 
   bool consumePendingExternalSelection() {
     final hasPendingExternalSelection = _hasPendingExternalSelection;
     _hasPendingExternalSelection = false;
     return hasPendingExternalSelection;
+  }
+
+  bool consumeOpenSearchRequest() {
+    final shouldOpenSearch = _shouldOpenSearch;
+    _shouldOpenSearch = false;
+    return shouldOpenSearch;
   }
 
   /// Update the selected category.
@@ -65,6 +73,11 @@ class CategoryNavigationService extends ChangeNotifier {
     _selectedCategory = null;
     _selectedSubCategoryId = null;
     _selectedSubCategoryName = null;
+    notifyListeners();
+  }
+
+  void requestOpenSearch() {
+    _shouldOpenSearch = true;
     notifyListeners();
   }
 

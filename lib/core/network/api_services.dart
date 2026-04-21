@@ -16,8 +16,8 @@ import 'package:zadana_user_v3/feature/auth/reset_password/data/models/request/r
 import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/reset_password_response_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_filters_response_model_dto.dart';
-import 'package:zadana_user_v3/feature/brand/data/models/brand_products_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/filters/brand_filters_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/products/brand_products_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/cart_vendors_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/request/add_cart_item_request_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/request/update_cart_item_quantity_request_dto.dart';

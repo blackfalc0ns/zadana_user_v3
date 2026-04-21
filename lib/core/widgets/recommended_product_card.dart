@@ -16,6 +16,8 @@ class RecommendedProductCard extends StatefulWidget {
     super.key,
     required this.product,
     required this.heroTag,
+    this.cardWidth,
+    this.minHeight,
     this.onTap,
     this.onAddTap,
     this.onFavoriteTap,
@@ -23,6 +25,8 @@ class RecommendedProductCard extends StatefulWidget {
 
   final ProductModel product;
   final String heroTag;
+  final double? cardWidth;
+  final double? minHeight;
   final VoidCallback? onTap;
   final Future<void> Function()? onAddTap;
   final Future<void> Function()? onFavoriteTap;
@@ -105,18 +109,25 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    final cardWidth = (MediaQuery.sizeOf(context).width / 2.2).clamp(
-      140.0,
-      200.0,
-    );
+    final resolvedCardWidth =
+        widget.cardWidth ??
+        (MediaQuery.sizeOf(context).width / 2.2).clamp(140.0, 200.0).toDouble();
+    final resolvedMinHeight = widget.minHeight ?? 78.0;
+    final isLargeCard = resolvedCardWidth >= 220 || resolvedMinHeight >= 90;
+    final imageSize = isLargeCard ? 56.0 : 48.0;
+    final titleFontSize = isLargeCard ? 13.5 : 12.5;
+    final actionPadding = isLargeCard ? 8.0 : 7.0;
+    final actionIconSize = isLargeCard ? 15.0 : 14.0;
+    final favoriteSize = isLargeCard ? 32.0 : 30.0;
+    final favoriteIconSize = isLargeCard ? 17.0 : 16.0;
 
     return GestureDetector(
       onTap: widget.onTap,
       child: Stack(
         children: [
           Container(
-            width: cardWidth,
-            constraints: const BoxConstraints(minHeight: 78),
+            width: resolvedCardWidth,
+            constraints: BoxConstraints(minHeight: resolvedMinHeight),
             padding: const EdgeInsets.all(Spacing.xs),
             decoration: BoxDecoration(
               color: color.surfaceContainerLowest,
@@ -132,8 +143,8 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                     child: ProductImage(
                       emoji: widget.product.emoji,
                       url: widget.product.imageUrl,
-                      width: 48,
-                      height: 48,
+                      width: imageSize,
+                      height: imageSize,
                       heroTag: widget.heroTag,
                     ),
                   ),
@@ -147,7 +158,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                       Text(
                         widget.product.name,
                         style: AppTextStyles.labelMedium.copyWith(
-                          fontSize: 12.5,
+                          fontSize: titleFontSize,
                           height: 1.15,
                           color: color.onSurface,
                         ),
@@ -169,7 +180,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                           GestureDetector(
                             onTap: _handleAddTap,
                             child: Container(
-                              padding: const EdgeInsets.all(7),
+                              padding: EdgeInsets.all(actionPadding),
                               decoration: BoxDecoration(
                                 color: color.primary,
                                 borderRadius: BorderRadius.circular(6),
@@ -188,7 +199,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                                     : FaIcon(
                                         FontAwesomeIcons.cartPlus,
                                         color: color.onPrimary,
-                                        size: 14,
+                                        size: actionIconSize,
                                       ),
                               ),
                             ),
@@ -207,8 +218,8 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
             child: GestureDetector(
               onTap: _handleFavoriteTap,
               child: Container(
-                width: 30,
-                height: 30,
+                width: favoriteSize,
+                height: favoriteSize,
                 decoration: BoxDecoration(
                   color: color.surface.withValues(alpha: 0.92),
                   shape: BoxShape.circle,
@@ -236,7 +247,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                           _isFavorite
                               ? Icons.favorite_rounded
                               : Icons.favorite_border_rounded,
-                          size: 16,
+                          size: favoriteIconSize,
                           color: _isFavorite
                               ? color.error
                               : color.onSurfaceVariant,

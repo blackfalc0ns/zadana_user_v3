@@ -7,9 +7,6 @@ abstract class AppConstants {
   static const String isRefreshTokenSaved = 'isRefreshTokenSaved';
   static const String isRemember = 'isRemember';
   static const String deviceIdKey = 'deviceIdKey';
-  static const String pendingGuestCartItemsKey = 'pendingGuestCartItemsKey';
-  static const String pendingGuestFavoriteProductIdsKey =
-      'pendingGuestFavoriteProductIdsKey';
   static const String notificationsEnabledKey = 'notificationsEnabledKey';
   static const String fcmTokenKey = 'fcmTokenKey';
 

@@ -7,7 +7,6 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
-import 'package:zadana_user_v3/core/services/saved_location_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -267,15 +266,11 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
 
     final isGuest = token == null || token.isEmpty;
     if (isGuest) {
-      final shouldRegister = await showCheckoutRegistrationDialog(context);
-      if (!mounted || shouldRegister != true) return;
+      final shouldContinue = await showCheckoutRegistrationDialog(context);
+      if (!mounted || shouldContinue != true) return;
 
       CheckoutFlowService().markPendingCheckout();
-      Navigator.pushNamed(
-        context,
-        AppRoutes.signUp,
-        arguments: SavedLocationService.getSavedLocation(),
-      );
+      Navigator.pushNamed(context, AppRoutes.login);
       return;
     }
 

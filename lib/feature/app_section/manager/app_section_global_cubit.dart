@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/cart_count_sync_service.dart';
-import 'package:zadana_user_v3/core/services/cart_refresh_service.dart';
-import 'package:zadana_user_v3/core/services/favorite_sync_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
@@ -25,6 +23,7 @@ import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_de
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_event.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
 
+@injectable
 class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   AppSectionGlobalCubit({
     required HomeViewModel homeViewModel,
@@ -34,13 +33,10 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     required CategoryViewModel categoryViewModel,
     required TokenService tokenService,
     required FavoritesRepository favoritesRepository,
+    required CartRepository cartRepository,
     required GetCartUseCase getCartUseCase,
     required ProductDetailsUseCase productDetailsUseCase,
     required AddCartItemUseCase addCartItemUseCase,
-    required GuestCartSyncService guestCartSyncService,
-    FavoriteSyncService? favoriteSyncService,
-    CartRefreshService? cartRefreshService,
-    CartCountSyncService? cartCountSyncService,
   }) : _homeViewModel = homeViewModel,
        _cartViewModel = cartViewModel,
        _favoritesViewModel = favoritesViewModel,
@@ -48,13 +44,10 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
        _categoryViewModel = categoryViewModel,
        _tokenService = tokenService,
        _favoritesRepository = favoritesRepository,
+       _cartRepository = cartRepository,
        _getCartUseCase = getCartUseCase,
        _productDetailsUseCase = productDetailsUseCase,
        _addCartItemUseCase = addCartItemUseCase,
-       _guestCartSyncService = guestCartSyncService,
-       _favoriteSyncService = favoriteSyncService ?? FavoriteSyncService(),
-       _cartRefreshService = cartRefreshService ?? CartRefreshService(),
-       _cartCountSyncService = cartCountSyncService ?? CartCountSyncService(),
        super(const AppSectionGlobalState());
 
   final HomeViewModel _homeViewModel;
@@ -64,14 +57,13 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   final CategoryViewModel _categoryViewModel;
   final TokenService _tokenService;
   final FavoritesRepository _favoritesRepository;
+  final CartRepository _cartRepository;
   final GetCartUseCase _getCartUseCase;
   final ProductDetailsUseCase _productDetailsUseCase;
   final AddCartItemUseCase _addCartItemUseCase;
-  final GuestCartSyncService _guestCartSyncService;
-  final FavoriteSyncService _favoriteSyncService;
-  final CartRefreshService _cartRefreshService;
-  final CartCountSyncService _cartCountSyncService;
 
+  StreamSubscription<FavoriteMutationEvent>? _favoriteMutationsSubscription;
+  StreamSubscription<CartMutationEvent>? _cartMutationsSubscription;
   Timer? _favoritesRefreshDebouncer;
   Timer? _cartRefreshDebouncer;
   bool _didInitialize = false;
@@ -86,9 +78,12 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     if (_didInitialize) return;
     _didInitialize = true;
 
-    _favoriteSyncService.addListener(_handleFavoriteMutation);
-    _cartCountSyncService.addListener(_handleCartCountChanged);
-    _cartRefreshService.addListener(_handleCartMutation);
+    _favoriteMutationsSubscription = _favoritesRepository.mutations.listen(
+      _handleFavoriteMutation,
+    );
+    _cartMutationsSubscription = _cartRepository.mutations.listen(
+      _handleCartMutation,
+    );
 
     emit(state.copyWith(isInitializing: true));
 
@@ -117,7 +112,9 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     _profileViewModel.doIntent(ProfileLoadEvent());
   }
 
-  Future<FavoriteActionResult> addProductToFavorites(ProductModel product) async {
+  Future<FavoriteActionResult> addProductToFavorites(
+    ProductModel product,
+  ) async {
     if (product.isFavorite) {
       return const FavoriteActionResult(isSuccess: true, message: '');
     }
@@ -125,10 +122,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     final result = await _favoritesRepository.addFavorite(product.id);
     switch (result) {
       case ApiSuccessResult():
-        _favoriteSyncService.notifyFavoriteChanged(
-          productId: product.id,
-          isFavorite: true,
-        );
         return FavoriteActionResult(
           isSuccess: true,
           message: result.data.message,
@@ -151,11 +144,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         if (removeFromFavoritesState) {
           _favoritesViewModel.removeFavoriteLocally(product.id);
         }
-
-        _favoriteSyncService.notifyFavoriteChanged(
-          productId: product.id,
-          isFavorite: false,
-        );
         return FavoriteActionResult(
           isSuccess: true,
           message: result.data.message,
@@ -183,13 +171,13 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
           );
         }
 
-        final request = AddCartItemRequestEntity(productId: productId, quantity: 1);
+        final request = AddCartItemRequestEntity(
+          productId: productId,
+          quantity: 1,
+        );
         final addResult = await _addCartItemUseCase.call(request);
         switch (addResult) {
           case ApiSuccessResult():
-            await _guestCartSyncService.cacheGuestCartItem(request);
-            _cartCountSyncService.incrementBy(request.quantity);
-            _cartRefreshService.notifyCartChanged();
             return CartActionResult(
               isSuccess: true,
               message: addResult.data.message,
@@ -247,20 +235,22 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     }
   }
 
-  void _handleFavoriteMutation() {
-    final productId = _favoriteSyncService.productId;
-    final isFavorite = _favoriteSyncService.isFavorite;
-    if (productId == null || isFavorite == null) return;
+  void _handleFavoriteMutation(FavoriteMutationEvent event) {
+    for (final productId in event.productIds) {
+      _homeViewModel.syncFavorite(
+        productId: productId,
+        isFavorite: event.isFavorite,
+      );
+      _categoryViewModel.syncFavorite(
+        productId: productId,
+        isFavorite: event.isFavorite,
+      );
+    }
 
-    _homeViewModel.syncFavorite(productId: productId, isFavorite: isFavorite);
-    _categoryViewModel.syncFavorite(
-      productId: productId,
-      isFavorite: isFavorite,
-    );
-
-    final nextCount = isFavorite
-        ? state.favoritesCount + 1
-        : math.max(0, state.favoritesCount - 1);
+    final delta = event.productIds.length;
+    final nextCount = event.isFavorite
+        ? state.favoritesCount + delta
+        : math.max(0, state.favoritesCount - delta);
     emit(state.copyWith(favoritesCount: nextCount));
 
     _favoritesRefreshDebouncer?.cancel();
@@ -270,28 +260,19 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     );
   }
 
-  void _handleCartCountChanged() {
-    if (_cartCountSyncService.refreshRequested) {
-      unawaited(_loadCartCount());
-      return;
-    }
-
-    final absoluteCount = _cartCountSyncService.absoluteCount;
+  void _handleCartMutation(CartMutationEvent event) {
+    final absoluteCount = event.absoluteCount;
     if (absoluteCount != null) {
       emit(state.copyWith(cartCount: math.max(0, absoluteCount)));
-      return;
+    } else if (event.delta != 0) {
+      emit(
+        state.copyWith(cartCount: math.max(0, state.cartCount + event.delta)),
+      );
     }
 
-    emit(
-      state.copyWith(
-        cartCount: math.max(0, state.cartCount + _cartCountSyncService.delta),
-      ),
-    );
-  }
-
-  void _handleCartMutation() {
-    final shouldRefresh = _cartRefreshService.consumeRefreshRequest();
-    if (!shouldRefresh) return;
+    if (!event.refreshRequested) {
+      return;
+    }
 
     _cartRefreshDebouncer?.cancel();
     _cartRefreshDebouncer = Timer(
@@ -304,9 +285,8 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   Future<void> close() async {
     _favoritesRefreshDebouncer?.cancel();
     _cartRefreshDebouncer?.cancel();
-    _favoriteSyncService.removeListener(_handleFavoriteMutation);
-    _cartCountSyncService.removeListener(_handleCartCountChanged);
-    _cartRefreshService.removeListener(_handleCartMutation);
+    await _favoriteMutationsSubscription?.cancel();
+    await _cartMutationsSubscription?.cancel();
     await _homeViewModel.close();
     await _categoryViewModel.close();
     await _favoritesViewModel.close();

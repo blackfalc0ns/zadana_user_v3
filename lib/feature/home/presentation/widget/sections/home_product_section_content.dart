@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/core/layout/home_section_card_layout.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/home_product_section_theme.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
@@ -24,10 +25,20 @@ class HomeProductSectionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewportWidth = MediaQuery.sizeOf(context).width;
+    final classicWidth = HomeSectionCardLayout.classicCardWidth(viewportWidth);
+    final classicHeight = HomeSectionCardLayout.classicSectionHeight(
+      viewportWidth,
+    );
+    final compactWidth = HomeSectionCardLayout.compactCardWidth(viewportWidth);
+    final compactHeight = HomeSectionCardLayout.compactSectionHeight(
+      viewportWidth,
+    );
+
     switch (parseHomeProductSectionTheme(theme)) {
       case HomeProductSectionTheme.classic:
         return SizedBox(
-          height: 140,
+          height: classicHeight,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,
@@ -37,7 +48,7 @@ class HomeProductSectionContent extends StatelessWidget {
               final product = items[i];
               final heroTag = productHeroTag(product.id, source: heroSource);
               return SizedBox(
-                width: 120,
+                width: classicWidth,
                 child: CustomProductCard(
                   discountPercentage: product.discountPercentage,
                   isDiscounted: product.isDiscounted,
@@ -59,7 +70,7 @@ class HomeProductSectionContent extends StatelessWidget {
         );
       case HomeProductSectionTheme.compact:
         return SizedBox(
-          height: 85,
+          height: compactHeight,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
             scrollDirection: Axis.horizontal,
@@ -71,6 +82,8 @@ class HomeProductSectionContent extends StatelessWidget {
               return RecommendedProductCard(
                 product: product,
                 heroTag: heroTag,
+                cardWidth: compactWidth,
+                minHeight: compactHeight,
                 onTap: () => ProductNavigationHelper.navigateToProductDetails(
                   context,
                   product,
@@ -131,21 +144,31 @@ class HomeProductSectionSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewportWidth = MediaQuery.sizeOf(context).width;
+    final classicWidth = HomeSectionCardLayout.classicCardWidth(viewportWidth);
+    final classicHeight = HomeSectionCardLayout.classicSectionHeight(
+      viewportWidth,
+    );
+    final compactWidth = HomeSectionCardLayout.compactCardWidth(viewportWidth);
+    final compactHeight = HomeSectionCardLayout.compactSectionHeight(
+      viewportWidth,
+    );
+
     switch (parseHomeProductSectionTheme(theme)) {
       case HomeProductSectionTheme.classic:
-        return const SizedBox(
-          height: 140,
+        return SizedBox(
+          height: classicHeight,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: Spacing.screenH),
-            child: _ClassicSectionSkeleton(),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+            child: _ClassicSectionSkeleton(cardWidth: classicWidth),
           ),
         );
       case HomeProductSectionTheme.compact:
-        return const SizedBox(
-          height: 78,
+        return SizedBox(
+          height: compactHeight,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: Spacing.screenH),
-            child: _CompactSectionSkeleton(),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
+            child: _CompactSectionSkeleton(cardWidth: compactWidth),
           ),
         );
       case HomeProductSectionTheme.showcase:
@@ -158,7 +181,9 @@ class HomeProductSectionSkeleton extends StatelessWidget {
 }
 
 class _ClassicSectionSkeleton extends StatelessWidget {
-  const _ClassicSectionSkeleton();
+  const _ClassicSectionSkeleton({required this.cardWidth});
+
+  final double cardWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -167,13 +192,15 @@ class _ClassicSectionSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 3,
       separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-      itemBuilder: (_, _) => const ProductCardSkeleton(),
+      itemBuilder: (_, _) => ProductCardSkeleton(width: cardWidth),
     );
   }
 }
 
 class _CompactSectionSkeleton extends StatelessWidget {
-  const _CompactSectionSkeleton();
+  const _CompactSectionSkeleton({required this.cardWidth});
+
+  final double cardWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -183,11 +210,6 @@ class _CompactSectionSkeleton extends StatelessWidget {
       itemCount: 3,
       separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
       itemBuilder: (_, _) {
-        final cardWidth = (MediaQuery.sizeOf(context).width / 2.4).clamp(
-          140.0,
-          200.0,
-        );
-
         return Container(
           width: cardWidth,
           padding: const EdgeInsets.all(Spacing.sm),

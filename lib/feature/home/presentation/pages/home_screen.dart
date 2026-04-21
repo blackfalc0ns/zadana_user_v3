@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart'
     as error_widgets;
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_event.dart';
@@ -20,8 +21,6 @@ import 'package:zadana_user_v3/feature/home/presentation/widget/sections/dynamic
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/featured_products_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/home_banner_section.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/sections/recommended_section.dart';
-import 'package:zadana_user_v3/feature/search/domain/entities/product_search_params.dart';
-import 'package:zadana_user_v3/feature/search/presentation/pages/product_search_page.dart';
 import 'package:zadana_user_v3/feature/special_offers/presentation/widgets/special_offers_section.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -69,6 +68,7 @@ class _HomeScreenView extends StatelessWidget {
     return Scaffold(
       appBar: HomeAppBar(
         onMenuTap: onMenuTap,
+        onLocationTap: () => _openCustomerAddresses(context),
         onSearchTap: () => _openShoppingSearch(context),
         onNotificationsTap: () => _openNotifications(context),
       ),
@@ -171,23 +171,18 @@ class _HomeScreenView extends StatelessWidget {
   }
 
   void _openShoppingSearch(BuildContext context) {
-    final l10n = context.localization;
-
+    CategoryNavigationService().requestOpenSearch();
     mainShellKey.currentState?.jumpToTab(1);
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ProductSearchPage(
-          params: ProductSearchParams(
-            title: l10n.search_marketplace_title,
-            hintText: l10n.search_hint,
-          ),
-        ),
-      ),
-    );
   }
 
   Future<void> _openNotifications(BuildContext context) async {
     await Navigator.of(context).pushNamed(AppRoutes.notifications);
+    if (!context.mounted) return;
+    context.read<HomeViewModel>().doIntent(const HomeLoadEvent());
+  }
+
+  Future<void> _openCustomerAddresses(BuildContext context) async {
+    await Navigator.of(context).pushNamed(AppRoutes.customerAddresses);
     if (!context.mounted) return;
     context.read<HomeViewModel>().doIntent(const HomeLoadEvent());
   }

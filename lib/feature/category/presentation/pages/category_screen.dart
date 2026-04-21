@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
+import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
@@ -32,8 +33,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
   late final ScrollController _searchScrollController;
+  late final CategoryNavigationService _categoryNavigationService;
   ProductSearchViewModel? _searchViewModel;
   StreamSubscription<ProductSearchState>? _searchStateSubscription;
+  CategoryState? _latestCategoryState;
   String? _searchScopeSubCategoryId;
   bool _isSearchActive = false;
 
@@ -43,6 +46,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _searchController = TextEditingController();
     _searchFocusNode = FocusNode();
     _searchScrollController = ScrollController()..addListener(_handleScroll);
+    _categoryNavigationService = CategoryNavigationService()
+      ..addListener(_handleExternalSearchRequest);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _handleExternalSearchRequest();
+      }
+    });
   }
 
   @override
@@ -52,9 +63,34 @@ class _CategoryScreenState extends State<CategoryScreen> {
     _searchScrollController
       ..removeListener(_handleScroll)
       ..dispose();
+    _categoryNavigationService.removeListener(_handleExternalSearchRequest);
     unawaited(_searchStateSubscription?.cancel());
     unawaited(_searchViewModel?.close());
     super.dispose();
+  }
+
+  void _handleExternalSearchRequest() {
+    if (!_categoryNavigationService.hasPendingSearchRequest) {
+      return;
+    }
+
+    final state = _latestCategoryState;
+    if (state == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _handleExternalSearchRequest();
+        }
+      });
+      return;
+    }
+
+    _categoryNavigationService.consumeOpenSearchRequest();
+    if (_isSearchActive) {
+      _searchFocusNode.requestFocus();
+      return;
+    }
+
+    _openInlineSearch(context, state);
   }
 
   Future<void> _openProductDetails(ProductModel product) async {
@@ -247,6 +283,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return BlocConsumer<CategoryViewModel, CategoryState>(
       listener: _handleCategoryStateChanged,
       builder: (context, state) {
+        _latestCategoryState = state;
         final showSearchResults = _showSearchResults();
         final hasSearchQuery = _searchController.text.trim().isNotEmpty;
         final hasSelectedCategory =

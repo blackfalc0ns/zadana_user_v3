@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_state.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/widget/login_form_wrapper.dart';
@@ -16,6 +17,15 @@ class LoginScreen extends StatelessWidget {
   void _handleStateChanges(BuildContext context, LoginState state) {
     if (state.isSuccess && state.loginResponse != null) {
       context.read<LoginViewModel>().clearFeedback();
+      final shouldResumeCheckout = CheckoutFlowService()
+          .consumePendingCheckout();
+      if (shouldResumeCheckout) {
+        context.pushNamedAndRemoveUntil(
+          AppRoutes.payment,
+          predicate: (Route<dynamic> route) => false,
+        );
+        return;
+      }
       context.pushNamedAndRemoveUntil(
         AppRoutes.mainShell,
         predicate: (Route<dynamic> route) => false,

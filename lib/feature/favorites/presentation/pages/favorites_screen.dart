@@ -1,18 +1,15 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/network/api_services.dart';
-import 'package:zadana_user_v3/core/services/device_id_service.dart';
-import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
-import 'package:zadana_user_v3/feature/favorites/data/data_source/favorites_remote_data_source_impl.dart';
-import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/usecase/clear_favorites_usecase.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/usecase/get_favorites_usecase.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/usecase/remove_favorite_usecase.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_state.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/widgets/clear_all_dialog.dart';
@@ -38,14 +35,9 @@ class FavoritesScreen extends StatelessWidget {
     final getIt = GetIt.instance;
     return BlocProvider(
       create: (_) => FavoritesViewModel(
-        FavoritesRepository(
-          FavoritesRemoteDataSourceImpl(
-            getIt<ApiServices>(),
-            getIt<Dio>(),
-            getIt<TokenService>(),
-            getIt<DeviceIdService>(),
-          ),
-        ),
+        getIt<GetFavoritesUseCase>(),
+        getIt<RemoveFavoriteUseCase>(),
+        getIt<ClearFavoritesUseCase>(),
       )..loadFavorites(),
       child: const _FavoritesScreenView(),
     );

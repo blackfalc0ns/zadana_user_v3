@@ -1,10 +1,11 @@
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/login/data/mapper/mapper_login.dart';
-import 'package:zadana_user_v3/feature/cart/data/services/guest_cart_sync_service.dart';
-import 'package:zadana_user_v3/feature/favorites/data/services/guest_favorites_sync_service.dart';
+import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
+import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import '../../domain/entities/login_request_entity.dart';
 import '../../domain/entities/login_response_entity.dart';
 import '../../domain/repo/login_repository.dart';
@@ -18,15 +19,14 @@ class LoginRepositoryImpl implements LoginRepository {
     this._remoteDataSource,
     this._tokenService,
     this._notificationDeviceService,
-    this._guestCartSyncService,
-    this._guestFavoritesSyncService,
   );
 
   final LoginRemoteDataSource _remoteDataSource;
   final TokenService _tokenService;
   final NotificationDeviceService _notificationDeviceService;
-  final GuestCartSyncService _guestCartSyncService;
-  final GuestFavoritesSyncService _guestFavoritesSyncService;
+  CartRepository get _cartRepository => GetIt.instance<CartRepository>();
+  FavoritesRepository get _favoritesRepository =>
+      GetIt.instance<FavoritesRepository>();
 
   @override
   Future<ApiResult<LoginResponseEntity>> login(
@@ -37,8 +37,8 @@ class LoginRepositoryImpl implements LoginRepository {
       final result = await _remoteDataSource.login(dto);
       await _tokenService.saveAccessToken(result.tokens.accessToken);
       await _tokenService.saveRefreshToken(result.tokens.refreshToken);
-      await _guestCartSyncService.syncPendingItemsIfAuthenticated();
-      await _guestFavoritesSyncService.syncPendingFavoritesIfAuthenticated();
+      await _cartRepository.syncGuestCartIfAuthenticated();
+      await _favoritesRepository.syncGuestFavoritesIfAuthenticated();
       await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();
 
       return result.toEntity();

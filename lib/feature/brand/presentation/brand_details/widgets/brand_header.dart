@@ -92,7 +92,7 @@ class BrandHeader extends StatelessWidget {
           size: 18,
         ),
         child: IconButton(
-          icon: const BackButtonIcon(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
           padding: EdgeInsets.zero,
         ),

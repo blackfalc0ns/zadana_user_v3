@@ -1,20 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'favorites_item_dto.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class FavoritesItemDto {
-  factory FavoritesItemDto.fromJson(Map<String, dynamic> json) {
-    return FavoritesItemDto(
-      id: json['id'] as String?,
-      name: json['name'] as String?,
-      store: json['store'] as String?,
-      price: (json['price'] as num?)?.toDouble(),
-      oldPrice: (json['old_price'] as num?)?.toDouble(),
-      imageUrl: json['image_url'] as String?,
-      rating: (json['rating'] as num?)?.toDouble(),
-      reviewCount: (json['review_count'] as num?)?.toInt(),
-      discount: json['discount'] as String?,
-      isFavorite: json['is_favorite'] as bool?,
-      unit: json['unit'] as String?,
-      isDiscounted: json['is_discounted'] as bool?,
-    );
-  }
   const FavoritesItemDto({
     this.id,
     this.name,
@@ -30,6 +19,9 @@ class FavoritesItemDto {
     this.isDiscounted,
   });
 
+  factory FavoritesItemDto.fromJson(Map<String, dynamic> json) =>
+      _$FavoritesItemDtoFromJson(json);
+
   final String? id;
   final String? name;
   final String? store;
@@ -42,4 +34,6 @@ class FavoritesItemDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+
+  Map<String, dynamic> toJson() => _$FavoritesItemDtoToJson(this);
 }

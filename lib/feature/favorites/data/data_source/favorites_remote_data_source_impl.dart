@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
@@ -12,6 +13,7 @@ import 'package:zadana_user_v3/feature/favorites/data/models/clear_favorites_res
 import 'package:zadana_user_v3/feature/favorites/data/models/favorites_response_dto.dart';
 import 'package:zadana_user_v3/feature/favorites/data/models/remove_favorite_response_dto.dart';
 
+@Injectable(as: FavoritesRemoteDataSource)
 class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
   const FavoritesRemoteDataSourceImpl(
     this._apiServices,

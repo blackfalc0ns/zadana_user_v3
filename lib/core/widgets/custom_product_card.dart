@@ -135,30 +135,27 @@ class _CustomProductCardState extends State<CustomProductCard> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        final screenSize = MediaQuery.sizeOf(context);
         final cardWidth = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width / 3;
         final cardHeight = constraints.maxHeight.isFinite
             ? constraints.maxHeight
             : 140.0;
-        final widthScale = (cardWidth / 110).clamp(0.82, 1.12).toDouble();
-        final heightScale = (cardHeight / 145).clamp(0.76, 1.0).toDouble();
+        final useTabletLayout = screenSize.shortestSide >= 600;
+        final allowExpandedTabletTitle = useTabletLayout && cardWidth >= 150;
+        final spec = _CardLayoutSpec.resolve(
+          cardWidth: cardWidth,
+          cardHeight: cardHeight,
+          isTablet: useTabletLayout,
+        );
+        final widthScale = (cardWidth / (useTabletLayout ? 150 : 110))
+            .clamp(0.82, useTabletLayout ? 1.18 : 1.12)
+            .toDouble();
+        final heightScale = (cardHeight / (useTabletLayout ? 180 : 145))
+            .clamp(0.76, useTabletLayout ? 1.08 : 1.0)
+            .toDouble();
         final scale = math.min(widthScale, heightScale);
-        final imageHeight = (cardHeight * 0.34).clamp(38.0, 60.0).toDouble();
-        final imageSectionHeight = (cardHeight * 0.46)
-            .clamp(imageHeight + 10, 80.0)
-            .toDouble();
-        final horizontalPadding = (cardWidth * 0.06).clamp(4.0, 8.0).toDouble();
-        final verticalPadding = (cardHeight * 0.042).clamp(3.0, 6.0).toDouble();
-        final contentSpacing = (cardHeight * 0.028).clamp(1.0, 4.0).toDouble();
-        final titleFontSize = (12 * scale).clamp(9.0, 12.0).toDouble();
-        final cartSize = (28 * scale).clamp(20.0, 27.0).toDouble();
-        final cartIconSize = (13 * scale).clamp(9.0, 12.0).toDouble();
-        final favoriteSize = (30 * scale).clamp(24.0, 30.0).toDouble();
-        final favoriteIconSize = (16 * scale).clamp(12.0, 16.0).toDouble();
-        final badgeTriangleSize = (cardWidth * 0.38)
-            .clamp(34.0, 45.0)
-            .toDouble();
 
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -178,17 +175,16 @@ class _CustomProductCardState extends State<CustomProductCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: imageSectionHeight,
+                          height: spec.imageSectionHeight,
                           width: double.infinity,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: (imageSectionHeight - imageHeight) * 0.35,
-                            ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
                             child: ProductImage(
                               emoji: widget.product.emoji,
                               url: widget.product.imageUrl,
                               width: double.infinity,
-                              height: imageHeight,
+                              height: spec.imageHeight,
+                              whiteBackground: useTabletLayout,
                               backgroundColor: imageBackground,
                               heroTag: widget.enableHeroAnimation
                                   ? (widget.heroTag ??
@@ -200,10 +196,10 @@ class _CustomProductCardState extends State<CustomProductCard> {
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(
-                              horizontalPadding,
-                              verticalPadding,
-                              horizontalPadding,
-                              verticalPadding * 0.55,
+                              spec.horizontalPadding,
+                              spec.verticalPadding,
+                              spec.horizontalPadding,
+                              spec.bottomPadding,
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -214,12 +210,12 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                   style: getSemiBoldStyle(
                                     color: titleColor,
                                     fontFamily: FontConstant.cairo,
-                                    fontSize: titleFontSize,
+                                    fontSize: spec.titleFontSize,
                                   ),
-                                  maxLines: 1,
+                                  maxLines: allowExpandedTabletTitle ? 2 : 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: contentSpacing),
+                                SizedBox(height: spec.contentSpacing),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -228,25 +224,24 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                         price: widget.product.price,
                                         oldPrice: widget.product.oldPrice,
                                         compact:
-                                            scale < 1.04 ||
-                                            cardHeight < 142 ||
+                                            (!useTabletLayout &&
+                                                (scale < 1.04 ||
+                                                    cardHeight < 142)) ||
                                             widget.product.oldPrice != null,
-                                        fontScale: scale,
+                                        fontScale: useTabletLayout
+                                            ? (scale * 1.06)
+                                            : scale,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: (cardWidth * 0.035)
-                                          .clamp(3.0, 6.0)
-                                          .toDouble(),
-                                    ),
+                                    SizedBox(width: spec.actionSpacing),
                                     GestureDetector(
                                       onTap: _handleAddTap,
                                       child: Container(
-                                        width: cartSize,
-                                        height: cartSize,
+                                        width: spec.cartSize,
+                                        height: spec.cartSize,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
-                                            6,
+                                            spec.buttonRadius,
                                           ),
                                           color: AppColors.primary,
                                         ),
@@ -257,8 +252,10 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                             ),
                                             child: _isSubmittingCart
                                                 ? SizedBox(
-                                                    width: cartIconSize + 2,
-                                                    height: cartIconSize + 2,
+                                                    width:
+                                                        spec.cartIconSize + 2,
+                                                    height:
+                                                        spec.cartIconSize + 2,
                                                     child:
                                                         const CircularProgressIndicator(
                                                           strokeWidth: 1.9,
@@ -269,7 +266,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                                 : FaIcon(
                                                     FontAwesomeIcons.cartPlus,
                                                     color: AppColors.white,
-                                                    size: cartIconSize,
+                                                    size: spec.cartIconSize,
                                                   ),
                                           ),
                                         ),
@@ -290,8 +287,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                         child: GestureDetector(
                           onTap: _handleFavoriteTap,
                           child: Container(
-                            width: favoriteSize,
-                            height: favoriteSize,
+                            width: spec.favoriteSize,
+                            height: spec.favoriteSize,
                             decoration: BoxDecoration(
                               color: favoriteBackground,
                               shape: BoxShape.circle,
@@ -307,8 +304,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 duration: const Duration(milliseconds: 180),
                                 child: _isSubmittingFavorite
                                     ? SizedBox(
-                                        width: favoriteIconSize + 2,
-                                        height: favoriteIconSize + 2,
+                                        width: spec.favoriteIconSize + 2,
+                                        height: spec.favoriteIconSize + 2,
                                         child: const CircularProgressIndicator(
                                           strokeWidth: 1.8,
                                           color: AppColors.error,
@@ -318,7 +315,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                         _isFavorite
                                             ? Icons.favorite_rounded
                                             : Icons.favorite_border_rounded,
-                                        size: favoriteIconSize,
+                                        size: spec.favoriteIconSize,
                                         color: _isFavorite
                                             ? AppColors.error
                                             : favoriteIconColor,
@@ -339,8 +336,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                     discountText: '${widget.discountPercentage}%',
                     cornerRadius: Spacing.cardRadius,
                     color: AppColors.error,
-                    trianglesize: badgeTriangleSize,
-                    fontSize: (13 * scale).clamp(9.0, 13.0).toDouble(),
+                    trianglesize: spec.badgeTriangleSize,
+                    fontSize: spec.badgeFontSize,
                     shadowColor: color.shadow,
                   ),
                 ),
@@ -348,6 +345,86 @@ class _CustomProductCardState extends State<CustomProductCard> {
           ),
         );
       },
+    );
+  }
+}
+
+class _CardLayoutSpec {
+  const _CardLayoutSpec({
+    required this.imageHeight,
+    required this.imageSectionHeight,
+    required this.horizontalPadding,
+    required this.verticalPadding,
+    required this.bottomPadding,
+    required this.contentSpacing,
+    required this.titleFontSize,
+    required this.cartSize,
+    required this.cartIconSize,
+    required this.favoriteSize,
+    required this.favoriteIconSize,
+    required this.badgeTriangleSize,
+    required this.badgeFontSize,
+    required this.actionSpacing,
+    required this.buttonRadius,
+  });
+
+  final double imageHeight;
+  final double imageSectionHeight;
+  final double horizontalPadding;
+  final double verticalPadding;
+  final double bottomPadding;
+  final double contentSpacing;
+  final double titleFontSize;
+  final double cartSize;
+  final double cartIconSize;
+  final double favoriteSize;
+  final double favoriteIconSize;
+  final double badgeTriangleSize;
+  final double badgeFontSize;
+  final double actionSpacing;
+  final double buttonRadius;
+
+  static _CardLayoutSpec resolve({
+    required double cardWidth,
+    required double cardHeight,
+    required bool isTablet,
+  }) {
+    if (isTablet) {
+      return _CardLayoutSpec(
+        imageHeight: (cardHeight * 0.4).clamp(58.0, 90.0).toDouble(),
+        imageSectionHeight: (cardHeight * 0.52).clamp(86.0, 118.0).toDouble(),
+        horizontalPadding: (cardWidth * 0.06).clamp(6.0, 10.0).toDouble(),
+        verticalPadding: (cardHeight * 0.038).clamp(4.0, 8.0).toDouble(),
+        bottomPadding: (cardHeight * 0.03).clamp(4.0, 7.0).toDouble(),
+        contentSpacing: (cardHeight * 0.018).clamp(1.0, 3.0).toDouble(),
+        titleFontSize: (cardWidth * 0.08).clamp(10.5, 14.0).toDouble(),
+        cartSize: (cardWidth * 0.22).clamp(28.0, 34.0).toDouble(),
+        cartIconSize: (cardWidth * 0.092).clamp(12.0, 15.0).toDouble(),
+        favoriteSize: (cardWidth * 0.22).clamp(28.0, 34.0).toDouble(),
+        favoriteIconSize: (cardWidth * 0.105).clamp(14.0, 18.0).toDouble(),
+        badgeTriangleSize: (cardWidth * 0.34).clamp(40.0, 52.0).toDouble(),
+        badgeFontSize: (cardWidth * 0.07).clamp(10.0, 14.0).toDouble(),
+        actionSpacing: (cardWidth * 0.04).clamp(5.0, 8.0).toDouble(),
+        buttonRadius: 8.0,
+      );
+    }
+
+    return _CardLayoutSpec(
+      imageHeight: (cardHeight * 0.34).clamp(38.0, 60.0).toDouble(),
+      imageSectionHeight: (cardHeight * 0.5).clamp(54.0, 84.0).toDouble(),
+      horizontalPadding: (cardWidth * 0.06).clamp(4.0, 8.0).toDouble(),
+      verticalPadding: (cardHeight * 0.042).clamp(3.0, 6.0).toDouble(),
+      bottomPadding: (cardHeight * 0.023).clamp(2.0, 4.0).toDouble(),
+      contentSpacing: (cardHeight * 0.012).clamp(0.5, 2.0).toDouble(),
+      titleFontSize: (cardWidth * 0.11).clamp(9.0, 12.0).toDouble(),
+      cartSize: (cardWidth * 0.24).clamp(20.0, 27.0).toDouble(),
+      cartIconSize: (cardWidth * 0.11).clamp(9.0, 12.0).toDouble(),
+      favoriteSize: (cardWidth * 0.26).clamp(24.0, 30.0).toDouble(),
+      favoriteIconSize: (cardWidth * 0.14).clamp(12.0, 16.0).toDouble(),
+      badgeTriangleSize: (cardWidth * 0.38).clamp(34.0, 45.0).toDouble(),
+      badgeFontSize: (cardWidth * 0.11).clamp(9.0, 13.0).toDouble(),
+      actionSpacing: (cardWidth * 0.035).clamp(3.0, 6.0).toDouble(),
+      buttonRadius: 6.0,
     );
   }
 }

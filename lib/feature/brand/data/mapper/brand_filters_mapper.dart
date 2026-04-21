@@ -1,4 +1,4 @@
-import 'package:zadana_user_v3/feature/brand/data/models/brand_filters_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/brand/data/models/filters/brand_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_option_entity.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_price_range_entity.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_sort_option_entity.dart';
