@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/my_orders_state.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/my_orders_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_details_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_card.dart';
@@ -175,8 +176,8 @@ class OrdersTabContent extends StatelessWidget {
             final order = section.items[index];
             return OrderCard(
               order: order,
-              onTap: () {
-                Navigator.of(context).push(
+              onTap: () async {
+                final didDelete = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(
                     builder: (_) => BlocProvider(
                       create: (_) =>
@@ -185,6 +186,10 @@ class OrdersTabContent extends StatelessWidget {
                     ),
                   ),
                 );
+
+                if (didDelete == true && context.mounted) {
+                  context.read<MyOrdersViewModel>().loadInitial();
+                }
               },
             );
           },

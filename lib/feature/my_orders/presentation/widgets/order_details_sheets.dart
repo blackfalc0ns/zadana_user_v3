@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
 
 class OrderCancelResult {
   const OrderCancelResult({
-    required this.reason,
+    required this.reasonCode,
+    required this.reasonLabel,
     required this.note,
-    required this.feedbackMessage,
   });
 
-  final String reason;
+  final String reasonCode;
+  final String reasonLabel;
   final String note;
-  final String feedbackMessage;
 }
 
 class OrderComplaintResult {
@@ -34,18 +35,12 @@ Future<OrderCancelResult?> showOrderCancelSheet({
   required BuildContext context,
   required OrderStatus status,
   required String total,
+  required List<OrderCancellationReasonEntity> reasons,
   required String initialNote,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final reasons = [
-    l10n.my_orders_cancel_reason_delay,
-    l10n.my_orders_cancel_reason_changed_mind,
-    l10n.my_orders_cancel_reason_modify_order,
-    l10n.my_orders_cancel_reason_ordered_by_mistake,
-    l10n.my_orders_cancel_reason_price_not_suitable,
-    l10n.my_orders_cancel_reason_other,
-  ];
-  String? selectedReason;
+  final languageCode = Localizations.localeOf(context).languageCode;
+  OrderCancellationReasonEntity? selectedReason;
   final noteController = TextEditingController(text: initialNote);
 
   return showModalBottomSheet<OrderCancelResult>(
@@ -67,7 +62,7 @@ Future<OrderCancelResult?> showOrderCancelSheet({
             const SizedBox(height: Spacing.sm),
             ...reasons.map(
               (reason) => CancelReasonTile(
-                title: reason,
+                title: reason.labelForLanguageCode(languageCode),
                 selected: selectedReason == reason,
                 onTap: () => setSheetState(() => selectedReason = reason),
               ),
@@ -76,6 +71,7 @@ Future<OrderCancelResult?> showOrderCancelSheet({
             SheetTextField(
               controller: noteController,
               hintText: l10n.my_orders_cancel_sheet_note_hint,
+              onChanged: (_) => setSheetState(() {}),
             ),
           ],
         ),
@@ -83,16 +79,19 @@ Future<OrderCancelResult?> showOrderCancelSheet({
         primaryActionLabel: l10n.my_orders_cancel_sheet_confirm,
         primaryColor: AppColors.error,
         onSecondaryTap: () => Navigator.pop(context),
-        onPrimaryTap: selectedReason == null
+        onPrimaryTap:
+            selectedReason == null ||
+                (selectedReason!.requiresNote &&
+                    noteController.text.trim().isEmpty)
             ? null
             : () => Navigator.pop(
                 context,
                 OrderCancelResult(
-                  reason: selectedReason!,
-                  note: noteController.text.trim(),
-                  feedbackMessage: l10n.my_orders_cancelled_feedback(
-                    selectedReason!,
+                  reasonCode: selectedReason!.code,
+                  reasonLabel: selectedReason!.labelForLanguageCode(
+                    languageCode,
                   ),
+                  note: noteController.text.trim(),
                 ),
               ),
       ),

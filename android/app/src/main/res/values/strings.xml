@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onesignal_heads_up_channel_name">Order updates</string>
+    <string name="onesignal_heads_up_channel_description">Heads-up alerts for order and account updates.</string>
+</resources>

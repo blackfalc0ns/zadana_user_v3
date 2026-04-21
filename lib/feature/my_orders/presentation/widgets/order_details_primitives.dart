@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_status_badge.dart';
@@ -20,7 +22,11 @@ class DetailSection extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+            style: getSemiBoldStyle(
+              fontSize: 16,
+              fontFamily: FontConstant.cairo,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: Spacing.md),
           child,
@@ -126,9 +132,10 @@ class BottomSheetScaffold extends StatelessWidget {
             Center(
               child: Text(
                 title,
-                style: const TextStyle(
+                style: getSemiBoldStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: FontConstant.cairo,
+                  color: colors.onSurface,
                 ),
               ),
             ),
@@ -177,11 +184,13 @@ class SheetTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     this.maxLines = 3,
+    this.onChanged,
   });
 
   final TextEditingController controller;
   final String hintText;
   final int maxLines;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -189,6 +198,7 @@ class SheetTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       maxLines: maxLines,
+      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
@@ -353,7 +363,10 @@ class LabelValueColumn extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           value,
-          style: TextStyle(fontWeight: FontWeight.w800, color: valueColor),
+          style: getSemiBoldStyle(
+            fontFamily: FontConstant.cairo,
+            color: valueColor,
+          ),
         ),
       ],
     );
@@ -385,9 +398,9 @@ class AmountText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       value,
-      style: TextStyle(
+      style: getBoldStyle(
+        fontFamily: FontConstant.cairo,
         color: Theme.of(context).colorScheme.primary,
-        fontWeight: FontWeight.w800,
       ),
     );
   }

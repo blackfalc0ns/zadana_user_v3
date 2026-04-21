@@ -1395,6 +1395,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get back_to_home => 'Back to Home';
 
   @override
+  String get track_order_order_placed => 'Order placed';
+
+  @override
+  String get track_order_vendor_confirmed => 'Vendor confirmed';
+
+  @override
+  String get track_order_preparing => 'Preparing order';
+
+  @override
+  String get track_order_out_for_delivery => 'Out for delivery';
+
+  @override
   String get my_orders_title => 'My Orders';
 
   @override
@@ -1464,6 +1476,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get my_orders_return_request => 'Return Request';
 
   @override
+  String get my_orders_retry_payment => 'Retry Payment';
+
+  @override
   String get my_orders_follow_up => 'Follow Up';
 
   @override
@@ -1471,6 +1486,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get my_orders_details_title => 'Order Details';
+
+  @override
+  String get my_orders_delete_title => 'Delete this order?';
+
+  @override
+  String get my_orders_delete_message =>
+      'This action permanently removes the order from your list if deletion is available for it.';
 
   @override
   String get my_orders_order_summary_title => 'Order Summary';
@@ -1503,6 +1525,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get my_orders_cancel_sheet_confirm => 'Confirm Cancellation';
+
+  @override
+  String get my_orders_cancel_confirm_title => 'Confirm order cancellation?';
+
+  @override
+  String get my_orders_cancel_confirm_message =>
+      'Please make sure you want to cancel this order before continuing.';
 
   @override
   String get my_orders_cancel_reason_delay => 'Delay in preparing the order';

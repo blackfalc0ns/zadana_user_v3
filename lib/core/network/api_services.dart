@@ -45,8 +45,13 @@ import 'package:zadana_user_v3/feature/home/data/models/featured/home_featured_r
 import 'package:zadana_user_v3/feature/home/data/models/recommended/home_recommended_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/home/data/models/special_offers/home_special_offers_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/location/data/models/location_search_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_request_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_response_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/delete_order_response_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_cancellation_reason_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/retry_order_payment_response_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_action_response_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_device_preferences_request_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_devices_response_dto.dart';
@@ -58,6 +63,7 @@ import 'package:zadana_user_v3/feature/product_details/data/models/product_detai
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
 import 'package:zadana_user_v3/feature/search/data/models/product_search_response_dto.dart';
+import 'package:zadana_user_v3/feature/track_order/data/models/order_tracking_response_dto.dart';
 
 part 'api_services.g.dart';
 
@@ -299,6 +305,28 @@ abstract class ApiServices {
 
   @GET(EndPoints.orderDetails)
   Future<OrderDetailsDto> getOrderDetails(@Path('orderId') String orderId);
+
+  @GET(EndPoints.orderTracking)
+  Future<OrderTrackingResponseDto> getOrderTracking(
+    @Path('orderId') String orderId,
+  );
+
+  @GET(EndPoints.orderCancellationReasons)
+  Future<List<OrderCancellationReasonDto>> getOrderCancellationReasons();
+
+  @POST(EndPoints.cancelOrder)
+  Future<CancelOrderResponseDto> cancelOrder(
+    @Path('orderId') String orderId,
+    @Body() CancelOrderRequestDto request,
+  );
+
+  @POST(EndPoints.retryOrderPayment)
+  Future<RetryOrderPaymentResponseDto> retryOrderPayment(
+    @Path('orderId') String orderId,
+  );
+
+  @DELETE(EndPoints.deleteOrder)
+  Future<DeleteOrderResponseDto> deleteOrder(@Path('orderId') String orderId);
 
   @GET(EndPoints.notifications)
   Future<NotificationsPageDto> getNotifications(

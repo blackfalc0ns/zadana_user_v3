@@ -46,6 +46,11 @@ abstract class EndPoints {
   static const String completedOrders = '/orders/completed';
   static const String returnedOrders = '/orders/returns';
   static const String orderDetails = '/orders/{orderId}';
+  static const String orderTracking = '/orders/{orderId}/tracking';
+  static const String orderCancellationReasons = '/orders/cancellation-reasons';
+  static const String cancelOrder = '/orders/{orderId}/cancel';
+  static const String retryOrderPayment = '/orders/{orderId}/retry-payment';
+  static const String deleteOrder = '/orders/{orderId}';
   static const String notifications = '/notifications';
   static const String notificationsUnreadCount = '/notifications/unread-count';
   static const String notificationsReadAll = '/notifications/read-all';

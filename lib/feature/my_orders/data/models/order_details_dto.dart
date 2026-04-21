@@ -14,6 +14,8 @@ class OrderDetailsDto {
     required this.totalPrice,
     required this.status,
     required this.canCancel,
+    this.canRetryPayment = false,
+    required this.canDelete,
     required this.itemsCount,
     required this.summary,
     required this.items,
@@ -27,6 +29,9 @@ class OrderDetailsDto {
   final double totalPrice;
   final String status;
   final bool canCancel;
+  @JsonKey(defaultValue: false)
+  final bool canRetryPayment;
+  final bool canDelete;
   final int itemsCount;
   final OrderPriceSummaryDto summary;
   final List<OrderItemDto> items;
@@ -40,6 +45,8 @@ class OrderDetailsDto {
       totalPrice: totalPrice,
       status: OrderStatus.fromApi(status),
       canCancel: canCancel,
+      canRetryPayment: canRetryPayment,
+      canDelete: canDelete,
       itemsCount: itemsCount,
       summary: summary.toEntity(),
       items: items.map((item) => item.toEntity()).toList(),

@@ -134,6 +134,7 @@ GET /orders/returns
 ## Cancel Order Request
 ```json
 {
+  "reason_code": "changed_my_mind",
   "reason": "string",
   "note": "string"
 }

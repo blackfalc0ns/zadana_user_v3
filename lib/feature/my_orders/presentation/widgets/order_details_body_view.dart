@@ -17,7 +17,13 @@ class OrderDetailsBodyView extends StatelessWidget {
     required this.message,
     required this.attachments,
     required this.status,
+    required this.isBusy,
+    required this.isCancelling,
+    required this.isRetryingPayment,
+    required this.isDeleting,
+    required this.onTrackOrder,
     required this.onCancel,
+    required this.onRetryPayment,
     required this.onComplaint,
   });
 
@@ -26,7 +32,13 @@ class OrderDetailsBodyView extends StatelessWidget {
   final String message;
   final List<PlatformFile> attachments;
   final OrderStatus status;
+  final bool isBusy;
+  final bool isCancelling;
+  final bool isRetryingPayment;
+  final bool isDeleting;
+  final VoidCallback onTrackOrder;
   final VoidCallback onCancel;
+  final VoidCallback onRetryPayment;
   final VoidCallback onComplaint;
 
   @override
@@ -48,6 +60,14 @@ class OrderDetailsBodyView extends StatelessWidget {
           itemCount: order.itemsCount,
           total: money(order.totalPrice),
         ),
+        if (status.isActive && !order.canRetryPayment) ...[
+          const SizedBox(height: Spacing.base),
+          FilledButton.icon(
+            onPressed: onTrackOrder,
+            icon: const Icon(Icons.location_on_outlined, size: 20),
+            label: Text(l10n.track_order),
+          ),
+        ],
         const SizedBox(height: Spacing.base),
         DetailSection(
           title: l10n.my_orders_order_summary_title,
@@ -117,8 +137,13 @@ class OrderDetailsBodyView extends StatelessWidget {
         const SizedBox(height: Spacing.lg),
         OrderDetailsActions(
           canCancel: order.canCancel,
+          canRetryPayment: order.canRetryPayment,
           hasComplaint: complaint != OrderComplaintState.none,
+          isCancelling: isCancelling,
+          isRetryingPayment: isRetryingPayment,
+          isComplaintBusy: isDeleting,
           onCancel: onCancel,
+          onRetryPayment: onRetryPayment,
           onComplaint: onComplaint,
         ),
         const SizedBox(height: Spacing.base),

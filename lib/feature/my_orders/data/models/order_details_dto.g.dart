@@ -13,6 +13,8 @@ OrderDetailsDto _$OrderDetailsDtoFromJson(Map<String, dynamic> json) =>
       totalPrice: (json['total_price'] as num).toDouble(),
       status: json['status'] as String,
       canCancel: json['can_cancel'] as bool,
+      canRetryPayment: json['can_retry_payment'] as bool? ?? false,
+      canDelete: json['can_delete'] as bool,
       itemsCount: (json['items_count'] as num).toInt(),
       summary: OrderPriceSummaryDto.fromJson(
         json['summary'] as Map<String, dynamic>,
@@ -29,6 +31,8 @@ Map<String, dynamic> _$OrderDetailsDtoToJson(OrderDetailsDto instance) =>
       'total_price': instance.totalPrice,
       'status': instance.status,
       'can_cancel': instance.canCancel,
+      'can_retry_payment': instance.canRetryPayment,
+      'can_delete': instance.canDelete,
       'items_count': instance.itemsCount,
       'summary': instance.summary.toJson(),
       'items': instance.items.map((e) => e.toJson()).toList(),

@@ -36,6 +36,7 @@ import 'package:zadana_user_v3/feature/profile/presentation/pages/help_support_s
 import 'package:zadana_user_v3/feature/profile/presentation/pages/privacy_policy_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/pages/terms_conditions_screen.dart';
+import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_view_model.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_order_screen.dart';
 
 class RouteGenerator {
@@ -157,7 +158,20 @@ class RouteGenerator {
       case AppRoutes.orders:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());
       case AppRoutes.trackOrder:
-        return MaterialPageRoute(builder: (_) => const TrackOrderScreen());
+        final arguments = settings.arguments;
+        final orderId = switch (arguments) {
+          final String id => id,
+          final Map<dynamic, dynamic> map => map['orderId']?.toString(),
+          _ => null,
+        };
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) =>
+                getIt<TrackOrderViewModel>()..initialize(orderId ?? ''),
+            child: TrackOrderScreen(orderId: orderId ?? ''),
+          ),
+        );
 
       case AppRoutes.myOrdersPage:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());

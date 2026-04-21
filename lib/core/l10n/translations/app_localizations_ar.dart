@@ -1368,6 +1368,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get back_to_home => 'رجوع للرئيسية';
 
   @override
+  String get track_order_order_placed => 'تم استلام الطلب';
+
+  @override
+  String get track_order_vendor_confirmed => 'تم تأكيد الطلب من المتجر';
+
+  @override
+  String get track_order_preparing => 'جارٍ تجهيز الطلب';
+
+  @override
+  String get track_order_out_for_delivery => 'خرج الطلب للتوصيل';
+
+  @override
   String get my_orders_title => 'طلباتي';
 
   @override
@@ -1433,7 +1445,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_reorder_button => 'إعادة الطلب';
 
   @override
-  String get my_orders_return_request => 'طلب إرجاع';
+  String get my_orders_return_request => 'طلب الغاء';
+
+  @override
+  String get my_orders_retry_payment => 'إعادة الدفع';
 
   @override
   String get my_orders_follow_up => 'متابعة';
@@ -1443,6 +1458,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_details_title => 'تفاصيل الطلب';
+
+  @override
+  String get my_orders_delete_title => 'حذف هذا الطلب؟';
+
+  @override
+  String get my_orders_delete_message =>
+      'سيتم حذف الطلب نهائيًا من قائمتك إذا كان الحذف متاحًا له.';
 
   @override
   String get my_orders_order_summary_title => 'ملخص الطلب';
@@ -1475,6 +1497,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_cancel_sheet_confirm => 'تأكيد الإلغاء';
+
+  @override
+  String get my_orders_cancel_confirm_title => 'تأكيد إلغاء الطلب؟';
+
+  @override
+  String get my_orders_cancel_confirm_message =>
+      'يرجى التأكد أنك تريد إلغاء هذا الطلب قبل المتابعة.';
 
   @override
   String get my_orders_cancel_reason_delay => 'تأخر في تجهيز الطلب';

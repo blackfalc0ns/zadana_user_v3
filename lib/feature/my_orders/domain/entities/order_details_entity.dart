@@ -9,6 +9,8 @@ class OrderDetailsEntity {
     required this.totalPrice,
     required this.status,
     required this.canCancel,
+    required this.canRetryPayment,
+    required this.canDelete,
     required this.itemsCount,
     required this.summary,
     required this.items,
@@ -19,6 +21,8 @@ class OrderDetailsEntity {
   final double totalPrice;
   final OrderStatus status;
   final bool canCancel;
+  final bool canRetryPayment;
+  final bool canDelete;
   final int itemsCount;
   final OrderPriceSummaryEntity summary;
   final List<OrderItemEntity> items;

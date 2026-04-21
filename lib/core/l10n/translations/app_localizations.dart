@@ -2678,6 +2678,30 @@ abstract class AppLocalizations {
   /// **'Back to Home'**
   String get back_to_home;
 
+  /// No description provided for @track_order_order_placed.
+  ///
+  /// In en, this message translates to:
+  /// **'Order placed'**
+  String get track_order_order_placed;
+
+  /// No description provided for @track_order_vendor_confirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor confirmed'**
+  String get track_order_vendor_confirmed;
+
+  /// No description provided for @track_order_preparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing order'**
+  String get track_order_preparing;
+
+  /// No description provided for @track_order_out_for_delivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Out for delivery'**
+  String get track_order_out_for_delivery;
+
   /// No description provided for @my_orders_title.
   ///
   /// In en, this message translates to:
@@ -2810,6 +2834,12 @@ abstract class AppLocalizations {
   /// **'Return Request'**
   String get my_orders_return_request;
 
+  /// No description provided for @my_orders_retry_payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry Payment'**
+  String get my_orders_retry_payment;
+
   /// No description provided for @my_orders_follow_up.
   ///
   /// In en, this message translates to:
@@ -2827,6 +2857,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order Details'**
   String get my_orders_details_title;
+
+  /// No description provided for @my_orders_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this order?'**
+  String get my_orders_delete_title;
+
+  /// No description provided for @my_orders_delete_message.
+  ///
+  /// In en, this message translates to:
+  /// **'This action permanently removes the order from your list if deletion is available for it.'**
+  String get my_orders_delete_message;
 
   /// No description provided for @my_orders_order_summary_title.
   ///
@@ -2887,6 +2929,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm Cancellation'**
   String get my_orders_cancel_sheet_confirm;
+
+  /// No description provided for @my_orders_cancel_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm order cancellation?'**
+  String get my_orders_cancel_confirm_title;
+
+  /// No description provided for @my_orders_cancel_confirm_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please make sure you want to cancel this order before continuing.'**
+  String get my_orders_cancel_confirm_message;
 
   /// No description provided for @my_orders_cancel_reason_delay.
   ///

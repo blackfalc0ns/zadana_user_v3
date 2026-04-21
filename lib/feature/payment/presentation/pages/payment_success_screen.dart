@@ -181,10 +181,13 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                         AppButton(
                           text: l10n.track_order,
                           icon: Icons.location_on_outlined,
-                          onPressed: () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.trackOrder,
-                          ),
+                          onPressed: widget.orderId == null
+                              ? null
+                              : () => Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.trackOrder,
+                                  arguments: widget.orderId,
+                                ),
                           color: colors.primary,
                           textColor: colors.onPrimary,
                           height: Spacing.buttonHeight,

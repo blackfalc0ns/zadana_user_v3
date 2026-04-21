@@ -233,14 +233,22 @@ import '../../feature/my_orders/data/data_source/my_orders_remote_data_source_im
 import '../../feature/my_orders/data/repo/my_orders_repository_impl.dart'
     as _i871;
 import '../../feature/my_orders/domain/repo/my_orders_repository.dart' as _i858;
+import '../../feature/my_orders/domain/usecase/cancel_order_usecase.dart'
+    as _i890;
+import '../../feature/my_orders/domain/usecase/delete_order_usecase.dart'
+    as _i631;
 import '../../feature/my_orders/domain/usecase/get_active_orders_usecase.dart'
     as _i149;
 import '../../feature/my_orders/domain/usecase/get_completed_orders_usecase.dart'
     as _i166;
+import '../../feature/my_orders/domain/usecase/get_order_cancellation_reasons_usecase.dart'
+    as _i40;
 import '../../feature/my_orders/domain/usecase/get_order_details_usecase.dart'
     as _i372;
 import '../../feature/my_orders/domain/usecase/get_returned_orders_usecase.dart'
     as _i816;
+import '../../feature/my_orders/domain/usecase/retry_order_payment_usecase.dart'
+    as _i842;
 import '../../feature/my_orders/presentation/manager/my_orders_view_model.dart'
     as _i398;
 import '../../feature/my_orders/presentation/manager/order_details_view_model.dart'
@@ -327,6 +335,18 @@ import '../../feature/search/presentation/manager/product_search_cubit.dart'
     as _i655;
 import '../../feature/special_offers/presentation/manager/special_offers_products_cubit.dart'
     as _i110;
+import '../../feature/track_order/data/data_source/track_order_remote_data_source.dart'
+    as _i58;
+import '../../feature/track_order/data/data_source/track_order_remote_data_source_impl.dart'
+    as _i695;
+import '../../feature/track_order/data/repo/track_order_repository_impl.dart'
+    as _i672;
+import '../../feature/track_order/domain/repo/track_order_repository.dart'
+    as _i556;
+import '../../feature/track_order/domain/usecase/get_order_tracking_usecase.dart'
+    as _i633;
+import '../../feature/track_order/presentation/manager/track_order_view_model.dart'
+    as _i341;
 import '../general_cubit/local_cubit.dart' as _i794;
 import '../helpers/permision_service.dart' as _i367;
 import '../helpers/shared_pref.dart' as _i42;
@@ -456,6 +476,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i19.DeliveryVerificationRemoteDataSourceImpl(
         gh<_i804.ApiServices>(),
       ),
+    );
+    gh.factory<_i58.TrackOrderRemoteDataSource>(
+      () => _i695.TrackOrderRemoteDataSourceImpl(gh<_i804.ApiServices>()),
     );
     gh.factory<_i601.CategoryRemoteDataSource>(
       () => _i642.CategoryRemoteDataSourceImpl(gh<_i804.ApiServices>()),
@@ -629,6 +652,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i2.BrandRepository>(
       () => _i982.BrandRepositoryImpl(gh<_i484.BrandRemoteDataSource>()),
     );
+    gh.factory<_i556.TrackOrderRepository>(
+      () =>
+          _i672.TrackOrderRepositoryImpl(gh<_i58.TrackOrderRemoteDataSource>()),
+    );
     gh.factory<_i875.ProductDetailsUseCase>(
       () => _i875.ProductDetailsUseCase(gh<_i888.ProductDetailsRepository>()),
     );
@@ -678,17 +705,31 @@ extension GetItInjectableX on _i174.GetIt {
       (title, _) =>
           _i372.BrandsListingCubit(gh<_i446.GetHomeBrandsUseCase>(), title),
     );
+    gh.factory<_i890.CancelOrderUseCase>(
+      () => _i890.CancelOrderUseCase(gh<_i858.MyOrdersRepository>()),
+    );
+    gh.factory<_i631.DeleteOrderUseCase>(
+      () => _i631.DeleteOrderUseCase(gh<_i858.MyOrdersRepository>()),
+    );
     gh.factory<_i149.GetActiveOrdersUseCase>(
       () => _i149.GetActiveOrdersUseCase(gh<_i858.MyOrdersRepository>()),
     );
     gh.factory<_i166.GetCompletedOrdersUseCase>(
       () => _i166.GetCompletedOrdersUseCase(gh<_i858.MyOrdersRepository>()),
     );
+    gh.factory<_i40.GetOrderCancellationReasonsUseCase>(
+      () => _i40.GetOrderCancellationReasonsUseCase(
+        gh<_i858.MyOrdersRepository>(),
+      ),
+    );
     gh.factory<_i372.GetOrderDetailsUseCase>(
       () => _i372.GetOrderDetailsUseCase(gh<_i858.MyOrdersRepository>()),
     );
     gh.factory<_i816.GetReturnedOrdersUseCase>(
       () => _i816.GetReturnedOrdersUseCase(gh<_i858.MyOrdersRepository>()),
+    );
+    gh.factory<_i842.RetryOrderPaymentUseCase>(
+      () => _i842.RetryOrderPaymentUseCase(gh<_i858.MyOrdersRepository>()),
     );
     gh.factory<_i732.ForgetPasswordUseCase>(
       () => _i732.ForgetPasswordUseCase(
@@ -806,11 +847,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i45.GetShoppingProductsUseCase>(
       () => _i45.GetShoppingProductsUseCase(gh<_i131.CategoryRepository>()),
     );
+    gh.factory<_i633.GetOrderTrackingUseCase>(
+      () => _i633.GetOrderTrackingUseCase(gh<_i556.TrackOrderRepository>()),
+    );
     gh.lazySingleton<_i140.FavoritesRepository>(
       () => _i140.FavoritesRepository(gh<_i480.FavoritesRemoteDataSource>()),
-    );
-    gh.factory<_i393.OrderDetailsViewModel>(
-      () => _i393.OrderDetailsViewModel(gh<_i372.GetOrderDetailsUseCase>()),
     );
     gh.factoryParam<_i908.BestSellingProductsCubit, String, dynamic>(
       (title, _) => _i908.BestSellingProductsCubit(
@@ -830,6 +871,15 @@ extension GetItInjectableX on _i174.GetIt {
         addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
         getCartUseCase: gh<_i925.GetCartUseCase>(),
         languageService: gh<_i819.LanguageService>(),
+      ),
+    );
+    gh.factory<_i393.OrderDetailsViewModel>(
+      () => _i393.OrderDetailsViewModel(
+        gh<_i372.GetOrderDetailsUseCase>(),
+        gh<_i40.GetOrderCancellationReasonsUseCase>(),
+        gh<_i890.CancelOrderUseCase>(),
+        gh<_i842.RetryOrderPaymentUseCase>(),
+        gh<_i631.DeleteOrderUseCase>(),
       ),
     );
     gh.factory<_i166.RegisterUseCase>(
@@ -944,6 +994,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i227.TokenService>(),
         gh<_i823.NotificationDeviceService>(),
       ),
+    );
+    gh.factory<_i341.TrackOrderViewModel>(
+      () => _i341.TrackOrderViewModel(gh<_i633.GetOrderTrackingUseCase>()),
     );
     gh.factory<_i248.LoginUseCase>(
       () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),

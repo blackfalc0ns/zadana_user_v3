@@ -1,8 +1,13 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/data_source/my_orders_remote_data_source.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_request_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_response_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/delete_order_response_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_cancellation_reason_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/retry_order_payment_response_dto.dart';
 
 @Injectable(as: MyOrdersRemoteDataSource)
 class MyOrdersRemoteDataSourceImpl implements MyOrdersRemoteDataSource {
@@ -37,5 +42,28 @@ class MyOrdersRemoteDataSourceImpl implements MyOrdersRemoteDataSource {
   @override
   Future<OrderDetailsDto> getOrderDetails(String orderId) {
     return _apiServices.getOrderDetails(orderId);
+  }
+
+  @override
+  Future<List<OrderCancellationReasonDto>> getCancellationReasons() {
+    return _apiServices.getOrderCancellationReasons();
+  }
+
+  @override
+  Future<CancelOrderResponseDto> cancelOrder(
+    String orderId,
+    CancelOrderRequestDto request,
+  ) {
+    return _apiServices.cancelOrder(orderId, request);
+  }
+
+  @override
+  Future<RetryOrderPaymentResponseDto> retryOrderPayment(String orderId) {
+    return _apiServices.retryOrderPayment(orderId);
+  }
+
+  @override
+  Future<DeleteOrderResponseDto> deleteOrder(String orderId) {
+    return _apiServices.deleteOrder(orderId);
   }
 }

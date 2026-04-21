@@ -14,15 +14,21 @@ class OrderStatusBadge extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = orderStatusColors(Theme.of(context).colorScheme, status);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: colors.$1,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        orderStatusLabel(l10n, status),
-        style: getMediumStyle(fontFamily: FontConstant.cairo, color: colors.$2),
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: colors.$1,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          orderStatusLabel(l10n, status),
+          style: getMediumStyle(
+            fontFamily: FontConstant.cairo,
+            color: colors.$2,
+          ),
+        ),
       ),
     );
   }

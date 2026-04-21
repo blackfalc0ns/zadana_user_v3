@@ -202,14 +202,24 @@ class OrderDetailsActions extends StatelessWidget {
   const OrderDetailsActions({
     super.key,
     required this.canCancel,
+    required this.canRetryPayment,
     required this.hasComplaint,
+    required this.isCancelling,
+    required this.isRetryingPayment,
+    required this.isComplaintBusy,
     required this.onCancel,
+    required this.onRetryPayment,
     required this.onComplaint,
   });
 
   final bool canCancel;
+  final bool canRetryPayment;
   final bool hasComplaint;
+  final bool isCancelling;
+  final bool isRetryingPayment;
+  final bool isComplaintBusy;
   final VoidCallback onCancel;
+  final VoidCallback onRetryPayment;
   final VoidCallback onComplaint;
 
   @override
@@ -228,10 +238,25 @@ class OrderDetailsActions extends StatelessWidget {
               height: 50,
               borderRadius: 18,
               onPressed: onCancel,
+              isLoading: isCancelling,
               fontWeight: FontWeight.w600,
             ),
           ),
         if (canCancel) const SizedBox(width: Spacing.sm),
+        if (canRetryPayment)
+          Expanded(
+            child: AppButton.outlined(
+              text: l10n.my_orders_retry_payment,
+              color: colors.primary,
+              textColor: colors.primary,
+              height: 50,
+              borderRadius: 18,
+              onPressed: onRetryPayment,
+              isLoading: isRetryingPayment,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        if (canRetryPayment) const SizedBox(width: Spacing.sm),
         Expanded(
           child: AppButton(
             text: hasComplaint
@@ -244,6 +269,7 @@ class OrderDetailsActions extends StatelessWidget {
             height: 50,
             borderRadius: 18,
             fontWeight: FontWeight.w600,
+            isLoading: isComplaintBusy,
             onPressed: onComplaint,
           ),
         ),

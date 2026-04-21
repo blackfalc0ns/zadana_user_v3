@@ -5,9 +5,16 @@ import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 
 class PushNotificationService {
   static const String _appId = "e557da4e-947b-468b-ab5b-37c552c35dca";
+  static const String androidHeadsUpChannelId = "zadana_heads_up_notifications";
   static final Logger _logger = Logger();
+  static bool _isInitialized = false;
 
   static Future<void> init() async {
+    if (_isInitialized) {
+      _logger.w('PushNotificationService.init() was called more than once.');
+      return;
+    }
+
     try {
       // Remove this method to stop OneSignal Debugging
       // OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
@@ -27,22 +34,36 @@ class PushNotificationService {
         await _cachePushTokenIfAvailable(token);
       });
 
-      // This ensures notifications are displayed as standard alerts even when the app is open
       OneSignal.Notifications.addForegroundWillDisplayListener((event) {
-        event
-            .preventDefault(); // Prevent default behavior (which might be silent)
-        event.notification.display(); // Explicitly show the notification
-        Logger().i(
-          "Foreground notification received: ${event.notification.title}",
+        final title = event.notification.title?.trim();
+        final body = event.notification.body?.trim();
+        final hasVisibleContent =
+            (title?.isNotEmpty ?? false) || (body?.isNotEmpty ?? false);
+
+        if (!hasVisibleContent) {
+          _logger.w(
+            'Foreground notification arrived without visible title/body. '
+            'This payload will not produce a standard popup notification.',
+          );
+          return;
+        }
+
+        // Keep foreground notifications visible instead of being handled silently.
+        event.preventDefault();
+        event.notification.display();
+        _logger.i(
+          'Foreground notification displayed. '
+          'title: ${title ?? '(empty)'}, body exists: ${body?.isNotEmpty ?? false}',
         );
       });
 
       OneSignal.Notifications.addClickListener((event) {
-        Logger().i(
-          "Notification clicked: ${event.notification.additionalData}",
+        _logger.i(
+          'Notification clicked: ${event.notification.additionalData}',
         );
       });
 
+      await OneSignal.User.pushSubscription.optIn();
       await _cachePushTokenIfAvailable(OneSignal.User.pushSubscription.token);
 
       final permissionGranted = await OneSignal.Notifications.requestPermission(
@@ -52,6 +73,7 @@ class PushNotificationService {
       await _cachePushTokenIfAvailable(OneSignal.User.pushSubscription.token);
 
       _logger.i("OneSignal initialized with ID: $_appId");
+      _isInitialized = true;
     } catch (e) {
       _logger.e("Error initializing OneSignal: $e");
     }
