@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/usecase/get_order_tracking_usecase.dart';
@@ -21,6 +23,8 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
     _orderId = orderId;
     load();
   }
+
+  void refresh() => load(isManualRefresh: true);
 
   void load({bool isManualRefresh = false}) {
     final orderId = _orderId;
@@ -74,6 +78,64 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
             failure: result.failure,
           ),
         );
+    }
+  }
+
+  String localizedTimelineTitle(
+    AppLocalizations l10n,
+    OrderTrackingTimelineItemEntity item,
+    int index,
+  ) {
+    switch (item.id) {
+      case 'order_placed':
+        return l10n.track_order_order_placed;
+      case 'vendor_confirmed':
+        return l10n.track_order_vendor_confirmed;
+      case 'preparing':
+        return l10n.track_order_preparing;
+      case 'out_for_delivery':
+        return l10n.track_order_out_for_delivery;
+      case 'delivered':
+        return l10n.order_delivered;
+      default:
+        final title = item.title.trim();
+        return title.isNotEmpty ? title : _timelineFallbackLabel(l10n, index);
+    }
+  }
+
+  String resolveEstimatedDeliveryText({
+    required AppLocalizations l10n,
+    required String localeCode,
+    required OrderEstimatedDeliveryEntity? estimatedDelivery,
+  }) {
+    if (estimatedDelivery == null) {
+      return l10n.order_pending;
+    }
+
+    final dateTime = estimatedDelivery.dateTime;
+    if (dateTime != null) {
+      return DateFormat(
+        'dd MMM yyyy, hh:mm a',
+        localeCode,
+      ).format(dateTime.toLocal());
+    }
+
+    final formatted = estimatedDelivery.formatted.trim();
+    return formatted.isNotEmpty ? formatted : l10n.order_pending;
+  }
+
+  String sanitizeTimelineTime(String value) => value.trim();
+
+  String _timelineFallbackLabel(AppLocalizations l10n, int index) {
+    switch (index) {
+      case 0:
+        return l10n.order_pending;
+      case 1:
+        return l10n.track_order;
+      case 2:
+        return l10n.delivery_get_otp;
+      default:
+        return l10n.order_delivered;
     }
   }
 

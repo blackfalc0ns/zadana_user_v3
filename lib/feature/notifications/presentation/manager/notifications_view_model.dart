@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_page_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_query_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notification_unread_count_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notifications_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/mark_all_notifications_as_read_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/mark_notification_as_read_usecase.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/usecase/watch_realtime_notifications_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/manager/notifications_state.dart';
 
 @injectable
@@ -17,6 +21,7 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
     this._getNotificationUnreadCountUseCase,
     this._markNotificationAsReadUseCase,
     this._markAllNotificationsAsReadUseCase,
+    this._watchRealtimeNotificationsUseCase,
   ) : super(const NotificationsState());
 
   static const double loadMoreThreshold = 320;
@@ -25,8 +30,13 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
   final GetNotificationUnreadCountUseCase _getNotificationUnreadCountUseCase;
   final MarkNotificationAsReadUseCase _markNotificationAsReadUseCase;
   final MarkAllNotificationsAsReadUseCase _markAllNotificationsAsReadUseCase;
+  final WatchRealtimeNotificationsUseCase _watchRealtimeNotificationsUseCase;
+  StreamSubscription<AppNotificationEntity>? _realtimeSubscription;
 
-  Future<void> loadInitial() => _loadPage(reset: true);
+  Future<void> loadInitial() async {
+    _subscribeToRealtimeUpdates();
+    await _loadPage(reset: true);
+  }
 
   Future<void> refresh() => _loadPage(reset: true);
 
@@ -110,6 +120,12 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
     emit(state.copyWith(feedbackMessage: null));
   }
 
+  @override
+  Future<void> close() async {
+    await _realtimeSubscription?.cancel();
+    return super.close();
+  }
+
   Future<void> _loadPage({required bool reset}) async {
     final currentItems = state.items;
     final nextPage = reset ? AppConstants.firstPage : state.page + 1;
@@ -129,16 +145,12 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
     );
 
     final result = await _getNotificationsUseCase(
-      NotificationsQueryEntity(
-        page: nextPage,
-      ),
+      NotificationsQueryEntity(page: nextPage),
     );
 
     switch (result) {
       case ApiSuccessResult<NotificationsPageEntity>():
-        final mergedItems = reset
-            ? result.data.items
-            : [...currentItems, ...result.data.items];
+        final mergedItems = _mergeNotifications(state.items, result.data.items);
         emit(
           state.copyWith(
             isLoading: false,
@@ -146,8 +158,12 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
             items: mergedItems,
             hasMore: result.data.hasMore,
             page: result.data.page,
-            total: result.data.total,
-            unreadCount: result.data.unreadCount,
+            total: state.total > result.data.total
+                ? state.total
+                : result.data.total,
+            unreadCount: state.unreadCount > result.data.unreadCount
+                ? state.unreadCount
+                : result.data.unreadCount,
             initialized: true,
             clearFailure: true,
           ),
@@ -168,11 +184,74 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
   void _setNotificationRead(String notificationId) {
     final updatedItems = state.items
         .map(
-          (item) => item.id == notificationId ? item.copyWith(isRead: true) : item,
+          (item) =>
+              item.id == notificationId ? item.copyWith(isRead: true) : item,
         )
         .toList();
-    final unreadCount = updatedItems.where((item) => !item.isRead).length;
-    emit(state.copyWith(items: updatedItems, unreadCount: unreadCount));
+    emit(
+      state.copyWith(
+        items: updatedItems,
+        unreadCount: state.unreadCount > 0 ? state.unreadCount - 1 : 0,
+      ),
+    );
+  }
+
+  void _subscribeToRealtimeUpdates() {
+    if (_realtimeSubscription != null) return;
+
+    _realtimeSubscription = _watchRealtimeNotificationsUseCase().listen(
+      _handleRealtimeNotification,
+    );
+  }
+
+  void _handleRealtimeNotification(AppNotificationEntity notification) {
+    final existingIndex = state.items.indexWhere(
+      (item) => item.id == notification.id,
+    );
+    final updatedItems = [...state.items];
+    final wasUnread = existingIndex >= 0 && !updatedItems[existingIndex].isRead;
+
+    if (existingIndex >= 0) {
+      updatedItems.removeAt(existingIndex);
+    }
+
+    updatedItems.insert(0, notification);
+
+    emit(
+      state.copyWith(
+        items: updatedItems,
+        unreadCount: _nextUnreadCount(notification, wasUnread: wasUnread),
+        total: existingIndex >= 0 ? state.total : state.total + 1,
+      ),
+    );
+  }
+
+  int _nextUnreadCount(
+    AppNotificationEntity notification, {
+    required bool wasUnread,
+  }) {
+    if (notification.isRead) {
+      return wasUnread && state.unreadCount > 0
+          ? state.unreadCount - 1
+          : state.unreadCount;
+    }
+
+    return wasUnread ? state.unreadCount : state.unreadCount + 1;
+  }
+
+  List<AppNotificationEntity> _mergeNotifications(
+    List<AppNotificationEntity> primary,
+    List<AppNotificationEntity> secondary,
+  ) {
+    final merged = <AppNotificationEntity>[];
+    final ids = <String>{};
+
+    for (final item in [...primary, ...secondary]) {
+      if (!ids.add(item.id)) continue;
+      merged.add(item);
+    }
+
+    return merged;
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
+import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/login/data/mapper/mapper_login.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
@@ -37,6 +38,8 @@ class LoginRepositoryImpl implements LoginRepository {
       final result = await _remoteDataSource.login(dto);
       await _tokenService.saveAccessToken(result.tokens.accessToken);
       await _tokenService.saveRefreshToken(result.tokens.refreshToken);
+      await _tokenService.saveCurrentUserId(result.user.id);
+      await PushNotificationService.loginCustomer(result.user.id);
       await _cartRepository.syncGuestCartIfAuthenticated();
       await _favoritesRepository.syncGuestFavoritesIfAuthenticated();
       await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();

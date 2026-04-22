@@ -1,5 +1,13 @@
 abstract class NetworkConstants {
   static const String baseUrl = "https://zadana.runasp.net/api";
+  static const String notificationsSignalRHubPath = '/hubs/notifications';
+  static const String receiveNotificationSignalREvent = 'ReceiveNotification';
+  static const String receiveOrderStatusChangedSignalREvent =
+      'ReceiveOrderStatusChanged';
+  static const String receiveBroadcastSignalREvent = 'ReceiveBroadcast';
+  static const String ordersSignalRHubPath = notificationsSignalRHubPath;
+  static const String ordersSignalRMethods =
+      receiveOrderStatusChangedSignalREvent;
   static const String authorization = 'Authorization';
   static const String bearer = "Bearer";
   static const String deviceIdHeader = 'X-Device-Id';

@@ -18,9 +18,30 @@ class TrackOrderTimelineTile extends StatelessWidget {
   final bool completed;
   final bool last;
 
+  static const Color _pendingColor = Color(0xFFE58E1A);
+
   Color _indicatorColor(ColorScheme color) {
-    if (completed || active) return color.primary;
-    return const Color(0xFFE58E1A);
+    if (completed) return color.primary;
+    if (active) return _pendingColor;
+    return _pendingColor;
+  }
+
+  Color _titleColor(ColorScheme color) {
+    if (completed) return color.onSurface;
+    if (active) return _pendingColor;
+    return _pendingColor;
+  }
+
+  IconData _indicatorIcon() {
+    if (completed) {
+      return Icons.radio_button_checked_rounded;
+    }
+
+    if (active) {
+      return Icons.radio_button_checked_rounded;
+    }
+
+    return Icons.radio_button_off_rounded;
   }
 
   @override
@@ -43,9 +64,7 @@ class TrackOrderTimelineTile extends StatelessWidget {
                   style: getMediumStyle(
                     fontSize: 18,
                     fontFamily: FontConstant.cairo,
-                    color: completed || active
-                        ? color.onSurface
-                        : const Color(0xFFE58E1A),
+                    color: _titleColor(color),
                   ),
                 ),
                 if (time.isNotEmpty) ...[
@@ -68,9 +87,7 @@ class TrackOrderTimelineTile extends StatelessWidget {
         Column(
           children: [
             Icon(
-              completed || active
-                  ? Icons.radio_button_checked_rounded
-                  : Icons.radio_button_off_rounded,
+              _indicatorIcon(),
               color: indicatorColor,
               size: 28,
             ),
@@ -78,9 +95,9 @@ class TrackOrderTimelineTile extends StatelessWidget {
               Container(
                 width: 2,
                 height: 56,
-                color: completed || active
+                color: completed
                     ? color.primary.withValues(alpha: .55)
-                    : const Color(0xFFE58E1A).withValues(alpha: .4),
+                    : _pendingColor.withValues(alpha: .4),
               ),
           ],
         ),

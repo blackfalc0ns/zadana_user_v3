@@ -1,4 +1,5 @@
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notification_device_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notification_device_preferences_request_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_page_entity.dart';
@@ -12,6 +13,8 @@ abstract class NotificationsRepository {
   );
 
   Future<ApiResult<int>> getUnreadCount();
+
+  Stream<AppNotificationEntity> watchRealtimeNotifications();
 
   Future<ApiResult<void>> markAsRead(String notificationId);
 

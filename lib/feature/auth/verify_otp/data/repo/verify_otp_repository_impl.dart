@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
+import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/mapper/mapper_verify_otp.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
@@ -40,6 +41,11 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
       if (accessToken != null && refreshToken != null) {
         await _tokenService.saveAccessToken(accessToken);
         await _tokenService.saveRefreshToken(refreshToken);
+        final customerId = result.user?.id?.trim() ?? '';
+        if (customerId.isNotEmpty) {
+          await _tokenService.saveCurrentUserId(customerId);
+          await PushNotificationService.loginCustomer(customerId);
+        }
         await _cartRepository.syncGuestCartIfAuthenticated();
         await _favoritesRepository.syncGuestFavoritesIfAuthenticated();
         await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();

@@ -53,8 +53,26 @@ class TokenService {
     await _prefs.delete(key: AppConstants.refreshToken);
   }
 
+  Future<void> saveCurrentUserId(String userId) async {
+    if (userId.trim().isEmpty) return;
+    await _sharedPreferences.setString(AppConstants.customerIdKey, userId);
+  }
+
+  Future<String?> getCurrentUserId() async {
+    final userId = _sharedPreferences.getString(AppConstants.customerIdKey);
+    if (userId == null || userId.trim().isEmpty) {
+      return null;
+    }
+    return userId;
+  }
+
+  Future<void> deleteCurrentUserId() async {
+    await _sharedPreferences.remove(AppConstants.customerIdKey);
+  }
+
   Future<void> clearTokens() async {
     await deleteToken();
     await deleteRefreshToken();
+    await deleteCurrentUserId();
   }
 }

@@ -11,16 +11,6 @@ class TrackOrderDriverCard extends StatelessWidget {
 
   final OrderTrackingDriverEntity driver;
 
-  bool _isBrokenText(String value) {
-    final trimmed = value.trim();
-    if (trimmed.isEmpty) return true;
-    return RegExp(r'^\?+$').hasMatch(trimmed) ||
-        RegExp(r'^[\?\s]+$').hasMatch(trimmed) ||
-        trimmed.contains('�') ||
-        trimmed.contains('Ù') ||
-        trimmed.contains('Ø');
-  }
-
   Future<void> _callDriver() async {
     final phoneNumber = driver.phoneNumber.trim();
     if (phoneNumber.isEmpty) return;
@@ -31,8 +21,8 @@ class TrackOrderDriverCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final title = _isBrokenText(driver.name) ? l10n.courier_name : driver.name;
-    final subtitle = _isBrokenText(driver.subtitle) ? '' : driver.subtitle;
+    final title = driver.name.trim().isEmpty ? l10n.courier_name : driver.name;
+    final subtitle = driver.subtitle.trim();
 
     return Container(
       padding: const EdgeInsets.all(Spacing.base),

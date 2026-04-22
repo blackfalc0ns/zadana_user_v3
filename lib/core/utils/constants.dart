@@ -9,6 +9,7 @@ abstract class AppConstants {
   static const String deviceIdKey = 'deviceIdKey';
   static const String notificationsEnabledKey = 'notificationsEnabledKey';
   static const String fcmTokenKey = 'fcmTokenKey';
+  static const String customerIdKey = 'customerIdKey';
 
   // 🔹 Localization Keys
   static const String languageCode = 'languageCode';

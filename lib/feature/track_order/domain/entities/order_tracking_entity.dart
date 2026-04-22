@@ -12,6 +12,20 @@ class OrderTrackingEntity {
   final OrderEstimatedDeliveryEntity? estimatedDelivery;
   final OrderTrackingDriverEntity? driver;
   final List<OrderTrackingTimelineItemEntity> timeline;
+
+  OrderTrackingEntity copyWith({
+    OrderTrackingOrderEntity? order,
+    OrderEstimatedDeliveryEntity? estimatedDelivery,
+    OrderTrackingDriverEntity? driver,
+    List<OrderTrackingTimelineItemEntity>? timeline,
+  }) {
+    return OrderTrackingEntity(
+      order: order ?? this.order,
+      estimatedDelivery: estimatedDelivery ?? this.estimatedDelivery,
+      driver: driver ?? this.driver,
+      timeline: timeline ?? this.timeline,
+    );
+  }
 }
 
 class OrderTrackingOrderEntity {
@@ -19,6 +33,13 @@ class OrderTrackingOrderEntity {
 
   final String id;
   final OrderStatus status;
+
+  OrderTrackingOrderEntity copyWith({String? id, OrderStatus? status}) {
+    return OrderTrackingOrderEntity(
+      id: id ?? this.id,
+      status: status ?? this.status,
+    );
+  }
 }
 
 class OrderEstimatedDeliveryEntity {
@@ -29,6 +50,16 @@ class OrderEstimatedDeliveryEntity {
 
   final DateTime? dateTime;
   final String formatted;
+
+  OrderEstimatedDeliveryEntity copyWith({
+    DateTime? dateTime,
+    String? formatted,
+  }) {
+    return OrderEstimatedDeliveryEntity(
+      dateTime: dateTime ?? this.dateTime,
+      formatted: formatted ?? this.formatted,
+    );
+  }
 }
 
 class OrderTrackingDriverEntity {
@@ -49,6 +80,20 @@ class OrderTrackingDriverEntity {
       name.trim().isNotEmpty ||
       subtitle.trim().isNotEmpty ||
       phoneNumber.trim().isNotEmpty;
+
+  OrderTrackingDriverEntity copyWith({
+    String? id,
+    String? name,
+    String? phoneNumber,
+    String? subtitle,
+  }) {
+    return OrderTrackingDriverEntity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      subtitle: subtitle ?? this.subtitle,
+    );
+  }
 }
 
 class OrderTrackingTimelineItemEntity {
@@ -65,4 +110,20 @@ class OrderTrackingTimelineItemEntity {
   final String time;
   final bool isActive;
   final bool isCompleted;
+
+  OrderTrackingTimelineItemEntity copyWith({
+    String? id,
+    String? title,
+    String? time,
+    bool? isActive,
+    bool? isCompleted,
+  }) {
+    return OrderTrackingTimelineItemEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      time: time ?? this.time,
+      isActive: isActive ?? this.isActive,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 }

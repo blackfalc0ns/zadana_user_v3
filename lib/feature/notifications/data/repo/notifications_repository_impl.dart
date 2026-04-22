@@ -4,6 +4,8 @@ import 'package:zadana_user_v3/feature/notifications/data/data_source/notificati
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_device_preferences_request_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/register_notification_device_request_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/unregister_notification_device_request_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notification_device_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notification_device_preferences_request_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_page_entity.dart';
@@ -14,9 +16,13 @@ import 'package:zadana_user_v3/feature/notifications/domain/repo/notifications_r
 
 @Injectable(as: NotificationsRepository)
 class NotificationsRepositoryImpl implements NotificationsRepository {
-  const NotificationsRepositoryImpl(this._remoteDataSource);
+  const NotificationsRepositoryImpl(
+    this._remoteDataSource,
+    this._notificationsSignalRService,
+  );
 
   final NotificationsRemoteDataSource _remoteDataSource;
+  final NotificationsSignalRService _notificationsSignalRService;
 
   @override
   Future<ApiResult<NotificationsPageEntity>> getNotifications(
@@ -34,6 +40,11 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
       final response = await _remoteDataSource.getUnreadCount();
       return response.count;
     });
+  }
+
+  @override
+  Stream<AppNotificationEntity> watchRealtimeNotifications() {
+    return _notificationsSignalRService.watchNotifications();
   }
 
   @override

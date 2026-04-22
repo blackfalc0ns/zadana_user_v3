@@ -259,6 +259,8 @@ import '../../feature/notifications/data/data_source/notifications_remote_data_s
     as _i559;
 import '../../feature/notifications/data/repo/notifications_repository_impl.dart'
     as _i319;
+import '../../feature/notifications/data/services/notifications_signalr_service.dart'
+    as _i425;
 import '../../feature/notifications/domain/repo/notifications_repository.dart'
     as _i916;
 import '../../feature/notifications/domain/usecase/get_notification_devices_usecase.dart'
@@ -277,8 +279,12 @@ import '../../feature/notifications/domain/usecase/unregister_notification_devic
     as _i1029;
 import '../../feature/notifications/domain/usecase/update_notification_device_preferences_usecase.dart'
     as _i439;
+import '../../feature/notifications/domain/usecase/watch_realtime_notifications_usecase.dart'
+    as _i1040;
 import '../../feature/notifications/presentation/manager/notifications_view_model.dart'
     as _i683;
+import '../../feature/notifications/presentation/services/realtime_notification_overlay_service.dart'
+    as _i1050;
 import '../../feature/payment/data/data_source/payment_remote_data_source.dart'
     as _i844;
 import '../../feature/payment/data/data_source/payment_remote_data_source_impl.dart'
@@ -341,6 +347,8 @@ import '../../feature/track_order/data/data_source/track_order_remote_data_sourc
     as _i695;
 import '../../feature/track_order/data/repo/track_order_repository_impl.dart'
     as _i672;
+import '../../feature/track_order/data/services/track_order_signalr_service.dart'
+    as _i914;
 import '../../feature/track_order/domain/repo/track_order_repository.dart'
     as _i556;
 import '../../feature/track_order/domain/usecase/get_order_tracking_usecase.dart'
@@ -353,11 +361,13 @@ import '../helpers/shared_pref.dart' as _i42;
 import '../network/api_services.dart' as _i804;
 import '../network/external_modules.dart' as _i576;
 import '../network/osm_api_services.dart' as _i777;
+import '../services/app_navigator_service.dart' as _i179;
 import '../services/category_navigation_service.dart' as _i900;
 import '../services/device_id_interceptor.dart' as _i930;
 import '../services/device_id_service.dart' as _i148;
 import '../services/language_interceptor.dart' as _i32;
 import '../services/language_service.dart' as _i819;
+import '../services/local_notification_service.dart' as _i762;
 import '../services/notification_device_service.dart' as _i823;
 import '../services/push_token_service.dart' as _i92;
 import '../services/token_interceptor.dart' as _i1056;
@@ -389,6 +399,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => externalModules.flutterSecureStorage(),
     );
+    gh.lazySingleton<_i179.AppNavigatorService>(
+      () => _i179.AppNavigatorService(),
+    );
     gh.lazySingleton<_i900.CategoryNavigationService>(
       () => _i900.CategoryNavigationService(),
     );
@@ -398,6 +411,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(
       () => externalModules.provideOsmDio(gh<_i528.PrettyDioLogger>()),
       instanceName: 'osmDio',
+    );
+    gh.lazySingleton<_i762.LocalNotificationService>(
+      () => _i762.LocalNotificationService(gh<_i179.AppNavigatorService>()),
     );
     gh.factory<_i227.TokenService>(
       () => _i227.TokenService(
@@ -428,6 +444,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i227.TokenService>(),
         gh<_i148.DeviceIdService>(),
       ),
+    );
+    gh.lazySingleton<_i425.NotificationsSignalRService>(
+      () => _i425.NotificationsSignalRService(gh<_i227.TokenService>()),
+    );
+    gh.lazySingleton<_i914.TrackOrderSignalRService>(
+      () => _i914.TrackOrderSignalRService(gh<_i227.TokenService>()),
     );
     gh.lazySingleton<_i794.LocaleThemeCubit>(
       () => _i794.LocaleThemeCubit(gh<_i819.LanguageService>()),
@@ -503,6 +525,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i730.HomeRemoteDataSource>(
       () => _i1072.HomeRemoteDataSourceImpl(gh<_i804.ApiServices>()),
+    );
+    gh.factory<_i556.TrackOrderRepository>(
+      () => _i672.TrackOrderRepositoryImpl(
+        gh<_i58.TrackOrderRemoteDataSource>(),
+        gh<_i914.TrackOrderSignalRService>(),
+      ),
     );
     gh.factory<_i371.ProfileRemoteDataSource>(
       () => _i544.ProfileRemoteDataSourceImpl(gh<_i804.ApiServices>()),
@@ -593,6 +621,9 @@ extension GetItInjectableX on _i174.GetIt {
         apiServices: gh<_i804.ApiServices>(),
       ),
     );
+    gh.factory<_i633.GetOrderTrackingUseCase>(
+      () => _i633.GetOrderTrackingUseCase(gh<_i556.TrackOrderRepository>()),
+    );
     gh.factory<_i426.LogoutUseCase>(
       () => _i426.LogoutUseCase(repository: gh<_i31.LogoutRepository>()),
     );
@@ -652,9 +683,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i2.BrandRepository>(
       () => _i982.BrandRepositoryImpl(gh<_i484.BrandRemoteDataSource>()),
     );
-    gh.factory<_i556.TrackOrderRepository>(
-      () =>
-          _i672.TrackOrderRepositoryImpl(gh<_i58.TrackOrderRemoteDataSource>()),
+    gh.factory<_i916.NotificationsRepository>(
+      () => _i319.NotificationsRepositoryImpl(
+        gh<_i1071.NotificationsRemoteDataSource>(),
+        gh<_i425.NotificationsSignalRService>(),
+      ),
     );
     gh.factory<_i875.ProductDetailsUseCase>(
       () => _i875.ProductDetailsUseCase(gh<_i888.ProductDetailsRepository>()),
@@ -686,9 +719,47 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i552.SearchProductsUseCase>(
       () => _i552.SearchProductsUseCase(gh<_i685.ProductSearchRepository>()),
     );
-    gh.factory<_i916.NotificationsRepository>(
-      () => _i319.NotificationsRepositoryImpl(
-        gh<_i1071.NotificationsRemoteDataSource>(),
+    gh.factory<_i570.GetNotificationDevicesUseCase>(
+      () => _i570.GetNotificationDevicesUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i850.GetNotificationUnreadCountUseCase>(
+      () => _i850.GetNotificationUnreadCountUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i519.GetNotificationsUseCase>(
+      () => _i519.GetNotificationsUseCase(gh<_i916.NotificationsRepository>()),
+    );
+    gh.factory<_i690.MarkAllNotificationsAsReadUseCase>(
+      () => _i690.MarkAllNotificationsAsReadUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i138.MarkNotificationAsReadUseCase>(
+      () => _i138.MarkNotificationAsReadUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i296.RegisterNotificationDeviceUseCase>(
+      () => _i296.RegisterNotificationDeviceUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i1029.UnregisterNotificationDeviceUseCase>(
+      () => _i1029.UnregisterNotificationDeviceUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i439.UpdateNotificationDevicePreferencesUseCase>(
+      () => _i439.UpdateNotificationDevicePreferencesUseCase(
+        gh<_i916.NotificationsRepository>(),
+      ),
+    );
+    gh.factory<_i1040.WatchRealtimeNotificationsUseCase>(
+      () => _i1040.WatchRealtimeNotificationsUseCase(
+        gh<_i916.NotificationsRepository>(),
       ),
     );
     gh.factoryParam<
@@ -730,6 +801,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i842.RetryOrderPaymentUseCase>(
       () => _i842.RetryOrderPaymentUseCase(gh<_i858.MyOrdersRepository>()),
+    );
+    gh.factory<_i683.NotificationsViewModel>(
+      () => _i683.NotificationsViewModel(
+        gh<_i519.GetNotificationsUseCase>(),
+        gh<_i850.GetNotificationUnreadCountUseCase>(),
+        gh<_i138.MarkNotificationAsReadUseCase>(),
+        gh<_i690.MarkAllNotificationsAsReadUseCase>(),
+        gh<_i1040.WatchRealtimeNotificationsUseCase>(),
+      ),
     );
     gh.factory<_i732.ForgetPasswordUseCase>(
       () => _i732.ForgetPasswordUseCase(
@@ -783,6 +863,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i8.VerifyDeliveryOtpUseCase>(
       () => _i8.VerifyDeliveryOtpUseCase(gh<_i891.DeliveryVerificationRepo>()),
     );
+    gh.lazySingleton<_i823.NotificationDeviceService>(
+      () => _i823.NotificationDeviceService(
+        gh<_i460.SharedPreferences>(),
+        gh<_i227.TokenService>(),
+        gh<_i92.PushTokenService>(),
+        gh<_i148.DeviceIdService>(),
+        gh<_i819.LanguageService>(),
+        gh<_i296.RegisterNotificationDeviceUseCase>(),
+        gh<_i439.UpdateNotificationDevicePreferencesUseCase>(),
+        gh<_i1029.UnregisterNotificationDeviceUseCase>(),
+      ),
+    );
+    gh.factory<_i558.LoginRepository>(
+      () => _i94.LoginRepositoryImpl(
+        gh<_i952.LoginRemoteDataSource>(),
+        gh<_i227.TokenService>(),
+        gh<_i823.NotificationDeviceService>(),
+      ),
+    );
     gh.factory<_i720.CustomerAddressesViewModel>(
       () => _i720.CustomerAddressesViewModel(
         gh<_i525.GetCustomerAddressesUseCase>(),
@@ -790,6 +889,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i175.SetCustomerAddressAsDefaultUseCase>(),
         gh<_i563.UpdateCustomerAddressUseCase>(),
       ),
+    );
+    gh.factory<_i341.TrackOrderViewModel>(
+      () => _i341.TrackOrderViewModel(gh<_i633.GetOrderTrackingUseCase>()),
     );
     gh.factory<_i491.ResetPasswordRepository>(
       () => _i670.ResetPasswordRepositoryImpl(
@@ -847,9 +949,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i45.GetShoppingProductsUseCase>(
       () => _i45.GetShoppingProductsUseCase(gh<_i131.CategoryRepository>()),
     );
-    gh.factory<_i633.GetOrderTrackingUseCase>(
-      () => _i633.GetOrderTrackingUseCase(gh<_i556.TrackOrderRepository>()),
-    );
     gh.lazySingleton<_i140.FavoritesRepository>(
       () => _i140.FavoritesRepository(gh<_i480.FavoritesRemoteDataSource>()),
     );
@@ -864,6 +963,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i934.ForgetPasswordViewModel>(
       () => _i934.ForgetPasswordViewModel(gh<_i732.ForgetPasswordUseCase>()),
+    );
+    gh.factory<_i248.LoginUseCase>(
+      () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
     );
     gh.factory<_i31.ProductDetailsCubit>(
       () => _i31.ProductDetailsCubit(
@@ -884,44 +986,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i166.RegisterUseCase>(
       () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
-    );
-    gh.factory<_i570.GetNotificationDevicesUseCase>(
-      () => _i570.GetNotificationDevicesUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
-    );
-    gh.factory<_i850.GetNotificationUnreadCountUseCase>(
-      () => _i850.GetNotificationUnreadCountUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
-    );
-    gh.factory<_i519.GetNotificationsUseCase>(
-      () => _i519.GetNotificationsUseCase(gh<_i916.NotificationsRepository>()),
-    );
-    gh.factory<_i690.MarkAllNotificationsAsReadUseCase>(
-      () => _i690.MarkAllNotificationsAsReadUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
-    );
-    gh.factory<_i138.MarkNotificationAsReadUseCase>(
-      () => _i138.MarkNotificationAsReadUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
-    );
-    gh.factory<_i296.RegisterNotificationDeviceUseCase>(
-      () => _i296.RegisterNotificationDeviceUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
-    );
-    gh.factory<_i1029.UnregisterNotificationDeviceUseCase>(
-      () => _i1029.UnregisterNotificationDeviceUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
-    );
-    gh.factory<_i439.UpdateNotificationDevicePreferencesUseCase>(
-      () => _i439.UpdateNotificationDevicePreferencesUseCase(
-        gh<_i916.NotificationsRepository>(),
-      ),
     );
     gh.factoryParam<_i1008.BrandDetailsCubit, _i1044.BrandModel, dynamic>(
       (_brand, _) => _i1008.BrandDetailsCubit(
@@ -952,12 +1016,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i314.RemoveFavoriteUseCase>(
       () => _i314.RemoveFavoriteUseCase(gh<_i140.FavoritesRepository>()),
     );
-    gh.factory<_i683.NotificationsViewModel>(
-      () => _i683.NotificationsViewModel(
-        gh<_i519.GetNotificationsUseCase>(),
-        gh<_i850.GetNotificationUnreadCountUseCase>(),
-        gh<_i138.MarkNotificationAsReadUseCase>(),
-        gh<_i690.MarkAllNotificationsAsReadUseCase>(),
+    gh.lazySingleton<_i1050.RealtimeNotificationOverlayService>(
+      () => _i1050.RealtimeNotificationOverlayService(
+        gh<_i1040.WatchRealtimeNotificationsUseCase>(),
+        gh<_i823.NotificationDeviceService>(),
+        gh<_i762.LocalNotificationService>(),
+        gh<_i179.AppNavigatorService>(),
       ),
     );
     gh.factory<_i228.CategoryViewModel>(
@@ -976,30 +1040,15 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i491.ResetPasswordRepository>(),
       ),
     );
-    gh.lazySingleton<_i823.NotificationDeviceService>(
-      () => _i823.NotificationDeviceService(
-        gh<_i460.SharedPreferences>(),
-        gh<_i227.TokenService>(),
-        gh<_i92.PushTokenService>(),
-        gh<_i148.DeviceIdService>(),
-        gh<_i819.LanguageService>(),
-        gh<_i296.RegisterNotificationDeviceUseCase>(),
-        gh<_i439.UpdateNotificationDevicePreferencesUseCase>(),
-        gh<_i1029.UnregisterNotificationDeviceUseCase>(),
-      ),
+    gh.factory<_i955.LoginViewModel>(
+      () => _i955.LoginViewModel(gh<_i248.LoginUseCase>()),
     );
-    gh.factory<_i558.LoginRepository>(
-      () => _i94.LoginRepositoryImpl(
-        gh<_i952.LoginRemoteDataSource>(),
+    gh.factory<_i415.VerifyOtpRepository>(
+      () => _i548.VerifyOtpRepositoryImpl(
+        gh<_i698.VerifyOtpRemoteDataSource>(),
         gh<_i227.TokenService>(),
         gh<_i823.NotificationDeviceService>(),
       ),
-    );
-    gh.factory<_i341.TrackOrderViewModel>(
-      () => _i341.TrackOrderViewModel(gh<_i633.GetOrderTrackingUseCase>()),
-    );
-    gh.factory<_i248.LoginUseCase>(
-      () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
     );
     gh.factory<_i190.FavoritesViewModel>(
       () => _i190.FavoritesViewModel(
@@ -1011,11 +1060,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i330.RegisterViewModel>(
       () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
     );
+    gh.factory<_i851.VerifyOtpUseCase>(
+      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
+    );
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
-    );
-    gh.factory<_i955.LoginViewModel>(
-      () => _i955.LoginViewModel(gh<_i248.LoginUseCase>()),
     );
     gh.factory<_i162.AppSectionGlobalCubit>(
       () => _i162.AppSectionGlobalCubit(
@@ -1031,16 +1080,6 @@ extension GetItInjectableX on _i174.GetIt {
         productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
         addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
       ),
-    );
-    gh.factory<_i415.VerifyOtpRepository>(
-      () => _i548.VerifyOtpRepositoryImpl(
-        gh<_i698.VerifyOtpRemoteDataSource>(),
-        gh<_i227.TokenService>(),
-        gh<_i823.NotificationDeviceService>(),
-      ),
-    );
-    gh.factory<_i851.VerifyOtpUseCase>(
-      () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
     gh.factory<_i718.VerifyOtpViewModel>(
       () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),

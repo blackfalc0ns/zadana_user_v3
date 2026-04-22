@@ -24,10 +24,17 @@ enum OrderStatus {
   static OrderStatus fromApi(String? value) {
     switch (value?.trim().toLowerCase()) {
       case 'pending':
+      case 'pendingvendoracceptance':
+      case 'order_placed':
         return OrderStatus.pending;
       case 'processing':
+      case 'accepted':
+      case 'vendor_confirmed':
+      case 'preparing':
         return OrderStatus.processing;
       case 'shipped':
+      case 'out_for_delivery':
+      case 'outfordelivery':
         return OrderStatus.shipped;
       case 'delivered':
       case 'completed':

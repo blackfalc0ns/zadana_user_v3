@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
@@ -5,15 +7,22 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/network/failuer_mapper.dart';
 
+enum CustomSnackbarPosition { top, bottom }
+
 class CustomSnackbar {
-  static OverlayEntry? _currentEntry;
-  static AnimationController? _animationController;
+  static final Map<CustomSnackbarPosition, OverlayEntry> _currentEntries =
+      <CustomSnackbarPosition, OverlayEntry>{};
+  static final Map<CustomSnackbarPosition, AnimationController>
+  _animationControllers = <CustomSnackbarPosition, AnimationController>{};
+  static final Map<CustomSnackbarPosition, Timer> _dismissTimers =
+      <CustomSnackbarPosition, Timer>{};
   static const Duration _defaultDuration = Duration(milliseconds: 1800);
 
   static void showSuccess({
     required BuildContext context,
     required String message,
     Duration duration = _defaultDuration,
+    VoidCallback? onTap,
   }) {
     _showSnackbar(
       context: context,
@@ -21,6 +30,7 @@ class CustomSnackbar {
       backgroundColor: const Color(0xFF49C98B),
       icon: Icons.check_circle_outline,
       duration: duration,
+      onTap: onTap,
     );
   }
 
@@ -28,6 +38,7 @@ class CustomSnackbar {
     required BuildContext context,
     required String message,
     Duration duration = _defaultDuration,
+    VoidCallback? onTap,
   }) {
     _showSnackbar(
       context: context,
@@ -35,6 +46,7 @@ class CustomSnackbar {
       backgroundColor: const Color(0xFFC85A54),
       icon: Icons.error_outline,
       duration: duration,
+      onTap: onTap,
     );
   }
 
@@ -42,6 +54,7 @@ class CustomSnackbar {
     required BuildContext context,
     required String message,
     Duration duration = _defaultDuration,
+    VoidCallback? onTap,
   }) {
     _showSnackbar(
       context: context,
@@ -49,6 +62,7 @@ class CustomSnackbar {
       backgroundColor: const Color(0xFFD08A2E),
       icon: Icons.warning_amber_outlined,
       duration: duration,
+      onTap: onTap,
     );
   }
 
@@ -56,6 +70,8 @@ class CustomSnackbar {
     required BuildContext context,
     required String message,
     Duration duration = _defaultDuration,
+    VoidCallback? onTap,
+    CustomSnackbarPosition position = CustomSnackbarPosition.bottom,
   }) {
     _showSnackbar(
       context: context,
@@ -63,6 +79,27 @@ class CustomSnackbar {
       backgroundColor: AppColors.primary,
       icon: Icons.info_outline,
       duration: duration,
+      onTap: onTap,
+      position: position,
+    );
+  }
+
+  static void showTopBanner({
+    required BuildContext context,
+    required String message,
+    Duration duration = _defaultDuration,
+    VoidCallback? onTap,
+    Color backgroundColor = AppColors.primary,
+    IconData icon = Icons.notifications_active_outlined,
+  }) {
+    _showSnackbar(
+      context: context,
+      message: message,
+      backgroundColor: backgroundColor,
+      icon: icon,
+      duration: duration,
+      onTap: onTap,
+      position: CustomSnackbarPosition.top,
     );
   }
 
@@ -72,6 +109,8 @@ class CustomSnackbar {
     required Color backgroundColor,
     required IconData icon,
     required Duration duration,
+    VoidCallback? onTap,
+    CustomSnackbarPosition position = CustomSnackbarPosition.bottom,
   }) {
     final localizedMessage = mapFailureMessage(context, message);
     final overlay = Overlay.maybeOf(context, rootOverlay: true);
@@ -79,7 +118,7 @@ class CustomSnackbar {
       return;
     }
 
-    _removeCurrent(immediate: true);
+    _removeCurrent(position: position, immediate: true);
     HapticFeedback.lightImpact();
 
     final controller = AnimationController(
@@ -87,7 +126,7 @@ class CustomSnackbar {
       duration: const Duration(milliseconds: 360),
       reverseDuration: const Duration(milliseconds: 260),
     );
-    _animationController = controller;
+    _animationControllers[position] = controller;
 
     late final OverlayEntry entry;
     entry = OverlayEntry(
@@ -98,9 +137,10 @@ class CustomSnackbar {
           curve: Curves.easeOut,
           reverseCurve: Curves.easeIn,
         );
+        final isTop = position == CustomSnackbarPosition.top;
         final slideAnimation =
             Tween<Offset>(
-              begin: const Offset(0, 1.05),
+              begin: Offset(0, isTop ? -1.05 : 1.05),
               end: Offset.zero,
             ).animate(
               CurvedAnimation(
@@ -120,11 +160,13 @@ class CustomSnackbar {
         return Positioned(
           left: 16,
           right: 16,
-          bottom: mediaQuery.padding.bottom + 12,
+          top: isTop ? mediaQuery.padding.top + 12 : null,
+          bottom: isTop ? null : mediaQuery.padding.bottom + 12,
           child: Material(
             color: Colors.transparent,
             child: SafeArea(
-              top: false,
+              top: isTop,
+              bottom: !isTop,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 460),
@@ -139,7 +181,8 @@ class CustomSnackbar {
                           backgroundColor: backgroundColor,
                           icon: icon,
                           duration: duration,
-                          onClose: _removeCurrent,
+                          onClose: () => _removeCurrent(position: position),
+                          onTap: onTap,
                         ),
                       ),
                     ),
@@ -152,23 +195,32 @@ class CustomSnackbar {
       },
     );
 
-    _currentEntry = entry;
+    _currentEntries[position] = entry;
     overlay.insert(entry);
 
     controller.forward();
-    Future<void>.delayed(duration, _removeCurrent);
+    _dismissTimers.remove(position)?.cancel();
+    _dismissTimers[position] = Timer(
+      duration,
+      () => _removeCurrent(position: position),
+    );
   }
 
-  static void _removeCurrent({bool immediate = false}) {
-    final entry = _currentEntry;
-    final controller = _animationController;
+  static void _removeCurrent({
+    required CustomSnackbarPosition position,
+    bool immediate = false,
+  }) {
+    final entry = _currentEntries[position];
+    final controller = _animationControllers[position];
+
+    _dismissTimers.remove(position)?.cancel();
 
     if (entry == null) {
       return;
     }
 
-    _currentEntry = null;
-    _animationController = null;
+    _currentEntries.remove(position);
+    _animationControllers.remove(position);
 
     if (controller == null || immediate) {
       entry.remove();
@@ -196,6 +248,7 @@ class _SnackbarCard extends StatelessWidget {
     required this.icon,
     required this.duration,
     required this.onClose,
+    this.onTap,
   });
 
   final String message;
@@ -203,92 +256,108 @@ class _SnackbarCard extends StatelessWidget {
   final IconData icon;
   final Duration duration;
   final VoidCallback onClose;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final progressColor = Colors.white.withValues(alpha: 0.9);
     final surfaceColor = Color.lerp(backgroundColor, Colors.black, 0.12)!;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            backgroundColor.withValues(alpha: 0.96),
-            surfaceColor.withValues(alpha: 0.98),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: backgroundColor.withValues(alpha: 0.18),
-            blurRadius: 22,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 8, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(icon, color: Colors.white, size: 18),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      message,
-                      style: getBoldStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontFamily: FontConstant.cairo,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: onClose,
-                    icon: const Icon(
-                      Icons.close_rounded,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 28,
-                      minHeight: 28,
-                    ),
-                    padding: EdgeInsets.zero,
-                    splashRadius: 16,
-                  ),
-                ],
-              ),
-            ),
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 1, end: 0),
-              duration: duration,
-              builder: (context, value, child) {
-                return Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: FractionallySizedBox(widthFactor: value, child: child),
-                );
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap == null
+            ? null
+            : () {
+                onClose();
+                onTap!.call();
               },
-              child: Container(height: 2.5, color: progressColor),
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                backgroundColor.withValues(alpha: 0.96),
+                surfaceColor.withValues(alpha: 0.98),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: backgroundColor.withValues(alpha: 0.18),
+                blurRadius: 22,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 8, 10),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.14),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(icon, color: Colors.white, size: 18),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          message,
+                          style: getBoldStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontFamily: FontConstant.cairo,
+                          ),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: onClose,
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
+                        padding: EdgeInsets.zero,
+                        splashRadius: 16,
+                      ),
+                    ],
+                  ),
+                ),
+                TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 1, end: 0),
+                  duration: duration,
+                  builder: (context, value, child) {
+                    return Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: FractionallySizedBox(
+                        widthFactor: value,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Container(height: 2.5, color: progressColor),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
