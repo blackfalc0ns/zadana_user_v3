@@ -25,43 +25,6 @@ class ServerErrorWidget extends BaseErrorWidget {
   final int? statusCode;
   final String? serverMessage;
 
-  /// Check if message contains technical details that should be hidden
-  bool _isTechnicalMessage(String? message) {
-    if (message == null || message.isEmpty) return true;
-
-    final technicalPatterns = [
-      'sql',
-      'mysql',
-      'database',
-      'exception',
-      'error:',
-      'stack',
-      'trace',
-      'file:',
-      '/tmp/',
-      'errcode',
-      'connection:',
-      'select ',
-      'insert ',
-      'update ',
-      'delete ',
-      'from ',
-      'where ',
-      '.php',
-      '.dart',
-      'laravel',
-      'eloquent',
-      'null and',
-      'is null',
-      'sqlstate',
-      'pdo',
-      'query',
-    ];
-
-    final lowerMessage = message.toLowerCase();
-    return technicalPatterns.any(lowerMessage.contains);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -99,13 +62,7 @@ class ServerErrorWidget extends BaseErrorWidget {
 
     // لا تعرض رسالة الـ server إذا كانت تحتوي على تفاصيل تقنية
     // استخدم الوصف المترجم فقط
-    final finalDescription =
-        (serverMessage != null &&
-            serverMessage!.isNotEmpty &&
-            !_isTechnicalMessage(serverMessage) &&
-            serverMessage!.length < 150)
-        ? serverMessage!
-        : description;
+    final finalDescription = serverMessage ?? description;
 
     return BaseErrorWidget(
       title: title, // لا تعرض status code للمستخدم

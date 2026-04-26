@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/services/app_navigator_service.dart';
 import 'package:zadana_user_v3/core/services/local_notification_service.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
+import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/watch_realtime_notifications_usecase.dart';
@@ -30,9 +31,7 @@ class RealtimeNotificationOverlayService {
   final Logger _logger = Logger();
   static const Duration _overlayDuration = Duration(seconds: 3);
   static const Duration _overlayGap = Duration(milliseconds: 250);
-  static const Duration _overlayContextRetryDelay = Duration(
-    milliseconds: 200,
-  );
+  static const Duration _overlayContextRetryDelay = Duration(milliseconds: 200);
   static const int _overlayContextRetryAttempts = 15;
 
   StreamSubscription<AppNotificationEntity>? _subscription;
@@ -63,8 +62,12 @@ class RealtimeNotificationOverlayService {
       _overlayQueue.add(notification);
       unawaited(_processInAppOverlayQueue());
       _logger.i(
-        'Realtime notification queued for banner display: '
-        '${notification.type ?? notification.id}.',
+        'Realtime notification queued for local display. '
+        'This path does not cover killed state by itself. '
+        'type: ${notification.type ?? '-'}, '
+        'notificationId: ${notification.id}, '
+        'orderId: ${notification.referenceId ?? notification.dataObject?['orderId'] ?? '-'}, '
+        'status: ${notification.dataObject?['newStatus'] ?? notification.dataObject?['status'] ?? '-'}',
       );
     } catch (error, stackTrace) {
       _logger.e(
@@ -150,19 +153,16 @@ class RealtimeNotificationOverlayService {
         ? notification.referenceId!.trim()
         : notification.dataObject?['orderId']?.toString();
 
-    switch (notification.type) {
-      case 'order_status_changed':
-      case 'order_cancelled':
-      case 'order_placed':
-        if (orderId != null && orderId.isNotEmpty) {
-          await _appNavigatorService.pushNamed(
-            AppRoutes.trackOrder,
-            arguments: {'orderId': orderId},
-          );
-          return;
-        }
-      default:
-        await _appNavigatorService.pushNamed(AppRoutes.notifications);
+    if (NotificationPayloadResolver.isOrderRelatedType(notification.type) &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await _appNavigatorService.pushNamedWhenReady(
+        AppRoutes.trackOrder,
+        arguments: {'orderId': orderId},
+      );
+      return;
     }
+
+    await _appNavigatorService.pushNamedWhenReady(AppRoutes.notifications);
   }
 }

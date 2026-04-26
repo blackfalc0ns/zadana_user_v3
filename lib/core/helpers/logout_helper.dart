@@ -6,12 +6,14 @@ import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/logout/domain/entities/logout_request_entity.dart';
 import 'package:zadana_user_v3/feature/auth/logout/domain/usecase/logout_usecase.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 
 class LogoutHelper {
   static Future<void> performLogout(BuildContext context) async {
     final tokenService = getIt<TokenService>();
     final refreshToken = await tokenService.getRefreshToken() ?? '';
 
+    await getIt<NotificationsSignalRService>().disconnect();
     await getIt<NotificationDeviceService>().unregisterCurrentDevice();
 
     if (refreshToken.isNotEmpty) {

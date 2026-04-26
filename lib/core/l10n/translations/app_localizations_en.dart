@@ -1389,7 +1389,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minutes => 'minutes';
 
   @override
-  String get track_order => 'Track Order ðŸ“';
+  String get track_order => 'Track Order';
 
   @override
   String get back_to_home => 'Back to Home';

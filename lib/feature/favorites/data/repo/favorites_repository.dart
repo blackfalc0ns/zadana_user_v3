@@ -125,6 +125,7 @@ class FavoritesRepository {
   void emitFavoriteMutation({
     required Iterable<String> productIds,
     required bool isFavorite,
+    bool skipBackgroundRefresh = false,
   }) {
     final normalizedProductIds = productIds
         .map((id) => id.trim())
@@ -140,6 +141,7 @@ class FavoritesRepository {
       FavoriteMutationEvent(
         productIds: normalizedProductIds,
         isFavorite: isFavorite,
+        skipBackgroundRefresh: skipBackgroundRefresh,
       ),
     );
   }
@@ -149,8 +151,10 @@ class FavoriteMutationEvent {
   const FavoriteMutationEvent({
     required this.productIds,
     required this.isFavorite,
+    this.skipBackgroundRefresh = false,
   });
 
   final List<String> productIds;
   final bool isFavorite;
+  final bool skipBackgroundRefresh;
 }

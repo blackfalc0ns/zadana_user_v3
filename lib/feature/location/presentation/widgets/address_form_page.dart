@@ -34,10 +34,10 @@ class AddressFormPage extends StatelessWidget {
             return SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(Spacing.screenH),
-                child: ApiErrorWidget.fromFailure(
-                  state.failure!,
-                  onRetry: context.read<LocationViewModel>().clearFeedback,
-                  onGoBack: () => Navigator.pop(context),
+                child: ApiErrorWidget(
+                    exception: state.failure!.exception,
+                    onRetry: context.read<LocationViewModel>().clearFeedback,
+                    onGoBack: () => Navigator.pop(context),
                 ),
               ),
             );

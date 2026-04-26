@@ -60,8 +60,8 @@ class ProductsGrid extends StatelessWidget {
         if (visibleProducts.isEmpty) {
           // Show full error widget when we have a Failure object
           if (errorFailure != null) {
-            return ApiErrorWidget.fromFailure(
-              errorFailure!,
+            return ApiErrorWidget(
+              exception: errorFailure!.exception,
               onRetry: onRetryError,
             );
           }

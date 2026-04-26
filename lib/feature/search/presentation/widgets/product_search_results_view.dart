@@ -41,10 +41,10 @@ class ProductSearchResultsView extends StatelessWidget {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: ApiErrorWidget.fromFailure(
-                state.failure!,
-                onRetry: onRetry,
-              ),
+              child: ApiErrorWidget(
+                  exception: state.failure!.exception,
+                  onRetry: onRetry,
+                ),
             ),
           );
         }

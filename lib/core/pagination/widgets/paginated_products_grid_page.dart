@@ -101,8 +101,7 @@ class _PaginatedProductsGridPageState extends State<PaginatedProductsGridPage> {
                     child: Center(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: ApiErrorWidget.fromFailure(
-                          widget.state.failure!,
+                        child: ApiErrorWidget(exception: widget.state.failure!.exception,
                           onRetry: widget.onRetry,
                         ),
                       ),
@@ -120,8 +119,8 @@ class _PaginatedProductsGridPageState extends State<PaginatedProductsGridPage> {
                     height: 500,
                     child: Center(
                       child: EmptyStateWidget(
-                        title: 'لا توجد منتجات',
-                        description: 'لا توجد بيانات متاحة في الوقت الحالي.',
+                        title: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù†ØªØ¬Ø§Øª',
+                        description: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…ØªØ§Ø­Ø© ÙÙŠ Ø§Ù„ÙˆÙ‚Øª Ø§Ù„Ø­Ø§Ù„ÙŠ.',
                         icon: Icons.inventory_2_outlined,
                       ),
                     ),

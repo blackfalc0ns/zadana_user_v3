@@ -105,6 +105,30 @@ class OrderSummaryGrid extends StatelessWidget {
   }
 }
 
+class OrderPaymentSummary extends StatelessWidget {
+  const OrderPaymentSummary({
+    super.key,
+    required this.methodLabel,
+    required this.statusLabel,
+  });
+
+  final String methodLabel;
+  final String statusLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      children: [
+        SummaryRow(label: l10n.payment_method, value: methodLabel),
+        const SizedBox(height: Spacing.sm),
+        SummaryRow(label: l10n.profile_status_label, value: statusLabel),
+      ],
+    );
+  }
+}
+
 class OrderItemTile extends StatelessWidget {
   const OrderItemTile({
     super.key,

@@ -4,8 +4,11 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_message_presenter.dart';
+import 'package:zadana_user_v3/core/errors/error_presentation.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_state.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/manager/reset_password_view_model.dart';
@@ -38,10 +41,29 @@ class _ResetPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.localization;
 
-    return BlocBuilder<ResetPasswordViewModel, ResetPasswordState>(
+    return BlocConsumer<ResetPasswordViewModel, ResetPasswordState>(
+      listenWhen: (previous, current) => previous.failure != current.failure,
+      listener: (context, state) {
+        final failure = state.failure;
+        if (failure == null || !failure.exception.errorType.showSnackBar) {
+          return;
+        }
+
+        CustomSnackbar.showError(
+          context: context,
+          message: ErrorMessagePresenter.snackBarMessage(
+            context,
+            failure.exception,
+          ),
+        );
+      },
       builder: (context, state) {
+        final failure = state.failure;
         final showGlobalError =
-            !state.isLoading && !state.isSuccess && state.failure != null;
+            !state.isLoading &&
+            !state.isSuccess &&
+            failure != null &&
+            failure.exception.errorType.showFullScreen;
 
         return AuthExperienceShell(
           isLoading: state.isLoading,
@@ -60,8 +82,8 @@ class _ResetPasswordView extends StatelessWidget {
                     horizontal: 16,
                     vertical: Spacing.lg,
                   ),
-                  child: ApiErrorWidget.fromFailure(
-                    state.failure!,
+                  child: ApiErrorWidget(
+                    exception: failure.exception,
                     onRetry: context
                         .read<ResetPasswordViewModel>()
                         .clearFeedback,

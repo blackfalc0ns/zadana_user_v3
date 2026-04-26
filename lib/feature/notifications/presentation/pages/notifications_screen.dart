@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
@@ -94,10 +95,10 @@ class _NotificationsView extends StatelessWidget {
                 }
 
                 if (state.failure != null && state.items.isEmpty) {
-                  return ApiErrorWidget.fromFailure(
-                    state.failure!,
-                    onRetry: context.read<NotificationsViewModel>().loadInitial,
-                  );
+                  return ApiErrorWidget(
+                      exception: state.failure!.exception,
+                      onRetry: context.read<NotificationsViewModel>().loadInitial,
+                    );
                 }
 
                 if (state.items.isEmpty) {
@@ -173,27 +174,22 @@ class _NotificationsView extends StatelessWidget {
     final orderId =
         notification.referenceId ?? notification.dataObject?['orderId']?.toString();
 
-    switch (notification.type) {
-      case 'order_status_changed':
-      case 'order_cancelled':
-      case 'order_placed':
-        if (orderId != null && orderId.isNotEmpty) {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) => getIt<OrderDetailsViewModel>()..load(orderId),
-                child: OrderDetailsPage(orderId: orderId),
-              ),
+    if (NotificationPayloadResolver.isOrderRelatedType(notification.type)) {
+      if (orderId != null && orderId.isNotEmpty) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (_) => getIt<OrderDetailsViewModel>()..load(orderId),
+              child: OrderDetailsPage(orderId: orderId),
             ),
-          );
-          return;
-        }
-        await Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const MyOrdersPage()));
-        break;
-      default:
-        break;
+          ),
+        );
+        return;
+      }
+
+      await Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const MyOrdersPage()));
     }
   }
 }

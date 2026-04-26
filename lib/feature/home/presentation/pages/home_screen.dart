@@ -99,9 +99,9 @@ class _HomeScreenView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Center(
-                        child: ApiErrorWidget.fromFailure(
-                          state.firstFailure!,
-                          onRetry: () {
+                        child: ApiErrorWidget(
+                            exception: state.firstFailure!.exception,
+                            onRetry: () {
                             _loadAllSections(context);
                           },
                         ),

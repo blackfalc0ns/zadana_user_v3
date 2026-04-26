@@ -23,69 +23,84 @@ class TrackOrderSummaryCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return SurfaceCard(
-      borderRadius: 24,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      borderRadius: 28,
+      padding: const EdgeInsets.all(Spacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: color.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(Icons.local_shipping_outlined, color: color.primary),
-          ),
-          const SizedBox(width: Spacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  l10n.estimated_delivery,
-                  textAlign: TextAlign.end,
-                  style: getBoldStyle(
-                    fontSize: FontSize.size15,
-                    fontFamily: FontConstant.cairo,
-                    color: color.onSurface,
-                  ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: color.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  estimatedDeliveryText,
-                  textAlign: TextAlign.end,
-                  style: getBoldStyle(
-                    fontSize: FontSize.size18,
-                    fontFamily: FontConstant.cairo,
-                    color: color.primary,
-                  ),
+                child: Icon(
+                  Icons.local_shipping_outlined,
+                  color: color.primary,
+                  size: 28,
                 ),
-                const SizedBox(height: 12),
-                Wrap(
-                  alignment: WrapAlignment.end,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: Spacing.sm,
-                  runSpacing: Spacing.sm,
+              ),
+              const SizedBox(width: Spacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    OrderStatusBadge(status: tracking.order.status),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 220),
-                      child: Text(
-                        '${l10n.order_number}: ${tracking.order.id}',
-                        textAlign: TextAlign.end,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: getRegularStyle(
-                          fontFamily: FontConstant.cairo,
-                          color: color.onSurfaceVariant,
-                        ),
+                    Text(
+                      l10n.estimated_delivery,
+                      textAlign: TextAlign.end,
+                      style: getMediumStyle(
+                        fontSize: FontSize.size14,
+                        fontFamily: FontConstant.cairo,
+                        color: color.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      estimatedDeliveryText,
+                      textAlign: TextAlign.end,
+                      style: getBoldStyle(
+                        fontSize: FontSize.size22,
+                        fontFamily: FontConstant.cairo,
+                        color: color.primary,
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          const SizedBox(height: Spacing.md),
+          Row(
+            children: [
+              OrderStatusBadge(status: tracking.order.status),
+              const Spacer(),
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.sm,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: color.surfaceContainerHighest.withValues(alpha: .18),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '${l10n.order_number}: ${tracking.order.id}',
+                    textAlign: TextAlign.end,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: color.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

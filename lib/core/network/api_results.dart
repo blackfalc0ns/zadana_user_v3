@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:zadana_user_v3/core/errors/api_exception_mapper.dart';
 
 import 'failures.dart';
 
@@ -24,7 +25,7 @@ Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
     );
   } catch (_) {
     return ApiErrorResult<T>(
-      failure: const Failure(errorMessage: 'Unexpected error occurred.'),
+      failure: Failure.fromException(ApiExceptionMapper.unknown()),
     );
   }
 }
@@ -34,6 +35,8 @@ Future<ApiResult<T>> safeLocalCall<T>(Future<T> Function() localCall) async {
     final result = await localCall();
     return ApiSuccessResult<T>(data: result);
   } catch (error) {
-    return ApiErrorResult<T>(failure: Failure(errorMessage: error.toString()));
+    return ApiErrorResult<T>(
+      failure: Failure.fromException(ApiExceptionMapper.unknown(error)),
+    );
   }
 }

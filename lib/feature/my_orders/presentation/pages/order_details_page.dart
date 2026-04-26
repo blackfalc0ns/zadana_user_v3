@@ -33,14 +33,23 @@ class OrderDetailsPage extends StatelessWidget {
     final payment = await context.read<OrderDetailsViewModel>().retryPayment(
       targetOrderId,
     );
-    if (!context.mounted || payment == null || payment.iframeUrl.isEmpty) {
+    if (!context.mounted || payment == null) {
+      return;
+    }
+
+    final paymentUrl = payment.iframeUrl.trim();
+    if (paymentUrl.isEmpty) {
+      CustomSnackbar.showError(
+        context: context,
+        message: l10n.error_other_desc,
+      );
       return;
     }
 
     final paymentResult = await Navigator.push<PaymentCallbackResult>(
       context,
       MaterialPageRoute(
-        builder: (_) => PaymentWebViewScreen(paymentUrl: payment.iframeUrl),
+        builder: (_) => PaymentWebViewScreen(paymentUrl: paymentUrl),
       ),
     );
 
@@ -231,10 +240,10 @@ class OrderDetailsPage extends StatelessWidget {
           }
 
           if (state.failure != null && state.order == null) {
-            return ApiErrorWidget.fromFailure(
-              state.failure!,
-              onRetry: () =>
-                  context.read<OrderDetailsViewModel>().load(targetOrderId),
+            return ApiErrorWidget(
+                exception: state.failure!.exception,
+                onRetry: () =>
+                    context.read<OrderDetailsViewModel>().load(targetOrderId),
             );
           }
 

@@ -11,7 +11,31 @@ import org.json.JSONObject
 class OneSignalNotificationServiceExtension : INotificationServiceExtension {
     override fun onNotificationReceived(event: INotificationReceivedEvent) {
         val notification = event.notification
+        if (shouldPassThrough(notification)) {
+            return
+        }
         forceNotificationChannel(notification)
+    }
+
+    private fun shouldPassThrough(notification: IDisplayableMutableNotification): Boolean {
+        val additionalDataType = notification.additionalData
+            ?.optString("type")
+            ?.trim()
+            ?.lowercase()
+        if (additionalDataType in passThroughTypes) {
+            return true
+        }
+
+        val rawPayloadType = runCatching {
+            JSONObject(notification.rawPayload)
+                .optJSONObject("custom")
+                ?.optJSONObject("a")
+                ?.optString("type")
+                ?.trim()
+                ?.lowercase()
+        }.getOrNull()
+
+        return rawPayloadType in passThroughTypes
     }
 
     private fun forceNotificationChannel(notification: IDisplayableMutableNotification) {
@@ -32,9 +56,10 @@ class OneSignalNotificationServiceExtension : INotificationServiceExtension {
             return payloadChannelId
         }
 
-        val notificationType = additionalData?.optString("type")?.trim()
-        if (notificationType == "order_status_changed") {
-            return MainApplication.ORDER_UPDATES_CHANNEL_ID
+        val existingPayloadChannelId =
+            additionalData?.optString("existing_android_channel_id")?.trim()
+        if (!existingPayloadChannelId.isNullOrEmpty()) {
+            return existingPayloadChannelId
         }
 
         val rawPayloadChannelId = runCatching {
@@ -44,6 +69,21 @@ class OneSignalNotificationServiceExtension : INotificationServiceExtension {
             return rawPayloadChannelId
         }
 
+        val existingRawPayloadChannelId = runCatching {
+            JSONObject(notification.rawPayload).optString("existing_android_channel_id").trim()
+        }.getOrNull()
+        if (!existingRawPayloadChannelId.isNullOrEmpty()) {
+            return existingRawPayloadChannelId
+        }
+
         return MainApplication.HEADS_UP_CHANNEL_ID
+    }
+
+    companion object {
+        private val passThroughTypes = setOf(
+            "order_status_changed",
+            "order_cancelled",
+            "order_placed",
+        )
     }
 }

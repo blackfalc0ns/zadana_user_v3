@@ -2669,7 +2669,7 @@ abstract class AppLocalizations {
   /// No description provided for @track_order.
   ///
   /// In en, this message translates to:
-  /// **'Track Order ðŸ“'**
+  /// **'Track Order'**
   String get track_order;
 
   /// No description provided for @back_to_home.

@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_stat
 import 'package:zadana_user_v3/feature/payment/presentation/sections/checkout_content_section.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_bottom_action.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_loading_view.dart';
 
 class PaymentScreenBody extends StatelessWidget {
   const PaymentScreenBody({
@@ -39,17 +40,17 @@ class PaymentScreenBody extends StatelessWidget {
     final checkoutSummary = state.checkoutSummary;
 
     if (state.isLoadingSummary && checkoutSummary == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const PaymentLoadingView();
     }
 
     if (state.summaryFailure != null && checkoutSummary == null) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: ApiErrorWidget.fromFailure(
-            state.summaryFailure!,
-            onRetry: onRetry,
-          ),
+          child: ApiErrorWidget(
+              exception: state.summaryFailure!.exception,
+              onRetry: onRetry,
+            ),
         ),
       );
     }

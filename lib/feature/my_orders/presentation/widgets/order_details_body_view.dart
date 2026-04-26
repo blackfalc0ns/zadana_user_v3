@@ -1,6 +1,5 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
@@ -44,7 +43,6 @@ class OrderDetailsBodyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
     final createdAt =
         '${order.createdAt.year}-${order.createdAt.month.toString().padLeft(2, '0')}-${order.createdAt.day.toString().padLeft(2, '0')}';
 
@@ -80,29 +78,10 @@ class OrderDetailsBodyView extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.base),
         DetailSection(
-          title: l10n.my_orders_delivery_otp_title,
-          child: Container(
-            padding: const EdgeInsets.all(Spacing.md),
-            decoration: BoxDecoration(
-              color: colors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: colors.primary.withValues(alpha: 0.3),
-                width: 1.5,
-              ),
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.deliveryOtp,
-                  arguments: {'orderId': order.id},
-                ),
-                icon: const Icon(Icons.visibility_outlined, size: 20),
-                label: Text(l10n.my_orders_view_otp),
-              ),
-            ),
+          title: l10n.payment_method,
+          child: OrderPaymentSummary(
+            methodLabel: _paymentMethodLabel(l10n, order.paymentMethod),
+            statusLabel: _paymentStatusLabel(l10n, order.paymentStatus),
           ),
         ),
         const SizedBox(height: Spacing.base),
@@ -149,5 +128,54 @@ class OrderDetailsBodyView extends StatelessWidget {
         const SizedBox(height: Spacing.base),
       ],
     );
+  }
+
+  String _paymentMethodLabel(AppLocalizations l10n, String paymentMethod) {
+    switch (paymentMethod.trim().toLowerCase()) {
+      case 'card':
+      case 'credit_card':
+      case 'creditcard':
+      case 'debit_card':
+      case 'debitcard':
+        return l10n.credit_debit_card;
+      case 'cash':
+      case 'cash_on_delivery':
+      case 'cod':
+        return l10n.cash_on_delivery;
+      default:
+        return _humanize(paymentMethod);
+    }
+  }
+
+  String _paymentStatusLabel(AppLocalizations l10n, String paymentStatus) {
+    switch (paymentStatus.trim().toLowerCase()) {
+      case 'paid':
+      case 'success':
+      case 'succeeded':
+        return 'Paid';
+      case 'pending':
+      case 'processing':
+        return l10n.order_pending;
+      case 'failed':
+      case 'unpaid':
+        return 'Unpaid';
+      default:
+        return _humanize(paymentStatus);
+    }
+  }
+
+  String _humanize(String value) {
+    final normalized = value.trim();
+    if (normalized.isEmpty) return '-';
+
+    final words = normalized
+        .replaceAll(RegExp(r'[_-]+'), ' ')
+        .split(RegExp(r'\s+'))
+        .where((word) => word.isNotEmpty)
+        .map(
+          (word) =>
+              '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
+        );
+    return words.join(' ');
   }
 }

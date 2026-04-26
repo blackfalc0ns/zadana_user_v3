@@ -4,8 +4,11 @@ class CheckoutSummaryEntity {
     required this.deliverySlots,
     required this.paymentMethods,
     required this.summary,
+    required this.shippingBreakdown,
     this.selectedAddress,
     this.promoCode,
+    this.deliveryQuote,
+    this.pricingMode,
   });
 
   final CheckoutCartEntity cart;
@@ -13,6 +16,9 @@ class CheckoutSummaryEntity {
   final List<CheckoutDeliverySlotEntity> deliverySlots;
   final List<CheckoutPaymentMethodEntity> paymentMethods;
   final CheckoutPromoCodeEntity? promoCode;
+  final CheckoutDeliveryQuoteEntity? deliveryQuote;
+  final List<CheckoutShippingLineEntity> shippingBreakdown;
+  final String? pricingMode;
   final CheckoutTotalsEntity summary;
 
   CheckoutSummaryEntity copyWith({
@@ -23,6 +29,11 @@ class CheckoutSummaryEntity {
     List<CheckoutPaymentMethodEntity>? paymentMethods,
     CheckoutPromoCodeEntity? promoCode,
     bool clearPromoCode = false,
+    CheckoutDeliveryQuoteEntity? deliveryQuote,
+    bool clearDeliveryQuote = false,
+    List<CheckoutShippingLineEntity>? shippingBreakdown,
+    String? pricingMode,
+    bool clearPricingMode = false,
     CheckoutTotalsEntity? summary,
   }) {
     return CheckoutSummaryEntity(
@@ -33,6 +44,11 @@ class CheckoutSummaryEntity {
       deliverySlots: deliverySlots ?? this.deliverySlots,
       paymentMethods: paymentMethods ?? this.paymentMethods,
       promoCode: clearPromoCode ? null : promoCode ?? this.promoCode,
+      deliveryQuote: clearDeliveryQuote
+          ? null
+          : deliveryQuote ?? this.deliveryQuote,
+      shippingBreakdown: shippingBreakdown ?? this.shippingBreakdown,
+      pricingMode: clearPricingMode ? null : pricingMode ?? this.pricingMode,
       summary: summary ?? this.summary,
     );
   }
@@ -130,6 +146,38 @@ class CheckoutPromoCodeEntity {
   final String discountType;
   final double discountValue;
   final double discountAmount;
+}
+
+class CheckoutDeliveryQuoteEntity {
+  const CheckoutDeliveryQuoteEntity({
+    required this.distanceKm,
+    required this.baseFee,
+    required this.distanceFee,
+    required this.surgeFee,
+    required this.totalFee,
+    this.pricingMode,
+    this.ruleLabel,
+  });
+
+  final double distanceKm;
+  final double baseFee;
+  final double distanceFee;
+  final double surgeFee;
+  final double totalFee;
+  final String? pricingMode;
+  final String? ruleLabel;
+}
+
+class CheckoutShippingLineEntity {
+  const CheckoutShippingLineEntity({
+    required this.code,
+    required this.label,
+    required this.amount,
+  });
+
+  final String code;
+  final String label;
+  final double amount;
 }
 
 class CheckoutTotalsEntity {

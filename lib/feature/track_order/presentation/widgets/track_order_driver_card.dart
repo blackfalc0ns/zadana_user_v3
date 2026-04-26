@@ -7,22 +7,48 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 
 class TrackOrderDriverCard extends StatelessWidget {
-  const TrackOrderDriverCard({super.key, required this.driver});
+  const TrackOrderDriverCard({
+    super.key,
+    this.driver,
+    this.assignedDriver,
+    this.arrivalStateLabel,
+  });
 
-  final OrderTrackingDriverEntity driver;
+  final OrderTrackingDriverEntity? driver;
+  final OrderTrackingAssignedDriverEntity? assignedDriver;
+  final String? arrivalStateLabel;
 
   Future<void> _callDriver() async {
-    final phoneNumber = driver.phoneNumber.trim();
+    final phoneNumber = _phoneNumber.trim();
     if (phoneNumber.isEmpty) return;
     await launchUrlString('tel:$phoneNumber');
   }
+
+  String get _phoneNumber =>
+      assignedDriver?.phoneNumber ?? driver?.phoneNumber ?? '';
+
+  bool get _hasPhoneNumber => _phoneNumber.trim().isNotEmpty;
+
+  String get _title => assignedDriver?.name ?? driver?.name ?? '';
+
+  String get _subtitle {
+    final vehicleType = assignedDriver?.vehicleType.trim() ?? '';
+    final compactSubtitle = driver?.subtitle.trim() ?? '';
+    if (vehicleType.isNotEmpty) return vehicleType;
+    return compactSubtitle;
+  }
+
+  String get _plateNumber => assignedDriver?.plateNumber.trim() ?? '';
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final title = driver.name.trim().isEmpty ? l10n.courier_name : driver.name;
-    final subtitle = driver.subtitle.trim();
+    final title = _title.trim().isEmpty ? l10n.courier_name : _title;
+    final subtitle = _subtitle;
+    final arrivalStateLabel = this.arrivalStateLabel?.trim() ?? '';
+    final phoneNumber = _phoneNumber;
+    final plateNumber = _plateNumber;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.base),
@@ -33,7 +59,7 @@ class TrackOrderDriverCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (driver.hasPhoneNumber) ...[
+          if (_hasPhoneNumber) ...[
             Container(
               width: 56,
               height: 56,
@@ -72,13 +98,34 @@ class TrackOrderDriverCard extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (driver.phoneNumber.isNotEmpty) ...[
+                if (plateNumber.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    driver.phoneNumber,
+                    plateNumber,
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: color.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+                if (phoneNumber.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    phoneNumber,
                     style: getRegularStyle(
                       fontFamily: FontConstant.cairo,
                       color: color.primary,
+                    ),
+                  ),
+                ],
+                if (arrivalStateLabel.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    arrivalStateLabel,
+                    textAlign: TextAlign.end,
+                    style: getMediumStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: color.secondary,
                     ),
                   ),
                 ],

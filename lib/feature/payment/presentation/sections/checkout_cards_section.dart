@@ -101,7 +101,7 @@ class CheckoutCardsSection extends StatelessWidget {
         const SizedBox(height: Spacing.md),
         AnimatedCardWrapper(
           delay: 500,
-          child: CheckoutPriceBreakdownCard(summary: checkoutSummary.summary),
+          child: CheckoutPriceBreakdownCard(checkoutSummary: checkoutSummary),
         ),
       ],
     );

@@ -31,10 +31,16 @@ enum OrderStatus {
       case 'accepted':
       case 'vendor_confirmed':
       case 'preparing':
+      case 'ready_for_pickup':
+      case 'readyforpickup':
         return OrderStatus.processing;
       case 'shipped':
       case 'out_for_delivery':
       case 'outfordelivery':
+      case 'driver_assigned':
+      case 'driverassigned':
+      case 'on_the_way':
+      case 'ontheway':
         return OrderStatus.shipped;
       case 'delivered':
       case 'completed':

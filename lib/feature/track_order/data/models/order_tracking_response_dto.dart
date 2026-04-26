@@ -6,6 +6,11 @@ class OrderTrackingResponseDto {
     required this.order,
     required this.estimatedDelivery,
     required this.driver,
+    required this.assignedDriver,
+    required this.driverArrivalState,
+    required this.driverArrivalUpdatedAtUtc,
+    required this.deliveryOtp,
+    required this.showDeliveryOtp,
     required this.timeline,
   });
 
@@ -20,6 +25,17 @@ class OrderTrackingResponseDto {
       driver: _mapOrNull(json['driver']) == null
           ? null
           : OrderTrackingDriverDto.fromJson(_map(json['driver'])),
+      assignedDriver: _mapOrNull(json['assigned_driver']) == null
+          ? null
+          : OrderTrackingAssignedDriverDto.fromJson(
+              _map(json['assigned_driver']),
+            ),
+      driverArrivalState: json['driver_arrival_state']?.toString() ?? '',
+      driverArrivalUpdatedAtUtc: DateTime.tryParse(
+        json['driver_arrival_updated_at_utc']?.toString() ?? '',
+      ),
+      deliveryOtp: json['delivery_otp']?.toString() ?? '',
+      showDeliveryOtp: json['show_delivery_otp'] as bool? ?? false,
       timeline: _list(json['timeline'])
           .map((item) => OrderTrackingTimelineItemDto.fromJson(_map(item)))
           .toList(growable: false),
@@ -29,6 +45,11 @@ class OrderTrackingResponseDto {
   final OrderTrackingOrderDto order;
   final OrderEstimatedDeliveryDto? estimatedDelivery;
   final OrderTrackingDriverDto? driver;
+  final OrderTrackingAssignedDriverDto? assignedDriver;
+  final String driverArrivalState;
+  final DateTime? driverArrivalUpdatedAtUtc;
+  final String deliveryOtp;
+  final bool showDeliveryOtp;
   final List<OrderTrackingTimelineItemDto> timeline;
 
   OrderTrackingEntity toEntity() {
@@ -36,6 +57,11 @@ class OrderTrackingResponseDto {
       order: order.toEntity(),
       estimatedDelivery: estimatedDelivery?.toEntity(),
       driver: driver?.toEntity(),
+      assignedDriver: assignedDriver?.toEntity(),
+      driverArrivalState: DriverArrivalState.fromApi(driverArrivalState),
+      driverArrivalUpdatedAtUtc: driverArrivalUpdatedAtUtc,
+      deliveryOtp: deliveryOtp,
+      showDeliveryOtp: showDeliveryOtp,
       timeline: timeline.map((item) => item.toEntity()).toList(growable: false),
     );
   }
@@ -169,6 +195,42 @@ class OrderTrackingTimelineItemDto {
       time: time,
       isActive: isActive,
       isCompleted: isCompleted,
+    );
+  }
+}
+
+class OrderTrackingAssignedDriverDto {
+  const OrderTrackingAssignedDriverDto({
+    required this.id,
+    required this.name,
+    required this.phoneNumber,
+    required this.vehicleType,
+    required this.plateNumber,
+  });
+
+  factory OrderTrackingAssignedDriverDto.fromJson(Map<String, dynamic> json) {
+    return OrderTrackingAssignedDriverDto(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      phoneNumber: json['phone_number']?.toString() ?? '',
+      vehicleType: json['vehicle_type']?.toString() ?? '',
+      plateNumber: json['plate_number']?.toString() ?? '',
+    );
+  }
+
+  final String id;
+  final String name;
+  final String phoneNumber;
+  final String vehicleType;
+  final String plateNumber;
+
+  OrderTrackingAssignedDriverEntity toEntity() {
+    return OrderTrackingAssignedDriverEntity(
+      id: id,
+      name: name,
+      phoneNumber: phoneNumber,
+      vehicleType: vehicleType,
+      plateNumber: plateNumber,
     );
   }
 }

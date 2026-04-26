@@ -68,10 +68,10 @@ class _StartSelectLocationView extends StatelessWidget {
 
               if (showGlobalError) {
                 return Center(
-                  child: ApiErrorWidget.fromFailure(
-                    state.failure!,
-                    onRetry: () {
-                      vm.clearFeedback();
+                  child: ApiErrorWidget(
+                      exception: state.failure!.exception,
+                      onRetry: () {
+                        vm.clearFeedback();
                       vm.doIntent(const GetCurrentLocationEvent());
                     },
                   ),

@@ -987,6 +987,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i166.RegisterUseCase>(
       () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
     );
+    gh.lazySingleton<_i1050.RealtimeNotificationOverlayService>(
+      () => _i1050.RealtimeNotificationOverlayService(
+        gh<_i1040.WatchRealtimeNotificationsUseCase>(),
+        gh<_i823.NotificationDeviceService>(),
+        gh<_i762.LocalNotificationService>(),
+        gh<_i179.AppNavigatorService>(),
+      ),
+    );
     gh.factoryParam<_i1008.BrandDetailsCubit, _i1044.BrandModel, dynamic>(
       (_brand, _) => _i1008.BrandDetailsCubit(
         gh<_i504.GetBrandFiltersUseCase>(),
@@ -1015,14 +1023,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i314.RemoveFavoriteUseCase>(
       () => _i314.RemoveFavoriteUseCase(gh<_i140.FavoritesRepository>()),
-    );
-    gh.lazySingleton<_i1050.RealtimeNotificationOverlayService>(
-      () => _i1050.RealtimeNotificationOverlayService(
-        gh<_i1040.WatchRealtimeNotificationsUseCase>(),
-        gh<_i823.NotificationDeviceService>(),
-        gh<_i762.LocalNotificationService>(),
-        gh<_i179.AppNavigatorService>(),
-      ),
     );
     gh.factory<_i228.CategoryViewModel>(
       () => _i228.CategoryViewModel(

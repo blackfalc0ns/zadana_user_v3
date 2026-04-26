@@ -202,6 +202,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
             checkoutSummary: state.checkoutSummary!.copyWith(
               promoCode: result.data.promoCode,
               clearPromoCode: result.data.promoCode == null,
+              deliveryQuote: result.data.deliveryQuote,
+              clearDeliveryQuote: result.data.deliveryQuote == null,
+              shippingBreakdown: result.data.shippingBreakdown,
+              pricingMode: result.data.pricingMode,
+              clearPricingMode: result.data.pricingMode == null,
               summary: result.data.summary,
             ),
             feedbackMessage: result.data.message,
@@ -235,6 +240,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
             isRemovingPromo: false,
             checkoutSummary: state.checkoutSummary!.copyWith(
               clearPromoCode: true,
+              deliveryQuote: result.data.deliveryQuote,
+              clearDeliveryQuote: result.data.deliveryQuote == null,
+              shippingBreakdown: result.data.shippingBreakdown,
+              pricingMode: result.data.pricingMode,
+              clearPricingMode: result.data.pricingMode == null,
               summary: result.data.summary,
             ),
             feedbackMessage: result.data.message,
@@ -260,9 +270,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
         selectedDeliverySlotId == null) {
       emit(
         state.copyWith(
-          actionFailure: const Failure(
-            errorMessage: 'Please complete the checkout details first.',
-          ),
+            actionFailure: Failure(
+              errorMessage: 'Please complete the checkout details first.',
+            ),
         ),
       );
       return;
@@ -287,13 +297,20 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     switch (result) {
       case ApiSuccessResult():
-        final iframeUrl = result.data.payment?.iframeUrl ?? '';
+        final payment = result.data.payment;
+        final iframeUrl = payment?.iframeUrl.trim() ?? '';
         emit(
           state.copyWith(
             isPlacingOrder: false,
             placedOrder: result.data,
-            uiEffect: iframeUrl.isNotEmpty
-                ? OpenPaymentWebViewEffect(iframeUrl)
+            uiEffect: payment != null
+                ? (iframeUrl.isNotEmpty
+                      ? OpenPaymentWebViewEffect(iframeUrl)
+                      : ShowPaymentErrorEffect(
+                          result.data.message.isNotEmpty
+                              ? result.data.message
+                              : 'Unable to start the payment session.',
+                        ))
                 : NavigateToPaymentSuccessEffect(result.data.order.id),
             clearActionFailure: true,
           ),

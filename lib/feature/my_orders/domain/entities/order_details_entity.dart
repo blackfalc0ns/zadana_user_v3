@@ -8,6 +8,8 @@ class OrderDetailsEntity {
     required this.createdAt,
     required this.totalPrice,
     required this.status,
+    required this.paymentStatus,
+    required this.paymentMethod,
     required this.canCancel,
     required this.canRetryPayment,
     required this.canDelete,
@@ -20,6 +22,8 @@ class OrderDetailsEntity {
   final DateTime createdAt;
   final double totalPrice;
   final OrderStatus status;
+  final String paymentStatus;
+  final String paymentMethod;
   final bool canCancel;
   final bool canRetryPayment;
   final bool canDelete;

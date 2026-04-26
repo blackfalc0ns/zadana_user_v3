@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_view_model.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_actions_section.dart';
+import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_delivery_otp_card.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_driver_card.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_hero_card.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_summary_card.dart';
@@ -41,8 +43,36 @@ class TrackOrderContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Spacing.base),
-          if (tracking.driver?.hasContent ?? false) ...[
-            TrackOrderDriverCard(driver: tracking.driver!),
+          if ((tracking.assignedDriver?.hasContent ?? false) ||
+              (tracking.driver?.hasContent ?? false)) ...[
+            TrackOrderDriverCard(
+              driver: tracking.driver,
+              assignedDriver: tracking.assignedDriver,
+              arrivalStateLabel: viewModel.resolveDriverArrivalStateLabel(
+                l10n,
+                tracking.driverArrivalState,
+              ),
+            ),
+            const SizedBox(height: Spacing.base),
+          ],
+          if (tracking.showDeliveryOtp) ...[
+            TrackOrderDeliveryOtpCard(
+              otpCode: tracking.deliveryOtp,
+              onViewOtp: () => Navigator.pushNamed(
+                context,
+                AppRoutes.deliveryOtp,
+                arguments: {
+                  'orderId': orderId,
+                  'phoneNumber':
+                      tracking.assignedDriver?.phoneNumber ??
+                      tracking.driver?.phoneNumber ??
+                      '',
+                  'courierName':
+                      tracking.assignedDriver?.name ?? tracking.driver?.name,
+                  'otpCode': tracking.deliveryOtp,
+                },
+              ),
+            ),
             const SizedBox(height: Spacing.base),
           ],
           const TrackOrderHeroCard(),

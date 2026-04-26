@@ -146,9 +146,9 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     if (productDetails.masterProductId.isEmpty) {
       emit(
         state.copyWith(
-          addToCartFailure: const Failure(
-            errorMessage: 'Product id is unavailable for this item.',
-          ),
+            addToCartFailure: Failure(
+              errorMessage: 'Product id is unavailable for this item.',
+            ),
         ),
       );
       return;

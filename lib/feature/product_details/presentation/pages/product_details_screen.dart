@@ -176,10 +176,10 @@ class _ProductDetailsView extends StatelessWidget {
             ),
             body: Padding(
               padding: const EdgeInsets.all(Spacing.md),
-              child: ApiErrorWidget.fromFailure(
-                state.loadFailure!,
-                onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
-                onGoBack: () => Navigator.of(context).maybePop(),
+              child: ApiErrorWidget(
+                  exception: state.loadFailure!.exception,
+                  onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
+                  onGoBack: () => Navigator.of(context).maybePop(),
               ),
             ),
           );

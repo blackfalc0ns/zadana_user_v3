@@ -112,9 +112,9 @@ class _FavoritesScreenView extends StatelessWidget {
                   ? Center(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: ApiErrorWidget.fromFailure(
-                          state.failure!,
-                          onRetry: () {
+                        child: ApiErrorWidget(
+                            exception: state.failure!.exception,
+                            onRetry: () {
                             context.read<FavoritesViewModel>().clearFailure();
                             context.read<FavoritesViewModel>().loadFavorites();
                           },

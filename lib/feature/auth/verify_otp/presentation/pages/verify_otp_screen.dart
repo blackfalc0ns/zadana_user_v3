@@ -4,6 +4,8 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_message_presenter.dart';
+import 'package:zadana_user_v3/core/errors/error_presentation.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
@@ -25,40 +27,58 @@ class VerifyOtpScreen extends StatelessWidget {
 
     return BlocProvider(
       create: (_) => getIt<VerifyOtpViewModel>(),
-      child: BlocListener<VerifyOtpViewModel, VerifyOtpState>(
-        listener: _handleStateChanges,
-        child: AuthExperienceShell(
-          isLoading: context.watch<VerifyOtpViewModel>().state.isLoading,
-          showBackButton: true,
-          heroBadge: locale.otp_hero_badge,
-          heroTitle: locale.otp_screen_title,
-          heroSubtitle: locale.otp_hero_subtitle,
-          sectionBadge: locale.otp_section_badge,
-          sectionTitle: locale.otp_screen_title,
-          sectionDescription: locale.otp_description,
-          sectionIcon: Icons.verified_user_outlined,
-          body: BlocBuilder<VerifyOtpViewModel, VerifyOtpState>(
-            builder: (context, state) {
-              final showGlobalError =
-                  !state.isLoading && !state.isSuccess && state.failure != null;
+      child: BlocConsumer<VerifyOtpViewModel, VerifyOtpState>(
+        listenWhen: (previous, current) =>
+            previous.isSuccess != current.isSuccess ||
+            previous.failure != current.failure,
+        listener: (context, state) {
+          _handleStateChanges(context, state);
 
-              if (showGlobalError) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: Spacing.lg,
-                  ),
-                  child: ApiErrorWidget.fromFailure(
-                    state.failure!,
-                    onRetry: context.read<VerifyOtpViewModel>().clearFeedback,
-                  ),
-                );
-              }
+          final failure = state.failure;
+          if (failure == null || !failure.exception.errorType.showSnackBar) {
+            return;
+          }
 
-              return VerifyOtpForm(identifier: identifier ?? '');
-            },
-          ),
-        ),
+          CustomSnackbar.showError(
+            context: context,
+            message: ErrorMessagePresenter.snackBarMessage(
+              context,
+              failure.exception,
+            ),
+          );
+        },
+        builder: (context, state) {
+          final failure = state.failure;
+          final showGlobalError =
+              !state.isLoading &&
+              !state.isSuccess &&
+              failure != null &&
+              failure.exception.errorType.showFullScreen;
+
+          return AuthExperienceShell(
+            isLoading: state.isLoading,
+            showBackButton: true,
+            heroBadge: locale.otp_hero_badge,
+            heroTitle: locale.otp_screen_title,
+            heroSubtitle: locale.otp_hero_subtitle,
+            sectionBadge: locale.otp_section_badge,
+            sectionTitle: locale.otp_screen_title,
+            sectionDescription: locale.otp_description,
+            sectionIcon: Icons.verified_user_outlined,
+            body: showGlobalError
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: Spacing.lg,
+                    ),
+                    child: ApiErrorWidget(
+                      exception: failure.exception,
+                      onRetry: context.read<VerifyOtpViewModel>().clearFeedback,
+                    ),
+                  )
+                : VerifyOtpForm(identifier: identifier ?? ''),
+          );
+        },
       ),
     );
   }

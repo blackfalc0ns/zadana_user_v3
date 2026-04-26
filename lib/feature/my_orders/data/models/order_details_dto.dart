@@ -13,6 +13,8 @@ class OrderDetailsDto {
     required this.createdAt,
     required this.totalPrice,
     required this.status,
+    required this.paymentStatus,
+    required this.paymentMethod,
     required this.canCancel,
     this.canRetryPayment = false,
     required this.canDelete,
@@ -28,6 +30,8 @@ class OrderDetailsDto {
   final DateTime createdAt;
   final double totalPrice;
   final String status;
+  final String paymentStatus;
+  final String paymentMethod;
   final bool canCancel;
   @JsonKey(defaultValue: false)
   final bool canRetryPayment;
@@ -44,6 +48,8 @@ class OrderDetailsDto {
       createdAt: createdAt,
       totalPrice: totalPrice,
       status: OrderStatus.fromApi(status),
+      paymentStatus: paymentStatus,
+      paymentMethod: paymentMethod,
       canCancel: canCancel,
       canRetryPayment: canRetryPayment,
       canDelete: canDelete,

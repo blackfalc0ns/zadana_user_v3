@@ -145,10 +145,10 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
             return SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(Spacing.screenH),
-                child: ApiErrorWidget.fromFailure(
-                  state.failure!,
-                  onRetry: () => _retryLastAction(context),
-                  onGoBack: () => Navigator.pop(context),
+                child: ApiErrorWidget(
+                    exception: state.failure!.exception,
+                    onRetry: () => _retryLastAction(context),
+                    onGoBack: () => Navigator.pop(context),
                 ),
               ),
             );

@@ -21,6 +21,7 @@ enum ApiErrorType {
   notAcceptable,
   requestTimeout,
   conflict,
+  validationError,
   gone,
   lengthRequired,
   preconditionFailed,
@@ -77,6 +78,8 @@ extension ApiErrorTypeExtension on ApiErrorType {
         return 'error_request_timeout';
       case ApiErrorType.conflict:
         return 'error_conflict';
+      case ApiErrorType.validationError:
+        return 'error_validation';
       case ApiErrorType.gone:
         return 'error_gone';
       case ApiErrorType.lengthRequired:

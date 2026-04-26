@@ -135,7 +135,10 @@ class _GlobalCartErrorState extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Center(
-              child: ApiErrorWidget.fromFailure(failure, onRetry: onRetry),
+              child: ApiErrorWidget(
+                exception: failure.exception,
+                onRetry: onRetry,
+              ),
             ),
           ),
         ),

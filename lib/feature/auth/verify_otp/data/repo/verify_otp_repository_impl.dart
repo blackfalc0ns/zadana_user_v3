@@ -2,11 +2,12 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
-import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/feature/auth/data/helpers/post_auth_side_effects.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/mapper/mapper_verify_otp.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import '../../domain/entities/verify_otp_request_entity.dart';
 import '../../domain/entities/verify_otp_response_entity.dart';
 import '../../domain/repo/verify_otp_repository.dart';
@@ -28,6 +29,8 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
   CartRepository get _cartRepository => GetIt.instance<CartRepository>();
   FavoritesRepository get _favoritesRepository =>
       GetIt.instance<FavoritesRepository>();
+  NotificationsSignalRService get _notificationsSignalRService =>
+      GetIt.instance<NotificationsSignalRService>();
 
   @override
   Future<ApiResult<VerifyOtpResponseEntity>> verifyOtp(
@@ -44,11 +47,15 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
         final customerId = result.user?.id?.trim() ?? '';
         if (customerId.isNotEmpty) {
           await _tokenService.saveCurrentUserId(customerId);
-          await PushNotificationService.loginCustomer(customerId);
         }
-        await _cartRepository.syncGuestCartIfAuthenticated();
-        await _favoritesRepository.syncGuestFavoritesIfAuthenticated();
-        await _notificationDeviceService.syncCurrentDeviceIfAuthenticated();
+        runPostAuthSideEffects(
+          logName: 'VerifyOtpRepositoryImpl',
+          cartRepository: _cartRepository,
+          favoritesRepository: _favoritesRepository,
+          notificationsSignalRService: _notificationsSignalRService,
+          notificationDeviceService: _notificationDeviceService,
+          customerId: customerId,
+        );
       }
 
       return result.toEntity();

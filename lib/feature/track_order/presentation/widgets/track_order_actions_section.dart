@@ -22,14 +22,23 @@ class TrackOrderActionsSection extends StatelessWidget {
 
     return Column(
       children: [
-        if (tracking.order.status.isActive)
+        if (tracking.showDeliveryOtp)
           AppButton.outlined(
-            text: l10n.delivery_get_otp,
+            text: l10n.view_otp_code,
             icon: Icons.qr_code_rounded,
             onPressed: () => Navigator.pushNamed(
               context,
               AppRoutes.deliveryOtp,
-              arguments: {'orderId': orderId},
+              arguments: {
+                'orderId': orderId,
+                'phoneNumber':
+                    tracking.assignedDriver?.phoneNumber ??
+                    tracking.driver?.phoneNumber ??
+                    '',
+                'courierName':
+                    tracking.assignedDriver?.name ?? tracking.driver?.name,
+                'otpCode': tracking.deliveryOtp,
+              },
             ),
             color: color.primary,
             textColor: color.primary,

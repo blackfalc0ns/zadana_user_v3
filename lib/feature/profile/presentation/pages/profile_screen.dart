@@ -72,6 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _handleNotificationsChanged(bool value) async {
     if (_isUpdatingNotifications) return;
+    final previousValue = _notificationsEnabled;
 
     setState(() {
       _notificationsEnabled = value;
@@ -85,15 +86,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     switch (result) {
       case ApiSuccessResult<void>():
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.localization.notifications_preferences_saved),
-          ),
-        );
+        break;
       case ApiErrorResult<void>():
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(result.failure.errorMessage)));
+        await getIt<NotificationDeviceService>()
+            .saveNotificationsEnabledLocally(previousValue);
+        if (!mounted) return;
+        _notificationsEnabled = previousValue;
+        break;
     }
 
     setState(() => _isUpdatingNotifications = false);
@@ -169,10 +168,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
 
         if (state.failure != null && state.profileResponse == null) {
-          return ApiErrorWidget.fromFailure(
-            state.failure!,
-            onRetry: () =>
-                context.read<ProfileViewModel>().doIntent(ProfileLoadEvent()),
+          return ApiErrorWidget(
+              exception: state.failure!.exception,
+              onRetry: () =>
+                  context.read<ProfileViewModel>().doIntent(ProfileLoadEvent()),
           );
         }
 

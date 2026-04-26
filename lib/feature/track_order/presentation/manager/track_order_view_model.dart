@@ -126,6 +126,22 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
 
   String sanitizeTimelineTime(String value) => value.trim();
 
+  String? resolveDriverArrivalStateLabel(
+    AppLocalizations l10n,
+    DriverArrivalState? arrivalState,
+  ) {
+    switch (arrivalState) {
+      case DriverArrivalState.enRoute:
+        return l10n.track_order_out_for_delivery;
+      case DriverArrivalState.arrivedAtVendor:
+        return l10n.track_order_vendor_confirmed;
+      case DriverArrivalState.arrivedAtCustomer:
+        return l10n.order_delivered;
+      case null:
+        return null;
+    }
+  }
+
   String _timelineFallbackLabel(AppLocalizations l10n, int index) {
     switch (index) {
       case 0:

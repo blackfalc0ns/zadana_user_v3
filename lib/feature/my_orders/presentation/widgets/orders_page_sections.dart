@@ -140,7 +140,10 @@ class OrdersTabContent extends StatelessWidget {
     }
 
     if (section.failure != null && section.items.isEmpty) {
-      return ApiErrorWidget.fromFailure(section.failure!, onRetry: onRetry);
+      return ApiErrorWidget(
+        exception: section.failure!.exception,
+        onRetry: onRetry,
+      );
     }
 
     if (section.items.isEmpty) {

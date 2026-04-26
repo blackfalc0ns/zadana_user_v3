@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 import 'package:zadana_user_v3/feature/track_order/data/data_source/track_order_remote_data_source.dart';
+import 'package:zadana_user_v3/feature/track_order/data/models/driver_arrival_state_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_status_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/services/track_order_signalr_service.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
@@ -24,6 +25,8 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
   Stream<ApiResult<OrderTrackingEntity>> watchOrderTracking(String orderId) {
     late final StreamController<ApiResult<OrderTrackingEntity>> controller;
     StreamSubscription<OrderStatusChangedRealtimePayload>? realtimeSubscription;
+    StreamSubscription<DriverArrivalStateChangedRealtimePayload>?
+    driverArrivalSubscription;
     var isDisposed = false;
     OrderTrackingEntity? currentTracking;
 
@@ -31,6 +34,7 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
       if (isDisposed) return;
       isDisposed = true;
       await realtimeSubscription?.cancel();
+      await driverArrivalSubscription?.cancel();
       if (!controller.isClosed) {
         await controller.close();
       }
@@ -56,12 +60,31 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
       onListen: () {
         realtimeSubscription = _trackOrderSignalRService
             .watchOrderStatusChangedEvents()
-            .where((payload) => payload.orderId == orderId)
+            .where(
+              (payload) => _normalizeOrderId(payload.orderId) ==
+                  _normalizeOrderId(orderId),
+            )
             .listen((payload) {
               final tracking = currentTracking;
               if (tracking == null || controller.isClosed) return;
 
               currentTracking = _applyRealtimeStatusChange(tracking, payload);
+              controller.add(
+                ApiSuccessResult<OrderTrackingEntity>(data: currentTracking!),
+              );
+            });
+
+        driverArrivalSubscription = _trackOrderSignalRService
+            .watchDriverArrivalStateChangedEvents()
+            .where(
+              (payload) => _normalizeOrderId(payload.orderId) ==
+                  _normalizeOrderId(orderId),
+            )
+            .listen((payload) {
+              final tracking = currentTracking;
+              if (tracking == null || controller.isClosed) return;
+
+              currentTracking = _applyDriverArrivalChange(tracking, payload);
               controller.add(
                 ApiSuccessResult<OrderTrackingEntity>(data: currentTracking!),
               );
@@ -117,6 +140,47 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     );
   }
 
+  OrderTrackingEntity _applyDriverArrivalChange(
+    OrderTrackingEntity current,
+    DriverArrivalStateChangedRealtimePayload payload,
+  ) {
+    final arrivalState = DriverArrivalState.fromApi(payload.arrivalState);
+    if (arrivalState == null) {
+      return current;
+    }
+
+    final normalizedDriverName = payload.driverName?.trim() ?? '';
+    final updatedDriver = normalizedDriverName.isEmpty
+        ? current.driver
+        : (current.driver?.copyWith(name: normalizedDriverName) ??
+              OrderTrackingDriverEntity(
+                id: '',
+                name: normalizedDriverName,
+                phoneNumber: '',
+                subtitle: '',
+              ));
+    final updatedAssignedDriver = normalizedDriverName.isEmpty
+        ? current.assignedDriver
+        : (current.assignedDriver?.copyWith(name: normalizedDriverName) ??
+              OrderTrackingAssignedDriverEntity(
+                id: '',
+                name: normalizedDriverName,
+                phoneNumber: '',
+                vehicleType: '',
+                plateNumber: '',
+              ));
+
+    return current.copyWith(
+      driver: updatedDriver,
+      assignedDriver: updatedAssignedDriver,
+      driverArrivalState: arrivalState,
+      driverArrivalUpdatedAtUtc: payload.changedAtUtc,
+      showDeliveryOtp:
+          arrivalState == DriverArrivalState.arrivedAtCustomer ||
+          current.showDeliveryOtp,
+    );
+  }
+
   int _stageIndexFromRawStatus(String status) {
     switch (status.trim().toLowerCase()) {
       case 'pending':
@@ -128,7 +192,13 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
         return 1;
       case 'preparing':
       case 'processing':
+      case 'ready_for_pickup':
+      case 'readyforpickup':
         return 2;
+      case 'driver_assigned':
+      case 'driverassigned':
+      case 'on_the_way':
+      case 'ontheway':
       case 'out_for_delivery':
       case 'outfordelivery':
       case 'shipped':
@@ -165,4 +235,6 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     if (changedAtUtc == null) return '';
     return DateFormat('yyyy-MM-dd HH:mm').format(changedAtUtc.toLocal());
   }
+
+  String _normalizeOrderId(String value) => value.trim().toLowerCase();
 }

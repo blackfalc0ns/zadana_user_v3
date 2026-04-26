@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 
 class NotificationListItem extends StatelessWidget {
@@ -124,12 +125,15 @@ class NotificationListItem extends StatelessWidget {
   }
 
   IconData _resolveIcon(String? type) {
-    switch (type) {
-      case 'order_status_changed':
-      case 'order_placed':
-        return Icons.local_shipping_outlined;
-      case 'order_cancelled':
+    if (NotificationPayloadResolver.isOrderRelatedType(type)) {
+      final normalizedType = type?.trim().toLowerCase() ?? '';
+      if (normalizedType.contains('cancel')) {
         return Icons.cancel_outlined;
+      }
+      return Icons.local_shipping_outlined;
+    }
+
+    switch (type) {
       case 'new_banner':
         return Icons.campaign_outlined;
       default:

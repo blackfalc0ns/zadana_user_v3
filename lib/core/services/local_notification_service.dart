@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/services/app_navigator_service.dart';
+import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 
@@ -17,14 +18,9 @@ class LocalNotificationService {
 
   static const String _channelId =
       PushNotificationService.androidHeadsUpChannelId;
-  static const String _channelName = 'Zadana Realtime Notifications';
+  static const String _channelName = 'Order updates';
   static const String _channelDescription =
-      'Realtime notifications shown while the app is open';
-  static const String _orderUpdatesChannelId =
-      'zadana_order_updates_realtime_v2';
-  static const String _orderUpdatesChannelName = 'Zadana Order Updates';
-  static const String _orderUpdatesChannelDescription =
-      'Heads-up alerts for live order status updates';
+      'Heads-up alerts for order and account updates.';
 
   bool _isInitialized = false;
 
@@ -39,27 +35,6 @@ class LocalNotificationService {
     await _plugin.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: _handleNotificationResponse,
-    );
-
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        _channelId,
-        _channelName,
-        description: _channelDescription,
-        importance: Importance.max,
-      ),
-    );
-    await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        _orderUpdatesChannelId,
-        _orderUpdatesChannelName,
-        description: _orderUpdatesChannelDescription,
-        importance: Importance.max,
-      ),
     );
 
     _isInitialized = true;
@@ -81,14 +56,10 @@ class LocalNotificationService {
       id: notification.id.hashCode,
       title: title.isEmpty ? body : title,
       body: body.isEmpty ? null : body,
-      androidChannelId: _channelIdFor(notification),
-      androidChannelName: _channelNameFor(notification),
-      androidChannelDescription: _channelDescriptionFor(notification),
-      payloadData: {
-        'type': notification.type,
-        'referenceId': notification.referenceId,
-        'orderId': notification.dataObject?['orderId']?.toString(),
-      },
+      androidChannelId: _channelId,
+      androidChannelName: _channelName,
+      androidChannelDescription: _channelDescription,
+      payloadData: _payloadDataFromNotification(notification),
     );
   }
 
@@ -132,31 +103,12 @@ class LocalNotificationService {
     );
   }
 
-  String _channelIdFor(AppNotificationEntity notification) {
-    return notification.type == 'order_status_changed'
-        ? _orderUpdatesChannelId
-        : _channelId;
-  }
-
-  String _channelNameFor(AppNotificationEntity notification) {
-    return notification.type == 'order_status_changed'
-        ? _orderUpdatesChannelName
-        : _channelName;
-  }
-
-  String _channelDescriptionFor(AppNotificationEntity notification) {
-    return notification.type == 'order_status_changed'
-        ? _orderUpdatesChannelDescription
-        : _channelDescription;
-  }
-
   Future<void> showPushNotification({
     required String title,
     String? body,
     Map<String, dynamic>? additionalData,
   }) async {
     final payload = additionalData ?? const <String, dynamic>{};
-    final notificationType = payload['type']?.toString();
     final notificationId = payload['notificationId']?.toString().trim();
     final idSeed = (notificationId?.isNotEmpty ?? false)
         ? notificationId!
@@ -166,33 +118,29 @@ class LocalNotificationService {
       id: idSeed.hashCode,
       title: title,
       body: body,
-      androidChannelId: _channelIdForType(notificationType),
-      androidChannelName: _channelNameForType(notificationType),
-      androidChannelDescription: _channelDescriptionForType(notificationType),
-      payloadData: {
-        'type': notificationType,
-        'referenceId': payload['referenceId']?.toString(),
-        'orderId': payload['orderId']?.toString(),
-      },
+      androidChannelId: _channelId,
+      androidChannelName: _channelName,
+      androidChannelDescription: _channelDescription,
+      payloadData: _payloadDataFromAdditionalData(payload),
     );
   }
 
-  String _channelIdForType(String? notificationType) {
-    return notificationType == 'order_status_changed'
-        ? _orderUpdatesChannelId
-        : _channelId;
+  Map<String, dynamic> _payloadDataFromNotification(
+    AppNotificationEntity notification,
+  ) {
+    final payload = notification.dataObject != null
+        ? Map<String, dynamic>.from(notification.dataObject!)
+        : <String, dynamic>{};
+
+    payload['type'] = notification.type;
+    payload['referenceId'] = notification.referenceId;
+    return NotificationPayloadResolver.normalize(payload);
   }
 
-  String _channelNameForType(String? notificationType) {
-    return notificationType == 'order_status_changed'
-        ? _orderUpdatesChannelName
-        : _channelName;
-  }
-
-  String _channelDescriptionForType(String? notificationType) {
-    return notificationType == 'order_status_changed'
-        ? _orderUpdatesChannelDescription
-        : _channelDescription;
+  Map<String, dynamic> _payloadDataFromAdditionalData(
+    Map<String, dynamic> additionalData,
+  ) {
+    return NotificationPayloadResolver.normalize(additionalData);
   }
 
   Future<void> _handleNotificationResponse(
@@ -200,33 +148,34 @@ class LocalNotificationService {
   ) async {
     final payload = response.payload;
     if (payload == null || payload.trim().isEmpty) {
-      await _appNavigatorService.pushNamed(AppRoutes.notifications);
+      await _appNavigatorService.pushNamedWhenReady(AppRoutes.notifications);
       return;
     }
 
     final decoded = jsonDecode(payload);
     if (decoded is! Map) {
-      await _appNavigatorService.pushNamed(AppRoutes.notifications);
+      await _appNavigatorService.pushNamedWhenReady(AppRoutes.notifications);
       return;
     }
 
-    final type = decoded['type']?.toString();
-    final orderId =
-        decoded['referenceId']?.toString() ?? decoded['orderId']?.toString();
+    final normalizedPayload = NotificationPayloadResolver.normalize(
+      Map<String, dynamic>.from(decoded),
+    );
+    final type = normalizedPayload['type']?.toString();
+    final orderId = NotificationPayloadResolver.resolveOrderId(
+      normalizedPayload,
+    );
 
-    switch (type) {
-      case 'order_status_changed':
-      case 'order_cancelled':
-      case 'order_placed':
-        if (orderId != null && orderId.isNotEmpty) {
-          await _appNavigatorService.pushNamed(
-            AppRoutes.trackOrder,
-            arguments: {'orderId': orderId},
-          );
-          return;
-        }
-      default:
-        await _appNavigatorService.pushNamed(AppRoutes.notifications);
+    if (NotificationPayloadResolver.isOrderRelatedType(type) &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await _appNavigatorService.pushNamedWhenReady(
+        AppRoutes.trackOrder,
+        arguments: {'orderId': orderId},
+      );
+      return;
     }
+
+    await _appNavigatorService.pushNamedWhenReady(AppRoutes.notifications);
   }
 }

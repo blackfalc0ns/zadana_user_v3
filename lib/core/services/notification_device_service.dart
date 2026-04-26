@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart' as core_constants;
+import 'package:zadana_user_v3/core/constants/app_constants.dart'
+    as core_constants;
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
@@ -38,11 +39,19 @@ class NotificationDeviceService {
   final RegisterNotificationDeviceUseCase _registerNotificationDeviceUseCase;
   final UpdateNotificationDevicePreferencesUseCase
   _updateNotificationDevicePreferencesUseCase;
-  final UnregisterNotificationDeviceUseCase _unregisterNotificationDeviceUseCase;
+  final UnregisterNotificationDeviceUseCase
+  _unregisterNotificationDeviceUseCase;
 
   Future<bool> isNotificationsEnabled() async {
     return _sharedPreferences.getBool(AppConstants.notificationsEnabledKey) ??
         true;
+  }
+
+  Future<void> saveNotificationsEnabledLocally(bool enabled) async {
+    await _sharedPreferences.setBool(
+      AppConstants.notificationsEnabledKey,
+      enabled,
+    );
   }
 
   Future<ApiResult<void>> cachePushToken(String token) async {
@@ -77,7 +86,7 @@ class NotificationDeviceService {
   }
 
   Future<ApiResult<void>> setNotificationsEnabled(bool enabled) async {
-    await _sharedPreferences.setBool(AppConstants.notificationsEnabledKey, enabled);
+    await saveNotificationsEnabledLocally(enabled);
 
     final accessToken = await _tokenService.getToken();
     if (accessToken == null || accessToken.isEmpty) {

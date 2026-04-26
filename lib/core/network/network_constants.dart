@@ -1,10 +1,19 @@
 abstract class NetworkConstants {
   static const String baseUrl = "https://zadana.runasp.net/api";
   static const String notificationsSignalRHubPath = '/hubs/notifications';
+  static const String customerPresenceSignalRHubPath =
+      '/hubs/customer-presence';
   static const String receiveNotificationSignalREvent = 'ReceiveNotification';
   static const String receiveOrderStatusChangedSignalREvent =
       'ReceiveOrderStatusChanged';
+  static const String receiveDriverArrivalStateChangedSignalREvent =
+      'ReceiveDriverArrivalStateChanged';
   static const String receiveBroadcastSignalREvent = 'ReceiveBroadcast';
+  static const String customerPresenceUpdatedSignalREvent =
+      'customerPresenceUpdated';
+  static const String customerPresenceAppForegroundMethod = 'AppForeground';
+  static const String customerPresenceAppBackgroundMethod = 'AppBackground';
+  static const String customerPresenceHeartbeatMethod = 'Heartbeat';
   static const String ordersSignalRHubPath = notificationsSignalRHubPath;
   static const String ordersSignalRMethods =
       receiveOrderStatusChangedSignalREvent;

@@ -4,10 +4,16 @@ class CheckoutPromoResultEntity {
   const CheckoutPromoResultEntity({
     required this.message,
     required this.summary,
+    required this.shippingBreakdown,
     this.promoCode,
+    this.deliveryQuote,
+    this.pricingMode,
   });
 
   final String message;
   final CheckoutPromoCodeEntity? promoCode;
+  final CheckoutDeliveryQuoteEntity? deliveryQuote;
+  final List<CheckoutShippingLineEntity> shippingBreakdown;
+  final String? pricingMode;
   final CheckoutTotalsEntity summary;
 }

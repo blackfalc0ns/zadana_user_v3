@@ -10,15 +10,17 @@ import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_loc
 class CheckoutPriceBreakdownCard extends StatelessWidget {
   const CheckoutPriceBreakdownCard({
     super.key,
-    required this.summary,
+    required this.checkoutSummary,
   });
 
-  final CheckoutTotalsEntity summary;
+  final CheckoutSummaryEntity checkoutSummary;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
+    final summary = checkoutSummary.summary;
+    final shippingBreakdown = checkoutSummary.shippingBreakdown;
     final currency = localizePaymentCurrency(l10n, summary.currency);
 
     return Container(
@@ -67,12 +69,22 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
             value: PriceFormatter.formatPrice(summary.subtotal),
             currency: currency,
           ),
-          const SizedBox(height: Spacing.xs),
-          _PriceRow(
-            label: l10n.shipping,
-            value: PriceFormatter.formatPrice(summary.shippingCost),
-            currency: currency,
-          ),
+          for (final line in shippingBreakdown) ...[
+            const SizedBox(height: Spacing.xs),
+            _PriceRow(
+              label: _resolveShippingLineLabel(line),
+              value: PriceFormatter.formatPrice(line.amount),
+              currency: currency,
+            ),
+          ],
+          if (shippingBreakdown.isEmpty) ...[
+            const SizedBox(height: Spacing.xs),
+            _PriceRow(
+              label: l10n.shipping,
+              value: PriceFormatter.formatPrice(summary.shippingCost),
+              currency: currency,
+            ),
+          ],
           const SizedBox(height: Spacing.xs),
           _PriceRow(
             label: l10n.discount,
@@ -102,6 +114,21 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _resolveShippingLineLabel(CheckoutShippingLineEntity line) {
+    final label = line.label.trim();
+    if (label.isNotEmpty) {
+      return label;
+    }
+
+    return line.code
+        .split('_')
+        .where((part) => part.isNotEmpty)
+        .map(
+          (part) => '${part[0].toUpperCase()}${part.substring(1).toLowerCase()}',
+        )
+        .join(' ');
   }
 }
 

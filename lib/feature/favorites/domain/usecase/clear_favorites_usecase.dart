@@ -18,6 +18,7 @@ class ClearFavoritesUseCase {
       _repository.emitFavoriteMutation(
         productIds: productIds,
         isFavorite: false,
+        skipBackgroundRefresh: true,
       );
     }
 

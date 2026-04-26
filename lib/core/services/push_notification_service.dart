@@ -11,6 +11,7 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/services/app_navigator_service.dart';
 import 'package:zadana_user_v3/core/services/local_notification_service.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
+import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 
@@ -19,11 +20,10 @@ class PushNotificationService {
   static const String androidHeadsUpChannelId = "zadana_heads_up_notifications";
   static final Logger _logger = Logger();
   static bool _isInitialized = false;
+  static Future<void>? _initializationFuture;
   static const Duration _overlayDuration = Duration(seconds: 3);
   static const Duration _overlayGap = Duration(milliseconds: 250);
-  static const Duration _overlayContextRetryDelay = Duration(
-    milliseconds: 200,
-  );
+  static const Duration _overlayContextRetryDelay = Duration(milliseconds: 200);
   static const int _overlayContextRetryAttempts = 15;
   static final ListQueue<Map<String, dynamic>> _foregroundOverlayQueue =
       ListQueue<Map<String, dynamic>>();
@@ -31,10 +31,20 @@ class PushNotificationService {
 
   static Future<void> init() async {
     if (_isInitialized) {
-      _logger.w('PushNotificationService.init() was called more than once.');
       return;
     }
 
+    final inFlightInitialization = _initializationFuture;
+    if (inFlightInitialization != null) {
+      await inFlightInitialization;
+      return;
+    }
+
+    _initializationFuture = _initializeSdk();
+    await _initializationFuture;
+  }
+
+  static Future<void> _initializeSdk() async {
     try {
       // Remove this method to stop OneSignal Debugging
       // OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
@@ -55,20 +65,29 @@ class PushNotificationService {
       });
 
       OneSignal.Notifications.addForegroundWillDisplayListener((event) async {
-        final title = event.notification.title?.trim();
-        final body = event.notification.body?.trim();
-        final hasVisibleContent =
-            (title?.isNotEmpty ?? false) || (body?.isNotEmpty ?? false);
         final additionalData = event.notification.additionalData;
-        final normalizedData = additionalData != null
-            ? Map<String, dynamic>.from(additionalData)
-            : <String, dynamic>{};
+        final normalizedData = NotificationPayloadResolver.normalize(
+          additionalData != null
+              ? Map<String, dynamic>.from(additionalData)
+              : <String, dynamic>{},
+        );
+        _logger.i(
+          'OneSignal push received in foreground. '
+          '${NotificationPayloadResolver.resolveDebugSummary(normalizedData, title: event.notification.title, body: event.notification.body)}',
+        );
+        final displayContent =
+            NotificationPayloadResolver.resolveDisplayContent(
+              payload: normalizedData,
+              title: event.notification.title,
+              body: event.notification.body,
+            );
 
-        if (!hasVisibleContent) {
+        if (!displayContent.hasVisibleContent) {
           _logger.w(
             'Foreground notification arrived without visible title/body. '
-            'This payload will not produce a standard popup notification. '
-            'data: $normalizedData',
+            'This payload will not produce a standard popup notification, '
+            'and it also cannot be shown by the system in killed state. '
+            '${NotificationPayloadResolver.resolveDebugSummary(normalizedData, title: event.notification.title, body: event.notification.body)}',
           );
           return;
         }
@@ -76,33 +95,68 @@ class PushNotificationService {
         event.preventDefault();
 
         await getIt<LocalNotificationService>().showPushNotification(
-          title: (title?.isNotEmpty ?? false) ? title! : body ?? '',
-          body: (title?.isNotEmpty ?? false) ? body : null,
+          title: displayContent.title,
+          body: displayContent.body,
           additionalData: normalizedData,
         );
-        normalizedData['_displayTitle'] = title ?? '';
-        normalizedData['_displayBody'] = body ?? '';
+        normalizedData['_displayTitle'] = displayContent.title;
+        normalizedData['_displayBody'] = displayContent.body ?? '';
         _foregroundOverlayQueue.add(normalizedData);
         unawaited(_processForegroundOverlayQueue());
         _logger.i(
-          'Foreground notification displayed via local notification. '
-          'title: ${title ?? '(empty)'}, body exists: ${body?.isNotEmpty ?? false}, '
-          'type: ${normalizedData['type']}, notificationId: ${normalizedData['notificationId']}',
+          'OneSignal visible push displayed in foreground via local '
+          'notification. '
+          '${NotificationPayloadResolver.resolveDebugSummary(normalizedData, title: displayContent.title, body: displayContent.body)}',
         );
       });
 
       OneSignal.Notifications.addClickListener((event) {
-        _logger.i('Notification clicked: ${event.notification.additionalData}');
+        final additionalData = event.notification.additionalData;
+        final normalizedData = NotificationPayloadResolver.normalize(
+          additionalData != null
+              ? Map<String, dynamic>.from(additionalData)
+              : <String, dynamic>{},
+        );
+        _logger.i(
+          'OneSignal push clicked. '
+          '${NotificationPayloadResolver.resolveDebugSummary(normalizedData, title: event.notification.title, body: event.notification.body)}',
+        );
+        unawaited(_openNotificationTarget(normalizedData));
       });
-
-      await _restoreAuthenticatedUserIfAvailable();
-      await _preparePushSubscription();
 
       _logger.i("OneSignal initialized with ID: $_appId");
       _isInitialized = true;
-    } catch (e) {
-      _logger.e("Error initializing OneSignal: $e");
+    } catch (e, stackTrace) {
+      _logger.e(
+        "Error initializing OneSignal: $e",
+        error: e,
+        stackTrace: stackTrace,
+      );
+    } finally {
+      if (!_isInitialized) {
+        _initializationFuture = null;
+      }
     }
+  }
+
+  static Future<void> activateAuthenticatedPushIfPossible() async {
+    await init();
+    if (!_isInitialized) {
+      _logger.w(
+        'Skipped authenticated push activation because OneSignal is not initialized.',
+      );
+      return;
+    }
+
+    final restored = await _restoreAuthenticatedUserIfAvailable();
+    if (!restored) {
+      _logger.i(
+        'Skipped authenticated push activation because no stored session was found.',
+      );
+      return;
+    }
+
+    await _preparePushSubscription();
   }
 
   static Future<void> loginCustomer(String customerId) async {
@@ -113,6 +167,13 @@ class PushNotificationService {
     }
 
     await getIt<TokenService>().saveCurrentUserId(normalizedCustomerId);
+    await init();
+    if (!_isInitialized) {
+      _logger.w(
+        'Skipped OneSignal.login because OneSignal failed to initialize.',
+      );
+      return;
+    }
 
     try {
       await OneSignal.login(normalizedCustomerId);
@@ -143,7 +204,7 @@ class PushNotificationService {
     }
   }
 
-  static Future<void> _restoreAuthenticatedUserIfAvailable() async {
+  static Future<bool> _restoreAuthenticatedUserIfAvailable() async {
     final tokenService = getIt<TokenService>();
     final accessToken = await tokenService.getToken();
     final customerId = await tokenService.getCurrentUserId();
@@ -152,17 +213,19 @@ class PushNotificationService {
         accessToken.trim().isEmpty ||
         customerId == null ||
         customerId.trim().isEmpty) {
-      return;
+      return false;
     }
 
     try {
       await OneSignal.login(customerId);
       _logger.i('OneSignal restored session for customerId: $customerId');
+      return true;
     } catch (e) {
       _logger.e(
         'Failed to restore OneSignal session for customerId: '
         '$customerId, error: $e',
       );
+      return false;
     }
   }
 
@@ -263,23 +326,19 @@ class PushNotificationService {
     Map<String, dynamic> payload,
   ) async {
     final type = payload['type']?.toString();
-    final orderId = payload['referenceId']?.toString().trim().isNotEmpty == true
-        ? payload['referenceId']?.toString().trim()
-        : payload['orderId']?.toString().trim();
+    final orderId = NotificationPayloadResolver.resolveOrderId(payload);
+    final appNavigatorService = getIt<AppNavigatorService>();
 
-    switch (type) {
-      case 'order_status_changed':
-      case 'order_cancelled':
-      case 'order_placed':
-        if (orderId != null && orderId.isNotEmpty) {
-          await getIt<AppNavigatorService>().pushNamed(
-            AppRoutes.trackOrder,
-            arguments: {'orderId': orderId},
-          );
-          return;
-        }
-      default:
-        await getIt<AppNavigatorService>().pushNamed(AppRoutes.notifications);
+    if (NotificationPayloadResolver.isOrderRelatedType(type) &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await appNavigatorService.pushNamedWhenReady(
+        AppRoutes.trackOrder,
+        arguments: {'orderId': orderId},
+      );
+      return;
     }
+
+    await appNavigatorService.pushNamedWhenReady(AppRoutes.notifications);
   }
 }

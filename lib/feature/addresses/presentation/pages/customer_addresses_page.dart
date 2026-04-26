@@ -186,8 +186,8 @@ class _AddressesErrorView extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: ApiErrorWidget.fromFailure(
-          failure,
+        child: ApiErrorWidget(
+          exception: failure.exception,
           onRetry: () =>
               context.read<CustomerAddressesViewModel>()
                 ..doIntent(const CustomerAddressesRetryEvent()),

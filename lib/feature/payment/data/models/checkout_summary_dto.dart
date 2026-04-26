@@ -6,8 +6,11 @@ class CheckoutSummaryDto {
     required this.deliverySlots,
     required this.paymentMethods,
     required this.summary,
+    required this.shippingBreakdown,
     this.selectedAddress,
     this.promoCode,
+    this.deliveryQuote,
+    this.pricingMode,
   });
 
   factory CheckoutSummaryDto.fromJson(Map<String, dynamic> json) {
@@ -25,6 +28,13 @@ class CheckoutSummaryDto {
       promoCode: _nullableMap(json['promo_code']) == null
           ? null
           : CheckoutPromoCodeDto.fromJson(_asMap(json['promo_code'])),
+      deliveryQuote: _nullableMap(json['delivery_quote']) == null
+          ? null
+          : CheckoutDeliveryQuoteDto.fromJson(_asMap(json['delivery_quote'])),
+      shippingBreakdown: _asList(json['shipping_breakdown'])
+          .map((item) => CheckoutShippingLineDto.fromJson(_asMap(item)))
+          .toList(),
+      pricingMode: json['pricing_mode']?.toString(),
       summary: CheckoutTotalsDto.fromJson(_asMap(json['summary'])),
     );
   }
@@ -34,6 +44,9 @@ class CheckoutSummaryDto {
   final List<CheckoutDeliverySlotDto> deliverySlots;
   final List<CheckoutPaymentMethodDto> paymentMethods;
   final CheckoutPromoCodeDto? promoCode;
+  final CheckoutDeliveryQuoteDto? deliveryQuote;
+  final List<CheckoutShippingLineDto> shippingBreakdown;
+  final String? pricingMode;
   final CheckoutTotalsDto summary;
 
   CheckoutSummaryEntity toEntity() {
@@ -43,6 +56,9 @@ class CheckoutSummaryDto {
       deliverySlots: deliverySlots.map((item) => item.toEntity()).toList(),
       paymentMethods: paymentMethods.map((item) => item.toEntity()).toList(),
       promoCode: promoCode?.toEntity(),
+      deliveryQuote: deliveryQuote?.toEntity(),
+      shippingBreakdown: shippingBreakdown.map((item) => item.toEntity()).toList(),
+      pricingMode: pricingMode,
       summary: summary.toEntity(),
     );
   }
@@ -258,6 +274,78 @@ class CheckoutPromoCodeDto {
       discountType: discountType,
       discountValue: discountValue,
       discountAmount: discountAmount,
+    );
+  }
+}
+
+class CheckoutDeliveryQuoteDto {
+  const CheckoutDeliveryQuoteDto({
+    required this.distanceKm,
+    required this.baseFee,
+    required this.distanceFee,
+    required this.surgeFee,
+    required this.totalFee,
+    this.pricingMode,
+    this.ruleLabel,
+  });
+
+  factory CheckoutDeliveryQuoteDto.fromJson(Map<String, dynamic> json) {
+    return CheckoutDeliveryQuoteDto(
+      distanceKm: _asDouble(json['distance_km']),
+      baseFee: _asDouble(json['base_fee']),
+      distanceFee: _asDouble(json['distance_fee']),
+      surgeFee: _asDouble(json['surge_fee']),
+      totalFee: _asDouble(json['total_fee']),
+      pricingMode: json['pricing_mode']?.toString(),
+      ruleLabel: json['rule_label']?.toString(),
+    );
+  }
+
+  final double distanceKm;
+  final double baseFee;
+  final double distanceFee;
+  final double surgeFee;
+  final double totalFee;
+  final String? pricingMode;
+  final String? ruleLabel;
+
+  CheckoutDeliveryQuoteEntity toEntity() {
+    return CheckoutDeliveryQuoteEntity(
+      distanceKm: distanceKm,
+      baseFee: baseFee,
+      distanceFee: distanceFee,
+      surgeFee: surgeFee,
+      totalFee: totalFee,
+      pricingMode: pricingMode,
+      ruleLabel: ruleLabel,
+    );
+  }
+}
+
+class CheckoutShippingLineDto {
+  const CheckoutShippingLineDto({
+    required this.code,
+    required this.label,
+    required this.amount,
+  });
+
+  factory CheckoutShippingLineDto.fromJson(Map<String, dynamic> json) {
+    return CheckoutShippingLineDto(
+      code: json['code']?.toString() ?? '',
+      label: json['label']?.toString() ?? '',
+      amount: _asDouble(json['amount']),
+    );
+  }
+
+  final String code;
+  final String label;
+  final double amount;
+
+  CheckoutShippingLineEntity toEntity() {
+    return CheckoutShippingLineEntity(
+      code: code,
+      label: label,
+      amount: amount,
     );
   }
 }

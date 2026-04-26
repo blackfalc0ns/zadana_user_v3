@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
+import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/app_notification_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
+import 'package:zadana_user_v3/feature/track_order/data/models/driver_arrival_state_changed_realtime_payload.dart';
+import 'package:zadana_user_v3/feature/track_order/data/models/order_status_changed_realtime_payload.dart';
 
 @lazySingleton
 class NotificationsSignalRService {
@@ -15,19 +20,87 @@ class NotificationsSignalRService {
   final TokenService _tokenService;
   final Logger _logger = Logger();
   static const Duration _reconnectDelay = Duration(seconds: 5);
+  static const Duration _heartbeatInterval = Duration(seconds: 60);
   static const int _maxTrackedNotificationIds = 200;
   final StreamController<AppNotificationEntity> _notificationsController =
       StreamController<AppNotificationEntity>.broadcast();
+  final StreamController<OrderStatusChangedRealtimePayload>
+  _orderStatusChangedController =
+      StreamController<OrderStatusChangedRealtimePayload>.broadcast();
+  final StreamController<DriverArrivalStateChangedRealtimePayload>
+  _driverArrivalStateChangedController =
+      StreamController<DriverArrivalStateChangedRealtimePayload>.broadcast();
   final List<String> _recentNotificationIds = <String>[];
   final Set<String> _recentNotificationIdSet = <String>{};
 
   HubConnection? _connection;
+  HubConnection? _presenceConnection;
   bool _isStarting = false;
+  bool _isStartingPresence = false;
   bool _isReconnectScheduled = false;
+  bool _isPresenceReconnectScheduled = false;
+  bool _isManuallyStopped = false;
+  bool _isAppInForeground = true;
+  Timer? _heartbeatTimer;
 
   Stream<AppNotificationEntity> watchNotifications() {
-    unawaited(_ensureConnected());
+    unawaited(activateAuthenticatedConnectionIfPossible());
     return _notificationsController.stream;
+  }
+
+  Stream<OrderStatusChangedRealtimePayload> watchOrderStatusChangedEvents() {
+    unawaited(activateAuthenticatedConnectionIfPossible());
+    return _orderStatusChangedController.stream;
+  }
+
+  Stream<DriverArrivalStateChangedRealtimePayload>
+  watchDriverArrivalStateChangedEvents() {
+    unawaited(activateAuthenticatedConnectionIfPossible());
+    return _driverArrivalStateChangedController.stream;
+  }
+
+  Future<void> activateAuthenticatedConnectionIfPossible() async {
+    _isManuallyStopped = false;
+    await Future.wait<void>([_ensureConnected(), _ensurePresenceConnected()]);
+    if (_isAppInForeground) {
+      await notifyAppForeground();
+    }
+  }
+
+  Future<void> disconnect() async {
+    _isManuallyStopped = true;
+    final connection = _connection;
+    final presenceConnection = _presenceConnection;
+    _connection = null;
+    _presenceConnection = null;
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+
+    if (connection != null) {
+      try {
+        await connection.stop();
+        _logger.i('Notifications SignalR disconnected.');
+      } catch (error, stackTrace) {
+        _logger.w(
+          'Notifications SignalR disconnect failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
+
+    if (presenceConnection != null) {
+      try {
+        await presenceConnection.stop();
+        _logger.i('Customer presence SignalR disconnected.');
+      } catch (error, stackTrace) {
+        _logger.w(
+          'Customer presence SignalR disconnect failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
   }
 
   Future<void> _ensureConnected() async {
@@ -43,10 +116,6 @@ class NotificationsSignalRService {
     try {
       final token = await _tokenService.getToken();
       if (token == null || token.trim().isEmpty) {
-        _logger.w(
-          'Notifications SignalR skipped because no access token is available yet.',
-        );
-        _scheduleReconnect();
         return;
       }
 
@@ -68,11 +137,21 @@ class NotificationsSignalRService {
         NetworkConstants.receiveBroadcastSignalREvent,
         _handleRealtimeNotification,
       );
+      connection.on(
+        NetworkConstants.receiveOrderStatusChangedSignalREvent,
+        _handleOrderStatusChanged,
+      );
+      connection.on(
+        NetworkConstants.receiveDriverArrivalStateChangedSignalREvent,
+        _handleDriverArrivalStateChanged,
+      );
 
       connection.onclose(({error}) {
         _connection = null;
         _logger.w('Notifications SignalR connection closed.', error: error);
-        _scheduleReconnect();
+        if (!_isManuallyStopped) {
+          _scheduleReconnect();
+        }
       });
 
       await connection.start();
@@ -91,6 +170,58 @@ class NotificationsSignalRService {
     }
   }
 
+  Future<void> _ensurePresenceConnected() async {
+    if (_isStartingPresence) return;
+
+    final currentConnection = _presenceConnection;
+    if (currentConnection != null &&
+        currentConnection.state != HubConnectionState.Disconnected) {
+      return;
+    }
+
+    _isStartingPresence = true;
+    try {
+      final token = await _tokenService.getToken();
+      if (token == null || token.trim().isEmpty) {
+        return;
+      }
+
+      final connection = HubConnectionBuilder()
+          .withUrl(
+            _buildPresenceHubUrl(),
+            options: HttpConnectionOptions(
+              accessTokenFactory: () async => token,
+            ),
+          )
+          .withAutomaticReconnect()
+          .build();
+
+      connection.onclose(({error}) {
+        _presenceConnection = null;
+        _heartbeatTimer?.cancel();
+        _heartbeatTimer = null;
+        _logger.w('Customer presence SignalR connection closed.', error: error);
+        if (!_isManuallyStopped) {
+          _schedulePresenceReconnect();
+        }
+      });
+
+      await connection.start();
+      _presenceConnection = connection;
+      _logger.i('Customer presence SignalR connected.');
+    } catch (error, stackTrace) {
+      _logger.w(
+        'Customer presence SignalR connection failed.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _presenceConnection = null;
+      _schedulePresenceReconnect();
+    } finally {
+      _isStartingPresence = false;
+    }
+  }
+
   void _handleRealtimeNotification(List<Object?>? args) {
     final payload = _extractPayload(args);
     if (payload == null || _notificationsController.isClosed) return;
@@ -102,10 +233,29 @@ class NotificationsSignalRService {
     }
 
     _logger.i(
-      'Notifications SignalR event received: '
-      '${payload['type'] ?? payload['id'] ?? 'unknown'}',
+      'Notifications SignalR event received. '
+      'This realtime path only works while the app process is alive. '
+      '${NotificationPayloadResolver.resolveDebugSummary(payload, title: notification.titleAr.isNotEmpty ? notification.titleAr : notification.titleEn, body: notification.bodyAr.isNotEmpty ? notification.bodyAr : notification.bodyEn)}',
     );
     _notificationsController.add(notification);
+  }
+
+  void _handleOrderStatusChanged(List<Object?>? args) {
+    final payload = _extractPayload(args);
+    if (payload == null || _orderStatusChangedController.isClosed) return;
+    _orderStatusChangedController.add(
+      OrderStatusChangedRealtimePayload.fromJson(payload),
+    );
+  }
+
+  void _handleDriverArrivalStateChanged(List<Object?>? args) {
+    final payload = _extractPayload(args);
+    if (payload == null || _driverArrivalStateChangedController.isClosed) {
+      return;
+    }
+    _driverArrivalStateChangedController.add(
+      DriverArrivalStateChangedRealtimePayload.fromJson(payload),
+    );
   }
 
   bool _isDuplicateNotification(String notificationId) {
@@ -124,18 +274,99 @@ class NotificationsSignalRService {
     return false;
   }
 
+  bool get _hasRealtimeListeners =>
+      _notificationsController.hasListener ||
+      _orderStatusChangedController.hasListener ||
+      _driverArrivalStateChangedController.hasListener;
+
   void _scheduleReconnect() {
-    if (_isReconnectScheduled || !_notificationsController.hasListener) {
+    if (_isReconnectScheduled || _isManuallyStopped || !_hasRealtimeListeners) {
       return;
     }
 
     _isReconnectScheduled = true;
     Future<void>.delayed(_reconnectDelay, () async {
       _isReconnectScheduled = false;
-      if (_notificationsController.hasListener) {
+      if (_hasRealtimeListeners) {
         await _ensureConnected();
       }
     });
+  }
+
+  void _schedulePresenceReconnect() {
+    if (_isPresenceReconnectScheduled || _isManuallyStopped) {
+      return;
+    }
+
+    _isPresenceReconnectScheduled = true;
+    Future<void>.delayed(_reconnectDelay, () async {
+      _isPresenceReconnectScheduled = false;
+      await _ensurePresenceConnected();
+      if (_isAppInForeground) {
+        await notifyAppForeground();
+      }
+    });
+  }
+
+  Future<void> handleAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      await notifyAppForeground();
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      await notifyAppBackground();
+    }
+  }
+
+  Future<void> notifyAppForeground() async {
+    _isAppInForeground = true;
+    await _ensurePresenceConnected();
+    await _invokePresenceMethod(
+      NetworkConstants.customerPresenceAppForegroundMethod,
+    );
+    _startHeartbeat();
+  }
+
+  Future<void> notifyAppBackground() async {
+    _isAppInForeground = false;
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+    await _invokePresenceMethod(
+      NetworkConstants.customerPresenceAppBackgroundMethod,
+    );
+  }
+
+  void _startHeartbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer.periodic(_heartbeatInterval, (_) {
+      unawaited(
+        _invokePresenceMethod(NetworkConstants.customerPresenceHeartbeatMethod),
+      );
+    });
+  }
+
+  Future<void> _invokePresenceMethod(String methodName) async {
+    if (_isManuallyStopped) return;
+
+    await _ensurePresenceConnected();
+    final connection = _presenceConnection;
+    if (connection == null ||
+        connection.state != HubConnectionState.Connected) {
+      return;
+    }
+
+    try {
+      await connection.invoke(methodName);
+    } catch (error, stackTrace) {
+      _logger.w(
+        'Customer presence invoke failed for $methodName.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Map<String, dynamic>? _extractPayload(List<Object?>? args) {
@@ -148,6 +379,44 @@ class NotificationsSignalRService {
     if (candidate is Map) {
       return candidate.map((key, value) => MapEntry(key.toString(), value));
     }
+    if (candidate is String) {
+      return _decodeJsonPayload(candidate);
+    }
+    if (candidate is List && candidate.isNotEmpty) {
+      final nestedCandidate = candidate.first;
+      if (nestedCandidate is Map<String, dynamic>) {
+        return nestedCandidate;
+      }
+      if (nestedCandidate is Map) {
+        return nestedCandidate.map(
+          (key, value) => MapEntry(key.toString(), value),
+        );
+      }
+      if (nestedCandidate is String) {
+        return _decodeJsonPayload(nestedCandidate);
+      }
+    }
+
+    return null;
+  }
+
+  Map<String, dynamic>? _decodeJsonPayload(String rawPayload) {
+    final normalizedPayload = rawPayload.trim();
+    if (normalizedPayload.isEmpty) {
+      return null;
+    }
+
+    try {
+      final decoded = jsonDecode(normalizedPayload);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      }
+      if (decoded is Map) {
+        return decoded.map((key, value) => MapEntry(key.toString(), value));
+      }
+    } catch (_) {
+      return null;
+    }
 
     return null;
   }
@@ -158,5 +427,13 @@ class NotificationsSignalRService {
       '',
     );
     return '$baseUrlWithoutApi${NetworkConstants.notificationsSignalRHubPath}';
+  }
+
+  String _buildPresenceHubUrl() {
+    final baseUrlWithoutApi = NetworkConstants.baseUrl.replaceFirst(
+      RegExp(r'/api/?$'),
+      '',
+    );
+    return '$baseUrlWithoutApi${NetworkConstants.customerPresenceSignalRHubPath}';
   }
 }

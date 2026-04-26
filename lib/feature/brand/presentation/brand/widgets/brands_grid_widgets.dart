@@ -106,7 +106,10 @@ class BrandsErrorView extends StatelessWidget {
         SizedBox(
           height: MediaQuery.sizeOf(context).height * 0.72,
           child: Center(
-            child: ApiErrorWidget.fromFailure(failure, onRetry: onRetry),
+            child: ApiErrorWidget(
+              exception: failure.exception,
+              onRetry: onRetry,
+            ),
           ),
         ),
       ],

@@ -253,6 +253,10 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         : math.max(0, state.favoritesCount - delta);
     emit(state.copyWith(favoritesCount: nextCount));
 
+    if (event.skipBackgroundRefresh) {
+      return;
+    }
+
     _favoritesRefreshDebouncer?.cancel();
     _favoritesRefreshDebouncer = Timer(
       const Duration(milliseconds: 250),

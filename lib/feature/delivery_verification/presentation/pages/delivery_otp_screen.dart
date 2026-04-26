@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -21,44 +18,25 @@ class DeliveryOtpScreen extends StatefulWidget {
     this.orderId,
     this.phoneNumber,
     this.courierName,
+    this.otpCode,
   });
 
   final String? orderId;
   final String? phoneNumber;
   final String? courierName;
+  final String? otpCode;
 
   @override
   State<DeliveryOtpScreen> createState() => _DeliveryOtpScreenState();
 }
 
 class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
-  Timer? _navigateTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    // Navigate to success page after 5 seconds
-    _navigateTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        Navigator.pushReplacementNamed(
-          context,
-          AppRoutes.successOrder,
-          arguments: {'orderId': widget.orderId, 'courierName': 'Ayşe Demirci'},
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _navigateTimer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
     final color = Theme.of(context).colorScheme;
+    final phoneNumber = widget.phoneNumber?.trim() ?? '';
+    final otpCode = widget.otpCode?.trim() ?? '';
 
     return Scaffold(
       backgroundColor: color.surface,
@@ -72,8 +50,6 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
             child: Column(
               children: [
                 const SizedBox(height: Spacing.xl),
-
-                // Delivery Icon
                 Container(
                   width: 100,
                   height: 100,
@@ -88,8 +64,6 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                   ),
                 ),
                 const SizedBox(height: Spacing.lg),
-
-                // Title
                 Text(
                   locale.delivery_code_title,
                   style: getBoldStyle(
@@ -100,8 +74,17 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: Spacing.sm),
-
-                // Phone Number Info
+                if ((widget.courierName?.trim().isNotEmpty ?? false))
+                  Text(
+                    widget.courierName!.trim(),
+                    style: getMediumStyle(
+                      fontSize: FontSize.size16,
+                      fontFamily: FontConstant.cairo,
+                      color: color.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                const SizedBox(height: Spacing.base),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(Spacing.md),
@@ -121,10 +104,11 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                           fontFamily: FontConstant.cairo,
                           color: color.onSurface.withValues(alpha: 0.6),
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: Spacing.xs),
                       Text(
-                        '0345667892',
+                        phoneNumber.isEmpty ? '--' : phoneNumber,
                         style: getBoldStyle(
                           fontSize: FontSize.size18,
                           fontFamily: FontConstant.cairo,
@@ -135,8 +119,6 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                   ),
                 ),
                 const SizedBox(height: Spacing.xl),
-
-                // OTP Code Display
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: Spacing.xl),
@@ -167,7 +149,7 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                       ),
                       const SizedBox(height: Spacing.sm),
                       Text(
-                        '1234',
+                        otpCode.isEmpty ? '----' : otpCode,
                         style: getBoldStyle(
                           fontSize: 48,
                           fontFamily: FontConstant.cairo,
@@ -178,35 +160,21 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
                   ),
                 ),
                 const SizedBox(height: Spacing.xl),
-
-                // Action Button
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
                     text: locale.delivery_code_shared_button,
-                    onPressed: () {
-                      // Navigate to success page immediately
-                      Navigator.pushReplacementNamed(
-                        context,
-                        AppRoutes.successOrder,
-                        arguments: {
-                          'orderId': widget.orderId,
-                          'courierName': widget.courierName ?? 'محمد أمين',
-                        },
-                      );
-                    },
+                    onPressed: () => Navigator.pop(context),
                     color: color.primary,
                     textColor: color.onPrimary,
                     height: 56,
                   ),
                 ),
                 const SizedBox(height: Spacing.md),
-
-                // Resend Option
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pop(context),
                   child: Text(
-                    locale.delivery_code_generate_new,
+                    locale.go_back,
                     style: getMediumStyle(
                       fontSize: FontSize.size14,
                       fontFamily: FontConstant.cairo,
@@ -223,29 +191,14 @@ class _DeliveryOtpScreenState extends State<DeliveryOtpScreen> {
   }
 
   void _handleStateChanges(BuildContext context, DeliveryOtpState state) {
-    // Show rating dialog on success
     if (state.isSuccess || state.showSuccessDialog) {
-      Future.microtask(() {
-        delivery_dialog.showDeliveryRatingDialog(
-          context,
-          courierName: widget.courierName ?? 'Ayşe Demirci',
-          courierImage:
-              'https://tse4.mm.bing.net/th/id/OIP.3L8yQPQsRHKjSg1FtHzVMQHaE8?w=508&h=339&rs=1&pid=ImgDetMain&o=7&rm=3',
-          onSubmit: (rating, comment) {
-            // Handle rating submission (can be sent to API later)
-            print('Rating: $rating, Comment: $comment');
-            // Navigate to success order page after rating
-            Navigator.pushReplacementNamed(
-              context,
-              AppRoutes.successOrder,
-              arguments: {
-                'orderId': widget.orderId,
-                'courierName': widget.courierName ?? 'Ayşe Demirci',
-              },
-            );
-          },
-        );
-      });
+      delivery_dialog.showDeliveryRatingDialog(
+        context,
+        courierName: widget.courierName ?? '',
+        courierImage:
+            'https://tse4.mm.bing.net/th/id/OIP.3L8yQPQsRHKjSg1FtHzVMQHaE8?w=508&h=339&rs=1&pid=ImgDetMain&o=7&rm=3',
+        onSubmit: (rating, comment) => Navigator.pop(context),
+      );
     }
 
     if (state.errorMessage != null) {

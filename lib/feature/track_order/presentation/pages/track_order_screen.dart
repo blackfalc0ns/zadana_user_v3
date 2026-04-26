@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_state.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_view_model.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_content.dart';
+import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_loading_view.dart';
 
 class TrackOrderScreen extends StatelessWidget {
   const TrackOrderScreen({super.key, required this.orderId});
@@ -40,12 +41,12 @@ class TrackOrderScreen extends StatelessWidget {
         },
         builder: (context, state) {
           if (state.isLoading && state.orderTracking == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const TrackOrderLoadingView();
           }
 
           if (state.failure != null && state.orderTracking == null) {
-            return ApiErrorWidget.fromFailure(
-              state.failure!,
+            return ApiErrorWidget(
+              exception: state.failure!.exception,
               onRetry: () => context.read<TrackOrderViewModel>().load(),
             );
           }
