@@ -58,20 +58,27 @@ class _CompactConfirmationDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 320),
+        constraints: const BoxConstraints(maxWidth: 340),
         child: Material(
           color: color.surface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           clipBehavior: Clip.antiAlias,
           child: Container(
-            padding: const EdgeInsets.all(Spacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              Spacing.lg,
+              Spacing.lg,
+              Spacing.lg,
+              Spacing.md,
+            ),
             decoration: BoxDecoration(
-              border: Border.all(color: color.outlineVariant),
+              border: Border.all(
+                color: color.outlineVariant.withValues(alpha: 0.8),
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: color.shadow.withValues(alpha: 0.10),
-                  blurRadius: 24,
-                  offset: const Offset(0, 10),
+                  color: color.shadow.withValues(alpha: 0.14),
+                  blurRadius: 30,
+                  offset: const Offset(0, 16),
                 ),
               ],
             ),
@@ -79,42 +86,42 @@ class _CompactConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 42,
-                  height: 42,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
                     color: resolvedAccentColor.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Icon(icon, color: resolvedAccentColor, size: 20),
+                  child: Icon(icon, color: resolvedAccentColor, size: 24),
                 ),
-                const SizedBox(height: Spacing.sm),
+                const SizedBox(height: Spacing.md),
                 Text(
                   title,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.h4.copyWith(
                     color: color.onSurface,
                     fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                    fontSize: 18,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: Spacing.xs),
                 Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySmall.copyWith(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: color.onSurfaceVariant,
                     height: 1.45,
                   ),
                 ),
-                const SizedBox(height: Spacing.md),
+                const SizedBox(height: Spacing.lg),
                 Row(
                   children: [
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(context).pop(false),
                         style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
+                          minimumSize: const Size.fromHeight(46),
                           side: BorderSide(color: color.outlineVariant),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -133,7 +140,7 @@ class _CompactConfirmationDialog extends StatelessWidget {
                       child: FilledButton(
                         onPressed: () => Navigator.of(context).pop(true),
                         style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
+                          minimumSize: const Size.fromHeight(46),
                           backgroundColor: resolvedAccentColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

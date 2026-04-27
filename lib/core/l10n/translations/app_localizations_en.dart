@@ -1004,6 +1004,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_category_tooltip => 'Delete selected category';
 
   @override
+  String get clear_filters_title => 'Clear filters';
+
+  @override
+  String get clear_filters_confirm =>
+      'Your selected price, brand, and other active filters will be removed. Do you want to continue?';
+
+  @override
   String get available_vendors => 'Available Vendors';
 
   @override

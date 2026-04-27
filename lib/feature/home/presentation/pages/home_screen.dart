@@ -41,16 +41,7 @@ class HomeScreen extends StatelessWidget {
     final viewModel = getIt<HomeViewModel>();
 
     return BlocProvider(
-      create: (_) => viewModel
-        ..doIntent(const HomeLoadEvent())
-        ..doIntent(const HomeBannerLoadEvent())
-        ..doIntent(const HomeCategoriesLoadEvent())
-        ..doIntent(const HomeBestSellingLoadEvent())
-        ..doIntent(const HomeBrandsLoadEvent())
-        ..doIntent(const HomeRecommendedLoadEvent())
-        ..doIntent(const HomeFeaturedLoadEvent())
-        ..doIntent(const HomeSpecialOffersLoadEvent())
-        ..doIntent(const HomeDynamicSectionLoadEvent()),
+      create: (_) => viewModel..doIntent(const HomeLoadEvent()),
       child: _HomeScreenView(onMenuTap: onMenuTap),
     );
   }
@@ -100,8 +91,8 @@ class _HomeScreenView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Center(
                         child: ApiErrorWidget(
-                            exception: state.firstFailure!.exception,
-                            onRetry: () {
+                          exception: state.firstFailure!.exception,
+                          onRetry: () {
                             _loadAllSections(context);
                           },
                         ),
@@ -145,29 +136,11 @@ class _HomeScreenView extends StatelessWidget {
   }
 
   void _reloadAllSections(BuildContext context) {
-    context.read<HomeViewModel>()
-      ..doIntent(const HomeRetryEvent())
-      ..doIntent(const HomeBannerRetryEvent())
-      ..doIntent(const HomeCategoriesRetryEvent())
-      ..doIntent(const HomeBestSellingRetryEvent())
-      ..doIntent(const HomeBrandsRetryEvent())
-      ..doIntent(const HomeRecommendedRetryEvent())
-      ..doIntent(const HomeFeaturedRetryEvent())
-      ..doIntent(const HomeSpecialOffersRetryEvent())
-      ..doIntent(const HomeDynamicSectionRetryEvent());
+    context.read<HomeViewModel>().doIntent(const HomeRetryEvent());
   }
 
   void _loadAllSections(BuildContext context) {
-    context.read<HomeViewModel>()
-      ..doIntent(const HomeLoadEvent())
-      ..doIntent(const HomeBannerLoadEvent())
-      ..doIntent(const HomeCategoriesLoadEvent())
-      ..doIntent(const HomeBestSellingLoadEvent())
-      ..doIntent(const HomeBrandsLoadEvent())
-      ..doIntent(const HomeRecommendedLoadEvent())
-      ..doIntent(const HomeFeaturedLoadEvent())
-      ..doIntent(const HomeSpecialOffersLoadEvent())
-      ..doIntent(const HomeDynamicSectionLoadEvent());
+    context.read<HomeViewModel>().doIntent(const HomeLoadEvent());
   }
 
   void _openShoppingSearch(BuildContext context) {

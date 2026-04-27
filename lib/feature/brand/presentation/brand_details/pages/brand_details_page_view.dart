@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
+import 'package:zadana_user_v3/core/utils/product_sort_options.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
@@ -96,23 +97,28 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
     BrandDetailsCubit cubit,
     BrandDetailsState state,
   ) {
+    final sortOptions = resolveProductSortOptions(
+      context.localization,
+      rawOptions: state.sortOptions
+          .map(
+            (item) => {
+              'value': item.value,
+              'title': item.label.trim().isNotEmpty
+                  ? item.label.trim()
+                  : item.value,
+              'subtitle': null,
+            },
+          )
+          .toList(growable: false),
+    );
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => CustomSortBottomSheet(
         selectedSortOption: state.selectedSortValue,
-        sortOptions: state.sortOptions
-            .map(
-              (item) => {
-                'value': item.value,
-                'title': item.label.trim().isNotEmpty
-                    ? item.label.trim()
-                    : item.value,
-                'subtitle': null,
-              },
-            )
-            .toList(growable: false),
+        sortOptions: sortOptions,
         title: context.localization.sort_title,
       ),
     ).then((result) async {
@@ -214,6 +220,28 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
     _ensureSearchViewModel(state);
   }
 
+  Future<void> _confirmClearActiveFilters(
+    BuildContext context,
+    BrandDetailsCubit cubit,
+  ) async {
+    final l10n = context.localization;
+    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
+      context: context,
+      title: l10n.clear_filters_title,
+      message: l10n.clear_filters_confirm,
+      confirmLabel: l10n.clear_all,
+      cancelLabel: l10n.cancel,
+      icon: Icons.filter_alt_off_rounded,
+      accentColor: context.colorScheme.error,
+    );
+
+    if (!mounted || !confirmed) {
+      return;
+    }
+
+    await cubit.clearAllFilters();
+  }
+
   bool _showSearchResults() {
     final viewModel = _searchViewModel;
     if (!_isSearchActive || viewModel == null) {
@@ -223,33 +251,6 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
     final searchState = viewModel.state;
     final hasQuery = searchState.query.trim().isNotEmpty;
     return hasQuery;
-  }
-
-  bool _hasSelectedCategory(BrandDetailsState state) {
-    return (state.selectedCategoryId?.isNotEmpty ?? false) ||
-        (state.selectedSubcategoryId?.isNotEmpty ?? false);
-  }
-
-  Future<void> _confirmClearSelectedCategory(
-    BuildContext context,
-    BrandDetailsCubit cubit,
-  ) async {
-    final l10n = context.localization;
-    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
-      context: context,
-      title: l10n.delete_category_title,
-      message: l10n.delete_category_confirm,
-      confirmLabel: l10n.delete,
-      cancelLabel: l10n.no,
-      icon: Icons.delete_outline_rounded,
-      accentColor: context.colorScheme.error,
-    );
-
-    if (!mounted || !confirmed) {
-      return;
-    }
-
-    await cubit.clearSelectedCategory();
   }
 
   Widget _buildSearchResults() {
@@ -277,7 +278,7 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
         listener: (_, state) => _handleBrandStateChanged(state),
         builder: (context, state) {
           final cubit = context.read<BrandDetailsCubit>();
-          final hasSelectedCategory = _hasSelectedCategory(state);
+          final showClearAction = state.hasActiveFilters;
           final showSearchResults = _showSearchResults();
 
           return Scaffold(
@@ -293,15 +294,15 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
                     focusNode: _searchFocusNode,
                     onChanged: _handleSearchChanged,
                     onClose: _closeInlineSearch,
-                    actionIcon: hasSelectedCategory
+                    actionIcon: showClearAction
                         ? Icons.delete_outline_rounded
                         : Icons.tune_rounded,
-                    actionTooltip: hasSelectedCategory
-                        ? context.localization.delete_category_tooltip
+                    actionTooltip: showClearAction
+                        ? context.localization.clear_all
                         : context.localization.filter_button,
-                    isActionDestructive: hasSelectedCategory,
-                    onActionPressed: hasSelectedCategory
-                        ? () => _confirmClearSelectedCategory(context, cubit)
+                    isActionDestructive: showClearAction,
+                    onActionPressed: showClearAction
+                        ? () => _confirmClearActiveFilters(context, cubit)
                         : () => _showFilterBottomSheet(context, cubit, state),
                   ),
                 ),

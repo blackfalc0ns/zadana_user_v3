@@ -39,6 +39,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   CategoryState? _latestCategoryState;
   String? _searchScopeSubCategoryId;
   bool _isSearchActive = false;
+  bool _isResettingFilters = false;
 
   @override
   void initState() {
@@ -219,10 +220,46 @@ class _CategoryScreenState extends State<CategoryScreen> {
       return;
     }
 
+    setState(() {
+      _isResettingFilters = true;
+    });
     viewModel.doIntent(const CategoryResetSelectionEvent());
   }
 
+  void _clearActiveFilters(BuildContext context) {
+    _confirmClearActiveFilters(context);
+  }
+
+  Future<void> _confirmClearActiveFilters(BuildContext context) async {
+    final l10n = context.localization;
+    final viewModel = context.read<CategoryViewModel>();
+    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
+      context: context,
+      title: l10n.clear_filters_title,
+      message: l10n.clear_filters_confirm,
+      confirmLabel: l10n.clear_all,
+      cancelLabel: l10n.cancel,
+      icon: Icons.filter_alt_off_rounded,
+      accentColor: context.colorScheme.error,
+    );
+
+    if (!mounted || !confirmed) {
+      return;
+    }
+
+    setState(() {
+      _isResettingFilters = true;
+    });
+    viewModel.doIntent(const CategoryClearAllFiltersEvent());
+  }
+
   void _handleCategoryStateChanged(BuildContext context, CategoryState state) {
+    if (_isResettingFilters && mounted) {
+      setState(() {
+        _isResettingFilters = false;
+      });
+    }
+
     if (!_isSearchActive) return;
 
     final nextScopeSubCategoryId = _resolveSearchCategoryId(state);
@@ -289,6 +326,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final hasSelectedCategory =
             (state.selectedCategoryId?.isNotEmpty ?? false) ||
             (state.selectedSubCategoryId?.isNotEmpty ?? false);
+        final hasClearableFilters = state.hasNonCategoryActiveFilters;
+        final showClearAction =
+            !_isResettingFilters && (hasSelectedCategory || hasClearableFilters);
         return ReusableCategoryScreen(
           categories: state.categories,
           isSearchActive: _isSearchActive,
@@ -350,16 +390,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
           onSearchClose: (_isSearchActive || hasSearchQuery)
               ? _closeInlineSearch
               : null,
-          onSearchActionTap: hasSelectedCategory
+          onSearchActionTap: !showClearAction
+              ? null
+              : hasSelectedCategory
               ? () => _confirmResetSelection(context)
-              : null,
-          searchActionIcon: hasSelectedCategory
+              : () => _clearActiveFilters(context),
+          searchActionIcon: showClearAction
               ? Icons.delete_outline_rounded
               : Icons.tune_rounded,
           searchActionTooltip: hasSelectedCategory
               ? context.localization.delete_category_tooltip
+              : hasClearableFilters
+              ? context.localization.clear_all
               : null,
-          isSearchActionDestructive: hasSelectedCategory,
+          isSearchActionDestructive: showClearAction,
           searchResults: _buildSearchResults(),
         );
       },

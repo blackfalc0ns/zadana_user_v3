@@ -1916,6 +1916,18 @@ abstract class AppLocalizations {
   /// **'Delete selected category'**
   String get delete_category_tooltip;
 
+  /// No description provided for @clear_filters_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get clear_filters_title;
+
+  /// No description provided for @clear_filters_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Your selected price, brand, and other active filters will be removed. Do you want to continue?'**
+  String get clear_filters_confirm;
+
   /// No description provided for @available_vendors.
   ///
   /// In en, this message translates to:

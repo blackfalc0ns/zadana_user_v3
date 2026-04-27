@@ -80,6 +80,23 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
       state.copyWith(
         selectedCategoryId: null,
         selectedSubcategoryId: null,
+        selectedUnitId: null,
+        selectedSortValue: '',
+        priceRange: state.priceBounds,
+        errorMessage: null,
+      ),
+    );
+    await _loadProducts();
+  }
+
+  Future<void> clearAllFilters() async {
+    emit(
+      state.copyWith(
+        selectedCategoryId: null,
+        selectedSubcategoryId: null,
+        selectedUnitId: null,
+        selectedSortValue: '',
+        priceRange: state.priceBounds,
         errorMessage: null,
       ),
     );

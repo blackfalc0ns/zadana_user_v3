@@ -363,6 +363,8 @@
   "delete_category_title": "Delete category",
   "delete_category_confirm": "Do you want to delete the selected category?",
   "delete_category_tooltip": "Delete selected category",
+  "clear_filters_title": "Clear filters",
+  "clear_filters_confirm": "Your selected price, brand, and other active filters will be removed. Do you want to continue?",
   "available_vendors": "Available Vendors",
   "sar": "SAR",
   "free": "Free",

@@ -86,6 +86,7 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     );
 
     emit(state.copyWith(isInitializing: true));
+    _warmUpFeatureData();
 
     final token = await _tokenService.getToken();
     final isGuest = token == null || token.isEmpty;
@@ -99,7 +100,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     );
 
     await _loadGlobalCounts();
-    _warmUpFeatureData();
   }
 
   Future<void> refreshProfileAuthState() async {

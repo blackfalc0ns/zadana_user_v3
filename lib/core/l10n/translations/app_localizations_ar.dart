@@ -983,6 +983,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delete_category_tooltip => 'حذف التصنيف المختار';
 
   @override
+  String get clear_filters_title => 'مسح الفلاتر';
+
+  @override
+  String get clear_filters_confirm =>
+      'سيتم حذف السعر والبراند وأي فلاتر مفعلة حاليًا. هل تريد المتابعة؟';
+
+  @override
   String get available_vendors => 'المتاجر';
 
   @override

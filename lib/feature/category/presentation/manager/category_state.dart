@@ -154,13 +154,17 @@ class CategoryState {
       filterSelectedCategory != null &&
       filterSelectedCategory != selectedCategory;
 
-  bool get hasActiveFilters =>
+  bool get hasNonCategoryActiveFilters =>
       selectedSortOption.isNotEmpty ||
       hasActiveCategoryFilter ||
       filterSelectedQuantity != null ||
       filterSelectedBrand != null ||
       filterSelectedProductType != null ||
       filterSelectedPart != null ||
+      hasActivePriceFilter;
+
+  bool get hasActiveFilters =>
+      hasNonCategoryActiveFilters ||
       selectedSubCategoryId != null ||
       hasActivePriceFilter;
 
@@ -312,6 +316,7 @@ class CategoryState {
     productTypeOptions: const [],
     partOptions: const [],
     sortOptions: const [],
+    selectedSortOption: '',
     filterSelectedCategory: category.name,
     filterSelectedQuantity: null,
     filterSelectedBrand: null,
@@ -387,6 +392,7 @@ class CategoryState {
   );
 
   CategoryState clearFilters() => copyWith(
+    selectedSortOption: '',
     filterSelectedCategory: isCategoryPreselectedFromOutside
         ? selectedCategory
         : null,
@@ -427,6 +433,7 @@ class CategoryState {
     filterSelectedCategory: category.name,
     selectedSubCategoryId: subCategoryId,
     selectedSubCategory: subCategoryName,
+    selectedSortOption: '',
     filterSelectedQuantity: null,
     filterSelectedBrand: null,
     filterSelectedProductType: null,
@@ -444,6 +451,7 @@ class CategoryState {
   CategoryState startDefaultShoppingView(List<CategoryEntity> value) => copyWith(
     categories: value,
     selectedCategory: '',
+    selectedSortOption: '',
     selectedCategoryId: null,
     selectedSubCategory: null,
     selectedSubCategoryId: null,

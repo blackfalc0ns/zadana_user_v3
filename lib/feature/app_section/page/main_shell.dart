@@ -194,6 +194,8 @@ class MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final bottomSafeInset = MediaQuery.paddingOf(context).bottom;
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+    final isKeyboardVisible = keyboardInset > 0;
     final navItems = _buildNavItems(context);
 
     return MultiBlocProvider(
@@ -216,23 +218,24 @@ class MainShellState extends State<MainShell> {
           body: Stack(
             children: [
               ...List.generate(_loadedScreens.length, _buildScreenForIndex),
-              Positioned(
-                bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
-                left: 12,
-                right: 12,
-                child:
-                    BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
-                      builder: (context, state) {
-                        return CustomBottomNavBar(
-                          selectedIndex: _selectedIndex,
-                          navItems: navItems,
-                          cartCount: state.cartCount,
-                          favoritesCount: state.favoritesCount,
-                          onItemSelected: _onItemTapped,
-                        );
-                      },
-                    ),
-              ),
+              if (!isKeyboardVisible)
+                Positioned(
+                  bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
+                  left: 12,
+                  right: 12,
+                  child:
+                      BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
+                        builder: (context, state) {
+                          return CustomBottomNavBar(
+                            selectedIndex: _selectedIndex,
+                            navItems: navItems,
+                            cartCount: state.cartCount,
+                            favoritesCount: state.favoritesCount,
+                            onItemSelected: _onItemTapped,
+                          );
+                        },
+                      ),
+                ),
             ],
           ),
         ),

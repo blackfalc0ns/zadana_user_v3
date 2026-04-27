@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/core/utils/product_sort_options.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
@@ -370,6 +371,13 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     });
   }
 
+  List<Map<String, dynamic>> _effectiveSortOptions(BuildContext context) {
+    return resolveProductSortOptions(
+      context.localization,
+      rawOptions: widget.sortOptions,
+    );
+  }
+
   void _scrollSheetTo(ScrollController controller, double offset) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!controller.hasClients) return;
@@ -500,6 +508,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   Widget build(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
+    final effectiveSortOptions = _effectiveSortOptions(context);
 
     return Scaffold(
       backgroundColor: color.surface,
@@ -541,7 +550,8 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               onSearchClose: widget.onSearchClose,
               searchResults: widget.searchResults,
               onSearchActionTap:
-                  widget.onSearchActionTap ?? () => _openFilterBottomSheet(context),
+                  widget.onSearchActionTap ??
+                  () => _openFilterBottomSheet(context),
               searchActionIcon: widget.searchActionIcon,
               searchActionTooltip:
                   widget.searchActionTooltip ?? locale.filter_button,
@@ -561,7 +571,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     context,
                     (_) => CustomSortBottomSheet(
                       selectedSortOption: widget.selectedSortOption,
-                      sortOptions: widget.sortOptions,
+                      sortOptions: effectiveSortOptions,
                       title: locale.sort_title,
                       cancelLabel: locale.cancel,
                       applyLabel: locale.apply,
