@@ -81,6 +81,7 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
 
                 return CustomVerticalFilterChip(
                   label: category.name,
+                  imageUrl: category.imageAsset,
                   icon: category.emoji,
                   isSelected: isSelected,
                   onTap: () {

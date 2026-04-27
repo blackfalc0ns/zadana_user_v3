@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_vertical_filter_chip.dart';
+import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_option_entity.dart';
 
 class PriceRangeSection extends StatelessWidget {
   const PriceRangeSection({
@@ -76,31 +77,9 @@ class CategoryFilterSection extends StatelessWidget {
     required this.onCategoryChanged,
   });
 
-  final List<String> categories;
+  final List<BrandFilterOptionEntity> categories;
   final String? selectedCategory;
   final ValueChanged<String?> onCategoryChanged;
-
-  String _getCategoryIcon(String category) {
-    switch (category.trim().toLowerCase()) {
-      case 'الألبان':
-      case 'dairy':
-        return '🥛';
-      case 'الزبادي':
-      case 'yogurt':
-        return '🥣';
-      case 'العصائر':
-      case 'juices':
-        return '🧃';
-      case 'الأجبان':
-      case 'cheese':
-        return '🧀';
-      case 'الزبدة والقشطة':
-      case 'butter & cream':
-        return '🧈';
-      default:
-        return '📦';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +112,12 @@ class CategoryFilterSection extends StatelessWidget {
           itemBuilder: (context, index) {
             final category = categories[index];
             return CustomVerticalFilterChip(
-              label: category,
-              icon: _getCategoryIcon(category),
-              isSelected: selectedCategory == category,
+              label: category.name,
+              imageUrl: category.imageUrl,
+              isSelected: selectedCategory == category.name,
               selectedColor: color.primary,
               onTap: () => onCategoryChanged(
-                selectedCategory == category ? null : category,
+                selectedCategory == category.name ? null : category.name,
               ),
             );
           },

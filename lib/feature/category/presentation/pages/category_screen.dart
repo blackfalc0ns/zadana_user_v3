@@ -328,7 +328,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             (state.selectedSubCategoryId?.isNotEmpty ?? false);
         final hasClearableFilters = state.hasNonCategoryActiveFilters;
         final showClearAction =
-            !_isResettingFilters && (hasSelectedCategory || hasClearableFilters);
+            !_isResettingFilters &&
+            (hasSelectedCategory || hasClearableFilters);
         return ReusableCategoryScreen(
           categories: state.categories,
           isSearchActive: _isSearchActive,
@@ -354,6 +355,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           priceBounds: state.priceBounds,
           isLoading: state.isLoading,
           subCategories: state.subCategories,
+          subCategoryCategoryMap: state.subCategoryCategoryMap,
           isSubCategoriesLoading: state.isSubCategoriesLoading,
           emptyStateMessage: state.errorMessage,
           errorFailure: state.failure,

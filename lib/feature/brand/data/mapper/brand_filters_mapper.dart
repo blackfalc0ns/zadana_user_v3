@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/filters/brand_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_option_entity.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_price_range_entity.dart';
@@ -18,6 +19,7 @@ extension BrandFiltersResponseModelDtoMapper on BrandFiltersResponseModelDto {
             (item) => BrandFilterOptionEntity(
               id: item.id ?? '',
               name: item.name?.trim() ?? '',
+              imageUrl: _resolveImageUrl(item.imageUrl),
             ),
           )
           .toList(growable: false),
@@ -45,6 +47,7 @@ extension BrandFiltersResponseModelDtoMapper on BrandFiltersResponseModelDto {
             (item) => BrandFilterOptionEntity(
               id: item.id ?? '',
               name: item.name?.trim() ?? '',
+              imageUrl: _resolveImageUrl(item.imageUrl),
             ),
           )
           .toList(growable: false),
@@ -63,4 +66,17 @@ extension BrandFiltersResponseModelDtoMapper on BrandFiltersResponseModelDto {
           .toList(growable: false),
     );
   }
+}
+
+String? _resolveImageUrl(String? imageUrl) {
+  if (imageUrl == null || imageUrl.isEmpty) {
+    return null;
+  }
+
+  final uri = Uri.tryParse(imageUrl);
+  if (uri != null && uri.hasScheme) {
+    return imageUrl;
+  }
+
+  return Uri.parse(NetworkConstants.baseUrl).resolve(imageUrl).toString();
 }

@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CustomFilterChip extends StatelessWidget {
@@ -10,6 +12,7 @@ class CustomFilterChip extends StatelessWidget {
     super.key,
     required this.label,
     this.icon,
+    this.imageUrl,
     required this.isSelected,
     required this.onTap,
     this.backgroundColor,
@@ -20,6 +23,7 @@ class CustomFilterChip extends StatelessWidget {
 
   final String label;
   final String? icon;
+  final String? imageUrl;
   final bool isSelected;
   final VoidCallback onTap;
   final Color? backgroundColor;
@@ -30,6 +34,20 @@ class CustomFilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
+    final shouldShowFallbackImage = !hasImage && icon == null;
+
+    Widget fallbackImage() {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(999),
+        child: Image.asset(
+          Assets.notFound,
+          width: 18,
+          height: 18,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -39,28 +57,45 @@ class CustomFilterChip extends StatelessWidget {
           vertical: Spacing.xs,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.lightGrey),
-          boxShadow: [
-            BoxShadow(
-              color: color.shadow.withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+         border: Border.all(color: AppColors.lightGrey),
+        
           color: isSelected
               ? (selectedColor ?? color.primary)
-              : (AppColors.white),
+              : (backgroundColor ?? AppColors.white),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) ...[
-              Text(
-                icon!,
-                style: const TextStyle(fontSize: 12),
-              ), // تقليل من 14 إلى 12
-              const SizedBox(width: 3), // تقليل من 4 إلى 3
+            if (hasImage) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(999),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl!.trim(),
+                  width: 18,
+                  height: 18,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Image.asset(
+                    Assets.notFound,
+                    width: 18,
+                    height: 18,
+                    fit: BoxFit.cover,
+                  ),
+                  errorWidget: (context, url, error) => Image.asset(
+                    Assets.notFound,
+                    width: 18,
+                    height: 18,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+            ] else if (shouldShowFallbackImage) ...[
+              fallbackImage(),
+              const SizedBox(width: 6),
+            ] else if (icon != null) ...[
+              Text(icon!, style: const TextStyle(fontSize: 12)),
+              const SizedBox(width: 3),
             ],
             Text(
               label,

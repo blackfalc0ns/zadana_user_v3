@@ -11,8 +11,13 @@ BrandFilterOptionDto _$BrandFilterOptionDtoFromJson(
 ) => BrandFilterOptionDto(
   id: json['id'] as String?,
   name: json['name'] as String?,
+  imageUrl: json['image_url'] as String?,
 );
 
 Map<String, dynamic> _$BrandFilterOptionDtoToJson(
   BrandFilterOptionDto instance,
-) => <String, dynamic>{'id': instance.id, 'name': instance.name};
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'image_url': instance.imageUrl,
+};

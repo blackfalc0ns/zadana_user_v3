@@ -48,6 +48,7 @@ class ReusableCategoryScreen extends StatefulWidget {
     required this.onClearAllFilters,
     required this.sortOptions,
     this.subCategories = const [],
+    this.subCategoryCategoryMap = const {},
     this.selectedSubCategoryId,
     this.isSubCategoriesLoading = false,
     this.emptyStateMessage,
@@ -100,6 +101,7 @@ class ReusableCategoryScreen extends StatefulWidget {
   final Function() onClearAllFilters;
   final List<Map<String, dynamic>> sortOptions;
   final List<CategorySubcategoryItemDto> subCategories;
+  final Map<String, String> subCategoryCategoryMap;
   final String? selectedSubCategoryId;
   final bool isSubCategoriesLoading;
   final String? emptyStateMessage;
@@ -265,6 +267,29 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
         .toList(growable: false);
   }
 
+  List<CategorySubcategoryItemDto> _visibleTempSubCategories() {
+    final selectedCategoryId = _resolveTempFilterCategoryId();
+    if (selectedCategoryId == null || selectedCategoryId.isEmpty) {
+      return _tempSubCategories;
+    }
+
+    final filteredSubCategories = _tempSubCategories
+        .where((item) {
+          final subCategoryId = item.id;
+          if (subCategoryId == null || subCategoryId.isEmpty) {
+            return false;
+          }
+
+          return widget.subCategoryCategoryMap[subCategoryId] ==
+              selectedCategoryId;
+        })
+        .toList(growable: false);
+
+    return filteredSubCategories.isNotEmpty
+        ? filteredSubCategories
+        : _tempSubCategories;
+  }
+
   Future<void> _loadTempCategoryFilters(
     String? categoryId,
     StateSetter setSheetState,
@@ -412,7 +437,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               CategoryFilterSection(
                 showCategorySection: widget.showCategoryFilterSection,
                 categories: widget.categories,
-                subCategories: _tempSubCategories,
+                subCategories: _visibleTempSubCategories(),
                 quantities: _tempQuantityOptions
                     .map((item) => item.name?.trim() ?? '')
                     .where((item) => item.isNotEmpty)

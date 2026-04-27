@@ -87,10 +87,7 @@ class BrandHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: IconTheme(
-        data: const IconThemeData(
-          color: AppColors.white,
-          size: 18,
-        ),
+        data: const IconThemeData(color: AppColors.white, size: 18),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
@@ -102,7 +99,11 @@ class BrandHeader extends StatelessWidget {
 
   Widget _buildLogo() {
     Widget fallbackLogo() {
-      return Image.asset(Assets.notFound, fit: BoxFit.contain);
+      return Container(
+        color: const Color(0xFFF2F4F7),
+        padding: const EdgeInsets.all(6),
+        child: Image.asset(Assets.notFound, fit: BoxFit.cover),
+      );
     }
 
     return Container(
@@ -121,10 +122,10 @@ class BrandHeader extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: brand.logo.isNotEmpty
-              ? CachedNetworkImage(
+        child: brand.logo.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(10),
+                child: CachedNetworkImage(
                   imageUrl: brand.logo,
                   fit: BoxFit.contain,
                   placeholder: (context, url) => Center(
@@ -138,9 +139,9 @@ class BrandHeader extends StatelessWidget {
                     ),
                   ),
                   errorWidget: (context, url, error) => fallbackLogo(),
-                )
-              : fallbackLogo(),
-        ),
+                ),
+              )
+            : fallbackLogo(),
       ),
     );
   }

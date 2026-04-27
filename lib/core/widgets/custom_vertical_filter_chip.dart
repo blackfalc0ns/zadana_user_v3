@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
 class CustomVerticalFilterChip extends StatelessWidget {
@@ -8,6 +10,7 @@ class CustomVerticalFilterChip extends StatelessWidget {
     super.key,
     required this.label,
     this.icon,
+    this.imageUrl,
     required this.isSelected,
     required this.onTap,
     this.backgroundColor,
@@ -18,6 +21,7 @@ class CustomVerticalFilterChip extends StatelessWidget {
 
   final String label;
   final String? icon;
+  final String? imageUrl;
   final bool isSelected;
   final VoidCallback onTap;
   final Color? backgroundColor;
@@ -35,6 +39,7 @@ class CustomVerticalFilterChip extends StatelessWidget {
         final compact = itemWidth < 84;
         final ultraCompact = itemHeight.isFinite && itemHeight < 68;
         final iconSize = ultraCompact ? 16.0 : (compact ? 18.0 : 22.0);
+        final imageSize = ultraCompact ? 22.0 : (compact ? 26.0 : 32.0);
         final labelFontSize = ultraCompact
             ? FontSize.size10
             : (compact ? FontSize.size11 : FontSize.size12);
@@ -43,6 +48,20 @@ class CustomVerticalFilterChip extends StatelessWidget {
           vertical: ultraCompact ? 4 : (compact ? 6 : 8),
         );
         final spacing = ultraCompact ? 2.0 : (compact ? 4.0 : 6.0);
+        final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
+        final shouldShowFallbackImage = !hasImage && icon == null;
+
+        Widget fallbackImage() {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              Assets.notFound,
+              width: imageSize,
+              height: imageSize,
+              fit: BoxFit.cover,
+            ),
+          );
+        }
 
         return GestureDetector(
           onTap: onTap,
@@ -73,7 +92,33 @@ class CustomVerticalFilterChip extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (icon != null) ...[
+                if (hasImage) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl!.trim(),
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Image.asset(
+                        Assets.notFound,
+                        width: imageSize,
+                        height: imageSize,
+                        fit: BoxFit.cover,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        Assets.notFound,
+                        width: imageSize,
+                        height: imageSize,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: spacing),
+                ] else if (shouldShowFallbackImage) ...[
+                  fallbackImage(),
+                  SizedBox(height: spacing),
+                ] else if (icon != null) ...[
                   Text(
                     icon!,
                     style: TextStyle(

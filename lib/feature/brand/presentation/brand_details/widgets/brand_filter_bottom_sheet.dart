@@ -20,7 +20,9 @@ class BrandFilterBottomSheet {
     required String? currentSelectedUnit,
   }) {
     final tempPriceRange = ValueNotifier(currentPriceRange);
-    final tempSelectedCategory = ValueNotifier<String?>(currentSelectedCategory);
+    final tempSelectedCategory = ValueNotifier<String?>(
+      currentSelectedCategory,
+    );
     final tempSelectedSubcategory = ValueNotifier<String?>(
       currentSelectedSubcategory,
     );
@@ -70,9 +72,8 @@ class BrandFilterBottomSheet {
             const SizedBox(height: 8),
             CategoryFilterSection(
               categories: categories
-                  .map((item) => item.name.trim())
-                  .where((item) => item.isNotEmpty)
-                  .toList(),
+                  .where((item) => item.name.trim().isNotEmpty)
+                  .toList(growable: false),
               selectedCategory: tempSelectedCategory.value,
               onCategoryChanged: (category) {
                 tempSelectedCategory.value = category;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_chip.dart';
+import 'package:zadana_user_v3/feature/brand/domain/entities/brand_filter_option_entity.dart';
 
 class FilterChipRow extends StatelessWidget {
   const FilterChipRow({
@@ -12,27 +13,10 @@ class FilterChipRow extends StatelessWidget {
     this.showAllChip = true,
   });
 
-  final List<String> categories;
+  final List<BrandFilterOptionEntity> categories;
   final String? selectedCategory;
   final Function(String?) onCategorySelected;
   final bool showAllChip;
-
-  String _getCategoryIcon(String category) {
-    switch (category) {
-      case 'الألبان':
-        return '🥛';
-      case 'الزبادي':
-        return '🥛';
-      case 'العصائر':
-        return '🧃';
-      case 'الأجبان':
-        return '🧀';
-      case 'الزبدة والقشطة':
-        return '🧈';
-      default:
-        return '📦';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +36,21 @@ class FilterChipRow extends StatelessWidget {
           if (showAllChip && index == 0) {
             final isSelected = selectedCategory == null;
             return CustomFilterChip(
-              label: 'الكل',
-              icon: '📋',
+              label: context.localization.all_categories,
+              icon: '\u{1F4CB}',
               isSelected: isSelected,
               onTap: () => onCategorySelected(null),
             );
           }
 
           final category = categories[index - (showAllChip ? 1 : 0)];
-          final isSelected = selectedCategory == category;
+          final isSelected = selectedCategory == category.name;
 
           return CustomFilterChip(
-            label: category,
-            icon: _getCategoryIcon(category),
+            label: category.name,
+            imageUrl: category.imageUrl,
             isSelected: isSelected,
-            onTap: () => onCategorySelected(category),
+            onTap: () => onCategorySelected(category.name),
           );
         },
       ),

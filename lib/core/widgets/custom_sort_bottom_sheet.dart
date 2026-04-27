@@ -100,7 +100,7 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
               padding: const EdgeInsets.fromLTRB(Spacing.lg, 14, Spacing.lg, 6),
               child: Row(
                 children: [
-                  if (!isRtl) startAction else endAction,
+                  if (!isRtl) endAction else startAction,
                   Expanded(
                     flex: 2,
                     child: Text(
@@ -112,7 +112,7 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
                       ),
                     ),
                   ),
-                  if (!isRtl) endAction else startAction,
+                  if (!isRtl) startAction else endAction,
                 ],
               ),
             ),

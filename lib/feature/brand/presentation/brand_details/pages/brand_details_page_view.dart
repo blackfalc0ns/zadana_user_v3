@@ -309,7 +309,7 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
                 if (state.categoryNames.isNotEmpty)
                   SliverToBoxAdapter(
                     child: FilterChipRow(
-                      categories: state.categoryNames,
+                      categories: state.categories,
                       selectedCategory: state.selectedCategoryName,
                       showAllChip: false,
                       onCategorySelected: (categoryName) async {
