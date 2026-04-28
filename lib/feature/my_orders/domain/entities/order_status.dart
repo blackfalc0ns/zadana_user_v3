@@ -5,6 +5,8 @@ enum OrderStatus {
   delivered,
   returning,
   cancelled,
+  vendorRejected,
+  deliveryFailed,
   unknown;
 
   bool get isActive =>
@@ -12,11 +14,20 @@ enum OrderStatus {
       this == OrderStatus.processing ||
       this == OrderStatus.shipped;
 
-  bool get isCompleted => this == OrderStatus.delivered;
+  bool get isCompleted =>
+      this == OrderStatus.delivered ||
+      this == OrderStatus.cancelled ||
+      this == OrderStatus.vendorRejected ||
+      this == OrderStatus.deliveryFailed;
 
   bool get isReturning => this == OrderStatus.returning;
 
   bool get isCancelled => this == OrderStatus.cancelled;
+
+  bool get isNegativeTerminal =>
+      this == OrderStatus.cancelled ||
+      this == OrderStatus.vendorRejected ||
+      this == OrderStatus.deliveryFailed;
 
   bool get canCancel =>
       this == OrderStatus.pending || this == OrderStatus.processing;
@@ -52,6 +63,14 @@ enum OrderStatus {
       case 'cancelled':
       case 'canceled':
         return OrderStatus.cancelled;
+      case 'vendorrejected':
+      case 'vendor_rejected':
+      case 'rejected':
+        return OrderStatus.vendorRejected;
+      case 'deliveryfailed':
+      case 'delivery_failed':
+      case 'failed_delivery':
+        return OrderStatus.deliveryFailed;
       default:
         return OrderStatus.unknown;
     }

@@ -38,13 +38,15 @@ class OrderStatusBadge extends StatelessWidget {
   switch (status) {
     case OrderStatus.delivered:
       return (const Color(0xFFE7F8EE), const Color(0xFF157347));
+    case OrderStatus.cancelled:
+    case OrderStatus.vendorRejected:
+    case OrderStatus.deliveryFailed:
+      return (const Color(0xFFFDECEC), const Color(0xFFC62828));
     case OrderStatus.processing:
     case OrderStatus.shipped:
     case OrderStatus.pending:
     case OrderStatus.returning:
       return (AppColors.secondary.withValues(alpha: .14), AppColors.secondary);
-    case OrderStatus.cancelled:
-      return (const Color(0xFFFDECEC), const Color(0xFFC62828));
     case OrderStatus.unknown:
       return (
         scheme.surfaceContainerHighest.withValues(alpha: .5),
@@ -59,6 +61,18 @@ String orderStatusLabel(AppLocalizations l10n, OrderStatus status) {
       return l10n.order_delivered;
     case OrderStatus.cancelled:
       return l10n.order_cancelled;
+    case OrderStatus.vendorRejected:
+      return _localizedTerminalLabel(
+        l10n,
+        arabic: 'مرفوض',
+        english: 'Rejected',
+      );
+    case OrderStatus.deliveryFailed:
+      return _localizedTerminalLabel(
+        l10n,
+        arabic: 'فشل التوصيل',
+        english: 'Delivery Failed',
+      );
     case OrderStatus.returning:
       return l10n.order_returning;
     case OrderStatus.pending:
@@ -67,4 +81,16 @@ String orderStatusLabel(AppLocalizations l10n, OrderStatus status) {
     case OrderStatus.unknown:
       return l10n.order_pending;
   }
+}
+
+String _localizedTerminalLabel(
+  AppLocalizations l10n, {
+  required String arabic,
+  required String english,
+}) {
+  final languageCode = l10n.localeName.toLowerCase();
+  if (languageCode.startsWith('ar')) {
+    return arabic;
+  }
+  return english;
 }
