@@ -29,6 +29,9 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     driverArrivalSubscription;
     var isDisposed = false;
     OrderTrackingEntity? currentTracking;
+    final pendingStatusEvents = <OrderStatusChangedRealtimePayload>[];
+    final pendingDriverArrivalEvents =
+        <DriverArrivalStateChangedRealtimePayload>[];
 
     Future<void> dispose() async {
       if (isDisposed) return;
@@ -53,6 +56,18 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
 
       if (result case ApiSuccessResult<OrderTrackingEntity>()) {
         currentTracking = result.data;
+        _drainPendingRealtimeEvents(
+          requestedOrderId: orderId,
+          currentTracking: () => currentTracking,
+          updateTracking: (nextTracking) => currentTracking = nextTracking,
+          pendingStatusEvents: pendingStatusEvents,
+          pendingDriverArrivalEvents: pendingDriverArrivalEvents,
+          emitTracking: (nextTracking) {
+            controller.add(
+              ApiSuccessResult<OrderTrackingEntity>(data: nextTracking),
+            );
+          },
+        );
       }
     }
 
@@ -60,13 +75,20 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
       onListen: () {
         realtimeSubscription = _trackOrderSignalRService
             .watchOrderStatusChangedEvents()
-            .where(
-              (payload) => _normalizeOrderId(payload.orderId) ==
-                  _normalizeOrderId(orderId),
-            )
             .listen((payload) {
+              if (!_matchesStatusPayload(
+                requestedOrderId: orderId,
+                payload: payload,
+                tracking: currentTracking,
+              )) {
+                return;
+              }
+
               final tracking = currentTracking;
-              if (tracking == null || controller.isClosed) return;
+              if (tracking == null || controller.isClosed) {
+                pendingStatusEvents.add(payload);
+                return;
+              }
 
               currentTracking = _applyRealtimeStatusChange(tracking, payload);
               controller.add(
@@ -76,13 +98,20 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
 
         driverArrivalSubscription = _trackOrderSignalRService
             .watchDriverArrivalStateChangedEvents()
-            .where(
-              (payload) => _normalizeOrderId(payload.orderId) ==
-                  _normalizeOrderId(orderId),
-            )
             .listen((payload) {
+              if (!_matchesDriverArrivalPayload(
+                requestedOrderId: orderId,
+                payload: payload,
+                tracking: currentTracking,
+              )) {
+                return;
+              }
+
               final tracking = currentTracking;
-              if (tracking == null || controller.isClosed) return;
+              if (tracking == null || controller.isClosed) {
+                pendingDriverArrivalEvents.add(payload);
+                return;
+              }
 
               currentTracking = _applyDriverArrivalChange(tracking, payload);
               controller.add(
@@ -234,6 +263,104 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
   String _formatRealtimeTime(DateTime? changedAtUtc) {
     if (changedAtUtc == null) return '';
     return DateFormat('yyyy-MM-dd HH:mm').format(changedAtUtc.toLocal());
+  }
+
+  void _drainPendingRealtimeEvents({
+    required String requestedOrderId,
+    required OrderTrackingEntity? Function() currentTracking,
+    required void Function(OrderTrackingEntity nextTracking) updateTracking,
+    required List<OrderStatusChangedRealtimePayload> pendingStatusEvents,
+    required List<DriverArrivalStateChangedRealtimePayload>
+    pendingDriverArrivalEvents,
+    required void Function(OrderTrackingEntity nextTracking) emitTracking,
+  }) {
+    final statusEvents = List<OrderStatusChangedRealtimePayload>.from(
+      pendingStatusEvents,
+    );
+    pendingStatusEvents.clear();
+
+    for (final payload in statusEvents) {
+      final tracking = currentTracking();
+      if (tracking == null ||
+          !_matchesStatusPayload(
+            requestedOrderId: requestedOrderId,
+            payload: payload,
+            tracking: tracking,
+          )) {
+        continue;
+      }
+
+      final nextTracking = _applyRealtimeStatusChange(tracking, payload);
+      updateTracking(nextTracking);
+      emitTracking(nextTracking);
+    }
+
+    final driverArrivalEvents =
+        List<DriverArrivalStateChangedRealtimePayload>.from(
+          pendingDriverArrivalEvents,
+        );
+    pendingDriverArrivalEvents.clear();
+
+    for (final payload in driverArrivalEvents) {
+      final tracking = currentTracking();
+      if (tracking == null ||
+          !_matchesDriverArrivalPayload(
+            requestedOrderId: requestedOrderId,
+            payload: payload,
+            tracking: tracking,
+          )) {
+        continue;
+      }
+
+      final nextTracking = _applyDriverArrivalChange(tracking, payload);
+      updateTracking(nextTracking);
+      emitTracking(nextTracking);
+    }
+  }
+
+  bool _matchesStatusPayload({
+    required String requestedOrderId,
+    required OrderStatusChangedRealtimePayload payload,
+    required OrderTrackingEntity? tracking,
+  }) {
+    return _matchesKnownOrderIdentifiers(
+      requestedOrderId: requestedOrderId,
+      trackedOrderId: tracking?.order.id,
+      payloadOrderId: payload.orderId,
+      payloadOrderNumber: payload.orderNumber,
+    );
+  }
+
+  bool _matchesDriverArrivalPayload({
+    required String requestedOrderId,
+    required DriverArrivalStateChangedRealtimePayload payload,
+    required OrderTrackingEntity? tracking,
+  }) {
+    return _matchesKnownOrderIdentifiers(
+      requestedOrderId: requestedOrderId,
+      trackedOrderId: tracking?.order.id,
+      payloadOrderId: payload.orderId,
+      payloadOrderNumber: payload.orderNumber,
+    );
+  }
+
+  bool _matchesKnownOrderIdentifiers({
+    required String requestedOrderId,
+    required String payloadOrderId,
+    required String? payloadOrderNumber,
+    String? trackedOrderId,
+  }) {
+    final knownIds = <String>{
+      _normalizeOrderId(requestedOrderId),
+      _normalizeOrderId(trackedOrderId ?? ''),
+    }..removeWhere((value) => value.isEmpty);
+
+    final incomingIds = <String>{
+      _normalizeOrderId(payloadOrderId),
+      _normalizeOrderId(payloadOrderNumber ?? ''),
+    }..removeWhere((value) => value.isEmpty);
+
+    return knownIds.any(incomingIds.contains);
   }
 
   String _normalizeOrderId(String value) => value.trim().toLowerCase();

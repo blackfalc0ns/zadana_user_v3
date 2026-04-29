@@ -14,6 +14,7 @@ import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 
 class PushNotificationService {
   static const String _appId = "e557da4e-947b-468b-ab5b-37c552c35dca";
@@ -74,6 +75,10 @@ class PushNotificationService {
         _logger.i(
           'OneSignal push received in foreground. '
           '${NotificationPayloadResolver.resolveDebugSummary(normalizedData, title: event.notification.title, body: event.notification.body)}',
+        );
+        getIt<NotificationsSignalRService>().ingestExternalOrderRelatedPayload(
+          normalizedData,
+          source: 'onesignal_foreground',
         );
         final displayContent =
             NotificationPayloadResolver.resolveDisplayContent(

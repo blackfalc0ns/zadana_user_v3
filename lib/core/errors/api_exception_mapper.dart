@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:zadana_user_v3/core/errors/api_exception.dart';
+import 'package:zadana_user_v3/core/helpers/permision_service.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 
 class ApiExceptionMapper {
@@ -53,6 +54,28 @@ class ApiExceptionMapper {
       response: error,
       isTranslationKey: true,
     );
+  }
+
+  static ApiException fromError(Object error) {
+    if (error is ApiException) {
+      return error;
+    }
+
+    if (error is LocationServiceException) {
+      return switch (error.type) {
+        LocationErrorType.serviceDisabled => _translationKeyException(
+          ApiErrorType.locationServiceDisabled,
+        ),
+        LocationErrorType.permissionDenied => _translationKeyException(
+          ApiErrorType.locationPermissionDenied,
+        ),
+        LocationErrorType.permissionDeniedForever => _translationKeyException(
+          ApiErrorType.locationPermissionDeniedForever,
+        ),
+      };
+    }
+
+    return unknown(error);
   }
 
   static ApiException _translationKeyException(ApiErrorType errorType) {

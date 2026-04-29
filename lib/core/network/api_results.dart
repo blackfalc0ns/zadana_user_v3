@@ -23,9 +23,9 @@ Future<ApiResult<T>> safeApiCall<T>(Future<T> Function() apiCall) async {
     return ApiErrorResult<T>(
       failure: ServerFailure.fromDioError(dioException: dioError),
     );
-  } catch (_) {
+  } catch (error) {
     return ApiErrorResult<T>(
-      failure: Failure.fromException(ApiExceptionMapper.unknown()),
+      failure: Failure.fromException(ApiExceptionMapper.fromError(error)),
     );
   }
 }
@@ -36,7 +36,7 @@ Future<ApiResult<T>> safeLocalCall<T>(Future<T> Function() localCall) async {
     return ApiSuccessResult<T>(data: result);
   } catch (error) {
     return ApiErrorResult<T>(
-      failure: Failure.fromException(ApiExceptionMapper.unknown(error)),
+      failure: Failure.fromException(ApiExceptionMapper.fromError(error)),
     );
   }
 }

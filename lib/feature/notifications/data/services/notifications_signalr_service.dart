@@ -237,11 +237,20 @@ class NotificationsSignalRService {
       '${NotificationPayloadResolver.resolveDebugSummary(payload, title: notification.titleAr.isNotEmpty ? notification.titleAr : notification.titleEn, body: notification.bodyAr.isNotEmpty ? notification.bodyAr : notification.bodyEn)}',
     );
     _notificationsController.add(notification);
+    _emitTrackingEventsFromPayload(
+      payload,
+      source: NetworkConstants.receiveNotificationSignalREvent,
+    );
   }
 
   void _handleOrderStatusChanged(List<Object?>? args) {
     final payload = _extractPayload(args);
     if (payload == null || _orderStatusChangedController.isClosed) return;
+    _logger.i(
+      'Notifications SignalR order status event received from '
+      '${NetworkConstants.receiveOrderStatusChangedSignalREvent}. '
+      '${NotificationPayloadResolver.resolveDebugSummary(payload)}',
+    );
     _orderStatusChangedController.add(
       OrderStatusChangedRealtimePayload.fromJson(payload),
     );
@@ -252,9 +261,21 @@ class NotificationsSignalRService {
     if (payload == null || _driverArrivalStateChangedController.isClosed) {
       return;
     }
+    _logger.i(
+      'Notifications SignalR driver arrival event received from '
+      '${NetworkConstants.receiveDriverArrivalStateChangedSignalREvent}. '
+      '${NotificationPayloadResolver.resolveDebugSummary(payload)}',
+    );
     _driverArrivalStateChangedController.add(
       DriverArrivalStateChangedRealtimePayload.fromJson(payload),
     );
+  }
+
+  void ingestExternalOrderRelatedPayload(
+    Map<String, dynamic> payload, {
+    String source = 'external',
+  }) {
+    _emitTrackingEventsFromPayload(payload, source: source);
   }
 
   bool _isDuplicateNotification(String notificationId) {
@@ -415,6 +436,89 @@ class NotificationsSignalRService {
       }
     } catch (_) {
       return null;
+    }
+
+    return null;
+  }
+
+  void _emitTrackingEventsFromPayload(
+    Map<String, dynamic> payload, {
+    required String source,
+  }) {
+    final normalizedPayload = NotificationPayloadResolver.normalize(payload);
+    final orderId = NotificationPayloadResolver.resolveOrderId(
+      normalizedPayload,
+    );
+    if (orderId == null || orderId.isEmpty) {
+      return;
+    }
+
+    final normalizedType =
+        normalizedPayload['type']?.toString().trim().toLowerCase() ?? '';
+
+    final arrivalState = _firstNonEmptyString([
+      normalizedPayload['arrivalState'],
+      normalizedPayload['driverArrivalState'],
+    ]);
+    if (arrivalState != null &&
+        arrivalState.isNotEmpty &&
+        _driverArrivalStateChangedController.hasListener &&
+        (normalizedType.contains('driver_arrival') ||
+            normalizedType.contains('arrival') ||
+            normalizedType.isEmpty)) {
+      final driverArrivalPayload = DriverArrivalStateChangedRealtimePayload
+          .fromJson({
+            'orderId': orderId,
+            'orderNumber': normalizedPayload['orderNumber'],
+            'arrivalState': arrivalState,
+            'driverName': normalizedPayload['driverName'],
+            'actorRole': normalizedPayload['actorRole'],
+            'targetUrl': normalizedPayload['targetUrl'],
+            'changedAtUtc': normalizedPayload['changedAtUtc'],
+          });
+      _logger.i(
+        'Derived driver arrival tracking event from $source. '
+        '${NotificationPayloadResolver.resolveDebugSummary(normalizedPayload)}',
+      );
+      _driverArrivalStateChangedController.add(driverArrivalPayload);
+    }
+
+    final newStatus = _firstNonEmptyString([
+      normalizedPayload['newStatus'],
+      normalizedPayload['status'],
+    ]);
+    if (newStatus != null &&
+        newStatus.isNotEmpty &&
+        _orderStatusChangedController.hasListener &&
+        (normalizedType.contains('order_status_changed') ||
+            normalizedType.contains('status_changed') ||
+            normalizedType.isEmpty)) {
+      final orderStatusPayload = OrderStatusChangedRealtimePayload.fromJson({
+        'orderId': orderId,
+        'orderNumber': normalizedPayload['orderNumber'],
+        'vendorId': normalizedPayload['vendorId'],
+        'oldStatus': normalizedPayload['oldStatus'],
+        'newStatus': newStatus,
+        'actorRole': normalizedPayload['actorRole'],
+        'action': normalizedPayload['action'],
+        'targetUrl': normalizedPayload['targetUrl'],
+        'changedAtUtc': normalizedPayload['changedAtUtc'],
+      });
+      _logger.i(
+        'Derived order status tracking event from $source. '
+        '${NotificationPayloadResolver.resolveDebugSummary(normalizedPayload)}',
+      );
+      _orderStatusChangedController.add(orderStatusPayload);
+    }
+  }
+
+  String? _firstNonEmptyString(Iterable<dynamic> values) {
+    for (final value in values) {
+      if (value == null) continue;
+      final normalizedValue = value.toString().trim();
+      if (normalizedValue.isNotEmpty) {
+        return normalizedValue;
+      }
     }
 
     return null;

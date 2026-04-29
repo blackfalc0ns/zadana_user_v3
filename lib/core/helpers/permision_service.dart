@@ -4,16 +4,16 @@ import 'package:injectable/injectable.dart';
 @injectable
 class LocationPermissionService {
   Future<void> checkAndRequestPermission() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!serviceEnabled) {
       throw const LocationServiceException(
-        "خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات.",
+        'Location services are disabled. Please enable them in settings.',
         LocationErrorType.serviceDisabled,
       );
     }
 
-    LocationPermission permission = await Geolocator.checkPermission();
+    var permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -21,14 +21,14 @@ class LocationPermissionService {
 
     if (permission == LocationPermission.denied) {
       throw const LocationServiceException(
-        "تم رفض إذن الوصول للموقع. يرجى السماح للتطبيق بالوصول للموقع.",
+        'Location permission was denied. Please allow access to continue.',
         LocationErrorType.permissionDenied,
       );
     }
 
     if (permission == LocationPermission.deniedForever) {
       throw const LocationServiceException(
-        "تم رفض إذن الوصول للموقع نهائياً. يرجى الذهاب للإعدادات وتفعيل إذن الموقع للتطبيق.",
+        'Location permission was permanently denied. Enable it from app settings.',
         LocationErrorType.permissionDeniedForever,
       );
     }
@@ -37,6 +37,7 @@ class LocationPermissionService {
 
 class LocationServiceException implements Exception {
   const LocationServiceException(this.message, this.type);
+
   final String message;
   final LocationErrorType type;
 

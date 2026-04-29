@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/api_error_type.dart';
+import 'package:zadana_user_v3/core/errors/api_exception.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
@@ -389,6 +391,41 @@ class LocationViewModel extends Cubit<LocationState> {
   }
 
   Failure _mapCurrentLocationFailure(Failure failure) {
+    switch (failure.exception.errorType) {
+      case ApiErrorType.locationServiceDisabled:
+        return Failure(
+          errorMessage: _l10n.location_service_disabled_message,
+          code: LocationFailureCodes.serviceDisabled,
+          exception: const ApiException(
+            errorType: ApiErrorType.locationServiceDisabled,
+            message: 'location_service_disabled',
+            isTranslationKey: true,
+          ),
+        );
+      case ApiErrorType.locationPermissionDenied:
+        return Failure(
+          errorMessage: _l10n.location_permission_denied_message,
+          code: LocationFailureCodes.permissionDenied,
+          exception: const ApiException(
+            errorType: ApiErrorType.locationPermissionDenied,
+            message: 'location_permission_denied',
+            isTranslationKey: true,
+          ),
+        );
+      case ApiErrorType.locationPermissionDeniedForever:
+        return Failure(
+          errorMessage: _l10n.location_permission_denied_forever_message,
+          code: LocationFailureCodes.permissionDeniedForever,
+          exception: const ApiException(
+            errorType: ApiErrorType.locationPermissionDeniedForever,
+            message: 'location_permission_denied_forever',
+            isTranslationKey: true,
+          ),
+        );
+      default:
+        break;
+    }
+
     final message = failure.errorMessage.toLowerCase();
 
     if (message.contains('service') && message.contains('disabled')) {
@@ -396,6 +433,11 @@ class LocationViewModel extends Cubit<LocationState> {
       return Failure(
         errorMessage: localizedMessage,
         code: LocationFailureCodes.serviceDisabled,
+        exception: const ApiException(
+          errorType: ApiErrorType.locationServiceDisabled,
+          message: 'location_service_disabled',
+          isTranslationKey: true,
+        ),
       );
     }
 
@@ -405,6 +447,11 @@ class LocationViewModel extends Cubit<LocationState> {
       return Failure(
         errorMessage: localizedMessage,
         code: LocationFailureCodes.permissionDeniedForever,
+        exception: const ApiException(
+          errorType: ApiErrorType.locationPermissionDeniedForever,
+          message: 'location_permission_denied_forever',
+          isTranslationKey: true,
+        ),
       );
     }
 
@@ -413,6 +460,11 @@ class LocationViewModel extends Cubit<LocationState> {
       return Failure(
         errorMessage: localizedMessage,
         code: LocationFailureCodes.permissionDenied,
+        exception: const ApiException(
+          errorType: ApiErrorType.locationPermissionDenied,
+          message: 'location_permission_denied',
+          isTranslationKey: true,
+        ),
       );
     }
 
