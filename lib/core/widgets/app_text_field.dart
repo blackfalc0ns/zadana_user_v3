@@ -13,6 +13,7 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.label,
     this.hint,
+    this.hintStyle,
     this.errorText,
     this.prefixIcon,
     this.suffixIcon,
@@ -35,6 +36,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? label;
   final String? hint;
+  final TextStyle? hintStyle;
   final String? errorText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -82,9 +84,9 @@ class AppTextField extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         labelStyle: AppTextStyles.input.copyWith(color: color.onSurfaceVariant),
-        hintStyle: AppTextStyles.inputHint.copyWith(
-          color: color.onSurfaceVariant,
-        ),
+        hintStyle:
+            hintStyle ??
+            AppTextStyles.inputHint.copyWith(color: color.onSurfaceVariant),
         contentPadding:
             contentPadding ??
             const EdgeInsets.symmetric(

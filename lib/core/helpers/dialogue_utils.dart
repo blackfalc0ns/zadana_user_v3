@@ -74,13 +74,6 @@ class _CompactConfirmationDialog extends StatelessWidget {
               border: Border.all(
                 color: color.outlineVariant.withValues(alpha: 0.8),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.shadow.withValues(alpha: 0.14),
-                  blurRadius: 30,
-                  offset: const Offset(0, 16),
-                ),
-              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

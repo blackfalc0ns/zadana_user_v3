@@ -7,13 +7,20 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
-  const PaymentSuccessScreen({super.key, this.orderId});
+  const PaymentSuccessScreen({
+    super.key,
+    this.orderId,
+    this.isCashOnDelivery = false,
+  });
   final String? orderId;
+  final bool isCashOnDelivery;
 
   @override
   State<PaymentSuccessScreen> createState() => _PaymentSuccessScreenState();
@@ -30,6 +37,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
   @override
   void initState() {
     super.initState();
+    CartNavigationService().notifyTabChanged(clearState: true);
     _initAnimations();
     _startAnimations();
   }
@@ -105,6 +113,12 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
+    final title = widget.isCashOnDelivery
+        ? _cashOnDeliveryTitle(context)
+        : l10n.payment_successful;
+    final message = widget.isCashOnDelivery
+        ? _cashOnDeliveryMessage(context)
+        : l10n.payment_success_message;
 
     return PopScope(
       canPop: false,
@@ -118,7 +132,6 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
         backgroundColor: colors.surface,
         body: Stack(
           children: [
-            // Confetti
             Align(
               alignment: Alignment.topCenter,
               child: ConfettiWidget(
@@ -127,8 +140,6 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                 colors: const [Colors.green, Colors.blue],
               ),
             ),
-
-            // Main content
             SafeArea(
               child: FadeTransition(
                 opacity: _fadeAnimation,
@@ -138,22 +149,18 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Success animation
                         ScaleTransition(
                           scale: _scaleAnimation,
                           child: Lottie.asset(
-                            'assets/lottie_animation/success_payment.json',
+                            Assets.successPayment,
                             width: 180,
                             height: 180,
-                            repeat: false,
+                            repeat: true,
                           ),
                         ),
-
                         const SizedBox(height: 32),
-
-                        // Title
                         Text(
-                          l10n.payment_successful,
+                          title,
                           style: getBoldStyle(
                             fontSize: FontSize.size24,
                             fontFamily: FontConstant.cairo,
@@ -161,12 +168,9 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                           ),
                           textAlign: TextAlign.center,
                         ),
-
                         const SizedBox(height: 12),
-
-                        // Subtitle
                         Text(
-                          'تمت عملية الدفع بنجاح',
+                          message,
                           style: getRegularStyle(
                             fontSize: FontSize.size14,
                             fontFamily: FontConstant.cairo,
@@ -174,10 +178,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                           ),
                           textAlign: TextAlign.center,
                         ),
-
                         const SizedBox(height: 48),
-
-                        // Track order button
                         AppButton(
                           text: l10n.track_order,
                           icon: Icons.location_on_outlined,
@@ -191,35 +192,24 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                           color: colors.primary,
                           textColor: colors.onPrimary,
                           height: Spacing.buttonHeight,
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // Delivery OTP button
-                        AppButton(
-                          text: 'Delivery OTP',
-                          icon: Icons.qr_code_rounded,
-                          onPressed: () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.deliveryOtp,
+                          borderRadius: 18,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Spacing.base,
                           ),
-                          color: colors.surface,
-                          textColor: colors.onSurface,
-                          height: Spacing.buttonHeight,
                         ),
-
                         const SizedBox(height: 12),
-
-                        // Back to home button
-                        AppButton(
+                        AppButton.outlined(
                           text: l10n.back_to_home,
-                          icon: Icons.home_outlined,
+                          icon: Icons.home_rounded,
                           onPressed: _navigateBackToHome,
-                          color: colors.surface,
-                          textColor: colors.onSurface,
+                          color: colors.primary,
+                          textColor: colors.primary,
                           height: Spacing.buttonHeight,
+                          borderRadius: 18,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Spacing.base,
+                          ),
                         ),
-
                         const SizedBox(height: 24),
                       ],
                     ),
@@ -231,5 +221,21 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
         ),
       ),
     );
+  }
+
+  String _cashOnDeliveryTitle(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') {
+      return 'تم استلام طلبك بنجاح!';
+    }
+    return 'Order received successfully!';
+  }
+
+  String _cashOnDeliveryMessage(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') {
+      return 'طلبك تم بنجاح، وهنوصله لك قريب.';
+    }
+    return 'Your order was placed successfully and will be delivered soon.';
   }
 }

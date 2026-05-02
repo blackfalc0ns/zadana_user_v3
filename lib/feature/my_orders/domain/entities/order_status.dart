@@ -32,6 +32,14 @@ enum OrderStatus {
   bool get canCancel =>
       this == OrderStatus.pending || this == OrderStatus.processing;
 
+  bool get canCreateComplaint =>
+      this == OrderStatus.processing ||
+      this == OrderStatus.shipped ||
+      this == OrderStatus.delivered ||
+      this == OrderStatus.returning;
+
+  bool get canCreateReturnRequest => this == OrderStatus.delivered;
+
   static OrderStatus fromApi(String? value) {
     switch (value?.trim().toLowerCase()) {
       case 'pending':

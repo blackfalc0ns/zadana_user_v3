@@ -43,14 +43,6 @@ class CheckoutCardsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CheckoutDeliverySlotEntity? selectedSlot;
-    for (final slot in checkoutSummary.deliverySlots) {
-      if (slot.isSelected) {
-        selectedSlot = slot;
-        break;
-      }
-    }
-
     return Column(
       children: [
         AnimatedCardWrapper(
@@ -65,7 +57,6 @@ class CheckoutCardsSection extends StatelessWidget {
           delay: 200,
           child: CheckoutDeliveryInfoCard(
             selectedAddress: checkoutSummary.selectedAddress,
-            selectedSlot: selectedSlot,
             onChangeAddress: onChangeAddress,
             isRefreshing: isRefreshingSummary || isLoadingAddresses,
           ),

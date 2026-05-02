@@ -23,6 +23,10 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  static const Duration _minimumSplashDuration = Duration(
+    milliseconds: 1200,
+  );
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +44,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _navigateToNext() async {
     await Future.wait<void>([
       widget.initializationFuture ?? Future<void>.value(),
-      Future<void>.delayed(const Duration(seconds: 5)),
+      Future<void>.delayed(_minimumSplashDuration),
     ]);
     if (mounted) {
       final nextRoute = SavedLocationService.hasSavedLocation

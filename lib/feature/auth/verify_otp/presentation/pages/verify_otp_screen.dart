@@ -92,11 +92,12 @@ class VerifyOtpScreen extends StatelessWidget {
             state.verifyOtpResponse?.message ??
             context.localization.otp_success_message,
       );
-      final shouldResumeCheckout = CheckoutFlowService()
-          .consumePendingCheckout();
-      if (shouldResumeCheckout) {
+      final pendingCheckout = CheckoutFlowService().consumePendingCheckout();
+      if (pendingCheckout.shouldResumeCheckout) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const PaymentScreen()),
+          MaterialPageRoute(
+            builder: (_) => PaymentScreen(vendorId: pendingCheckout.vendorId),
+          ),
           (route) => false,
         );
         return;

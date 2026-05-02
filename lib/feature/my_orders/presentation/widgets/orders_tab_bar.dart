@@ -14,8 +14,6 @@ class OrdersTabBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: Spacing.lg),
-      padding: const EdgeInsets.all(Spacing.xs),
       decoration: BoxDecoration(
         color: color.surface,
         borderRadius: BorderRadius.circular(Spacing.lg),
@@ -23,6 +21,7 @@ class OrdersTabBar extends StatelessWidget {
       ),
       child: TabBar(
         dividerColor: Colors.transparent,
+        tabAlignment: TabAlignment.fill,
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
           color: color.primary,

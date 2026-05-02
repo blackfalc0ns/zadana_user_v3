@@ -1,11 +1,12 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_shared.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_status_badge.dart';
 
 class OrderHeaderCard extends StatelessWidget {
@@ -167,56 +168,205 @@ class OrderItemTile extends StatelessWidget {
   }
 }
 
-class ComplaintStatusCard extends StatelessWidget {
-  const ComplaintStatusCard({
+class ActiveSupportCaseCard extends StatelessWidget {
+  const ActiveSupportCaseCard({
     super.key,
     required this.title,
     required this.message,
-    this.attachments = const [],
+    required this.status,
+    required this.typeLabel,
+    this.customerVisibleNote,
+    this.onTap,
   });
 
   final String title;
   final String message;
-  final List<PlatformFile> attachments;
+  final OrderSupportCaseStatus status;
+  final String typeLabel;
+  final String? customerVisibleNote;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final note = customerVisibleNote?.trim() ?? '';
+    final normalizedMessage = message.trim();
+    final hasMessage = normalizedMessage.isNotEmpty;
+    final hasNote = note.isNotEmpty;
+    final previewText = hasNote ? note : normalizedMessage;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        padding: const EdgeInsets.all(Spacing.lg),
+        decoration: BoxDecoration(
+          color: colors.surfaceContainerHighest.withValues(alpha: .2),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: colors.outlineVariant.withValues(alpha: .2),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.end,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: Spacing.sm),
+                          IconContainer(
+                            icon: Icons.support_agent_outlined,
+                            iconColor: colors.secondary,
+                            size: 44,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        alignment: WrapAlignment.end,
+                        spacing: Spacing.xs,
+                        runSpacing: Spacing.xs,
+                        children: [
+                          SupportCaseStatusBadge(status: status),
+                          if (typeLabel.trim().isNotEmpty && typeLabel != title)
+                            _SupportCaseMetaChip(
+                              label: typeLabel,
+                              icon: Icons.label_outline_rounded,
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: Spacing.sm),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Icon(
+                    Icons.chevron_left_rounded,
+                    color: colors.onSurfaceVariant,
+                    size: 28,
+                  ),
+                ),
+              ],
+            ),
+            if (hasMessage || hasNote) ...[
+              const SizedBox(height: Spacing.base),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(Spacing.md),
+                decoration: BoxDecoration(
+                  color: colors.surface.withValues(alpha: .9),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: SecondaryText(
+                  previewText,
+                  maxLines: 3,
+                  textAlign: TextAlign.end,
+                ),
+              ),
+            ],
+            if (hasMessage && hasNote) ...[
+              const SizedBox(height: Spacing.sm),
+              DecoratedBlock(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.notes_rounded, size: 18, color: colors.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SecondaryText(
+                        normalizedMessage,
+                        maxLines: 3,
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SupportCaseMetaChip extends StatelessWidget {
+  const _SupportCaseMetaChip({required this.label, required this.icon});
+
+  final String label;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.base),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: .08),
-        borderRadius: BorderRadius.circular(18),
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: .18)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          IconContainer(
-            icon: Icons.support_agent_outlined,
-            iconColor: colors.secondary,
-          ),
-          const SizedBox(width: Spacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-                if (message.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  SecondaryText(message),
-                ],
-                if (attachments.isNotEmpty) ...[
-                  const SizedBox(height: Spacing.sm),
-                  ComplaintAttachmentsPreview(attachments: attachments),
-                ],
-              ],
+          Icon(icon, size: 14, color: colors.primary),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              color: colors.onSurface,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SupportCaseStatusBadge extends StatelessWidget {
+  const SupportCaseStatusBadge({super.key, required this.status});
+
+  final OrderSupportCaseStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = supportCaseStatusColors(
+      Theme.of(context).colorScheme,
+      status,
+    );
+    final l10n = AppLocalizations.of(context)!;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colors.$1,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        supportCaseStatusLabel(l10n, status),
+        style: TextStyle(color: colors.$2, fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -227,24 +377,24 @@ class OrderDetailsActions extends StatelessWidget {
     super.key,
     required this.canCancel,
     required this.canRetryPayment,
-    required this.hasComplaint,
+    required this.hasActiveSupportCase,
     required this.isCancelling,
     required this.isRetryingPayment,
-    required this.isComplaintBusy,
+    required this.isSupportCaseBusy,
     required this.onCancel,
     required this.onRetryPayment,
-    required this.onComplaint,
+    required this.onSupportCase,
   });
 
   final bool canCancel;
   final bool canRetryPayment;
-  final bool hasComplaint;
+  final bool hasActiveSupportCase;
   final bool isCancelling;
   final bool isRetryingPayment;
-  final bool isComplaintBusy;
+  final bool isSupportCaseBusy;
   final VoidCallback onCancel;
   final VoidCallback onRetryPayment;
-  final VoidCallback onComplaint;
+  final VoidCallback onSupportCase;
 
   @override
   Widget build(BuildContext context) {
@@ -283,18 +433,18 @@ class OrderDetailsActions extends StatelessWidget {
         if (canRetryPayment) const SizedBox(width: Spacing.sm),
         Expanded(
           child: AppButton(
-            text: hasComplaint
-                ? l10n.my_orders_follow_up
-                : l10n.my_orders_submit_complaint,
-            variant: hasComplaint
+            text: hasActiveSupportCase
+                ? l10n.my_orders_support_case_view
+                : l10n.my_orders_support_case_action,
+            variant: hasActiveSupportCase
                 ? AppButtonVariant.outlined
                 : AppButtonVariant.filled,
             color: colors.primary,
             height: 50,
             borderRadius: 18,
             fontWeight: FontWeight.w600,
-            isLoading: isComplaintBusy,
-            onPressed: onComplaint,
+            isLoading: isSupportCaseBusy,
+            onPressed: onSupportCase,
           ),
         ),
       ],

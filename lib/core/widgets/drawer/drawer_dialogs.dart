@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/general_cubit/local_cubit.dart';
+import 'package:zadana_user_v3/core/utils/app_package_info.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 
 class DrawerDialogs {
@@ -121,13 +122,19 @@ class DrawerDialogs {
                   ),
                 ),
                 const SizedBox(height: Spacing.sm),
-                Text(
-                  '${locale.version_label}: v1.0.0',
-                  style: getRegularStyle(
-                    fontSize: FontSize.size14,
-                    fontFamily: FontConstant.cairo,
-                    color: color.onSurface.withValues(alpha: 0.7),
-                  ),
+                FutureBuilder<String>(
+                  future: AppPackageInfo.versionName,
+                  builder: (context, snapshot) {
+                    final version = snapshot.data ?? '...';
+                    return Text(
+                      '${locale.version_label}: v$version',
+                      style: getRegularStyle(
+                        fontSize: FontSize.size14,
+                        fontFamily: FontConstant.cairo,
+                        color: color.onSurface.withValues(alpha: 0.7),
+                      ),
+                    );
+                  },
                 ),
                 Text(
                   '${locale.release_date}: 2024',

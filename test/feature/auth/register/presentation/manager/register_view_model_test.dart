@@ -12,7 +12,7 @@ void main() {
   group('RegisterViewModel', () {
     test('emits loading then success when register succeeds', () async {
       final viewModel = RegisterViewModel(
-        RegisterUseCase(repository: const _SuccessfulRegisterRepository()),
+        RegisterUseCase(repository: _SuccessfulRegisterRepository()),
       );
 
       final expectation = expectLater(
@@ -38,7 +38,7 @@ void main() {
 
     test('emits loading then user facing error when register fails', () async {
       final viewModel = RegisterViewModel(
-        RegisterUseCase(repository: const _FailingRegisterRepository()),
+        RegisterUseCase(repository: _FailingRegisterRepository()),
       );
 
       final expectation = expectLater(
@@ -109,7 +109,7 @@ class _FailingRegisterRepository implements RegisterRepository {
     RegisterRequestEntity entity,
   ) async {
     return ApiErrorResult(
-      failure: const Failure(errorMessage: 'Email already exists'),
+      failure: Failure(errorMessage: 'Email already exists'),
     );
   }
 }

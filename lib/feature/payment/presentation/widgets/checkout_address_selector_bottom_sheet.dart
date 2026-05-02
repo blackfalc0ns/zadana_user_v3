@@ -17,7 +17,7 @@ class CheckoutAddressSelectorBottomSheet extends StatelessWidget {
     this.failure,
   });
 
-  static const String addNewAddressResult = '__add_new_address__';
+  static const String addNewAddressResult = 'add_new_address';
 
   final List<CustomerAddressEntity> addresses;
   final String? selectedAddressId;

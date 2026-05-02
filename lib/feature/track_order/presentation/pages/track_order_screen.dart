@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
@@ -9,10 +10,17 @@ import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_or
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_content.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_loading_view.dart';
 
-class TrackOrderScreen extends StatelessWidget {
+class TrackOrderScreen extends StatefulWidget {
   const TrackOrderScreen({super.key, required this.orderId});
 
   final String orderId;
+
+  @override
+  State<TrackOrderScreen> createState() => _TrackOrderScreenState();
+}
+
+class _TrackOrderScreenState extends State<TrackOrderScreen> {
+  bool _didNavigateToSuccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +34,35 @@ class TrackOrderScreen extends StatelessWidget {
         backgroundColor: color.surface,
       ),
       body: BlocConsumer<TrackOrderViewModel, TrackOrderState>(
-        listenWhen: (previous, current) =>
-            previous.failure != current.failure &&
-            current.failure != null &&
-            previous.orderTracking != null,
+        listenWhen: (previous, current) {
+          final failureChanged =
+              previous.failure != current.failure &&
+              current.failure != null &&
+              previous.orderTracking != null;
+          final deliveryCompleted =
+              !_didNavigateToSuccess &&
+              previous.orderTracking?.showDeliveryOtp == true &&
+              current.orderTracking?.showDeliveryOtp == false;
+          return failureChanged || deliveryCompleted;
+        },
         listener: (context, state) {
+          final tracking = state.orderTracking;
+          if (!_didNavigateToSuccess &&
+              tracking != null &&
+              tracking.showDeliveryOtp == false) {
+            _didNavigateToSuccess = true;
+            Navigator.pushReplacementNamed(
+              context,
+              AppRoutes.successOrder,
+              arguments: {
+                'orderId': widget.orderId,
+                'courierName':
+                    tracking.assignedDriver?.name ?? tracking.driver?.name,
+              },
+            );
+            return;
+          }
+
           final failure = state.failure;
           if (failure == null) return;
 
@@ -56,7 +88,7 @@ class TrackOrderScreen extends StatelessWidget {
             return const SizedBox.shrink();
           }
 
-          return TrackOrderContent(orderId: orderId, tracking: tracking);
+          return TrackOrderContent(orderId: widget.orderId, tracking: tracking);
         },
       ),
     );

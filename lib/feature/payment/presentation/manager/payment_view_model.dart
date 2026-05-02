@@ -14,6 +14,7 @@ import 'package:zadana_user_v3/feature/payment/domain/usecase/place_order_usecas
 import 'package:zadana_user_v3/feature/payment/domain/usecase/remove_checkout_promo_code_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_address_selector_bottom_sheet.dart';
 
 @injectable
 class PaymentViewModel extends Cubit<PaymentState> {
@@ -30,6 +31,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
   final RemoveCheckoutPromoCodeUseCase _removeCheckoutPromoCodeUseCase;
   final PlaceOrderUseCase _placeOrderUseCase;
   final GetCustomerAddressesUseCase _getCustomerAddressesUseCase;
+
+  void initialize({String? vendorId}) {
+    if (state.vendorId == vendorId) return;
+    emit(state.copyWith(vendorId: vendorId));
+  }
 
   void doIntent(PaymentEvent event) {
     switch (event) {
@@ -299,6 +305,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
       case ApiSuccessResult():
         final payment = result.data.payment;
         final iframeUrl = payment?.iframeUrl.trim() ?? '';
+        final isCashOnDelivery = _isCashOnDeliveryMethod(
+          result.data.order.paymentMethod,
+        );
         emit(
           state.copyWith(
             isPlacingOrder: false,
@@ -311,7 +320,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
                               ? result.data.message
                               : 'Unable to start the payment session.',
                         ))
-                : NavigateToPaymentSuccessEffect(result.data.order.id),
+                : NavigateToPaymentSuccessEffect(
+                    result.data.order.id,
+                    isCashOnDelivery: isCashOnDelivery,
+                  ),
             clearActionFailure: true,
           ),
         );
@@ -328,7 +340,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       return;
     }
 
-    if (result == 'add_new_address') {
+    if (result == CheckoutAddressSelectorBottomSheet.addNewAddressResult) {
       emit(state.copyWith(uiEffect: const OpenAddAddressEffect()));
       return;
     }
@@ -358,5 +370,12 @@ class PaymentViewModel extends Cubit<PaymentState> {
     }
 
     return availableMethods.first.code;
+  }
+
+  bool _isCashOnDeliveryMethod(String paymentMethod) {
+    final normalized = paymentMethod.trim().toLowerCase();
+    return normalized == 'cash' ||
+        normalized == 'cash_on_delivery' ||
+        normalized == 'cod';
   }
 }

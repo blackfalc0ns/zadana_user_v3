@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/utils/localized_api_message.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 
 class PlaceOrderResponseDto {
@@ -9,7 +10,7 @@ class PlaceOrderResponseDto {
 
   factory PlaceOrderResponseDto.fromJson(Map<String, dynamic> json) {
     return PlaceOrderResponseDto(
-      message: json['message']?.toString() ?? '',
+      message: resolveLocalizedApiMessage(json),
       order: PlacedOrderDto.fromJson(_asMap(json['order'])),
       payment: _nullableMap(json['payment']) == null
           ? null

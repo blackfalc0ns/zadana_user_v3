@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:zadana_user_v3/core/utils/localized_api_message.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_webview_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_webview_screen.dart';
 
@@ -219,7 +220,9 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     return <String, String?>{
       'status': status,
       'transactionId': _nullIfEmpty(queryParameters['id']),
-      'message': _nullIfEmpty(queryParameters['data.message']),
+      'message': _nullIfEmpty(
+        resolveLocalizedApiMessageFromQuery(queryParameters),
+      ),
     };
   }
 

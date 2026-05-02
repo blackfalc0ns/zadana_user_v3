@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
@@ -60,20 +61,50 @@ class _NotificationsView extends StatelessWidget {
               builder: (context, state) {
                 final canMarkAll =
                     state.unreadCount > 0 && !state.isMarkingAllRead;
-                return TextButton(
-                  onPressed: canMarkAll
-                      ? context.read<NotificationsViewModel>().markAllAsRead
-                      : null,
-                  child: state.isMarkingAllRead
-                      ? SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colors.primary,
-                          ),
-                        )
-                      : Text(l10n.notifications_mark_all_read),
+
+                if (state.unreadCount <= 0 && !state.isMarkingAllRead) {
+                  return const SizedBox.shrink();
+                }
+
+                return Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    start: Spacing.sm,
+                    end: Spacing.sm,
+                  ),
+                  child: TextButton.icon(
+                    onPressed: canMarkAll
+                        ? () => _confirmMarkAllAsRead(context)
+                        : null,
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.sm,
+                        vertical: 8,
+                      ),
+                      minimumSize: const Size(0, 36),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      foregroundColor: colors.primary,
+                    ),
+                    icon: state.isMarkingAllRead
+                        ? SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: colors.primary,
+                            ),
+                          )
+                        : const Icon(Icons.done_all_rounded, size: 16),
+                    label: Text(
+                      l10n.notifications_mark_all_read,
+                      style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size13,
+                        color: canMarkAll
+                            ? colors.primary
+                            : colors.onSurfaceVariant.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
@@ -96,9 +127,9 @@ class _NotificationsView extends StatelessWidget {
 
                 if (state.failure != null && state.items.isEmpty) {
                   return ApiErrorWidget(
-                      exception: state.failure!.exception,
-                      onRetry: context.read<NotificationsViewModel>().loadInitial,
-                    );
+                    exception: state.failure!.exception,
+                    onRetry: context.read<NotificationsViewModel>().loadInitial,
+                  );
                 }
 
                 if (state.items.isEmpty) {
@@ -114,7 +145,9 @@ class _NotificationsView extends StatelessWidget {
                     const SizedBox(height: Spacing.base),
                     Expanded(
                       child: RefreshIndicator(
-                        onRefresh: context.read<NotificationsViewModel>().refresh,
+                        onRefresh: context
+                            .read<NotificationsViewModel>()
+                            .refresh,
                         child: NotificationListener<ScrollNotification>(
                           onNotification: (notification) {
                             if (notification.metrics.axis == Axis.vertical) {
@@ -129,7 +162,8 @@ class _NotificationsView extends StatelessWidget {
                           child: ListView.separated(
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemCount:
-                                state.items.length + (state.isLoadingMore ? 1 : 0),
+                                state.items.length +
+                                (state.isLoadingMore ? 1 : 0),
                             separatorBuilder: (_, _) =>
                                 const SizedBox(height: Spacing.sm),
                             itemBuilder: (context, index) {
@@ -171,8 +205,12 @@ class _NotificationsView extends StatelessWidget {
   ) async {
     context.read<NotificationsViewModel>().markAsRead(notification.id);
 
-    final orderId =
-        notification.referenceId ?? notification.dataObject?['orderId']?.toString();
+    final payload = <String, dynamic>{
+      if (notification.dataObject != null) ...notification.dataObject!,
+      'type': notification.type,
+      'referenceId': notification.referenceId,
+    };
+    final orderId = NotificationPayloadResolver.resolveOrderId(payload);
 
     if (NotificationPayloadResolver.isOrderRelatedType(notification.type)) {
       if (orderId != null && orderId.isNotEmpty) {
@@ -191,6 +229,25 @@ class _NotificationsView extends StatelessWidget {
         context,
       ).push(MaterialPageRoute(builder: (_) => const MyOrdersPage()));
     }
+  }
+
+  Future<void> _confirmMarkAllAsRead(BuildContext context) async {
+    final l10n = context.localization;
+    final colors = context.colorScheme;
+
+    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
+      context: context,
+      title: l10n.notifications_mark_all_read_confirm_title,
+      message: l10n.notifications_mark_all_read_confirm_message,
+      confirmLabel: l10n.confirm,
+      cancelLabel: l10n.cancel,
+      icon: Icons.done_all_rounded,
+      accentColor: colors.primary,
+    );
+
+    if (!confirmed || !context.mounted) return;
+
+    context.read<NotificationsViewModel>().markAllAsRead();
   }
 }
 
@@ -221,7 +278,10 @@ class _UnreadSummaryCard extends StatelessWidget {
               color: colors.primary.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(Icons.notifications_active_outlined, color: colors.primary),
+            child: Icon(
+              Icons.notifications_active_outlined,
+              color: colors.primary,
+            ),
           ),
           const SizedBox(width: Spacing.md),
           Expanded(

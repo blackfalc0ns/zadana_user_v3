@@ -48,7 +48,7 @@ class ServerFailure extends Failure {
   factory ServerFailure._fromApiException(ApiException exception) {
     return ServerFailure(
       errorMessage: exception.message,
-      code: exception.errorType.translationKey,
+      code: exception.backendErrorCode ?? exception.errorType.translationKey,
       exception: exception,
     );
   }

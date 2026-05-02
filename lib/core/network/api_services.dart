@@ -50,6 +50,7 @@ import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_respon
 import 'package:zadana_user_v3/feature/my_orders/data/models/delete_order_response_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_cancellation_reason_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/retry_order_payment_response_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_action_response_dto.dart';
@@ -305,6 +306,30 @@ abstract class ApiServices {
 
   @GET(EndPoints.orderDetails)
   Future<OrderDetailsDto> getOrderDetails(@Path('orderId') String orderId);
+
+  @MultiPart()
+  @POST(EndPoints.orderSupportCaseAttachments)
+  Future<UploadedSupportCaseAttachmentDto> uploadOrderSupportCaseAttachment(
+    @Path('orderId') String orderId,
+    @Part(name: 'file') MultipartFile file,
+  );
+
+  @POST(EndPoints.orderSupportCases)
+  Future<CreateOrderSupportCaseResponseDto> createOrderSupportCase(
+    @Path('orderId') String orderId,
+    @Body() Map<String, dynamic> request,
+  );
+
+  @GET(EndPoints.orderSupportCases)
+  Future<OrderSupportCasesResponseDto> getOrderSupportCases(
+    @Path('orderId') String orderId,
+  );
+
+  @GET('${EndPoints.orderSupportCases}/{caseId}')
+  Future<OrderSupportCaseDetailsResponseDto> getOrderSupportCaseDetails(
+    @Path('orderId') String orderId,
+    @Path('caseId') String caseId,
+  );
 
   @GET(EndPoints.orderTracking)
   Future<OrderTrackingResponseDto> getOrderTracking(

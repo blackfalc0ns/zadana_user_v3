@@ -43,6 +43,7 @@ class ApiExceptionMapper {
       message: backendMessage ?? errorType.translationKey,
       statusCode: response.statusCode,
       response: response.data,
+      backendErrorCode: _extractBackendErrorCode(response.data),
       isTranslationKey: backendMessage == null,
     );
   }
@@ -145,7 +146,14 @@ class ApiExceptionMapper {
 
   static String? _extractBackendMessage(dynamic data) {
     if (data is Map) {
-      for (final key in const ['message', 'detail', 'error', 'title']) {
+      for (final key in const [
+        'detail',
+        'message',
+        'message_en',
+        'message_ar',
+        'error',
+        'title',
+      ]) {
         final value = data[key];
         if (value is String && value.trim().isNotEmpty) {
           return value.trim();
@@ -155,6 +163,17 @@ class ApiExceptionMapper {
 
     if (data is String && data.trim().isNotEmpty) {
       return data.trim();
+    }
+
+    return null;
+  }
+
+  static String? _extractBackendErrorCode(dynamic data) {
+    if (data is Map) {
+      final value = data['errorCode'];
+      if (value is String && value.trim().isNotEmpty) {
+        return value.trim();
+      }
     }
 
     return null;

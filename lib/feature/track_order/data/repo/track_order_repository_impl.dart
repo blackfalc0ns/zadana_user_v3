@@ -28,6 +28,7 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     StreamSubscription<DriverArrivalStateChangedRealtimePayload>?
     driverArrivalSubscription;
     var isDisposed = false;
+    var isRefreshingFromRealtime = false;
     OrderTrackingEntity? currentTracking;
     final pendingStatusEvents = <OrderStatusChangedRealtimePayload>[];
     final pendingDriverArrivalEvents =
@@ -45,11 +46,7 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
 
     Future<void> fetchInitialTracking() async {
       if (isDisposed) return;
-      final result = await safeApiCall(() async {
-        final response = await _remoteDataSource.getOrderTracking(orderId);
-        return response.toEntity();
-      });
-
+      final result = await _fetchTrackingSnapshot(orderId);
       if (isDisposed || controller.isClosed) return;
 
       controller.add(result);
@@ -68,6 +65,21 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
             );
           },
         );
+      }
+    }
+
+    Future<void> refreshTrackingFromRealtime() async {
+      if (isDisposed || controller.isClosed || isRefreshingFromRealtime) return;
+      isRefreshingFromRealtime = true;
+      try {
+        final result = await _fetchTrackingSnapshot(orderId);
+        if (isDisposed || controller.isClosed) return;
+        if (result case ApiSuccessResult<OrderTrackingEntity>()) {
+          currentTracking = result.data;
+        }
+        controller.add(result);
+      } finally {
+        isRefreshingFromRealtime = false;
       }
     }
 
@@ -94,6 +106,7 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
               controller.add(
                 ApiSuccessResult<OrderTrackingEntity>(data: currentTracking!),
               );
+              unawaited(refreshTrackingFromRealtime());
             });
 
         driverArrivalSubscription = _trackOrderSignalRService
@@ -127,6 +140,15 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     );
 
     return controller.stream;
+  }
+
+  Future<ApiResult<OrderTrackingEntity>> _fetchTrackingSnapshot(
+    String orderId,
+  ) async {
+    return safeApiCall(() async {
+      final response = await _remoteDataSource.getOrderTracking(orderId);
+      return response.toEntity();
+    });
   }
 
   OrderTrackingEntity _applyRealtimeStatusChange(

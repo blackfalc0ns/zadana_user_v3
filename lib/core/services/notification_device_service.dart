@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart'
-    as core_constants;
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
 import 'package:zadana_user_v3/core/services/push_token_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/core/utils/app_package_info.dart';
 import 'package:zadana_user_v3/core/utils/constants.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notification_device_preferences_request_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/register_notification_device_request_entity.dart';
@@ -41,6 +40,9 @@ class NotificationDeviceService {
   _updateNotificationDevicePreferencesUseCase;
   final UnregisterNotificationDeviceUseCase
   _unregisterNotificationDeviceUseCase;
+  Future<ApiResult<void>>? _inFlightRegistration;
+  String? _inFlightRegistrationSignature;
+  String? _lastSuccessfulRegistrationSignature;
 
   Future<bool> isNotificationsEnabled() async {
     return _sharedPreferences.getBool(AppConstants.notificationsEnabledKey) ??
@@ -71,18 +73,61 @@ class NotificationDeviceService {
 
     final deviceId = await _deviceIdService.getOrCreateDeviceId();
     final notificationsEnabled = await isNotificationsEnabled();
+    final locale = _languageService.getLanguageCode();
+    final appVersion = await AppPackageInfo.versionName;
+    final registrationSignature = [
+      deviceToken,
+      _resolvePlatform(),
+      deviceId,
+      _resolveDeviceName(),
+      appVersion,
+      locale,
+      notificationsEnabled.toString(),
+    ].join('|');
 
-    return _registerNotificationDeviceUseCase(
+    if (_lastSuccessfulRegistrationSignature == registrationSignature) {
+      return safeLocalCall(() async {});
+    }
+
+    final inFlightRegistration = _inFlightRegistration;
+    if (inFlightRegistration != null &&
+        _inFlightRegistrationSignature == registrationSignature) {
+      return inFlightRegistration;
+    }
+
+    final request = RegisterNotificationDeviceRequestEntity(
+      deviceToken: deviceToken,
+      platform: _resolvePlatform(),
+      deviceId: deviceId,
+      deviceName: _resolveDeviceName(),
+      appVersion: appVersion,
+      locale: locale,
+      notificationsEnabled: notificationsEnabled,
+    );
+
+    final future = _registerNotificationDeviceUseCase(
       RegisterNotificationDeviceRequestEntity(
-        deviceToken: deviceToken,
-        platform: _resolvePlatform(),
-        deviceId: deviceId,
-        deviceName: _resolveDeviceName(),
-        appVersion: core_constants.AppConstants.appVersion,
-        locale: _languageService.getLanguageCode(),
-        notificationsEnabled: notificationsEnabled,
+        deviceToken: request.deviceToken,
+        platform: request.platform,
+        deviceId: request.deviceId,
+        deviceName: request.deviceName,
+        appVersion: request.appVersion,
+        locale: request.locale,
+        notificationsEnabled: request.notificationsEnabled,
       ),
     );
+    _inFlightRegistration = future;
+    _inFlightRegistrationSignature = registrationSignature;
+
+    final result = await future;
+    if (identical(_inFlightRegistration, future)) {
+      _inFlightRegistration = null;
+      _inFlightRegistrationSignature = null;
+    }
+    if (result is ApiSuccessResult<void>) {
+      _lastSuccessfulRegistrationSignature = registrationSignature;
+    }
+    return result;
   }
 
   Future<ApiResult<void>> setNotificationsEnabled(bool enabled) async {

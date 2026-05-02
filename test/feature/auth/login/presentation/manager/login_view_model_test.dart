@@ -15,7 +15,7 @@ void main() {
   group('LoginViewModel', () {
     test('emits loading then success when login succeeds', () async {
       final viewModel = LoginViewModel(
-        const LoginUseCase(_SuccessfulLoginRepository()),
+        LoginUseCase(_SuccessfulLoginRepository()),
       );
 
       final expectation = expectLater(
@@ -48,7 +48,7 @@ void main() {
 
     test('emits loading then error when login fails', () async {
       final viewModel = LoginViewModel(
-        const LoginUseCase(_FailingLoginRepository()),
+        LoginUseCase(_FailingLoginRepository()),
       );
 
       final expectation = expectLater(
@@ -114,7 +114,7 @@ class _FailingLoginRepository implements LoginRepository {
     LoginRequestEntity request,
   ) async {
     return ApiErrorResult(
-      failure: const Failure(errorMessage: 'Invalid credentials'),
+      failure: Failure(errorMessage: 'Invalid credentials'),
     );
   }
 }

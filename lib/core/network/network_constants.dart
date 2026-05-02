@@ -6,6 +6,8 @@ abstract class NetworkConstants {
   static const String receiveNotificationSignalREvent = 'ReceiveNotification';
   static const String receiveOrderStatusChangedSignalREvent =
       'ReceiveOrderStatusChanged';
+  static const String receiveOrderSupportCaseChangedSignalREvent =
+      'ReceiveOrderSupportCaseChanged';
   static const String receiveDriverArrivalStateChangedSignalREvent =
       'ReceiveDriverArrivalStateChanged';
   static const String receiveBroadcastSignalREvent = 'ReceiveBroadcast';
@@ -63,6 +65,9 @@ abstract class EndPoints {
   static const String completedOrders = '/orders/completed';
   static const String returnedOrders = '/orders/returns';
   static const String orderDetails = '/orders/{orderId}';
+  static const String orderSupportCases = '/orders/{orderId}/cases';
+  static const String orderSupportCaseAttachments =
+      '/orders/{orderId}/cases/attachments';
   static const String orderTracking = '/orders/{orderId}/tracking';
   static const String orderCancellationReasons = '/orders/cancellation-reasons';
   static const String cancelOrder = '/orders/{orderId}/cancel';

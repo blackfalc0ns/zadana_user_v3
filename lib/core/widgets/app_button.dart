@@ -106,22 +106,20 @@ class AppButton extends StatelessWidget {
     Widget button;
     switch (variant) {
       case AppButtonVariant.filled:
-        button = Padding(
-          padding:
-              padding ?? const EdgeInsets.symmetric(horizontal: Spacing.sm),
-          child: ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: effectiveColor,
-              foregroundColor: textColor ?? colors.onPrimary,
-              minimumSize: Size(isExpanded ? double.infinity : 0, h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(r),
-              ),
-              elevation: 0,
+        button = ElevatedButton(
+          onPressed: isLoading ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            padding:
+                padding ?? const EdgeInsets.symmetric(horizontal: Spacing.sm),
+            backgroundColor: effectiveColor,
+            foregroundColor: textColor ?? colors.onPrimary,
+            minimumSize: Size(isExpanded ? double.infinity : 0, h),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(r),
             ),
-            child: child,
+            elevation: 0,
           ),
+          child: child,
         );
         break;
       case AppButtonVariant.outlined:
@@ -156,6 +154,7 @@ class AppButton extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, Color effectiveColor) {
     final colors = Theme.of(context).colorScheme;
+    final textDirection = Directionality.of(context);
 
     final style = getBoldStyle(
       fontSize: FontSize.size16,
@@ -169,13 +168,26 @@ class AppButton extends StatelessWidget {
       return Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
+        textDirection: textDirection,
         children: [
           Icon(icon, size: 24),
           const SizedBox(width: Spacing.sm),
-          Text(text, style: style),
+          Text(
+            text,
+            style: style,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       );
     }
-    return Text(text, style: style);
+    return Text(
+      text,
+      style: style,
+      textAlign: TextAlign.center,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 }

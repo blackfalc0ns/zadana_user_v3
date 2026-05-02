@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/usecase/get_order_tracking_usecase.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_state.dart';
@@ -17,10 +19,12 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
   final GetOrderTrackingUseCase _getOrderTrackingUseCase;
 
   StreamSubscription<ApiResult<OrderTrackingEntity>>? _trackingSubscription;
+  StreamSubscription<dynamic>? _supportCaseChangedSubscription;
   String? _orderId;
 
   void initialize(String orderId) {
     _orderId = orderId;
+    _bindSupportCaseRealtime();
     load();
   }
 
@@ -39,6 +43,21 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
     );
 
     _subscribe();
+  }
+
+  NotificationsSignalRService get _notificationsSignalRService =>
+      GetIt.instance<NotificationsSignalRService>();
+
+  void _bindSupportCaseRealtime() {
+    _supportCaseChangedSubscription ??= _notificationsSignalRService
+        .watchOrderSupportCaseChangedEvents()
+        .listen((payload) {
+          if (payload.orderId.trim().toLowerCase() !=
+              (_orderId ?? '').trim().toLowerCase()) {
+            return;
+          }
+          refresh();
+        });
   }
 
   void _subscribe() {
@@ -156,8 +175,9 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     _stopStreaming();
+    await _supportCaseChangedSubscription?.cancel();
     return super.close();
   }
 }

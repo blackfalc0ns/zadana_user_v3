@@ -1,4 +1,5 @@
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 
 class OrderTrackingResponseDto {
@@ -12,6 +13,7 @@ class OrderTrackingResponseDto {
     required this.deliveryOtp,
     required this.showDeliveryOtp,
     required this.timeline,
+    required this.activeCase,
   });
 
   factory OrderTrackingResponseDto.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,9 @@ class OrderTrackingResponseDto {
       timeline: _list(json['timeline'])
           .map((item) => OrderTrackingTimelineItemDto.fromJson(_map(item)))
           .toList(growable: false),
+      activeCase: _mapOrNull(json['active_case']) == null
+          ? null
+          : OrderSupportCaseSummaryDto.fromJson(_map(json['active_case'])),
     );
   }
 
@@ -51,6 +56,7 @@ class OrderTrackingResponseDto {
   final String deliveryOtp;
   final bool showDeliveryOtp;
   final List<OrderTrackingTimelineItemDto> timeline;
+  final OrderSupportCaseSummaryDto? activeCase;
 
   OrderTrackingEntity toEntity() {
     return OrderTrackingEntity(
@@ -63,6 +69,7 @@ class OrderTrackingResponseDto {
       deliveryOtp: deliveryOtp,
       showDeliveryOtp: showDeliveryOtp,
       timeline: timeline.map((item) => item.toEntity()).toList(growable: false),
+      activeCase: activeCase?.toEntity(),
     );
   }
 

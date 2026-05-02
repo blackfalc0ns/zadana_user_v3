@@ -20,11 +20,11 @@ class LoginScreen extends StatelessWidget {
   void _handleStateChanges(BuildContext context, LoginState state) {
     if (state.isSuccess && state.loginResponse != null) {
       context.read<LoginViewModel>().clearFeedback();
-      final shouldResumeCheckout = CheckoutFlowService()
-          .consumePendingCheckout();
-      if (shouldResumeCheckout) {
+      final pendingCheckout = CheckoutFlowService().consumePendingCheckout();
+      if (pendingCheckout.shouldResumeCheckout) {
         context.pushNamedAndRemoveUntil(
           AppRoutes.payment,
+          arguments: pendingCheckout.vendorId,
           predicate: (Route<dynamic> route) => false,
         );
         return;

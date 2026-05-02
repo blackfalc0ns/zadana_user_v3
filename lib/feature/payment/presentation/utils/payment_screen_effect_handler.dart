@@ -17,11 +17,18 @@ class PaymentScreenEffectHandler {
 
   static Future<void> _navigateToPaymentSuccess(
     BuildContext context,
-    String orderId,
-  ) async {
+    String orderId, {
+    bool isCashOnDelivery = false,
+  }) async {
     await Navigator.of(
       context,
-    ).pushReplacementNamed(AppRoutes.paymentSuccess, arguments: orderId);
+    ).pushReplacementNamed(
+      AppRoutes.paymentSuccess,
+      arguments: {
+        'orderId': orderId,
+        'isCashOnDelivery': isCashOnDelivery,
+      },
+    );
   }
 
   static Future<void> _handlePaymentCallbackResult({
@@ -135,7 +142,7 @@ class PaymentScreenEffectHandler {
       viewModel.doIntent(const PaymentClearUiEffectEvent());
       final result = await CheckoutAddressSelectorBottomSheet.show(
         context,
-        addresses: state.addresses,
+        addresses: state.availableAddresses,
         selectedAddressId: state.selectedAddressId,
         isLoading: state.isLoadingAddresses,
         failure: state.addressesFailure,
@@ -183,7 +190,11 @@ class PaymentScreenEffectHandler {
       viewModel.doIntent(const PaymentClearPlacedOrderEvent());
       viewModel.doIntent(const PaymentClearUiEffectEvent());
       if (!context.mounted) return;
-      await _navigateToPaymentSuccess(context, effect.orderId);
+      await _navigateToPaymentSuccess(
+        context,
+        effect.orderId,
+        isCashOnDelivery: effect.isCashOnDelivery,
+      );
       return;
     }
 

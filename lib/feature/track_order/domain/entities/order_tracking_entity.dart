@@ -1,4 +1,5 @@
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 
 class OrderTrackingEntity {
   const OrderTrackingEntity({
@@ -11,6 +12,7 @@ class OrderTrackingEntity {
     required this.deliveryOtp,
     required this.showDeliveryOtp,
     required this.timeline,
+    required this.activeCase,
   });
 
   final OrderTrackingOrderEntity order;
@@ -22,6 +24,7 @@ class OrderTrackingEntity {
   final String deliveryOtp;
   final bool showDeliveryOtp;
   final List<OrderTrackingTimelineItemEntity> timeline;
+  final OrderSupportCaseSummaryEntity? activeCase;
 
   OrderTrackingEntity copyWith({
     OrderTrackingOrderEntity? order,
@@ -33,6 +36,7 @@ class OrderTrackingEntity {
     String? deliveryOtp,
     bool? showDeliveryOtp,
     List<OrderTrackingTimelineItemEntity>? timeline,
+    OrderSupportCaseSummaryEntity? activeCase,
   }) {
     return OrderTrackingEntity(
       order: order ?? this.order,
@@ -45,6 +49,7 @@ class OrderTrackingEntity {
       deliveryOtp: deliveryOtp ?? this.deliveryOtp,
       showDeliveryOtp: showDeliveryOtp ?? this.showDeliveryOtp,
       timeline: timeline ?? this.timeline,
+      activeCase: activeCase ?? this.activeCase,
     );
   }
 }

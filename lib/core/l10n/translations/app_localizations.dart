@@ -1532,6 +1532,18 @@ abstract class AppLocalizations {
   /// **'Mark all read'**
   String get notifications_mark_all_read;
 
+  /// No description provided for @notifications_mark_all_read_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read?'**
+  String get notifications_mark_all_read_confirm_title;
+
+  /// No description provided for @notifications_mark_all_read_confirm_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to mark all current notifications as read?'**
+  String get notifications_mark_all_read_confirm_message;
+
   /// No description provided for @notifications_preferences_saved.
   ///
   /// In en, this message translates to:
@@ -1913,7 +1925,7 @@ abstract class AppLocalizations {
   /// No description provided for @delete_category_tooltip.
   ///
   /// In en, this message translates to:
-  /// **'Delete selected category'**
+  /// **'Delete selected'**
   String get delete_category_tooltip;
 
   /// No description provided for @clear_filters_title.
@@ -3055,6 +3067,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Complaint Resolved'**
   String get my_orders_complaint_resolved;
+
+  /// No description provided for @my_orders_support_case_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Case'**
+  String get my_orders_support_case_title;
+
+  /// No description provided for @my_orders_support_case_history_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Case History'**
+  String get my_orders_support_case_history_title;
+
+  /// No description provided for @my_orders_support_case_details_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Case Details'**
+  String get my_orders_support_case_details_title;
+
+  /// No description provided for @my_orders_support_case_timeline_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Timeline'**
+  String get my_orders_support_case_timeline_title;
+
+  /// No description provided for @my_orders_support_case_empty_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a case to view its details.'**
+  String get my_orders_support_case_empty_details;
+
+  /// No description provided for @my_orders_support_case_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Support'**
+  String get my_orders_support_case_action;
+
+  /// No description provided for @my_orders_support_case_view.
+  ///
+  /// In en, this message translates to:
+  /// **'View Case'**
+  String get my_orders_support_case_view;
+
+  /// No description provided for @my_orders_support_case_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Support case submitted'**
+  String get my_orders_support_case_created;
+
+  /// No description provided for @my_orders_support_case_sheet_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Support Case'**
+  String get my_orders_support_case_sheet_title;
+
+  /// No description provided for @my_orders_support_case_sheet_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the issue and attach files before sending the case.'**
+  String get my_orders_support_case_sheet_subtitle;
+
+  /// No description provided for @my_orders_support_case_sheet_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write what happened'**
+  String get my_orders_support_case_sheet_hint;
+
+  /// No description provided for @my_orders_support_case_sheet_attach_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach Files'**
+  String get my_orders_support_case_sheet_attach_files;
+
+  /// No description provided for @my_orders_support_case_sheet_attached_files.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} file(s) attached'**
+  String my_orders_support_case_sheet_attached_files(int count);
+
+  /// No description provided for @my_orders_support_case_sheet_send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Case'**
+  String get my_orders_support_case_sheet_send;
+
+  /// No description provided for @my_orders_support_case_type_complaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint'**
+  String get my_orders_support_case_type_complaint;
+
+  /// No description provided for @my_orders_support_case_type_return_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Return Request'**
+  String get my_orders_support_case_type_return_request;
+
+  /// No description provided for @my_orders_support_case_type_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get my_orders_support_case_type_generic;
+
+  /// No description provided for @my_orders_support_case_reason_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get my_orders_support_case_reason_label;
+
+  /// No description provided for @my_orders_support_case_queue_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue'**
+  String get my_orders_support_case_queue_label;
+
+  /// No description provided for @my_orders_support_case_priority_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get my_orders_support_case_priority_label;
+
+  /// No description provided for @my_orders_support_case_evidence_guidance.
+  ///
+  /// In en, this message translates to:
+  /// **'If more evidence is requested, please review the latest note and contact support or wait for the next update.'**
+  String get my_orders_support_case_evidence_guidance;
+
+  /// No description provided for @my_orders_support_case_status_submitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get my_orders_support_case_status_submitted;
+
+  /// No description provided for @my_orders_support_case_status_in_review.
+  ///
+  /// In en, this message translates to:
+  /// **'In Review'**
+  String get my_orders_support_case_status_in_review;
+
+  /// No description provided for @my_orders_support_case_status_awaiting_customer_evidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting Evidence'**
+  String get my_orders_support_case_status_awaiting_customer_evidence;
+
+  /// No description provided for @my_orders_support_case_status_approved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get my_orders_support_case_status_approved;
+
+  /// No description provided for @my_orders_support_case_status_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get my_orders_support_case_status_rejected;
+
+  /// No description provided for @my_orders_support_case_status_resolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get my_orders_support_case_status_resolved;
+
+  /// No description provided for @my_orders_support_case_status_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated'**
+  String get my_orders_support_case_status_unknown;
+
+  /// No description provided for @my_orders_support_case_reason_payment_issue.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment issue'**
+  String get my_orders_support_case_reason_payment_issue;
+
+  /// No description provided for @my_orders_support_case_reason_delivery_delay.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery delay'**
+  String get my_orders_support_case_reason_delivery_delay;
+
+  /// No description provided for @my_orders_support_case_reason_prep_delay.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparation delay'**
+  String get my_orders_support_case_reason_prep_delay;
+
+  /// No description provided for @my_orders_support_case_reason_fraud.
+  ///
+  /// In en, this message translates to:
+  /// **'Fraud'**
+  String get my_orders_support_case_reason_fraud;
+
+  /// No description provided for @my_orders_support_case_reason_fraud_suspicion.
+  ///
+  /// In en, this message translates to:
+  /// **'Fraud suspicion'**
+  String get my_orders_support_case_reason_fraud_suspicion;
 
   /// No description provided for @order_pending.
   ///

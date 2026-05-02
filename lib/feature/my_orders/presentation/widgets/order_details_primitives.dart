@@ -374,16 +374,19 @@ class LabelValueColumn extends StatelessWidget {
 }
 
 class SecondaryText extends StatelessWidget {
-  const SecondaryText(this.text, {super.key, this.textAlign});
+  const SecondaryText(this.text, {super.key, this.textAlign, this.maxLines});
 
   final String text;
   final TextAlign? textAlign;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: maxLines == null ? null : TextOverflow.ellipsis,
       style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
     );
   }
@@ -407,36 +410,43 @@ class AmountText extends StatelessWidget {
 }
 
 class AttachmentChip extends StatelessWidget {
-  const AttachmentChip({super.key, required this.fileName});
+  const AttachmentChip({super.key, required this.fileName, this.onTap});
 
   final String fileName;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colors.outlineVariant.withValues(alpha: .2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.image_outlined, size: 16, color: colors.secondary),
-          const SizedBox(width: 6),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 120),
-            child: Text(
-              fileName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 12),
-            ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: colors.outlineVariant.withValues(alpha: .2),
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.image_outlined, size: 16, color: colors.secondary),
+            const SizedBox(width: 6),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 120),
+              child: Text(
+                fileName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

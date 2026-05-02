@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
 
@@ -19,16 +20,18 @@ class OrderCancelResult {
   final String note;
 }
 
-class OrderComplaintResult {
-  const OrderComplaintResult({
+class OrderSupportCaseResult {
+  const OrderSupportCaseResult({
+    required this.type,
+    required this.reasonCode,
     required this.message,
     required this.attachments,
-    required this.feedbackMessage,
   });
 
+  final OrderSupportCaseType type;
+  final String reasonCode;
   final String message;
   final List<PlatformFile> attachments;
-  final String feedbackMessage;
 }
 
 Future<OrderCancelResult?> showOrderCancelSheet({
@@ -99,30 +102,79 @@ Future<OrderCancelResult?> showOrderCancelSheet({
   );
 }
 
-Future<OrderComplaintResult?> showOrderComplaintSheet({
+Future<OrderSupportCaseResult?> showOrderSupportCaseSheet({
   required BuildContext context,
   required OrderStatus status,
   required String total,
+  required bool canCreateComplaint,
+  required bool canCreateReturnRequest,
 }) {
   final l10n = AppLocalizations.of(context)!;
   final controller = TextEditingController();
   List<PlatformFile> attachments = [];
+  OrderSupportCaseType selectedType = canCreateReturnRequest
+      ? OrderSupportCaseType.returnRequest
+      : OrderSupportCaseType.complaint;
+  String? selectedReasonCode;
 
-  return showModalBottomSheet<OrderComplaintResult>(
+  return showModalBottomSheet<OrderSupportCaseResult>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) => StatefulBuilder(
       builder: (context, setSheetState) => BottomSheetScaffold(
-        title: l10n.my_orders_complaint_sheet_title,
-        subtitle: l10n.my_orders_complaint_sheet_subtitle,
+        title: l10n.my_orders_support_case_sheet_title,
+        subtitle: l10n.my_orders_support_case_sheet_subtitle,
         summary: OrderMiniCard(status: status, total: total),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            DropdownButtonFormField<String>(
+              initialValue: selectedReasonCode,
+              hint: Text(l10n.my_orders_support_case_reason_label),
+              decoration: InputDecoration(
+                labelText: l10n.my_orders_support_case_reason_label,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: 'payment_issue',
+                  child: Text(l10n.my_orders_support_case_reason_payment_issue),
+                ),
+                DropdownMenuItem(
+                  value: 'delivery_delay',
+                  child: Text(
+                    l10n.my_orders_support_case_reason_delivery_delay,
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: 'prep_delay',
+                  child: Text(l10n.my_orders_support_case_reason_prep_delay),
+                ),
+                DropdownMenuItem(
+                  value: 'fraud',
+                  child: Text(l10n.my_orders_support_case_reason_fraud),
+                ),
+                DropdownMenuItem(
+                  value: 'fraud_suspicion',
+                  child: Text(
+                    l10n.my_orders_support_case_reason_fraud_suspicion,
+                  ),
+                ),
+              ],
+              onChanged: (value) {
+                if (value == null) return;
+                setSheetState(() => selectedReasonCode = value);
+              },
+            ),
+            const SizedBox(height: Spacing.sm),
             SheetTextField(
               controller: controller,
-              hintText: l10n.my_orders_complaint_sheet_hint,
+              hintText: l10n.my_orders_support_case_sheet_hint,
               maxLines: 5,
+              onChanged: (_) => setSheetState(() {}),
             ),
             const SizedBox(height: Spacing.sm),
             Align(
@@ -130,7 +182,7 @@ Future<OrderComplaintResult?> showOrderComplaintSheet({
               child: OutlinedButton.icon(
                 onPressed: () async {
                   final result = await FilePicker.platform.pickFiles(
-                    type: FileType.image,
+                    type: FileType.any,
                     allowMultiple: true,
                     withData: true,
                   );
@@ -140,8 +192,8 @@ Future<OrderComplaintResult?> showOrderComplaintSheet({
                 icon: const Icon(Icons.image_outlined),
                 label: Text(
                   attachments.isEmpty
-                      ? l10n.my_orders_complaint_sheet_attach_images
-                      : l10n.my_orders_complaint_sheet_attached_images(
+                      ? l10n.my_orders_support_case_sheet_attach_files
+                      : l10n.my_orders_support_case_sheet_attached_files(
                           attachments.length,
                         ),
                 ),
@@ -154,20 +206,23 @@ Future<OrderComplaintResult?> showOrderComplaintSheet({
           ],
         ),
         secondaryActionLabel: l10n.cancel,
-        primaryActionLabel: l10n.my_orders_complaint_sheet_send,
+        primaryActionLabel: l10n.my_orders_support_case_sheet_send,
         onSecondaryTap: () => Navigator.pop(context),
-        onPrimaryTap: () {
-          final value = controller.text.trim();
-          if (value.isEmpty) return;
-          Navigator.pop(
-            context,
-            OrderComplaintResult(
-              message: value,
-              attachments: attachments,
-              feedbackMessage: l10n.my_orders_complaint_submitted_feedback,
-            ),
-          );
-        },
+        onPrimaryTap:
+            selectedReasonCode == null || controller.text.trim().isEmpty
+            ? null
+            : () {
+                final value = controller.text.trim();
+                Navigator.pop(
+                  context,
+                  OrderSupportCaseResult(
+                    type: selectedType,
+                    reasonCode: selectedReasonCode!,
+                    message: value,
+                    attachments: attachments,
+                  ),
+                );
+              },
       ),
     ),
   );

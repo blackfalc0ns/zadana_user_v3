@@ -25,8 +25,39 @@ String localizeAddressLabel(AppLocalizations l10n, String label) {
   }
 }
 
-String resolvePaymentMethodTitle(AppLocalizations l10n, String code, String label) {
-  if (label.trim().isNotEmpty) return label;
+bool isArabicPaymentLocale(BuildContext context) {
+  return Localizations.localeOf(context).languageCode.toLowerCase().startsWith(
+    'ar',
+  );
+}
+
+String resolveBilingualValue(
+  BuildContext context, {
+  required String arabic,
+  required String english,
+  String fallback = '',
+}) {
+  final preferred = isArabicPaymentLocale(context) ? arabic : english;
+  final secondary = isArabicPaymentLocale(context) ? english : arabic;
+
+  if (preferred.trim().isNotEmpty) return preferred;
+  if (secondary.trim().isNotEmpty) return secondary;
+  return fallback;
+}
+
+String resolvePaymentMethodTitle(
+  BuildContext context,
+  AppLocalizations l10n,
+  String code, {
+  required String labelAr,
+  required String labelEn,
+}) {
+  final localized = resolveBilingualValue(
+    context,
+    arabic: labelAr,
+    english: labelEn,
+  );
+  if (localized.trim().isNotEmpty) return localized;
 
   switch (code) {
     case 'card':
@@ -42,7 +73,20 @@ String resolvePaymentMethodTitle(AppLocalizations l10n, String code, String labe
   }
 }
 
-String resolvePaymentMethodSubtitle(AppLocalizations l10n, String code) {
+String resolvePaymentMethodSubtitle(
+  BuildContext context,
+  AppLocalizations l10n,
+  String code, {
+  required String descriptionAr,
+  required String descriptionEn,
+}) {
+  final localized = resolveBilingualValue(
+    context,
+    arabic: descriptionAr,
+    english: descriptionEn,
+  );
+  if (localized.trim().isNotEmpty) return localized;
+
   switch (code) {
     case 'card':
       return l10n.credit_card_subtitle;

@@ -765,7 +765,14 @@ class AppLocalizationsAr extends AppLocalizations {
       'أنت متابع كل جديد حاليًا. ستظهر هنا تحديثات الطلبات والتنبيهات المهمة أولًا بأول.';
 
   @override
-  String get notifications_mark_all_read => 'تحديد الكل كمقروء';
+  String get notifications_mark_all_read => 'قراءة الكل';
+
+  @override
+  String get notifications_mark_all_read_confirm_title => 'تأكيد قراءة الكل';
+
+  @override
+  String get notifications_mark_all_read_confirm_message =>
+      'هل تريد تحديد كل الإشعارات الحالية كمقروءة؟';
 
   @override
   String get notifications_preferences_saved => 'تم حفظ تفضيلات الإشعارات';
@@ -980,7 +987,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delete_category_confirm => 'هل تريد حذف التصنيف؟';
 
   @override
-  String get delete_category_tooltip => 'حذف التصنيف المختار';
+  String get delete_category_tooltip => 'حذف التصنيف ';
 
   @override
   String get clear_filters_title => 'مسح الفلاتر';
@@ -1567,6 +1574,110 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_complaint_resolved => 'تم حل الشكوى';
+
+  @override
+  String get my_orders_support_case_title => 'حالة الدعم';
+
+  @override
+  String get my_orders_support_case_history_title => 'سجل الحالات';
+
+  @override
+  String get my_orders_support_case_details_title => 'تفاصيل الحالة';
+
+  @override
+  String get my_orders_support_case_timeline_title => 'التحديثات الظاهرة لك';
+
+  @override
+  String get my_orders_support_case_empty_details => 'اختر حالة لعرض تفاصيلها.';
+
+  @override
+  String get my_orders_support_case_action => 'الدعم والمساعدة';
+
+  @override
+  String get my_orders_support_case_view => 'عرض الحالة';
+
+  @override
+  String get my_orders_support_case_created => 'تم إرسال الحالة بنجاح';
+
+  @override
+  String get my_orders_support_case_sheet_title => 'إنشاء حالة دعم';
+
+  @override
+  String get my_orders_support_case_sheet_subtitle =>
+      'اشرح المشكلة وأرفق الملفات قبل إرسال الحالة.';
+
+  @override
+  String get my_orders_support_case_sheet_hint => 'اكتب ما حدث';
+
+  @override
+  String get my_orders_support_case_sheet_attach_files => 'إرفاق ملفات';
+
+  @override
+  String my_orders_support_case_sheet_attached_files(int count) {
+    return 'تم إرفاق $count ملف';
+  }
+
+  @override
+  String get my_orders_support_case_sheet_send => 'إرسال الحالة';
+
+  @override
+  String get my_orders_support_case_type_complaint => 'شكوى';
+
+  @override
+  String get my_orders_support_case_type_return_request => 'طلب إرجاع';
+
+  @override
+  String get my_orders_support_case_type_generic => 'دعم';
+
+  @override
+  String get my_orders_support_case_reason_label => 'السبب';
+
+  @override
+  String get my_orders_support_case_queue_label => 'القسم';
+
+  @override
+  String get my_orders_support_case_priority_label => 'الأولوية';
+
+  @override
+  String get my_orders_support_case_evidence_guidance =>
+      'إذا طُلبت أدلة إضافية، راجع آخر ملاحظة ظاهرة لك وتواصل مع الدعم أو انتظر التحديث القادم.';
+
+  @override
+  String get my_orders_support_case_status_submitted => 'تم الإرسال';
+
+  @override
+  String get my_orders_support_case_status_in_review => 'قيد المراجعة';
+
+  @override
+  String get my_orders_support_case_status_awaiting_customer_evidence =>
+      'بانتظار أدلة إضافية';
+
+  @override
+  String get my_orders_support_case_status_approved => 'تمت الموافقة';
+
+  @override
+  String get my_orders_support_case_status_rejected => 'تم الرفض';
+
+  @override
+  String get my_orders_support_case_status_resolved => 'تم الحل';
+
+  @override
+  String get my_orders_support_case_status_unknown => 'تم التحديث';
+
+  @override
+  String get my_orders_support_case_reason_payment_issue => 'مشكلة في الدفع';
+
+  @override
+  String get my_orders_support_case_reason_delivery_delay => 'تأخير في التوصيل';
+
+  @override
+  String get my_orders_support_case_reason_prep_delay => 'تأخير في التجهيز';
+
+  @override
+  String get my_orders_support_case_reason_fraud => 'احتيال';
+
+  @override
+  String get my_orders_support_case_reason_fraud_suspicion => 'اشتباه احتيال';
 
   @override
   String get order_pending => 'قيد التنفيذ';

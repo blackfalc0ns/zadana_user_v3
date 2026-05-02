@@ -42,16 +42,7 @@ class SearchBarWidget extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: color.shadow.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-        borderRadius: BorderRadius.circular(25),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
       child: Row(
         children: [
           Expanded(
@@ -160,22 +151,43 @@ class SearchBarWidget extends StatelessWidget {
           ),
           if (onFilterTap != null)
             Container(
-              width: 44,
-              height: 44,
+              constraints: BoxConstraints(
+                minWidth: isFilterDestructive ? 88 : 48,
+                minHeight: 48,
+              ),
               margin: const EdgeInsets.only(right: 8),
               decoration: BoxDecoration(
                 color: actionColor,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: IconButton(
-                tooltip: filterTooltip,
-                icon: Icon(filterIcon, color: color.onPrimary, size: 20),
-                onPressed: () {
-                  focusNode?.unfocus();
-                  onClose?.call();
-                  onFilterTap!();
-                },
-                padding: EdgeInsets.zero,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    focusNode?.unfocus();
+                    onClose?.call();
+                    onFilterTap!();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isFilterDestructive ? 14 : 12,
+                      vertical: 12,
+                    ),
+                    child: isFilterDestructive
+                        ? Center(
+                            child: Text(
+                              filterTooltip ?? locale.delete_category_tooltip,
+                              style: getRegularStyle(
+                                fontSize: FontSize.size14,
+                                fontFamily: FontConstant.cairo,
+                                color: color.onPrimary,
+                              ),
+                            ),
+                          )
+                        : Icon(filterIcon, color: color.onPrimary, size: 20),
+                  ),
+                ),
               ),
             ),
         ],

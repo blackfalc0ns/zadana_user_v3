@@ -1,5 +1,6 @@
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_item_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_price_summary_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 
 class OrderDetailsEntity {
@@ -16,6 +17,7 @@ class OrderDetailsEntity {
     required this.itemsCount,
     required this.summary,
     required this.items,
+    required this.activeCase,
   });
 
   final String id;
@@ -30,4 +32,5 @@ class OrderDetailsEntity {
   final int itemsCount;
   final OrderPriceSummaryEntity summary;
   final List<OrderItemEntity> items;
+  final OrderSupportCaseSummaryEntity? activeCase;
 }

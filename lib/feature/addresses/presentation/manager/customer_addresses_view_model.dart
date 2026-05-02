@@ -54,12 +54,13 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
 
     switch (result) {
       case ApiSuccessResult<List<CustomerAddressEntity>>():
+        final sortedItems = _sortDefaultFirst(result.data);
         emit(
           state.copyWith(
             isLoading: false,
             isSuccess: true,
-            items: result.data,
-            selectedDefaultId: _resolveDefaultId(result.data),
+            items: sortedItems,
+            selectedDefaultId: _resolveDefaultId(sortedItems),
             clearFailure: true,
           ),
         );
@@ -88,12 +89,13 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
 
     switch (result) {
       case ApiSuccessResult<String>():
+        final remainingItems = state.items
+            .where((item) => item.id != addressId)
+            .toList();
         emit(
           state.copyWith(
-            items: state.items.where((item) => item.id != addressId).toList(),
-            selectedDefaultId: _resolveDefaultId(
-              state.items.where((item) => item.id != addressId).toList(),
-            ),
+            items: _sortDefaultFirst(remainingItems),
+            selectedDefaultId: _resolveDefaultId(remainingItems),
             actionType: CustomerAddressesActionType.deleteSuccess,
             clearDeletingAddressId: true,
             clearActionFailure: true,
@@ -144,12 +146,13 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
               ),
             )
             .toList();
-        final selectedItem = updatedItems.firstWhere(
+        final sortedItems = _sortDefaultFirst(updatedItems);
+        final selectedItem = sortedItems.firstWhere(
           (item) => item.id == addressId,
         );
         emit(
           state.copyWith(
-            items: updatedItems,
+            items: sortedItems,
             selectedDefaultId: addressId,
             clearSettingDefaultAddressId: true,
             actionType: CustomerAddressesActionType.setDefaultSuccess,
@@ -230,7 +233,7 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
             .toList();
         emit(
           state.copyWith(
-            items: updatedItems,
+            items: _sortDefaultFirst(updatedItems),
             clearUpdatingAddressId: true,
             actionType: CustomerAddressesActionType.editSuccess,
             actionLabel: request.label,
@@ -263,6 +266,17 @@ class CustomerAddressesViewModel extends Cubit<CustomerAddressesState> {
     if (items.isEmpty) return null;
     final apiDefault = items.where((item) => item.isDefault).firstOrNull;
     return apiDefault?.id ?? items.first.id;
+  }
+
+  List<CustomerAddressEntity> _sortDefaultFirst(
+    List<CustomerAddressEntity> items,
+  ) {
+    final sortedItems = List<CustomerAddressEntity>.from(items);
+    sortedItems.sort((a, b) {
+      if (a.isDefault == b.isDefault) return 0;
+      return a.isDefault ? -1 : 1;
+    });
+    return sortedItems;
   }
 
   String? _nullIfEmpty(String value) {

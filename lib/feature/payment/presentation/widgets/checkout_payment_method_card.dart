@@ -62,8 +62,20 @@ class _PaymentMethodTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
-    final title = resolvePaymentMethodTitle(l10n, method.code, method.label);
-    final subtitle = resolvePaymentMethodSubtitle(l10n, method.code);
+    final title = resolvePaymentMethodTitle(
+      context,
+      l10n,
+      method.code,
+      labelAr: method.labelAr,
+      labelEn: method.labelEn,
+    );
+    final subtitle = resolvePaymentMethodSubtitle(
+      context,
+      l10n,
+      method.code,
+      descriptionAr: method.descriptionAr,
+      descriptionEn: method.descriptionEn,
+    );
 
     return Opacity(
       opacity: method.isAvailable ? 1 : 0.55,

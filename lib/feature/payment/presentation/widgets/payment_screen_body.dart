@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/sections/checkout_content_section.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
@@ -68,37 +69,47 @@ class PaymentScreenBody extends StatelessWidget {
       checkoutSummary.summary.currency,
     );
 
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: FadeTransition(
-            opacity: fadeAnimation,
-            child: SlideTransition(
-              position: slideAnimation,
-              child: CheckoutContentSection(
-                checkoutSummary: checkoutSummary,
-                addresses: state.addresses,
-                selectedPaymentMethodCode: state.selectedPaymentMethodCode,
-                isLoadingAddresses: state.isLoadingAddresses,
-                addressesFailure: state.addressesFailure,
-                isRefreshingSummary: state.isRefreshingSummary,
-                isPromoLoading: state.isApplyingPromo || state.isRemovingPromo,
-                onChangeAddress: onChangeAddress,
-                onDeliverySlotChanged: onDeliverySlotChanged,
-                onPaymentMethodChanged: onPaymentMethodChanged,
-                onApplyPromoCode: onApplyPromoCode,
-                onRemovePromoCode: onRemovePromoCode,
+        Column(
+          children: [
+            Expanded(
+              child: FadeTransition(
+                opacity: fadeAnimation,
+                child: SlideTransition(
+                  position: slideAnimation,
+                  child: CheckoutContentSection(
+                    checkoutSummary: checkoutSummary,
+                    addresses: state.availableAddresses,
+                    selectedPaymentMethodCode: state.selectedPaymentMethodCode,
+                    isLoadingAddresses: state.isLoadingAddresses,
+                    addressesFailure: state.addressesFailure,
+                    isRefreshingSummary: state.isRefreshingSummary,
+                    isPromoLoading: state.isApplyingPromo || state.isRemovingPromo,
+                    onChangeAddress: onChangeAddress,
+                    onDeliverySlotChanged: onDeliverySlotChanged,
+                    onPaymentMethodChanged: onPaymentMethodChanged,
+                    onApplyPromoCode: onApplyPromoCode,
+                    onRemovePromoCode: onRemovePromoCode,
+                  ),
+                ),
               ),
             ),
+            PaymentBottomAction(
+              buttonText: state.isPlacingOrder
+                  ? l10n.processing
+                  : '${l10n.checkout} - ${checkoutSummary.summary.total.toStringAsFixed(2)} $currency',
+              onPressed: state.canPlaceOrder ? onPlaceOrder : null,
+            ),
+          ],
+        ),
+        if (state.isPlacingOrder)
+          Positioned.fill(
+            child: ColoredBox(
+              color: Colors.black.withValues(alpha: 0.18),
+              child: const CustomProgressIndicator(),
+            ),
           ),
-        ),
-        PaymentBottomAction(
-          buttonText: state.isPlacingOrder
-              ? l10n.processing
-              : '${l10n.checkout} - ${checkoutSummary.summary.total.toStringAsFixed(2)} $currency',
-          isLoading: state.isPlacingOrder,
-          onPressed: state.canPlaceOrder ? onPlaceOrder : null,
-        ),
       ],
     );
   }

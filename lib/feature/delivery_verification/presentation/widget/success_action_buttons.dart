@@ -13,12 +13,10 @@ class SuccessActionButtons extends StatelessWidget {
     super.key,
     this.courierName,
     this.courierImage,
-    this.orderId,
   });
 
   final String? courierName;
   final String? courierImage;
-  final String? orderId;
 
   void _onViewOrderDetails(BuildContext context) {
     HapticFeedback.lightImpact();
@@ -41,33 +39,32 @@ class SuccessActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
+    final color = Theme.of(context).colorScheme;
 
-    return Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          child: AppButton(
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 420),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppButton(
             text: locale.delegate_values,
             onPressed: () => _onViewOrderDetails(context),
             color: AppColors.primary,
             textColor: AppColors.white,
-            height: 56,
-            borderRadius: 16,
+            height: 58,
+            borderRadius: 18,
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: AppButton(
+          const SizedBox(height: 14),
+          AppButton.outlined(
             text: locale.continue_shopping,
             onPressed: () => _onContinue(context),
-            color: AppColors.surface,
+            color: color.primary.withValues(alpha: 0.22),
             textColor: AppColors.primary,
-            height: 56,
-            borderRadius: 16,
+            height: 58,
+            borderRadius: 18,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

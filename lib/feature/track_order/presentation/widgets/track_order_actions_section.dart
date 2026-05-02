@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
@@ -22,28 +21,6 @@ class TrackOrderActionsSection extends StatelessWidget {
 
     return Column(
       children: [
-        if (tracking.showDeliveryOtp)
-          AppButton.outlined(
-            text: l10n.view_otp_code,
-            icon: Icons.qr_code_rounded,
-            onPressed: () => Navigator.pushNamed(
-              context,
-              AppRoutes.deliveryOtp,
-              arguments: {
-                'orderId': orderId,
-                'phoneNumber':
-                    tracking.assignedDriver?.phoneNumber ??
-                    tracking.driver?.phoneNumber ??
-                    '',
-                'courierName':
-                    tracking.assignedDriver?.name ?? tracking.driver?.name,
-                'otpCode': tracking.deliveryOtp,
-              },
-            ),
-            color: color.primary,
-            textColor: color.primary,
-          ),
-        const SizedBox(height: Spacing.sm),
         AppButton(
           text: l10n.back_to_home,
           icon: Icons.home_outlined,

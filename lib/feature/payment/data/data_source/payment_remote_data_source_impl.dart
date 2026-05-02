@@ -17,7 +17,7 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
 
   static const String _checkoutSummaryEndpoint = '/checkout/summary';
   static const String _promoCodeEndpoint = '/checkout/promo-code';
-  static const String _ordersEndpoint = '/orders';
+  static const String _placeOrderEndpoint = '/orders';
   static const Map<String, String> _noStoreHeaders = {
     'Cache-Control': 'no-store, no-cache, must-revalidate',
     'Pragma': 'no-cache',
@@ -100,7 +100,7 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     await _clearCheckoutSummaryCache();
 
     final response = await _dio.post<Map<String, dynamic>>(
-      _ordersEndpoint,
+      _placeOrderEndpoint,
       data: request.toJson(),
       options: _noCacheOptions(),
     );

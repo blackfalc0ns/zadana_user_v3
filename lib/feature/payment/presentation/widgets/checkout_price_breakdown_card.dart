@@ -72,7 +72,7 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
           for (final line in shippingBreakdown) ...[
             const SizedBox(height: Spacing.xs),
             _PriceRow(
-              label: _resolveShippingLineLabel(line),
+              label: _resolveShippingLineLabel(context, line),
               value: PriceFormatter.formatPrice(line.amount),
               currency: currency,
             ),
@@ -116,8 +116,15 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
     );
   }
 
-  String _resolveShippingLineLabel(CheckoutShippingLineEntity line) {
-    final label = line.label.trim();
+  String _resolveShippingLineLabel(
+    BuildContext context,
+    CheckoutShippingLineEntity line,
+  ) {
+    final label = resolveBilingualValue(
+      context,
+      arabic: line.labelAr,
+      english: line.labelEn,
+    );
     if (label.isNotEmpty) {
       return label;
     }

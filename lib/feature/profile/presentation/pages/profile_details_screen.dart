@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/app_phone_field.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
@@ -88,7 +89,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
             if (state.isUpdateSuccess && state.profileResponse != null) {
               CustomSnackbar.showSuccess(
                 context: context,
-                message: context.localization.btn_confirm,
+                message: _updateSuccessMessage(context),
               );
               Navigator.of(context).pop(state.profileResponse);
             }
@@ -96,81 +97,109 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
           builder: (context, state) {
             final currentProfile = state.profileResponse ?? widget.profile;
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                Spacing.base,
-                Spacing.base,
-                Spacing.base,
-                Spacing.xxl,
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _ProfileDetailsHeader(profile: currentProfile),
-                    const SizedBox(height: Spacing.base),
-                    _ProfileInfoCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FieldLabel(locale.label_full_name),
-                          AppTextField(
-                            controller: _nameController,
-                            hint: locale.hint_full_name,
-                            keyboardType: TextInputType.name,
-                            validator: (v) =>
-                                Validations.validateName(context, v),
-                            prefixIcon: Icon(
-                              Icons.person_outline_rounded,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.base,
+                    Spacing.base,
+                    Spacing.base,
+                    Spacing.xxl,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _ProfileDetailsHeader(profile: currentProfile),
+                        const SizedBox(height: Spacing.base),
+                        _ProfileInfoCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FieldLabel(locale.label_full_name),
+                              AppTextField(
+                                controller: _nameController,
+                                hint: locale.hint_full_name,
+                                keyboardType: TextInputType.name,
+                                validator: (v) =>
+                                    Validations.validateName(context, v),
+                                prefixIcon: Icon(
+                                  Icons.person_outline_rounded,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: Spacing.base),
+                              FieldLabel(locale.label_email),
+                              AppTextField(
+                                controller: _emailController,
+                                hint: locale.hint_email,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (v) =>
+                                    Validations.validateEmail(context, v),
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: Spacing.base),
+                              FieldLabel(locale.label_phone),
+                              AppPhoneField(
+                                controller: _phoneController,
+                                hint: locale.hint_phone,
+                                validator: (v) => Validations.validatePhoneNumber(
+                                  context,
+                                  v,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        if (state.updateFailure != null) ...[
                           const SizedBox(height: Spacing.base),
-                          FieldLabel(locale.label_email),
-                          AppTextField(
-                            controller: _emailController,
-                            hint: locale.hint_email,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (v) =>
-                                Validations.validateEmail(context, v),
-                            prefixIcon: Icon(
-                              Icons.email_outlined,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: Spacing.base),
-                          FieldLabel(locale.label_phone),
-                          AppPhoneField(
-                            controller: _phoneController,
-                            hint: locale.hint_phone,
-                            validator: (v) =>
-                                Validations.validatePhoneNumber(context, v),
+                          InlineApiErrorWidget(
+                            failure: state.updateFailure!,
+                            onRetry: _onSave,
                           ),
                         ],
-                      ),
+                        const SizedBox(height: Spacing.xl),
+                        AppButtonSwitch(
+                          label: _updateButtonLabel(context),
+                          onPressed: _onSave,
+                        ),
+                      ],
                     ),
-                    if (state.updateFailure != null) ...[
-                      const SizedBox(height: Spacing.base),
-                      InlineApiErrorWidget(
-                        failure: state.updateFailure!,
-                        onRetry: _onSave,
-                      ),
-                    ],
-                    const SizedBox(height: Spacing.xl),
-                    AppButtonSwitch(
-                      label: locale.btn_confirm,
-                      onPressed: _onSave,
-                      isLoading: _isSaving,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                if (_isSaving)
+                  Positioned.fill(
+                    child: ColoredBox(
+                      color: Colors.black.withValues(alpha: 0.18),
+                      child: const CustomProgressIndicator(),
+                    ),
+                  ),
+              ],
             );
           },
         ),
       ),
     );
+  }
+
+  String _updateButtonLabel(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') {
+      return 'تحديث';
+    }
+    return 'Update';
+  }
+
+  String _updateSuccessMessage(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') {
+      return 'تم تحديث البيانات بنجاح';
+    }
+    return 'Profile updated successfully';
   }
 }
 

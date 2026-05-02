@@ -19,7 +19,22 @@ class NotificationPayloadResolver {
       return false;
     }
 
-    return normalizedType.contains('order');
+    return normalizedType.contains('order') ||
+        normalizedType.contains('delivery-otp') ||
+        normalizedType.contains('delivery_otp');
+  }
+
+  static bool isSupportCaseType(String? type) {
+    final normalizedType = type?.trim().toLowerCase();
+    if (normalizedType == null || normalizedType.isEmpty) {
+      return false;
+    }
+
+    return normalizedType.contains('support') ||
+        normalizedType.contains('complaint') ||
+        normalizedType.contains('return_request') ||
+        normalizedType.contains('return-request') ||
+        normalizedType.contains('case');
   }
 
   static Map<String, dynamic> normalize(Map<String, dynamic> rawPayload) {
@@ -37,14 +52,22 @@ class NotificationPayloadResolver {
     payload['referenceId'] = _firstNonEmptyString([
       payload['referenceId'],
       nestedPayload?['referenceId'],
-      payload['orderId'],
-      nestedPayload?['orderId'],
     ]);
     payload['orderId'] = _firstNonEmptyString([
       payload['orderId'],
       nestedPayload?['orderId'],
-      payload['referenceId'],
-      nestedPayload?['referenceId'],
+      payload['order_id'],
+      nestedPayload?['order_id'],
+    ]);
+    payload['caseId'] = _firstNonEmptyString([
+      payload['caseId'],
+      nestedPayload?['caseId'],
+      payload['supportCaseId'],
+      nestedPayload?['supportCaseId'],
+      payload['case_id'],
+      nestedPayload?['case_id'],
+      payload['support_case_id'],
+      nestedPayload?['support_case_id'],
     ]);
     payload['status'] = _firstNonEmptyString([
       payload['status'],
@@ -89,11 +112,64 @@ class NotificationPayloadResolver {
 
   static String? resolveOrderId(Map<String, dynamic> payload) {
     final normalizedPayload = normalize(payload);
-    return _firstNonEmptyString([
-      normalizedPayload['referenceId'],
+    final targetUrl = normalizedPayload['targetUrl']?.toString();
+    final orderIdFromTargetUrl = _extractOrderIdFromTargetUrl(targetUrl);
+
+    final explicitOrderId = _firstNonEmptyString([
       normalizedPayload['orderId'],
-      normalizedPayload['dataObject'],
+      normalizedPayload['order_id'],
+      normalizedPayload['dataObject'] is Map
+          ? (normalizedPayload['dataObject'] as Map)['orderId']
+          : null,
+      normalizedPayload['dataObject'] is Map
+          ? (normalizedPayload['dataObject'] as Map)['order_id']
+          : null,
+      orderIdFromTargetUrl,
     ]);
+    if (explicitOrderId != null) {
+      return explicitOrderId;
+    }
+
+    if (isSupportCaseType(normalizedPayload['type']?.toString())) {
+      return null;
+    }
+
+    return _firstNonEmptyString([normalizedPayload['referenceId']]);
+  }
+
+  static String? resolveSupportCaseId(Map<String, dynamic> payload) {
+    final normalizedPayload = normalize(payload);
+    final targetUrl = normalizedPayload['targetUrl']?.toString();
+    final caseIdFromTargetUrl = _extractCaseIdFromTargetUrl(targetUrl);
+
+    final explicitCaseId = _firstNonEmptyString([
+      normalizedPayload['caseId'],
+      normalizedPayload['supportCaseId'],
+      normalizedPayload['case_id'],
+      normalizedPayload['support_case_id'],
+      normalizedPayload['dataObject'] is Map
+          ? (normalizedPayload['dataObject'] as Map)['caseId']
+          : null,
+      normalizedPayload['dataObject'] is Map
+          ? (normalizedPayload['dataObject'] as Map)['supportCaseId']
+          : null,
+      normalizedPayload['dataObject'] is Map
+          ? (normalizedPayload['dataObject'] as Map)['case_id']
+          : null,
+      normalizedPayload['dataObject'] is Map
+          ? (normalizedPayload['dataObject'] as Map)['support_case_id']
+          : null,
+      caseIdFromTargetUrl,
+    ]);
+    if (explicitCaseId != null) {
+      return explicitCaseId;
+    }
+
+    if (isSupportCaseType(normalizedPayload['type']?.toString())) {
+      return _firstNonEmptyString([normalizedPayload['referenceId']]);
+    }
+
+    return null;
   }
 
   static String? resolveNotificationId(Map<String, dynamic> payload) {
@@ -247,6 +323,12 @@ class NotificationPayloadResolver {
     'status',
     'oldStatus',
     'newStatus',
+    'orderId',
+    'order_id',
+    'caseId',
+    'case_id',
+    'supportCaseId',
+    'support_case_id',
     'orderNumber',
     'vendorId',
     'actorRole',
@@ -255,4 +337,26 @@ class NotificationPayloadResolver {
     'android_channel_id',
     'existing_android_channel_id',
   ];
+
+  static String? _extractOrderIdFromTargetUrl(String? targetUrl) {
+    return _extractPathId(targetUrl, 'orders');
+  }
+
+  static String? _extractCaseIdFromTargetUrl(String? targetUrl) {
+    return _extractPathId(targetUrl, 'cases');
+  }
+
+  static String? _extractPathId(String? targetUrl, String segment) {
+    final normalizedUrl = targetUrl?.trim();
+    if (normalizedUrl == null || normalizedUrl.isEmpty) {
+      return null;
+    }
+
+    final match = RegExp(
+      '/$segment/([^/?#]+)',
+      caseSensitive: false,
+    ).firstMatch(normalizedUrl);
+    final value = match?.group(1)?.trim();
+    return value == null || value.isEmpty ? null : value;
+  }
 }

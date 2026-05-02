@@ -5,14 +5,31 @@ class CheckoutFlowService {
   static final CheckoutFlowService _instance = CheckoutFlowService._internal();
 
   bool _pendingCheckout = false;
+  String? _pendingVendorId;
 
-  void markPendingCheckout() {
+  void markPendingCheckout({String? vendorId}) {
     _pendingCheckout = true;
+    _pendingVendorId = vendorId;
   }
 
-  bool consumePendingCheckout() {
+  PendingCheckoutData consumePendingCheckout() {
     final current = _pendingCheckout;
+    final vendorId = _pendingVendorId;
     _pendingCheckout = false;
-    return current;
+    _pendingVendorId = null;
+    return PendingCheckoutData(
+      shouldResumeCheckout: current,
+      vendorId: vendorId,
+    );
   }
+}
+
+class PendingCheckoutData {
+  const PendingCheckoutData({
+    required this.shouldResumeCheckout,
+    this.vendorId,
+  });
+
+  final bool shouldResumeCheckout;
+  final String? vendorId;
 }

@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_
 class CheckoutSummaryDto {
   const CheckoutSummaryDto({
     required this.cart,
+    required this.availableAddresses,
     required this.deliverySlots,
     required this.paymentMethods,
     required this.summary,
@@ -19,6 +20,9 @@ class CheckoutSummaryDto {
       selectedAddress: _nullableMap(json['selected_address']) == null
           ? null
           : CheckoutAddressDto.fromJson(_asMap(json['selected_address'])),
+      availableAddresses: _asList(json['available_addresses'])
+          .map((item) => CheckoutAddressDto.fromJson(_asMap(item)))
+          .toList(),
       deliverySlots: _asList(json['delivery_slots'])
           .map((item) => CheckoutDeliverySlotDto.fromJson(_asMap(item)))
           .toList(),
@@ -40,6 +44,7 @@ class CheckoutSummaryDto {
   }
 
   final CheckoutCartDto cart;
+  final List<CheckoutAddressDto> availableAddresses;
   final CheckoutAddressDto? selectedAddress;
   final List<CheckoutDeliverySlotDto> deliverySlots;
   final List<CheckoutPaymentMethodDto> paymentMethods;
@@ -52,6 +57,9 @@ class CheckoutSummaryDto {
   CheckoutSummaryEntity toEntity() {
     return CheckoutSummaryEntity(
       cart: cart.toEntity(),
+      availableAddresses: availableAddresses
+          .map((item) => item.toEntity())
+          .toList(),
       selectedAddress: selectedAddress?.toEntity(),
       deliverySlots: deliverySlots.map((item) => item.toEntity()).toList(),
       paymentMethods: paymentMethods.map((item) => item.toEntity()).toList(),
@@ -177,7 +185,8 @@ class CheckoutAddressDto {
 class CheckoutDeliverySlotDto {
   const CheckoutDeliverySlotDto({
     required this.id,
-    required this.label,
+    required this.labelAr,
+    required this.labelEn,
     required this.startAt,
     required this.endAt,
     required this.isAvailable,
@@ -187,7 +196,20 @@ class CheckoutDeliverySlotDto {
   factory CheckoutDeliverySlotDto.fromJson(Map<String, dynamic> json) {
     return CheckoutDeliverySlotDto(
       id: json['id']?.toString() ?? '',
-      label: json['label']?.toString() ?? '',
+      labelAr: _readLocalizedValue(
+        json,
+        arabicKey: 'label_ar',
+        englishKey: 'label_en',
+        fallbackKey: 'label',
+        preferArabic: true,
+      ),
+      labelEn: _readLocalizedValue(
+        json,
+        arabicKey: 'label_ar',
+        englishKey: 'label_en',
+        fallbackKey: 'label',
+        preferArabic: false,
+      ),
       startAt: _asDateTime(json['start_at']),
       endAt: _asDateTime(json['end_at']),
       isAvailable: json['is_available'] == true,
@@ -196,7 +218,8 @@ class CheckoutDeliverySlotDto {
   }
 
   final String id;
-  final String label;
+  final String labelAr;
+  final String labelEn;
   final DateTime startAt;
   final DateTime endAt;
   final bool isAvailable;
@@ -205,7 +228,8 @@ class CheckoutDeliverySlotDto {
   CheckoutDeliverySlotEntity toEntity() {
     return CheckoutDeliverySlotEntity(
       id: id,
-      label: label,
+      labelAr: labelAr,
+      labelEn: labelEn,
       startAt: startAt,
       endAt: endAt,
       isAvailable: isAvailable,
@@ -217,7 +241,10 @@ class CheckoutDeliverySlotDto {
 class CheckoutPaymentMethodDto {
   const CheckoutPaymentMethodDto({
     required this.code,
-    required this.label,
+    required this.labelAr,
+    required this.labelEn,
+    required this.descriptionAr,
+    required this.descriptionEn,
     required this.isAvailable,
     required this.isDefault,
   });
@@ -225,21 +252,54 @@ class CheckoutPaymentMethodDto {
   factory CheckoutPaymentMethodDto.fromJson(Map<String, dynamic> json) {
     return CheckoutPaymentMethodDto(
       code: json['code']?.toString() ?? '',
-      label: json['label']?.toString() ?? '',
+      labelAr: _readLocalizedValue(
+        json,
+        arabicKey: 'label_ar',
+        englishKey: 'label_en',
+        fallbackKey: 'label',
+        preferArabic: true,
+      ),
+      labelEn: _readLocalizedValue(
+        json,
+        arabicKey: 'label_ar',
+        englishKey: 'label_en',
+        fallbackKey: 'label',
+        preferArabic: false,
+      ),
+      descriptionAr: _readLocalizedValue(
+        json,
+        arabicKey: 'description_ar',
+        englishKey: 'description_en',
+        fallbackKey: 'description',
+        preferArabic: true,
+      ),
+      descriptionEn: _readLocalizedValue(
+        json,
+        arabicKey: 'description_ar',
+        englishKey: 'description_en',
+        fallbackKey: 'description',
+        preferArabic: false,
+      ),
       isAvailable: json['is_available'] == true,
       isDefault: json['is_default'] == true,
     );
   }
 
   final String code;
-  final String label;
+  final String labelAr;
+  final String labelEn;
+  final String descriptionAr;
+  final String descriptionEn;
   final bool isAvailable;
   final bool isDefault;
 
   CheckoutPaymentMethodEntity toEntity() {
     return CheckoutPaymentMethodEntity(
       code: code,
-      label: label,
+      labelAr: labelAr,
+      labelEn: labelEn,
+      descriptionAr: descriptionAr,
+      descriptionEn: descriptionEn,
       isAvailable: isAvailable,
       isDefault: isDefault,
     );
@@ -325,26 +385,42 @@ class CheckoutDeliveryQuoteDto {
 class CheckoutShippingLineDto {
   const CheckoutShippingLineDto({
     required this.code,
-    required this.label,
+    required this.labelAr,
+    required this.labelEn,
     required this.amount,
   });
 
   factory CheckoutShippingLineDto.fromJson(Map<String, dynamic> json) {
     return CheckoutShippingLineDto(
       code: json['code']?.toString() ?? '',
-      label: json['label']?.toString() ?? '',
+      labelAr: _readLocalizedValue(
+        json,
+        arabicKey: 'label_ar',
+        englishKey: 'label_en',
+        fallbackKey: 'label',
+        preferArabic: true,
+      ),
+      labelEn: _readLocalizedValue(
+        json,
+        arabicKey: 'label_ar',
+        englishKey: 'label_en',
+        fallbackKey: 'label',
+        preferArabic: false,
+      ),
       amount: _asDouble(json['amount']),
     );
   }
 
   final String code;
-  final String label;
+  final String labelAr;
+  final String labelEn;
   final double amount;
 
   CheckoutShippingLineEntity toEntity() {
     return CheckoutShippingLineEntity(
       code: code,
-      label: label,
+      labelAr: labelAr,
+      labelEn: labelEn,
       amount: amount,
     );
   }
@@ -411,4 +487,29 @@ double _asDouble(dynamic value) {
 
 DateTime _asDateTime(dynamic value) {
   return DateTime.tryParse(value?.toString() ?? '') ?? DateTime.now();
+}
+
+String _readLocalizedValue(
+  Map<String, dynamic> json, {
+  required String arabicKey,
+  required String englishKey,
+  required String fallbackKey,
+  required bool preferArabic,
+}) {
+  final primary = preferArabic ? arabicKey : englishKey;
+  final secondary = preferArabic ? englishKey : arabicKey;
+
+  return _readString(json[primary]) ??
+      _readString(json[secondary]) ??
+      _readString(json[fallbackKey]) ??
+      '';
+}
+
+String? _readString(dynamic value) {
+  final normalized = value?.toString().trim();
+  if (normalized == null || normalized.isEmpty) {
+    return null;
+  }
+
+  return normalized;
 }

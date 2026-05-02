@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_state.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_support_case_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_body_view.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_loading_view.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_webview_screen.dart';
 
 class OrderDetailsPage extends StatelessWidget {
@@ -113,6 +118,31 @@ class OrderDetailsPage extends StatelessWidget {
       AppRoutes.trackOrder,
       arguments: targetOrderId,
     );
+  }
+
+  Future<void> _openSupportCases(
+    BuildContext context,
+    String targetOrderId, {
+    String? caseId,
+  }) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => OrderSupportCaseViewModel(
+            getIt<MyOrdersRepository>(),
+            getIt<NotificationsSignalRService>(),
+          )..initialize(targetOrderId, initialCaseId: caseId),
+          child: OrderSupportCasePage(
+            orderId: targetOrderId,
+            initialCaseId: caseId,
+          ),
+        ),
+      ),
+    );
+
+    if (context.mounted) {
+      await context.read<OrderDetailsViewModel>().load(targetOrderId);
+    }
   }
 
   String? _resolvePaymentCallbackStatus(PaymentCallbackResult result) {
@@ -241,9 +271,9 @@ class OrderDetailsPage extends StatelessWidget {
 
           if (state.failure != null && state.order == null) {
             return ApiErrorWidget(
-                exception: state.failure!.exception,
-                onRetry: () =>
-                    context.read<OrderDetailsViewModel>().load(targetOrderId),
+              exception: state.failure!.exception,
+              onRetry: () =>
+                  context.read<OrderDetailsViewModel>().load(targetOrderId),
             );
           }
 
@@ -254,14 +284,12 @@ class OrderDetailsPage extends StatelessWidget {
 
           return OrderDetailsBodyView(
             order: orderDetails,
-            complaint: state.complaint,
-            message: state.message,
-            attachments: state.attachments,
             status: state.status ?? orderDetails.status,
             isBusy: state.isLoading,
             isCancelling: state.isCancelling,
             isRetryingPayment: state.isRetryingPayment,
             isDeleting: state.isDeleting,
+            isSubmittingSupportCase: state.isSubmittingSupportCase,
             onTrackOrder: () => _openTracking(context, targetOrderId),
             onCancel: () =>
                 context.read<OrderDetailsViewModel>().handleCancelPressed(
@@ -272,13 +300,33 @@ class OrderDetailsPage extends StatelessWidget {
                       order?.totalPrice ?? orderDetails.totalPrice,
                 ),
             onRetryPayment: () => _handleRetryPayment(context, targetOrderId),
-            onComplaint: () =>
-                context.read<OrderDetailsViewModel>().handleComplaintPressed(
+            onSupportCase: () async {
+              final activeCaseId = orderDetails.activeCase?.id;
+              if (activeCaseId != null && activeCaseId.isNotEmpty) {
+                await _openSupportCases(
                   context,
-                  fallbackStatus: order?.status ?? orderDetails.status,
-                  fallbackTotalPrice:
-                      order?.totalPrice ?? orderDetails.totalPrice,
-                ),
+                  targetOrderId,
+                  caseId: activeCaseId,
+                );
+                return;
+              }
+
+              final createdCaseId = await context
+                  .read<OrderDetailsViewModel>()
+                  .handleComplaintPressed(
+                    context,
+                    orderId: targetOrderId,
+                    fallbackStatus: order?.status ?? orderDetails.status,
+                    fallbackTotalPrice:
+                        order?.totalPrice ?? orderDetails.totalPrice,
+                  );
+              if (!context.mounted || createdCaseId == null) return;
+              await _openSupportCases(
+                context,
+                targetOrderId,
+                caseId: createdCaseId,
+              );
+            },
           );
         },
       ),

@@ -22,9 +22,13 @@ class OpenPaymentWebViewEffect extends PaymentUiEffect {
 }
 
 class NavigateToPaymentSuccessEffect extends PaymentUiEffect {
-  const NavigateToPaymentSuccessEffect(this.orderId);
+  const NavigateToPaymentSuccessEffect(
+    this.orderId, {
+    this.isCashOnDelivery = false,
+  });
 
   final String orderId;
+  final bool isCashOnDelivery;
 }
 
 class ShowPaymentSuccessEffect extends PaymentUiEffect {
@@ -47,6 +51,7 @@ class ShowPaymentInfoEffect extends PaymentUiEffect {
 
 class PaymentState {
   const PaymentState({
+    this.vendorId,
     this.isLoadingSummary = false,
     this.isRefreshingSummary = false,
     this.isLoadingAddresses = false,
@@ -64,6 +69,7 @@ class PaymentState {
     this.uiEffect,
   });
 
+  final String? vendorId;
   final bool isLoadingSummary;
   final bool isRefreshingSummary;
   final bool isLoadingAddresses;
@@ -89,6 +95,33 @@ class PaymentState {
 
   String? get selectedAddressId => checkoutSummary?.selectedAddress?.id;
 
+  List<CustomerAddressEntity> get availableAddresses {
+    final summaryAddresses = checkoutSummary?.availableAddresses ?? const [];
+    if (summaryAddresses.isNotEmpty) {
+      return summaryAddresses
+          .map(
+            (address) => CustomerAddressEntity(
+              id: address.id,
+              contactName: '',
+              contactPhone: '',
+              addressLine: address.addressLine,
+              label: address.label,
+              buildingNo: null,
+              floorNo: null,
+              apartmentNo: null,
+              city: '',
+              area: '',
+              latitude: 0,
+              longitude: 0,
+              isDefault: address.isDefault,
+            ),
+          )
+          .toList();
+    }
+
+    return addresses;
+  }
+
   String? get selectedDeliverySlotId {
     final selected = checkoutSummary?.deliverySlots.where(
       (item) => item.isSelected,
@@ -105,6 +138,7 @@ class PaymentState {
       !isPlacingOrder;
 
   PaymentState copyWith({
+    String? vendorId,
     bool? isLoadingSummary,
     bool? isRefreshingSummary,
     bool? isLoadingAddresses,
@@ -130,6 +164,7 @@ class PaymentState {
     bool clearUiEffect = false,
   }) {
     return PaymentState(
+      vendorId: vendorId ?? this.vendorId,
       isLoadingSummary: isLoadingSummary ?? this.isLoadingSummary,
       isRefreshingSummary: isRefreshingSummary ?? this.isRefreshingSummary,
       isLoadingAddresses: isLoadingAddresses ?? this.isLoadingAddresses,

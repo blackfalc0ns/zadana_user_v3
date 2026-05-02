@@ -269,12 +269,12 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       final shouldContinue = await showCheckoutRegistrationDialog(context);
       if (!mounted || shouldContinue != true) return;
 
-      CheckoutFlowService().markPendingCheckout();
+      CheckoutFlowService().markPendingCheckout(vendorId: selectedVendorId);
       Navigator.pushNamed(context, AppRoutes.login);
       return;
     }
 
-    Navigator.pushNamed(context, AppRoutes.payment);
+    Navigator.pushNamed(context, AppRoutes.payment, arguments: selectedVendorId);
   }
 
   void _resetUiAfterCartEmptied({bool resetPriceAnimationVersion = false}) {

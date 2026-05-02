@@ -47,96 +47,156 @@ class TrackOrderDriverCard extends StatelessWidget {
     final title = _title.trim().isEmpty ? l10n.courier_name : _title;
     final subtitle = _subtitle;
     final arrivalStateLabel = this.arrivalStateLabel?.trim() ?? '';
-    final phoneNumber = _phoneNumber;
     final plateNumber = _plateNumber;
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.base),
+      padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
-        color: color.surfaceContainerHighest.withValues(alpha: .2),
+        color: color.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.outlineVariant.withValues(alpha: .2)),
+        border: Border.all(color: color.outlineVariant.withValues(alpha: .16)),
+        boxShadow: [
+          BoxShadow(
+            color: color.shadow.withValues(alpha: .04),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Row(
         children: [
           if (_hasPhoneNumber) ...[
             Container(
-              width: 56,
-              height: 56,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: const Color(0xFFF7EBDD),
                 borderRadius: BorderRadius.circular(999),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x1FE58E1A),
+                    blurRadius: 16,
+                    offset: Offset(0, 6),
+                  ),
+                ],
               ),
               child: IconButton(
                 onPressed: _callDriver,
-                icon: const Icon(Icons.call_outlined, color: Color(0xFFE58E1A)),
+                icon: const Icon(Icons.call_rounded, color: Color(0xFFE58E1A)),
                 tooltip: l10n.phone,
               ),
             ),
-            const SizedBox(width: Spacing.md),
+            const SizedBox(width: Spacing.sm),
           ],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   title,
                   style: getMediumStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontFamily: FontConstant.cairo,
                     color: color.onSurface,
                   ),
                 ),
-                if (subtitle.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.end,
-                    style: getRegularStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: color.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-                if (plateNumber.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    plateNumber,
-                    style: getRegularStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: color.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-                if (phoneNumber.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    phoneNumber,
-                    style: getRegularStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: color.primary,
-                    ),
-                  ),
-                ],
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  alignment: WrapAlignment.end,
+                  children: [
+                    if (subtitle.isNotEmpty)
+                      _DriverMetaChip(
+                        label: subtitle,
+                        icon: Icons.two_wheeler_rounded,
+                        background: color.primary.withValues(alpha: .08),
+                        foreground: color.primary,
+                      ),
+                    if (plateNumber.isNotEmpty)
+                      _DriverMetaChip(
+                        label: plateNumber,
+                        icon: Icons.badge_outlined,
+                        background: color.surfaceContainerHighest.withValues(
+                          alpha: .5,
+                        ),
+                        foreground: color.onSurfaceVariant,
+                      ),
+                  ],
+                ),
                 if (arrivalStateLabel.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    arrivalStateLabel,
-                    textAlign: TextAlign.end,
-                    style: getMediumStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: color.secondary,
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.secondary.withValues(alpha: .12),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      arrivalStateLabel,
+                      textAlign: TextAlign.end,
+                      style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        color: color.secondary,
+                      ),
                     ),
                   ),
                 ],
               ],
             ),
           ),
-          const SizedBox(width: Spacing.md),
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: const Color(0xFFDFF2F8),
-            child: Icon(Icons.person_rounded, color: color.primary, size: 28),
+          const SizedBox(width: Spacing.sm),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: color.primary.withValues(alpha: .10),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.person_rounded, color: color.primary, size: 22),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DriverMetaChip extends StatelessWidget {
+  const _DriverMetaChip({
+    required this.label,
+    required this.icon,
+    required this.background,
+    required this.foreground,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color background;
+  final Color foreground;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: foreground),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              color: foreground,
+            ),
           ),
         ],
       ),

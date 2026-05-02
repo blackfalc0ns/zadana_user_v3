@@ -1,25 +1,30 @@
-import 'package:file_picker/file_picker.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/cancel_order_request_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/cancel_order_response_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/create_order_support_case_request_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/delete_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/retry_order_payment_response_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/cancel_order_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/delete_order_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_cancellation_reasons_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_details_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/retry_order_payment_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_state.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_shared.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_sheets.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 
 @injectable
 class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
@@ -36,8 +41,16 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
   final CancelOrderUseCase _cancelOrderUseCase;
   final RetryOrderPaymentUseCase _retryOrderPaymentUseCase;
   final DeleteOrderUseCase _deleteOrderUseCase;
+  MyOrdersRepository get _repository => GetIt.instance<MyOrdersRepository>();
+  NotificationsSignalRService get _notificationsSignalRService =>
+      GetIt.instance<NotificationsSignalRService>();
+
+  StreamSubscription<dynamic>? _supportCaseChangedSubscription;
+  String? _orderId;
 
   Future<void> load(String orderId) async {
+    _orderId = orderId;
+    _bindRealtime(orderId);
     emit(
       state.copyWith(
         isLoading: true,
@@ -80,26 +93,6 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
     );
   }
 
-  void submitComplaint(OrderComplaintResult result) {
-    emit(
-      state.copyWith(
-        message: result.message,
-        attachments: result.attachments,
-        complaint: OrderComplaintState.submitted,
-        feedbackMessage: result.feedbackMessage,
-        isFeedbackError: false,
-      ),
-    );
-  }
-
-  void followComplaint() {
-    final nextComplaint = state.complaint == OrderComplaintState.submitted
-        ? OrderComplaintState.inReview
-        : OrderComplaintState.resolved;
-
-    emit(state.copyWith(complaint: nextComplaint));
-  }
-
   void clearFeedback() {
     if (state.feedbackMessage == null) return;
     emit(state.copyWith(feedbackMessage: null));
@@ -120,12 +113,7 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
     final result = await _retryOrderPaymentUseCase(orderId);
     switch (result) {
       case ApiSuccessResult<RetryOrderPaymentResponseEntity>():
-        emit(
-          state.copyWith(
-            isRetryingPayment: false,
-            clearFailure: true,
-          ),
-        );
+        emit(state.copyWith(isRetryingPayment: false, clearFailure: true));
         return result.data.payment;
       case ApiErrorResult<RetryOrderPaymentResponseEntity>():
         emit(
@@ -178,8 +166,6 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
   OrderStatus resolveStatus(OrderStatus fallbackStatus) {
     return state.status ?? state.order?.status ?? fallbackStatus;
   }
-
-  List<PlatformFile> currentAttachments() => state.attachments;
 
   Future<void> handleCancelPressed(
     BuildContext context, {
@@ -249,24 +235,111 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
     }
   }
 
-  Future<void> handleComplaintPressed(
+  Future<String?> handleComplaintPressed(
     BuildContext context, {
+    required String orderId,
     required OrderStatus fallbackStatus,
     required double fallbackTotalPrice,
   }) async {
-    if (state.complaint != OrderComplaintState.none) {
-      followComplaint();
-      return;
+    final l10n = AppLocalizations.of(context)!;
+    final activeCase = state.order?.activeCase;
+    if (activeCase != null) {
+      return activeCase.id;
     }
 
-    final result = await showOrderComplaintSheet(
+    final result = await showOrderSupportCaseSheet(
       context: context,
       status: resolveStatus(fallbackStatus),
       total: _money(context, state.order?.totalPrice ?? fallbackTotalPrice),
+      canCreateComplaint: _canCreateComplaint(resolveStatus(fallbackStatus)),
+      canCreateReturnRequest: _canCreateReturnRequest(
+        resolveStatus(fallbackStatus),
+      ),
     );
 
-    if (result == null || result.message.isEmpty || !context.mounted) return;
-    submitComplaint(result);
+    if (result == null || !context.mounted) {
+      return null;
+    }
+
+    emit(
+      state.copyWith(
+        isSubmittingSupportCase: true,
+        clearFailure: true,
+        feedbackMessage: null,
+        isFeedbackError: false,
+      ),
+    );
+
+    final uploadedAttachments = <OrderSupportCaseAttachmentEntity>[];
+    for (final attachment in result.attachments) {
+      final path = attachment.path;
+      if (path == null || path.trim().isEmpty) {
+        emit(
+          state.copyWith(
+            isSubmittingSupportCase: false,
+            feedbackMessage: l10n.error_other_desc,
+            isFeedbackError: true,
+          ),
+        );
+        return null;
+      }
+
+      final uploadResult = await _repository.uploadOrderSupportCaseAttachment(
+        orderId,
+        path,
+      );
+
+      switch (uploadResult) {
+        case ApiSuccessResult():
+          uploadedAttachments.add(
+            OrderSupportCaseAttachmentEntity(
+              fileName: uploadResult.data.fileName,
+              fileUrl: uploadResult.data.url,
+            ),
+          );
+        case ApiErrorResult():
+          emit(
+            state.copyWith(
+              isSubmittingSupportCase: false,
+              feedbackMessage: uploadResult.failure.errorMessage,
+              isFeedbackError: true,
+            ),
+          );
+          return null;
+      }
+    }
+
+    final createResult = await _repository.createOrderSupportCase(
+      orderId,
+      CreateOrderSupportCaseRequestEntity(
+        type: result.type,
+        reasonCode: result.reasonCode,
+        message: result.message,
+        attachments: uploadedAttachments,
+      ),
+    );
+
+    switch (createResult) {
+      case ApiSuccessResult():
+        await load(orderId);
+        emit(
+          state.copyWith(
+            isSubmittingSupportCase: false,
+            feedbackMessage: l10n.my_orders_support_case_created,
+            isFeedbackError: false,
+          ),
+        );
+        return createResult.data.id;
+      case ApiErrorResult():
+        emit(
+          state.copyWith(
+            isSubmittingSupportCase: false,
+            feedbackMessage: createResult.failure.errorMessage,
+            isFeedbackError: true,
+          ),
+        );
+        return null;
+    }
   }
 
   Future<List<OrderCancellationReasonEntity>?>
@@ -296,5 +369,28 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
   String _money(BuildContext context, double value) {
     final l10n = AppLocalizations.of(context)!;
     return '${value.toStringAsFixed(2)} ${l10n.currency}';
+  }
+
+  bool _canCreateComplaint(OrderStatus status) => status.canCreateComplaint;
+
+  bool _canCreateReturnRequest(OrderStatus status) =>
+      status.canCreateReturnRequest;
+
+  void _bindRealtime(String orderId) {
+    _supportCaseChangedSubscription ??= _notificationsSignalRService
+        .watchOrderSupportCaseChangedEvents()
+        .listen((payload) {
+          if (payload.orderId.trim().toLowerCase() !=
+              (_orderId ?? '').trim().toLowerCase()) {
+            return;
+          }
+          unawaited(load(_orderId!));
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _supportCaseChangedSubscription?.cancel();
+    return super.close();
   }
 }

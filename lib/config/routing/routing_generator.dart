@@ -149,11 +149,27 @@ class RouteGenerator {
           },
         );
       case AppRoutes.payment:
-        return MaterialPageRoute(builder: (_) => const PaymentScreen());
-      case AppRoutes.paymentSuccess:
-        final orderId = settings.arguments as String?;
+        final vendorId = settings.arguments as String?;
         return MaterialPageRoute(
-          builder: (_) => PaymentSuccessScreen(orderId: orderId),
+          builder: (_) => PaymentScreen(vendorId: vendorId),
+        );
+      case AppRoutes.paymentSuccess:
+        final arguments = settings.arguments;
+        final orderId = switch (arguments) {
+          final String id => id,
+          final Map<dynamic, dynamic> map => map['orderId']?.toString(),
+          _ => null,
+        };
+        final isCashOnDelivery = switch (arguments) {
+          final Map<dynamic, dynamic> map =>
+            map['isCashOnDelivery'] as bool? ?? false,
+          _ => false,
+        };
+        return MaterialPageRoute(
+          builder: (_) => PaymentSuccessScreen(
+            orderId: orderId,
+            isCashOnDelivery: isCashOnDelivery,
+          ),
         );
       case AppRoutes.orders:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());

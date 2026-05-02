@@ -17,6 +17,7 @@ class ProfileDashboardContent extends StatelessWidget {
     required this.notificationsEnabled,
     required this.notificationsUpdating,
     required this.onNotificationsChanged,
+    required this.onNotificationsTap,
     required this.onLanguageTap,
     required this.onLogout,
     required this.onEditTap,
@@ -27,6 +28,7 @@ class ProfileDashboardContent extends StatelessWidget {
   final bool notificationsEnabled;
   final bool notificationsUpdating;
   final ValueChanged<bool> onNotificationsChanged;
+  final VoidCallback onNotificationsTap;
   final VoidCallback onLanguageTap;
   final VoidCallback onLogout;
   final Future<void> Function() onEditTap;
@@ -83,14 +85,14 @@ class ProfileDashboardContent extends StatelessWidget {
             _ProfileActionItem(
               icon: Icons.notifications_none_rounded,
               title: l10n.notifications,
-              subtitle: l10n.profile_notifications_subtitle,
+              subtitle: _notificationsStatusText(context, notificationsEnabled),
               trailing: Switch(
                 value: notificationsEnabled,
-                onChanged: notificationsUpdating ? null : onNotificationsChanged,
+                onChanged: notificationsUpdating
+                    ? null
+                    : onNotificationsChanged,
               ),
-              onTap: notificationsUpdating
-                  ? () {}
-                  : () => onNotificationsChanged(!notificationsEnabled),
+              onTap: onNotificationsTap,
             ),
             _ProfileActionItem(
               icon: Icons.lock_outline_rounded,
@@ -150,6 +152,14 @@ class ProfileDashboardContent extends StatelessWidget {
         const SliverToBoxAdapter(child: SizedBox(height: 120)),
       ],
     );
+  }
+
+  String _notificationsStatusText(BuildContext context, bool enabled) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (languageCode == 'ar') {
+      return enabled ? 'مفعل' : 'غير مفعل';
+    }
+    return enabled ? 'Enabled' : 'Disabled';
   }
 }
 

@@ -785,6 +785,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications_mark_all_read => 'Mark all read';
 
   @override
+  String get notifications_mark_all_read_confirm_title => 'Mark all as read?';
+
+  @override
+  String get notifications_mark_all_read_confirm_message =>
+      'Do you want to mark all current notifications as read?';
+
+  @override
   String get notifications_preferences_saved =>
       'Notification preferences saved';
 
@@ -1001,7 +1008,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Do you want to delete the selected category?';
 
   @override
-  String get delete_category_tooltip => 'Delete selected category';
+  String get delete_category_tooltip => 'Delete selected';
 
   @override
   String get clear_filters_title => 'Clear filters';
@@ -1598,6 +1605,111 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get my_orders_complaint_resolved => 'Complaint Resolved';
+
+  @override
+  String get my_orders_support_case_title => 'Support Case';
+
+  @override
+  String get my_orders_support_case_history_title => 'Case History';
+
+  @override
+  String get my_orders_support_case_details_title => 'Case Details';
+
+  @override
+  String get my_orders_support_case_timeline_title => 'Customer Timeline';
+
+  @override
+  String get my_orders_support_case_empty_details =>
+      'Choose a case to view its details.';
+
+  @override
+  String get my_orders_support_case_action => 'Contact Support';
+
+  @override
+  String get my_orders_support_case_view => 'View Case';
+
+  @override
+  String get my_orders_support_case_created => 'Support case submitted';
+
+  @override
+  String get my_orders_support_case_sheet_title => 'Create Support Case';
+
+  @override
+  String get my_orders_support_case_sheet_subtitle =>
+      'Describe the issue and attach files before sending the case.';
+
+  @override
+  String get my_orders_support_case_sheet_hint => 'Write what happened';
+
+  @override
+  String get my_orders_support_case_sheet_attach_files => 'Attach Files';
+
+  @override
+  String my_orders_support_case_sheet_attached_files(int count) {
+    return '$count file(s) attached';
+  }
+
+  @override
+  String get my_orders_support_case_sheet_send => 'Send Case';
+
+  @override
+  String get my_orders_support_case_type_complaint => 'Complaint';
+
+  @override
+  String get my_orders_support_case_type_return_request => 'Return Request';
+
+  @override
+  String get my_orders_support_case_type_generic => 'Support';
+
+  @override
+  String get my_orders_support_case_reason_label => 'Reason';
+
+  @override
+  String get my_orders_support_case_queue_label => 'Queue';
+
+  @override
+  String get my_orders_support_case_priority_label => 'Priority';
+
+  @override
+  String get my_orders_support_case_evidence_guidance =>
+      'If more evidence is requested, please review the latest note and contact support or wait for the next update.';
+
+  @override
+  String get my_orders_support_case_status_submitted => 'Submitted';
+
+  @override
+  String get my_orders_support_case_status_in_review => 'In Review';
+
+  @override
+  String get my_orders_support_case_status_awaiting_customer_evidence =>
+      'Awaiting Evidence';
+
+  @override
+  String get my_orders_support_case_status_approved => 'Approved';
+
+  @override
+  String get my_orders_support_case_status_rejected => 'Rejected';
+
+  @override
+  String get my_orders_support_case_status_resolved => 'Resolved';
+
+  @override
+  String get my_orders_support_case_status_unknown => 'Updated';
+
+  @override
+  String get my_orders_support_case_reason_payment_issue => 'Payment issue';
+
+  @override
+  String get my_orders_support_case_reason_delivery_delay => 'Delivery delay';
+
+  @override
+  String get my_orders_support_case_reason_prep_delay => 'Preparation delay';
+
+  @override
+  String get my_orders_support_case_reason_fraud => 'Fraud';
+
+  @override
+  String get my_orders_support_case_reason_fraud_suspicion => 'Fraud suspicion';
 
   @override
   String get order_pending => 'Pending';

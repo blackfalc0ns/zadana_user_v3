@@ -149,9 +149,12 @@ class RealtimeNotificationOverlayService {
   Future<void> _openNotificationTarget(
     AppNotificationEntity notification,
   ) async {
-    final orderId = notification.referenceId?.trim().isNotEmpty == true
-        ? notification.referenceId!.trim()
-        : notification.dataObject?['orderId']?.toString();
+    final payload = <String, dynamic>{
+      if (notification.dataObject != null) ...notification.dataObject!,
+      'type': notification.type,
+      'referenceId': notification.referenceId,
+    };
+    final orderId = NotificationPayloadResolver.resolveOrderId(payload);
 
     if (NotificationPayloadResolver.isOrderRelatedType(notification.type) &&
         orderId != null &&

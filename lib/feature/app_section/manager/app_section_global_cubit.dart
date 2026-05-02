@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
@@ -61,6 +62,7 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   final GetCartUseCase _getCartUseCase;
   final ProductDetailsUseCase _productDetailsUseCase;
   final AddCartItemUseCase _addCartItemUseCase;
+  final CartNavigationService _cartNavigationService = CartNavigationService();
 
   StreamSubscription<FavoriteMutationEvent>? _favoriteMutationsSubscription;
   StreamSubscription<CartMutationEvent>? _cartMutationsSubscription;
@@ -84,6 +86,7 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     _cartMutationsSubscription = _cartRepository.mutations.listen(
       _handleCartMutation,
     );
+    _cartNavigationService.addListener(_handleCartNavigationRequest);
 
     emit(state.copyWith(isInitializing: true));
     _warmUpFeatureData();
@@ -285,8 +288,17 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     );
   }
 
+  void _handleCartNavigationRequest() {
+    if (!_cartNavigationService.consumeResetBadgeRequest()) {
+      return;
+    }
+
+    emit(state.copyWith(cartCount: 0));
+  }
+
   @override
   Future<void> close() async {
+    _cartNavigationService.removeListener(_handleCartNavigationRequest);
     _favoritesRefreshDebouncer?.cancel();
     _cartRefreshDebouncer?.cancel();
     await _favoriteMutationsSubscription?.cancel();

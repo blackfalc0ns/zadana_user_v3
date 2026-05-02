@@ -24,6 +24,9 @@ OrderDetailsDto _$OrderDetailsDtoFromJson(Map<String, dynamic> json) =>
       items: (json['items'] as List<dynamic>)
           .map((e) => OrderItemDto.fromJson(e as Map<String, dynamic>))
           .toList(),
+      activeCase: OrderDetailsDto._activeCaseFromJson(
+        json['active_case'] as Map<String, dynamic>?,
+      ),
     );
 
 Map<String, dynamic> _$OrderDetailsDtoToJson(OrderDetailsDto instance) =>
@@ -40,4 +43,5 @@ Map<String, dynamic> _$OrderDetailsDtoToJson(OrderDetailsDto instance) =>
       'items_count': instance.itemsCount,
       'summary': instance.summary.toJson(),
       'items': instance.items.map((e) => e.toJson()).toList(),
+      'active_case': OrderDetailsDto._activeCaseToJson(instance.activeCase),
     };

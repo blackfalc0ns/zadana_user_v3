@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/core/utils/localized_api_message.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_summary_dto.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_promo_result_entity.dart';
 
@@ -13,7 +14,7 @@ class CheckoutPromoResultDto {
 
   factory CheckoutPromoResultDto.fromJson(Map<String, dynamic> json) {
     return CheckoutPromoResultDto(
-      message: json['message']?.toString() ?? '',
+      message: resolveLocalizedApiMessage(json),
       promoCode: _nullableMap(json['promo_code']) == null
           ? null
           : CheckoutPromoCodeDto.fromJson(_asMap(json['promo_code'])),

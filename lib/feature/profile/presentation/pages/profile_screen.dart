@@ -12,6 +12,7 @@ import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_dialogs.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
@@ -86,6 +87,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     switch (result) {
       case ApiSuccessResult<void>():
+        CustomSnackbar.showSuccess(
+          context: context,
+          message: context.localization.notifications_preferences_saved,
+        );
         break;
       case ApiErrorResult<void>():
         await getIt<NotificationDeviceService>()
@@ -197,6 +202,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
           onNotificationsChanged: _handleNotificationsChanged,
+          onNotificationsTap: () =>
+              Navigator.of(context).pushNamed(AppRoutes.notifications),
           onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),
           onLogout: () => _showLogoutDialog(context, l10n),
         );

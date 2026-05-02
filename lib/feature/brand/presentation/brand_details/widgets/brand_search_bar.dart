@@ -55,10 +55,7 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
           Container(
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-             
-              borderRadius: BorderRadius.circular(25),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
             child: Row(
               children: [
                 Expanded(
@@ -156,22 +153,50 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                         ),
                 ),
                 Container(
-                  width: 44,
-                  height: 44,
+                  constraints: BoxConstraints(
+                    minWidth: isActionDestructive ? 88 : 44,
+                    minHeight: 44,
+                  ),
                   margin: const EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
                     color: actionColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: IconButton(
-                    tooltip: actionTooltip,
-                    icon: Icon(actionIcon, color: color.onPrimary, size: 20),
-                    onPressed: () {
-                      focusNode?.unfocus();
-                      onClose?.call();
-                      onActionPressed();
-                    },
-                    padding: EdgeInsets.zero,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        focusNode?.unfocus();
+                        onClose?.call();
+                        onActionPressed();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isActionDestructive ? 14 : 12,
+                          vertical: 12,
+                        ),
+                        child: isActionDestructive
+                            ? Center(
+                                child: Text(
+                                  actionTooltip ??
+                                      context
+                                          .localization
+                                          .delete_category_tooltip,
+                                  style: getRegularStyle(
+                                    fontSize: FontSize.size14,
+                                    fontFamily: FontConstant.cairo,
+                                    color: color.onPrimary,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                actionIcon,
+                                color: color.onPrimary,
+                                size: 20,
+                              ),
+                      ),
+                    ),
                   ),
                 ),
               ],

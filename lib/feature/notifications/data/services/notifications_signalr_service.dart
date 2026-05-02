@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart'
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/app_notification_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/driver_arrival_state_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_status_changed_realtime_payload.dart';
 
@@ -29,6 +30,9 @@ class NotificationsSignalRService {
   final StreamController<DriverArrivalStateChangedRealtimePayload>
   _driverArrivalStateChangedController =
       StreamController<DriverArrivalStateChangedRealtimePayload>.broadcast();
+  final StreamController<OrderSupportCaseChangedRealtimePayload>
+  _orderSupportCaseChangedController =
+      StreamController<OrderSupportCaseChangedRealtimePayload>.broadcast();
   final List<String> _recentNotificationIds = <String>[];
   final Set<String> _recentNotificationIdSet = <String>{};
 
@@ -56,6 +60,12 @@ class NotificationsSignalRService {
   watchDriverArrivalStateChangedEvents() {
     unawaited(activateAuthenticatedConnectionIfPossible());
     return _driverArrivalStateChangedController.stream;
+  }
+
+  Stream<OrderSupportCaseChangedRealtimePayload>
+  watchOrderSupportCaseChangedEvents() {
+    unawaited(activateAuthenticatedConnectionIfPossible());
+    return _orderSupportCaseChangedController.stream;
   }
 
   Future<void> activateAuthenticatedConnectionIfPossible() async {
@@ -143,6 +153,10 @@ class NotificationsSignalRService {
       connection.on(
         NetworkConstants.receiveDriverArrivalStateChangedSignalREvent,
         _handleDriverArrivalStateChanged,
+      );
+      connection.on(
+        NetworkConstants.receiveOrderSupportCaseChangedSignalREvent,
+        _handleOrderSupportCaseChanged,
       );
 
       connection.onclose(({error}) {
@@ -271,6 +285,22 @@ class NotificationsSignalRService {
     );
   }
 
+  void _handleOrderSupportCaseChanged(List<Object?>? args) {
+    final payload = _extractPayload(args);
+    if (payload == null || _orderSupportCaseChangedController.isClosed) {
+      return;
+    }
+
+    _logger.i(
+      'Notifications SignalR support case event received from '
+      '${NetworkConstants.receiveOrderSupportCaseChangedSignalREvent}. '
+      '${NotificationPayloadResolver.resolveDebugSummary(payload)}',
+    );
+    _orderSupportCaseChangedController.add(
+      OrderSupportCaseChangedRealtimePayload.fromJson(payload),
+    );
+  }
+
   void ingestExternalOrderRelatedPayload(
     Map<String, dynamic> payload, {
     String source = 'external',
@@ -297,7 +327,8 @@ class NotificationsSignalRService {
   bool get _hasRealtimeListeners =>
       _notificationsController.hasListener ||
       _orderStatusChangedController.hasListener ||
-      _driverArrivalStateChangedController.hasListener;
+      _driverArrivalStateChangedController.hasListener ||
+      _orderSupportCaseChangedController.hasListener;
 
   void _scheduleReconnect() {
     if (_isReconnectScheduled || _isManuallyStopped || !_hasRealtimeListeners) {

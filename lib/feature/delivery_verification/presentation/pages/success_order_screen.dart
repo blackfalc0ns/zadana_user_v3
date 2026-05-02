@@ -6,7 +6,6 @@ import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/courier_info_card.dart';
-import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/order_info_card.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/success_action_buttons.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/widget/success_animation_widget.dart';
 
@@ -34,7 +33,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen>
   late AnimationController _slideController;
 
   late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
   late Animation<Offset> _slideAnimation;
 
   bool _showContent = false;
@@ -61,9 +59,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen>
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
     );
 
     // Slide animation for content
@@ -177,11 +172,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen>
                           textAlign: TextAlign.center,
                         ),
 
-                        if (widget.orderId != null) ...[
-                          const SizedBox(height: 16),
-                          OrderInfoCard(orderId: widget.orderId!),
-                        ],
-
                         if (widget.courierName != null) ...[
                           const SizedBox(height: 16),
                           CourierInfoCard(
@@ -195,7 +185,6 @@ class _SuccessOrderScreenState extends State<SuccessOrderScreen>
                         // Action buttons
                         if (_showContent)
                           SuccessActionButtons(
-                            orderId: widget.orderId,
                             courierName: widget.courierName,
                             courierImage: widget.courierImage,
                           ),

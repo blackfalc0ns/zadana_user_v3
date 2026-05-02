@@ -9,6 +9,7 @@ class CartNavigationService extends ChangeNotifier {
 
   bool _clearStateRequested = false;
   bool _reloadRequested = false;
+  bool _resetBadgeRequested = false;
 
   bool consumeClearStateRequest() {
     final shouldClear = _clearStateRequested;
@@ -22,9 +23,21 @@ class CartNavigationService extends ChangeNotifier {
     return shouldReload;
   }
 
-  void notifyTabChanged({bool clearState = false, bool reload = true}) {
+  bool consumeResetBadgeRequest() {
+    final shouldResetBadge = _resetBadgeRequested;
+    _resetBadgeRequested = false;
+    return shouldResetBadge;
+  }
+
+  void notifyTabChanged({
+    bool clearState = false,
+    bool reload = true,
+    bool resetBadge = false,
+  }) {
     _clearStateRequested = _clearStateRequested || clearState;
     _reloadRequested = _reloadRequested || reload;
+    _resetBadgeRequested =
+        _resetBadgeRequested || resetBadge || clearState;
     notifyListeners();
   }
 }

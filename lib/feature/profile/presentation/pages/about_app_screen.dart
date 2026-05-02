@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
-import 'package:zadana_user_v3/core/constants/app_constants.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/utils/app_package_info.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 
 class AboutAppScreen extends StatelessWidget {
@@ -40,13 +40,19 @@ class AboutAppScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.xs),
-            Text(
-              '${l10n.version_label} ${AppConstants.appVersion}',
-              style: getMediumStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurfaceVariant,
-              ),
+            FutureBuilder<String>(
+              future: AppPackageInfo.versionName,
+              builder: (context, snapshot) {
+                final version = snapshot.data ?? '...';
+                return Text(
+                  '${l10n.version_label} v$version',
+                  style: getMediumStyle(
+                    fontSize: FontSize.size14,
+                    fontFamily: FontConstant.cairo,
+                    color: color.onSurfaceVariant,
+                  ),
+                );
+              },
             ),
             const SizedBox(height: Spacing.xl),
             Container(

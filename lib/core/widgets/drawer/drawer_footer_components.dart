@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
+import 'package:zadana_user_v3/core/utils/app_package_info.dart';
 
 void showDeveloperDialog(BuildContext context) {
   final color = context.colorScheme;
@@ -58,13 +59,19 @@ void showDeveloperDialog(BuildContext context) {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'Version 1.0.0',
-                  style: getRegularStyle(
-                    fontSize: FontSize.size13,
-                    fontFamily: FontConstant.cairo,
-                    color: AppColors.textSecondary,
-                  ),
+                FutureBuilder<String>(
+                  future: AppPackageInfo.versionName,
+                  builder: (context, snapshot) {
+                    final version = snapshot.data ?? '...';
+                    return Text(
+                      'Version $version',
+                      style: getRegularStyle(
+                        fontSize: FontSize.size13,
+                        fontFamily: FontConstant.cairo,
+                        color: AppColors.textSecondary,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: Spacing.lg),
                 const DeveloperInfoCard(
@@ -248,16 +255,22 @@ class FooterInfoTile extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 3),
-                      Text(
-                        'Black Falcons v 1.0.0',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: getMediumStyle(
-                          fontSize: FontSize.size13,
-                          fontFamily: FontConstant.cairo,
-                          color: color.onSurface,
-                        ),
+                      FutureBuilder<String>(
+                        future: AppPackageInfo.versionName,
+                        builder: (context, snapshot) {
+                          final version = snapshot.data ?? '...';
+                          return Text(
+                            'Black Falcons v $version',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: getMediumStyle(
+                              fontSize: FontSize.size13,
+                              fontFamily: FontConstant.cairo,
+                              color: color.onSurface,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

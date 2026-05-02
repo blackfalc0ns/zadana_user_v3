@@ -21,7 +21,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController(text: 'محمد أحمد');
   final _emailController = TextEditingController(text: 'mohamed@example.com');
-  final _phoneController = TextEditingController(text: '+966501234567');
+  final _phoneController = TextEditingController(text: '01012345678');
   bool _isLoading = false;
 
   @override
@@ -33,22 +33,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _saveChanges() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        CustomSnackbar.showSuccess(
-          context: context,
-          message: 'تم تحديث البيانات بنجاح',
-        );
-        Navigator.of(context).pop();
-      }
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
+
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() => _isLoading = false);
+
+    if (!mounted) return;
+
+    CustomSnackbar.showSuccess(
+      context: context,
+      message: 'تم تحديث البيانات بنجاح',
+    );
+    Navigator.of(context).pop();
   }
 
   @override
@@ -73,8 +72,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             children: [
               const SizedBox(height: Spacing.base),
-
-              // Profile Image
               Stack(
                 children: [
                   CircleAvatar(
@@ -116,25 +113,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ],
               ),
-
               const SizedBox(height: Spacing.xl),
-
-              // Name Field
-              const FieldLabel('الاسم'),
+              FieldLabel(locale.label_full_name),
               AppTextField(
                 controller: _nameController,
-                hint: 'أدخل الاسم',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'الاسم مطلوب';
-                  }
-                  return null;
-                },
+                hint: locale.hint_full_name,
+                validator: (value) => Validations.validateName(context, value),
                 prefixIcon: const Icon(Icons.person_outline),
               ),
               const SizedBox(height: Spacing.base),
-
-              // Email Field
               FieldLabel(locale.label_email),
               AppTextField(
                 controller: _emailController,
@@ -144,24 +131,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 prefixIcon: const Icon(Icons.email_outlined),
               ),
               const SizedBox(height: Spacing.base),
-
-              // Phone Field
               FieldLabel(locale.label_phone),
               AppTextField(
                 controller: _phoneController,
                 hint: locale.hint_phone,
                 keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'رقم الهاتف مطلوب';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    Validations.validatePhoneNumber(context, value),
                 prefixIcon: const Icon(Icons.phone_outlined),
               ),
               const SizedBox(height: Spacing.xl),
-
-              // Save Button
               AppButtonSwitch(
                 label: locale.btn_confirm,
                 onPressed: _saveChanges,

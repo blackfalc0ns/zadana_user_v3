@@ -4,7 +4,9 @@ abstract class AppRegExp {
   }
 
   static bool isEmailValid(String email) {
-    return RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email);
+    return RegExp(
+      r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$",
+    ).hasMatch(email);
   }
 
   static bool isPhoneNumberValid(String phoneNumber) {

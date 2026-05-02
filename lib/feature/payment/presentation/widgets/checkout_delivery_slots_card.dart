@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/info_card_container.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/section_header.dart';
 
@@ -66,6 +67,11 @@ class _DeliverySlotTile extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isSelected = slot.isSelected;
     final timeLabel = _buildTimeLabel();
+    final slotLabel = resolveBilingualValue(
+      context,
+      arabic: slot.labelAr,
+      english: slot.labelEn,
+    );
 
     return InkWell(
       onTap: onTap,
@@ -97,7 +103,7 @@ class _DeliverySlotTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    slot.label,
+                    slotLabel,
                     style: getBoldStyle(
                       fontSize: FontSize.size13,
                       fontFamily: FontConstant.cairo,

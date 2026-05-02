@@ -22,8 +22,9 @@ void main() async {
   unawaited(
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
   );
+  const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
   runApp(
-    kReleaseMode
+    kReleaseMode || !enableDevicePreview
         ? const AppBootstrapper()
         : DevicePreview(builder: (context) => const AppBootstrapper()),
   );
@@ -105,11 +106,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    getIt<RealtimeNotificationOverlayService>().startListening();
-    unawaited(
-      getIt<NotificationsSignalRService>()
-          .activateAuthenticatedConnectionIfPossible(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getIt<RealtimeNotificationOverlayService>().startListening();
+      unawaited(
+        getIt<NotificationsSignalRService>()
+            .activateAuthenticatedConnectionIfPossible(),
+      );
+    });
   }
 
   @override

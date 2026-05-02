@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_item_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_price_summary_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
@@ -21,6 +22,7 @@ class OrderDetailsDto {
     required this.itemsCount,
     required this.summary,
     required this.items,
+    this.activeCase,
   });
 
   factory OrderDetailsDto.fromJson(Map<String, dynamic> json) =>
@@ -39,6 +41,11 @@ class OrderDetailsDto {
   final int itemsCount;
   final OrderPriceSummaryDto summary;
   final List<OrderItemDto> items;
+  @JsonKey(
+    fromJson: _activeCaseFromJson,
+    toJson: _activeCaseToJson,
+  )
+  final OrderSupportCaseSummaryDto? activeCase;
 
   Map<String, dynamic> toJson() => _$OrderDetailsDtoToJson(this);
 
@@ -56,6 +63,31 @@ class OrderDetailsDto {
       itemsCount: itemsCount,
       summary: summary.toEntity(),
       items: items.map((item) => item.toEntity()).toList(),
+      activeCase: activeCase?.toEntity(),
     );
+  }
+
+  static OrderSupportCaseSummaryDto? _activeCaseFromJson(
+    Map<String, dynamic>? json,
+  ) {
+    if (json == null) return null;
+    return OrderSupportCaseSummaryDto.fromJson(json);
+  }
+
+  static Map<String, dynamic>? _activeCaseToJson(
+    OrderSupportCaseSummaryDto? value,
+  ) {
+    if (value == null) return null;
+    return <String, dynamic>{
+      'id': value.id,
+      'type': value.type,
+      'status': value.status,
+      'queue': value.queue,
+      'priority': value.priority,
+      'reason_code': value.reasonCode,
+      'message': value.message,
+      'created_at': value.createdAt?.toIso8601String(),
+      'updated_at': value.updatedAt?.toIso8601String(),
+    };
   }
 }

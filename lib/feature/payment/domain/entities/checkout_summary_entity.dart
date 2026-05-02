@@ -1,6 +1,7 @@
 class CheckoutSummaryEntity {
   const CheckoutSummaryEntity({
     required this.cart,
+    required this.availableAddresses,
     required this.deliverySlots,
     required this.paymentMethods,
     required this.summary,
@@ -12,6 +13,7 @@ class CheckoutSummaryEntity {
   });
 
   final CheckoutCartEntity cart;
+  final List<CheckoutAddressEntity> availableAddresses;
   final CheckoutAddressEntity? selectedAddress;
   final List<CheckoutDeliverySlotEntity> deliverySlots;
   final List<CheckoutPaymentMethodEntity> paymentMethods;
@@ -23,6 +25,7 @@ class CheckoutSummaryEntity {
 
   CheckoutSummaryEntity copyWith({
     CheckoutCartEntity? cart,
+    List<CheckoutAddressEntity>? availableAddresses,
     CheckoutAddressEntity? selectedAddress,
     bool clearSelectedAddress = false,
     List<CheckoutDeliverySlotEntity>? deliverySlots,
@@ -38,6 +41,7 @@ class CheckoutSummaryEntity {
   }) {
     return CheckoutSummaryEntity(
       cart: cart ?? this.cart,
+      availableAddresses: availableAddresses ?? this.availableAddresses,
       selectedAddress: clearSelectedAddress
           ? null
           : selectedAddress ?? this.selectedAddress,
@@ -105,7 +109,8 @@ class CheckoutAddressEntity {
 class CheckoutDeliverySlotEntity {
   const CheckoutDeliverySlotEntity({
     required this.id,
-    required this.label,
+    required this.labelAr,
+    required this.labelEn,
     required this.startAt,
     required this.endAt,
     required this.isAvailable,
@@ -113,7 +118,8 @@ class CheckoutDeliverySlotEntity {
   });
 
   final String id;
-  final String label;
+  final String labelAr;
+  final String labelEn;
   final DateTime startAt;
   final DateTime endAt;
   final bool isAvailable;
@@ -123,13 +129,19 @@ class CheckoutDeliverySlotEntity {
 class CheckoutPaymentMethodEntity {
   const CheckoutPaymentMethodEntity({
     required this.code,
-    required this.label,
+    required this.labelAr,
+    required this.labelEn,
+    required this.descriptionAr,
+    required this.descriptionEn,
     required this.isAvailable,
     required this.isDefault,
   });
 
   final String code;
-  final String label;
+  final String labelAr;
+  final String labelEn;
+  final String descriptionAr;
+  final String descriptionEn;
   final bool isAvailable;
   final bool isDefault;
 }
@@ -171,12 +183,14 @@ class CheckoutDeliveryQuoteEntity {
 class CheckoutShippingLineEntity {
   const CheckoutShippingLineEntity({
     required this.code,
-    required this.label,
+    required this.labelAr,
+    required this.labelEn,
     required this.amount,
   });
 
   final String code;
-  final String label;
+  final String labelAr;
+  final String labelEn;
   final double amount;
 }
 

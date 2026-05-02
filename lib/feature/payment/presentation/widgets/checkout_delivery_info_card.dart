@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -14,13 +13,11 @@ class CheckoutDeliveryInfoCard extends StatelessWidget {
   const CheckoutDeliveryInfoCard({
     super.key,
     required this.selectedAddress,
-    required this.selectedSlot,
     required this.onChangeAddress,
     this.isRefreshing = false,
   });
 
   final CheckoutAddressEntity? selectedAddress;
-  final CheckoutDeliverySlotEntity? selectedSlot;
   final VoidCallback onChangeAddress;
   final bool isRefreshing;
 
@@ -75,8 +72,6 @@ class CheckoutDeliveryInfoCard extends StatelessWidget {
             _SelectedAddressTile(address: selectedAddress!)
           else
             _MissingAddressTile(onChangeAddress: onChangeAddress),
-          const SizedBox(height: Spacing.sm),
-          _SelectedSlotTile(slot: selectedSlot),
         ],
       ),
     );
@@ -132,7 +127,9 @@ class _SelectedAddressTile extends StatelessWidget {
                     if (address.isDefault)
                       InfoBadge(
                         text: l10n.currently_selected,
-                        backgroundColor: colors.secondary.withValues(alpha: 0.1),
+                        backgroundColor: colors.secondary.withValues(
+                          alpha: 0.1,
+                        ),
                         textColor: colors.secondary,
                         fontSize: FontSize.size9,
                         padding: const EdgeInsets.symmetric(
@@ -195,74 +192,6 @@ class _MissingAddressTile extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _SelectedSlotTile extends StatelessWidget {
-  const _SelectedSlotTile({required this.slot});
-
-  final CheckoutDeliverySlotEntity? slot;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: const EdgeInsets.all(Spacing.md),
-      decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(Spacing.sm + 2),
-        border: Border.all(color: colors.secondary.withValues(alpha: 0.15)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(Spacing.sm),
-            decoration: BoxDecoration(
-              color: colors.secondary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(Spacing.sm),
-            ),
-            child: Icon(Icons.schedule, color: colors.secondary, size: 18),
-          ),
-          const SizedBox(width: Spacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.estimated_delivery,
-                  style: getMediumStyle(
-                    fontFamily: FontConstant.cairo,
-                    color: colors.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  slot?.label ?? l10n.not_available,
-                  style: getBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    color: colors.secondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          InfoBadge(
-            text: slot?.isAvailable == true ? l10n.available : l10n.not_available,
-            backgroundColor: slot?.isAvailable == true
-                ? colors.secondary
-                : AppColors.error,
-            textColor: AppColors.white,
-            fontSize: FontSize.size10,
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.md,
-              vertical: Spacing.xs,
-            ),
-          ),
-        ],
       ),
     );
   }

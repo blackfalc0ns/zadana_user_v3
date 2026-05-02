@@ -298,7 +298,7 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
                         ? Icons.delete_outline_rounded
                         : Icons.tune_rounded,
                     actionTooltip: showClearAction
-                        ? context.localization.clear_all
+                        ? context.localization.delete_category_tooltip
                         : context.localization.filter_button,
                     isActionDestructive: showClearAction,
                     onActionPressed: showClearAction

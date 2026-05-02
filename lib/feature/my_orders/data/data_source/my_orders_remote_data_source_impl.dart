@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/data_source/my_orders_remote_data_source.dart';
@@ -6,6 +7,7 @@ import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_respon
 import 'package:zadana_user_v3/feature/my_orders/data/models/delete_order_response_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_cancellation_reason_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/retry_order_payment_response_dto.dart';
 
@@ -42,6 +44,36 @@ class MyOrdersRemoteDataSourceImpl implements MyOrdersRemoteDataSource {
   @override
   Future<OrderDetailsDto> getOrderDetails(String orderId) {
     return _apiServices.getOrderDetails(orderId);
+  }
+
+  @override
+  Future<UploadedSupportCaseAttachmentDto> uploadOrderSupportCaseAttachment(
+    String orderId,
+    String filePath,
+  ) async {
+    final multipartFile = await MultipartFile.fromFile(filePath);
+    return _apiServices.uploadOrderSupportCaseAttachment(orderId, multipartFile);
+  }
+
+  @override
+  Future<CreateOrderSupportCaseResponseDto> createOrderSupportCase(
+    String orderId,
+    Map<String, dynamic> request,
+  ) {
+    return _apiServices.createOrderSupportCase(orderId, request);
+  }
+
+  @override
+  Future<OrderSupportCasesResponseDto> getOrderSupportCases(String orderId) {
+    return _apiServices.getOrderSupportCases(orderId);
+  }
+
+  @override
+  Future<OrderSupportCaseDetailsResponseDto> getOrderSupportCaseDetails(
+    String orderId,
+    String caseId,
+  ) {
+    return _apiServices.getOrderSupportCaseDetails(orderId, caseId);
   }
 
   @override
