@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_cards.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
@@ -38,12 +40,15 @@ class OrderDetailsBodyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasActiveSupportCase = order.activeCase != null;
     final canShowSupportAction =
-        order.activeCase != null ||
+        hasActiveSupportCase ||
         status.canCreateComplaint ||
         status.canCreateReturnRequest;
+    final showBottomSupportAction =
+        !hasActiveSupportCase && canShowSupportAction;
     final canShowActions =
-        order.canCancel || order.canRetryPayment || canShowSupportAction;
+        order.canCancel || order.canRetryPayment || showBottomSupportAction;
     final createdAt =
         '${order.createdAt.year}-${order.createdAt.month.toString().padLeft(2, '0')}-${order.createdAt.day.toString().padLeft(2, '0')}';
 
@@ -103,16 +108,29 @@ class OrderDetailsBodyView extends StatelessWidget {
                 .toList(),
           ),
         ),
-        if (order.activeCase != null) ...[
+        if (hasActiveSupportCase) ...[
           const SizedBox(height: Spacing.base),
           DetailSection(
             title: l10n.my_orders_support_case_title,
-            child: ActiveSupportCaseCard(
-              title: supportCaseTypeLabel(l10n, order.activeCase!.type),
-              status: order.activeCase!.status,
-              typeLabel: supportCaseTypeLabel(l10n, order.activeCase!.type),
-              message: order.activeCase!.message,
-              onTap: onSupportCase,
+            child: Column(
+              children: [
+                ActiveSupportCaseCard(
+                  title: _supportCaseHeadline(l10n, order.activeCase!.status),
+                  status: order.activeCase!.status,
+                  typeLabel: '',
+                  message: order.activeCase!.message,
+                ),
+                const SizedBox(height: Spacing.sm),
+                AppButton.outlined(
+                  text: l10n.my_orders_support_case_view,
+                  onPressed: onSupportCase,
+                  height: 42,
+                  borderRadius: 14,
+                  color: Theme.of(context).colorScheme.primary,
+                  textColor: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ],
             ),
           ),
         ],
@@ -121,7 +139,7 @@ class OrderDetailsBodyView extends StatelessWidget {
           OrderDetailsActions(
             canCancel: order.canCancel,
             canRetryPayment: order.canRetryPayment,
-            hasActiveSupportCase: order.activeCase != null,
+            showSupportAction: showBottomSupportAction,
             isCancelling: isCancelling,
             isRetryingPayment: isRetryingPayment,
             isSupportCaseBusy: isSubmittingSupportCase,
@@ -182,5 +200,29 @@ class OrderDetailsBodyView extends StatelessWidget {
               '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
         );
     return words.join(' ');
+  }
+
+  String _supportCaseHeadline(
+    AppLocalizations l10n,
+    OrderSupportCaseStatus status,
+  ) {
+    final isArabic = l10n.localeName.toLowerCase().startsWith('ar');
+
+    switch (status) {
+      case OrderSupportCaseStatus.submitted:
+        return isArabic ? 'تم فتح الحالة' : 'Case Opened';
+      case OrderSupportCaseStatus.inReview:
+        return isArabic ? 'قيد المتابعة' : 'Under Review';
+      case OrderSupportCaseStatus.awaitingCustomerEvidence:
+        return isArabic ? 'نحتاج تفاصيل' : 'More Details Needed';
+      case OrderSupportCaseStatus.approved:
+        return isArabic ? 'تمت الموافقة' : 'Approved';
+      case OrderSupportCaseStatus.rejected:
+        return isArabic ? 'تم رفض الحالة' : 'Rejected';
+      case OrderSupportCaseStatus.resolved:
+        return isArabic ? 'تمت المعالجة' : 'Resolved';
+      case OrderSupportCaseStatus.unknown:
+        return supportCaseStatusLabel(l10n, status);
+    }
   }
 }

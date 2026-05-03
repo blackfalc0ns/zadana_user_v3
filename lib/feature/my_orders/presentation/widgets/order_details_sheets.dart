@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
 
@@ -108,14 +109,17 @@ Future<OrderSupportCaseResult?> showOrderSupportCaseSheet({
   required String total,
   required bool canCreateComplaint,
   required bool canCreateReturnRequest,
+  required List<OrderSupportReasonEntity> complaintReasons,
+  required List<OrderSupportReasonEntity> returnReasons,
 }) {
   final l10n = AppLocalizations.of(context)!;
+  final languageCode = Localizations.localeOf(context).languageCode;
   final controller = TextEditingController();
   List<PlatformFile> attachments = [];
   OrderSupportCaseType selectedType = canCreateReturnRequest
       ? OrderSupportCaseType.returnRequest
       : OrderSupportCaseType.complaint;
-  String? selectedReasonCode;
+  OrderSupportReasonEntity? selectedReason;
 
   return showModalBottomSheet<OrderSupportCaseResult>(
     context: context,
@@ -129,66 +133,114 @@ Future<OrderSupportCaseResult?> showOrderSupportCaseSheet({
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (canCreateComplaint && canCreateReturnRequest) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: CancelReasonTile(
+                      title: l10n.my_orders_support_case_type_complaint,
+                      selected: selectedType == OrderSupportCaseType.complaint,
+                      onTap: () => setSheetState(() {
+                        selectedType = OrderSupportCaseType.complaint;
+                        selectedReason = null;
+                        controller.clear();
+                      }),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.sm),
+                  Expanded(
+                    child: CancelReasonTile(
+                      title: l10n.my_orders_support_case_type_return_request,
+                      selected:
+                          selectedType == OrderSupportCaseType.returnRequest,
+                      onTap: () => setSheetState(() {
+                        selectedType = OrderSupportCaseType.returnRequest;
+                        selectedReason = null;
+                        controller.clear();
+                      }),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.sm),
+            ],
             DropdownButtonFormField<String>(
-              initialValue: selectedReasonCode,
+              initialValue: selectedReason?.code,
               hint: Text(l10n.my_orders_support_case_reason_label),
               decoration: InputDecoration(
                 labelText: l10n.my_orders_support_case_reason_label,
+                filled: true,
+                fillColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest.withValues(alpha: .12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: .28),
+                  ),
+                ),
               ),
-              items: [
-                DropdownMenuItem(
-                  value: 'payment_issue',
-                  child: Text(l10n.my_orders_support_case_reason_payment_issue),
-                ),
-                DropdownMenuItem(
-                  value: 'delivery_delay',
-                  child: Text(
-                    l10n.my_orders_support_case_reason_delivery_delay,
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: 'prep_delay',
-                  child: Text(l10n.my_orders_support_case_reason_prep_delay),
-                ),
-                DropdownMenuItem(
-                  value: 'fraud',
-                  child: Text(l10n.my_orders_support_case_reason_fraud),
-                ),
-                DropdownMenuItem(
-                  value: 'fraud_suspicion',
-                  child: Text(
-                    l10n.my_orders_support_case_reason_fraud_suspicion,
-                  ),
-                ),
-              ],
+              items:
+                  (selectedType == OrderSupportCaseType.returnRequest
+                          ? returnReasons
+                          : complaintReasons)
+                      .map(
+                        (reason) => DropdownMenuItem(
+                          value: reason.code,
+                          child: Text(
+                            reason.labelForLanguageCode(languageCode),
+                          ),
+                        ),
+                      )
+                      .toList(growable: false),
               onChanged: (value) {
                 if (value == null) return;
-                setSheetState(() => selectedReasonCode = value);
+                final reasons =
+                    selectedType == OrderSupportCaseType.returnRequest
+                    ? returnReasons
+                    : complaintReasons;
+                setSheetState(() {
+                  selectedReason = reasons.firstWhere(
+                    (reason) => reason.code == value,
+                  );
+                  controller.clear();
+                });
               },
             ),
-            const SizedBox(height: Spacing.sm),
+            const SizedBox(height: Spacing.md),
             SheetTextField(
               controller: controller,
               hintText: l10n.my_orders_support_case_sheet_hint,
               maxLines: 5,
               onChanged: (_) => setSheetState(() {}),
             ),
-            const SizedBox(height: Spacing.sm),
-            Align(
-              alignment: Alignment.centerRight,
+            const SizedBox(height: Spacing.md),
+            SizedBox(
+              width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () async {
                   final result = await FilePicker.platform.pickFiles(
-                    type: FileType.any,
                     allowMultiple: true,
                     withData: true,
                   );
                   if (result == null) return;
                   setSheetState(() => attachments = result.files);
                 },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(56),
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1.4,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
                 icon: const Icon(Icons.image_outlined),
                 label: Text(
                   attachments.isEmpty
@@ -209,7 +261,8 @@ Future<OrderSupportCaseResult?> showOrderSupportCaseSheet({
         primaryActionLabel: l10n.my_orders_support_case_sheet_send,
         onSecondaryTap: () => Navigator.pop(context),
         onPrimaryTap:
-            selectedReasonCode == null || controller.text.trim().isEmpty
+            selectedReason == null ||
+                (selectedReason!.requiresNote && controller.text.trim().isEmpty)
             ? null
             : () {
                 final value = controller.text.trim();
@@ -217,7 +270,7 @@ Future<OrderSupportCaseResult?> showOrderSupportCaseSheet({
                   context,
                   OrderSupportCaseResult(
                     type: selectedType,
-                    reasonCode: selectedReasonCode!,
+                    reasonCode: selectedReason!.code,
                     message: value,
                     attachments: attachments,
                   ),

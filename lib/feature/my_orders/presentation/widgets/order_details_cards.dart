@@ -26,6 +26,7 @@ class OrderHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
 
     return SurfaceCard(
       padding: const EdgeInsets.all(Spacing.lg),
@@ -38,7 +39,10 @@ class OrderHeaderCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   '${l10n.my_orders_created_at}: $date',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: colors.onSurface,
+                  ),
                 ),
               ),
               OrderStatusBadge(status: status),
@@ -157,7 +161,10 @@ class OrderItemTile extends StatelessWidget {
               children: [
                 Text(name, style: const TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 4),
-                SecondaryText('${l10n.my_orders_unit_price}: $price'),
+                SecondaryText(
+                  '${l10n.my_orders_unit_price}: $price',
+                  maxLines: 1,
+                ),
               ],
             ),
           ),
@@ -175,6 +182,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
     required this.message,
     required this.status,
     required this.typeLabel,
+    this.actionLabel,
     this.customerVisibleNote,
     this.onTap,
   });
@@ -183,127 +191,107 @@ class ActiveSupportCaseCard extends StatelessWidget {
   final String message;
   final OrderSupportCaseStatus status;
   final String typeLabel;
+  final String? actionLabel;
   final String? customerVisibleNote;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final note = customerVisibleNote?.trim() ?? '';
-    final normalizedMessage = message.trim();
-    final hasMessage = normalizedMessage.isNotEmpty;
-    final hasNote = note.isNotEmpty;
-    final previewText = hasNote ? note : normalizedMessage;
+    final isClickable = onTap != null;
+    final accentColor = supportCaseStatusColors(colors, status).$2;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        padding: const EdgeInsets.all(Spacing.lg),
-        decoration: BoxDecoration(
-          color: colors.surfaceContainerHighest.withValues(alpha: .2),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: colors.outlineVariant.withValues(alpha: .2),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(22),
+        child: Ink(
+          padding: const EdgeInsets.all(Spacing.md),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            color: colors.surface,
+            border: Border.all(
+              color: isClickable
+                  ? accentColor.withValues(alpha: .16)
+                  : colors.outlineVariant.withValues(alpha: .12),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colors.shadow.withValues(alpha: .03),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.end,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: isClickable
+                          ? accentColor.withValues(alpha: .10)
+                          : colors.surfaceContainerHighest.withValues(
+                              alpha: .24,
+                            ),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      Icons.chevron_left_rounded,
+                      color: isClickable
+                          ? accentColor
+                          : colors.onSurfaceVariant,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: SupportCaseStatusBadge(status: status),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: Spacing.sm),
-                          IconContainer(
-                            icon: Icons.support_agent_outlined,
-                            iconColor: colors.secondary,
-                            size: 44,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        alignment: WrapAlignment.end,
-                        spacing: Spacing.xs,
-                        runSpacing: Spacing.xs,
-                        children: [
-                          SupportCaseStatusBadge(status: status),
-                          if (typeLabel.trim().isNotEmpty && typeLabel != title)
-                            _SupportCaseMetaChip(
-                              label: typeLabel,
-                              icon: Icons.label_outline_rounded,
+                            const SizedBox(width: Spacing.xs),
+                            IconContainer(
+                              icon: Icons.support_agent_outlined,
+                              iconColor: accentColor,
+                              iconSize: 20,
                             ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: Spacing.sm),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Icon(
-                    Icons.chevron_left_rounded,
-                    color: colors.onSurfaceVariant,
-                    size: 28,
-                  ),
-                ),
-              ],
-            ),
-            if (hasMessage || hasNote) ...[
-              const SizedBox(height: Spacing.base),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(Spacing.md),
-                decoration: BoxDecoration(
-                  color: colors.surface.withValues(alpha: .9),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: SecondaryText(
-                  previewText,
-                  maxLines: 3,
-                  textAlign: TextAlign.end,
-                ),
-              ),
-            ],
-            if (hasMessage && hasNote) ...[
-              const SizedBox(height: Spacing.sm),
-              DecoratedBlock(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(Icons.notes_rounded, size: 18, color: colors.primary),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SecondaryText(
-                        normalizedMessage,
-                        maxLines: 3,
-                        textAlign: TextAlign.end,
-                      ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          alignment: WrapAlignment.end,
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            if (typeLabel.trim().isNotEmpty &&
+                                typeLabel != title)
+                              _SupportCaseMetaChip(
+                                label: typeLabel,
+                                icon: Icons.label_outline_rounded,
+                              ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -321,7 +309,7 @@ class _SupportCaseMetaChip extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(999),
@@ -330,13 +318,14 @@ class _SupportCaseMetaChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: colors.primary),
-          const SizedBox(width: 6),
+          Icon(icon, size: 12, color: colors.primary),
+          const SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
               color: colors.onSurface,
               fontWeight: FontWeight.w600,
+              fontSize: 12,
             ),
           ),
         ],
@@ -359,14 +348,18 @@ class SupportCaseStatusBadge extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: colors.$1,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         supportCaseStatusLabel(l10n, status),
-        style: TextStyle(color: colors.$2, fontWeight: FontWeight.w700),
+        style: TextStyle(
+          color: colors.$2,
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+        ),
       ),
     );
   }
@@ -377,7 +370,7 @@ class OrderDetailsActions extends StatelessWidget {
     super.key,
     required this.canCancel,
     required this.canRetryPayment,
-    required this.hasActiveSupportCase,
+    required this.showSupportAction,
     required this.isCancelling,
     required this.isRetryingPayment,
     required this.isSupportCaseBusy,
@@ -388,7 +381,7 @@ class OrderDetailsActions extends StatelessWidget {
 
   final bool canCancel;
   final bool canRetryPayment;
-  final bool hasActiveSupportCase;
+  final bool showSupportAction;
   final bool isCancelling;
   final bool isRetryingPayment;
   final bool isSupportCaseBusy;
@@ -431,22 +424,18 @@ class OrderDetailsActions extends StatelessWidget {
             ),
           ),
         if (canRetryPayment) const SizedBox(width: Spacing.sm),
-        Expanded(
-          child: AppButton(
-            text: hasActiveSupportCase
-                ? l10n.my_orders_support_case_view
-                : l10n.my_orders_support_case_action,
-            variant: hasActiveSupportCase
-                ? AppButtonVariant.outlined
-                : AppButtonVariant.filled,
-            color: colors.primary,
-            height: 50,
-            borderRadius: 18,
-            fontWeight: FontWeight.w600,
-            isLoading: isSupportCaseBusy,
-            onPressed: onSupportCase,
+        if (showSupportAction)
+          Expanded(
+            child: AppButton(
+              text: l10n.my_orders_support_case_action,
+              color: colors.primary,
+              height: 50,
+              borderRadius: 18,
+              fontWeight: FontWeight.w600,
+              isLoading: isSupportCaseBusy,
+              onPressed: onSupportCase,
+            ),
           ),
-        ),
       ],
     );
   }
@@ -469,15 +458,20 @@ class MetaPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final tone = highlighted ? colors.primary : colors.secondary;
+    final tone = highlighted ? colors.primary : colors.onSurface;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
         color: highlighted
-            ? colors.primary.withValues(alpha: .08)
-            : colors.secondary.withValues(alpha: .08),
+            ? colors.primary.withValues(alpha: .06)
+            : colors.surfaceContainerHighest.withValues(alpha: .18),
         borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: highlighted
+              ? colors.primary.withValues(alpha: .10)
+              : colors.outlineVariant.withValues(alpha: .08),
+        ),
       ),
       child: Row(
         children: [
@@ -532,7 +526,7 @@ class SummaryRow extends StatelessWidget {
           value,
           style: TextStyle(
             color: emphasized ? colors.primary : colors.onSurface,
-            fontWeight: FontWeight.w800,
+            fontWeight: emphasized ? FontWeight.w800 : FontWeight.w700,
           ),
         ),
       ],
@@ -555,12 +549,12 @@ class LeadingQuantityBadge extends StatelessWidget {
       height: 44,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: colors.primary.withValues(alpha: .08),
+        color: colors.surfaceContainerHighest.withValues(alpha: .22),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Text(
         l10n.my_orders_quantity_badge(quantity),
-        style: TextStyle(color: colors.primary, fontWeight: FontWeight.w800),
+        style: TextStyle(color: colors.onSurface, fontWeight: FontWeight.w800),
       ),
     );
   }

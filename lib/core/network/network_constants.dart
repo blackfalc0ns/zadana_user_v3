@@ -68,6 +68,7 @@ abstract class EndPoints {
   static const String orderSupportCases = '/orders/{orderId}/cases';
   static const String orderSupportCaseAttachments =
       '/orders/{orderId}/cases/attachments';
+  static const String orderSupportReasons = '/orders/support-reasons/{type}';
   static const String orderTracking = '/orders/{orderId}/tracking';
   static const String orderCancellationReasons = '/orders/cancellation-reasons';
   static const String cancelOrder = '/orders/{orderId}/cancel';

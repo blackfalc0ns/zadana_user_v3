@@ -15,6 +15,8 @@ class DetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return SurfaceCard(
       borderRadius: 22,
       child: Column(
@@ -23,9 +25,18 @@ class DetailSection extends StatelessWidget {
           Text(
             title,
             style: getSemiBoldStyle(
-              fontSize: 16,
+              fontSize: 18,
               fontFamily: FontConstant.cairo,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: colors.onSurface,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            width: 36,
+            height: 3,
+            decoration: BoxDecoration(
+              color: colors.primary.withValues(alpha: .14),
+              borderRadius: BorderRadius.circular(999),
             ),
           ),
           const SizedBox(height: Spacing.md),
@@ -284,7 +295,14 @@ class SurfaceCard extends StatelessWidget {
                 alpha: backgroundOpacity!,
               ),
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: colors.outlineVariant.withValues(alpha: .16)),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: .12)),
+        boxShadow: [
+          BoxShadow(
+            color: colors.shadow.withValues(alpha: .03),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: child,
     );
@@ -302,8 +320,9 @@ class DecoratedBlock extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.sm),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest.withValues(alpha: .12),
+        color: colors.surfaceContainerHighest.withValues(alpha: .18),
         borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: .08)),
       ),
       child: child,
     );
@@ -334,7 +353,7 @@ class IconContainer extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: colors.surface.withValues(alpha: .92),
+        color: colors.surfaceContainerHighest.withValues(alpha: .32),
         borderRadius: BorderRadius.circular(radius),
       ),
       child: Icon(icon, size: iconSize, color: iconColor),

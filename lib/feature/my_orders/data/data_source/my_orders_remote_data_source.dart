@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/feature/my_orders/data/models/delete_order_respon
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_cancellation_reason_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_details_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_reason_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/paginated_orders_response_dto.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/retry_order_payment_response_dto.dart';
 
@@ -36,6 +37,8 @@ abstract class MyOrdersRemoteDataSource {
   );
 
   Future<OrderSupportCasesResponseDto> getOrderSupportCases(String orderId);
+
+  Future<List<OrderSupportReasonDto>> getOrderSupportReasons(String type);
 
   Future<OrderSupportCaseDetailsResponseDto> getOrderSupportCaseDetails(
     String orderId,

@@ -50,10 +50,11 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
     switch (listResult) {
       case ApiSuccessResult<List<OrderSupportCaseEntity>>():
         final items = listResult.data;
-        final targetCaseId =
-            initialCaseId ??
-            state.selectedCaseId ??
-            (items.isNotEmpty ? items.first.id : null);
+        final requestedCaseId = initialCaseId ?? state.selectedCaseId;
+        final targetCaseId = _resolveTargetCaseId(
+          items: items,
+          requestedCaseId: requestedCaseId,
+        );
         emit(
           state.copyWith(
             isLoading: false,
@@ -83,9 +84,25 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
     final orderId = _orderId;
     if (orderId == null || orderId.isEmpty) return;
 
+    final targetCaseId = _resolveTargetCaseId(
+      items: state.items,
+      requestedCaseId: caseId,
+    );
+    if (targetCaseId == null || targetCaseId.isEmpty) {
+      emit(
+        state.copyWith(
+          selectedCaseId: null,
+          selectedCase: null,
+          isCaseLoading: false,
+          clearFailure: true,
+        ),
+      );
+      return;
+    }
+
     emit(
       state.copyWith(
-        selectedCaseId: caseId,
+        selectedCaseId: targetCaseId,
         isCaseLoading: true,
         clearFailure: true,
       ),
@@ -93,7 +110,7 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
 
     final detailsResult = await _repository.getOrderSupportCaseDetails(
       orderId,
-      caseId,
+      targetCaseId,
     );
 
     switch (detailsResult) {
@@ -106,10 +123,60 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
           ),
         );
       case ApiErrorResult<OrderSupportCaseEntity>():
+        final fallbackCaseId = _resolveFallbackCaseId(
+          items: state.items,
+          failedCaseId: targetCaseId,
+        );
+        if (fallbackCaseId != null && fallbackCaseId != targetCaseId) {
+          emit(
+            state.copyWith(
+              isCaseLoading: false,
+              selectedCaseId: fallbackCaseId,
+              clearFailure: true,
+            ),
+          );
+          await selectCase(fallbackCaseId);
+          return;
+        }
+
         emit(
-          state.copyWith(isCaseLoading: false, failure: detailsResult.failure),
+          state.copyWith(
+            isCaseLoading: false,
+            failure: detailsResult.failure,
+          ),
         );
     }
+  }
+
+  String? _resolveTargetCaseId({
+    required List<OrderSupportCaseEntity> items,
+    required String? requestedCaseId,
+  }) {
+    final normalizedRequestedCaseId = requestedCaseId?.trim();
+    if (normalizedRequestedCaseId != null && normalizedRequestedCaseId.isNotEmpty) {
+      final matchingItem = items.where((item) => item.id == normalizedRequestedCaseId);
+      if (matchingItem.isNotEmpty) {
+        return normalizedRequestedCaseId;
+      }
+    }
+
+    if (items.isEmpty) {
+      return null;
+    }
+
+    return items.first.id;
+  }
+
+  String? _resolveFallbackCaseId({
+    required List<OrderSupportCaseEntity> items,
+    required String failedCaseId,
+  }) {
+    for (final item in items) {
+      if (item.id != failedCaseId) {
+        return item.id;
+      }
+    }
+    return null;
   }
 
   @override

@@ -15,12 +15,14 @@ import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellat
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/retry_order_payment_response_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/cancel_order_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/delete_order_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_cancellation_reasons_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_details_usecase.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_support_reasons_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/retry_order_payment_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_state.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_sheets.dart';
@@ -31,6 +33,7 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
   OrderDetailsViewModel(
     this._getOrderDetailsUseCase,
     this._getOrderCancellationReasonsUseCase,
+    this._getOrderSupportReasonsUseCase,
     this._cancelOrderUseCase,
     this._retryOrderPaymentUseCase,
     this._deleteOrderUseCase,
@@ -38,6 +41,7 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
 
   final GetOrderDetailsUseCase _getOrderDetailsUseCase;
   final GetOrderCancellationReasonsUseCase _getOrderCancellationReasonsUseCase;
+  final GetOrderSupportReasonsUseCase _getOrderSupportReasonsUseCase;
   final CancelOrderUseCase _cancelOrderUseCase;
   final RetryOrderPaymentUseCase _retryOrderPaymentUseCase;
   final DeleteOrderUseCase _deleteOrderUseCase;
@@ -247,14 +251,24 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
       return activeCase.id;
     }
 
+    final resolvedStatus = resolveStatus(fallbackStatus);
+    final availableReasons = await _ensureAvailableSupportReasons(
+      resolvedStatus,
+    );
+    if (availableReasons == null || !context.mounted) {
+      return null;
+    }
+    final complaintReasons = availableReasons.$1;
+    final returnReasons = availableReasons.$2;
+
     final result = await showOrderSupportCaseSheet(
       context: context,
-      status: resolveStatus(fallbackStatus),
+      status: resolvedStatus,
       total: _money(context, state.order?.totalPrice ?? fallbackTotalPrice),
-      canCreateComplaint: _canCreateComplaint(resolveStatus(fallbackStatus)),
-      canCreateReturnRequest: _canCreateReturnRequest(
-        resolveStatus(fallbackStatus),
-      ),
+      canCreateComplaint: _canCreateComplaint(resolvedStatus),
+      canCreateReturnRequest: _canCreateReturnRequest(resolvedStatus),
+      complaintReasons: complaintReasons,
+      returnReasons: returnReasons,
     );
 
     if (result == null || !context.mounted) {
@@ -366,6 +380,46 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
     }
   }
 
+  Future<List<OrderSupportReasonEntity>?> _ensureSupportReasons(
+    OrderSupportCaseType type,
+  ) async {
+    final cachedReasons = type == OrderSupportCaseType.returnRequest
+        ? state.returnSupportReasons
+        : state.complaintSupportReasons;
+    if (cachedReasons.isNotEmpty) {
+      return cachedReasons;
+    }
+
+    final result = await _getOrderSupportReasonsUseCase(type);
+    switch (result) {
+      case ApiSuccessResult<List<OrderSupportReasonEntity>>():
+        if (type == OrderSupportCaseType.returnRequest) {
+          emit(
+            state.copyWith(
+              returnSupportReasons: result.data,
+              clearFailure: true,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              complaintSupportReasons: result.data,
+              clearFailure: true,
+            ),
+          );
+        }
+        return result.data;
+      case ApiErrorResult<List<OrderSupportReasonEntity>>():
+        emit(
+          state.copyWith(
+            feedbackMessage: result.failure.errorMessage,
+            isFeedbackError: true,
+          ),
+        );
+        return null;
+    }
+  }
+
   String _money(BuildContext context, double value) {
     final l10n = AppLocalizations.of(context)!;
     return '${value.toStringAsFixed(2)} ${l10n.currency}';
@@ -375,6 +429,32 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
 
   bool _canCreateReturnRequest(OrderStatus status) =>
       status.canCreateReturnRequest;
+
+  Future<(List<OrderSupportReasonEntity>, List<OrderSupportReasonEntity>)?>
+  _ensureAvailableSupportReasons(OrderStatus status) async {
+    var complaintReasons = state.complaintSupportReasons;
+    var returnReasons = state.returnSupportReasons;
+
+    if (_canCreateComplaint(status)) {
+      final result = await _ensureSupportReasons(OrderSupportCaseType.complaint);
+      if (result == null) {
+        return null;
+      }
+      complaintReasons = result;
+    }
+
+    if (_canCreateReturnRequest(status)) {
+      final result = await _ensureSupportReasons(
+        OrderSupportCaseType.returnRequest,
+      );
+      if (result == null) {
+        return null;
+      }
+      returnReasons = result;
+    }
+
+    return (complaintReasons, returnReasons);
+  }
 
   void _bindRealtime(String orderId) {
     _supportCaseChangedSubscription ??= _notificationsSignalRService

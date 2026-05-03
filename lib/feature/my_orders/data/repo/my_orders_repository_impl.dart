@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/data_source/my_orders_remote_data_source.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/cancel_order_request_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/cancel_order_request_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/cancel_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/create_order_support_case_request_entity.dart';
@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/feature/my_orders/domain/entities/delete_order_re
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/paginated_orders_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/retry_order_payment_response_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/uploaded_support_case_attachment_entity.dart';
@@ -115,6 +116,20 @@ class MyOrdersRepositoryImpl implements MyOrdersRepository {
       return response.items.map((item) => item.toEntity()).toList(
         growable: false,
       );
+    });
+  }
+
+  @override
+  Future<ApiResult<List<OrderSupportReasonEntity>>> getSupportReasons(
+    OrderSupportCaseType type,
+  ) async {
+    return safeApiCall(() async {
+      final response = await _remoteDataSource.getOrderSupportReasons(
+        type == OrderSupportCaseType.returnRequest ? 'return' : 'complaint',
+      );
+      return response
+          .map((reason) => reason.toEntity())
+          .toList(growable: false);
     });
   }
 

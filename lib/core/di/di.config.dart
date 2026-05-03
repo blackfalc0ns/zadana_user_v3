@@ -245,6 +245,8 @@ import '../../feature/my_orders/domain/usecase/get_order_cancellation_reasons_us
     as _i40;
 import '../../feature/my_orders/domain/usecase/get_order_details_usecase.dart'
     as _i372;
+import '../../feature/my_orders/domain/usecase/get_order_support_reasons_usecase.dart'
+    as _i365;
 import '../../feature/my_orders/domain/usecase/get_returned_orders_usecase.dart'
     as _i816;
 import '../../feature/my_orders/domain/usecase/retry_order_payment_usecase.dart'
@@ -796,6 +798,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i372.GetOrderDetailsUseCase>(
       () => _i372.GetOrderDetailsUseCase(gh<_i858.MyOrdersRepository>()),
     );
+    gh.factory<_i365.GetOrderSupportReasonsUseCase>(
+      () => _i365.GetOrderSupportReasonsUseCase(gh<_i858.MyOrdersRepository>()),
+    );
     gh.factory<_i816.GetReturnedOrdersUseCase>(
       () => _i816.GetReturnedOrdersUseCase(gh<_i858.MyOrdersRepository>()),
     );
@@ -975,17 +980,18 @@ extension GetItInjectableX on _i174.GetIt {
         languageService: gh<_i819.LanguageService>(),
       ),
     );
+    gh.factory<_i166.RegisterUseCase>(
+      () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
+    );
     gh.factory<_i393.OrderDetailsViewModel>(
       () => _i393.OrderDetailsViewModel(
         gh<_i372.GetOrderDetailsUseCase>(),
         gh<_i40.GetOrderCancellationReasonsUseCase>(),
+        gh<_i365.GetOrderSupportReasonsUseCase>(),
         gh<_i890.CancelOrderUseCase>(),
         gh<_i842.RetryOrderPaymentUseCase>(),
         gh<_i631.DeleteOrderUseCase>(),
       ),
-    );
-    gh.factory<_i166.RegisterUseCase>(
-      () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
     );
     gh.lazySingleton<_i1050.RealtimeNotificationOverlayService>(
       () => _i1050.RealtimeNotificationOverlayService(

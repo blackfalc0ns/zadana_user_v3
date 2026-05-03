@@ -1,6 +1,7 @@
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 
 class OrderDetailsState {
@@ -15,6 +16,8 @@ class OrderDetailsState {
     this.failure,
     this.status,
     this.cancellationReasons = const [],
+    this.complaintSupportReasons = const [],
+    this.returnSupportReasons = const [],
     this.cancelReason,
     this.feedbackMessage,
     this.isFeedbackError = false,
@@ -32,6 +35,8 @@ class OrderDetailsState {
   final Failure? failure;
   final OrderStatus? status;
   final List<OrderCancellationReasonEntity> cancellationReasons;
+  final List<OrderSupportReasonEntity> complaintSupportReasons;
+  final List<OrderSupportReasonEntity> returnSupportReasons;
   final String? cancelReason;
   final String? feedbackMessage;
   final bool isFeedbackError;
@@ -47,6 +52,8 @@ class OrderDetailsState {
     Failure? failure,
     OrderStatus? status,
     List<OrderCancellationReasonEntity>? cancellationReasons,
+    List<OrderSupportReasonEntity>? complaintSupportReasons,
+    List<OrderSupportReasonEntity>? returnSupportReasons,
     Object? cancelReason = _unset,
     Object? feedbackMessage = _unset,
     bool? isFeedbackError,
@@ -65,6 +72,9 @@ class OrderDetailsState {
       failure: clearFailure ? null : failure ?? this.failure,
       status: status ?? this.status,
       cancellationReasons: cancellationReasons ?? this.cancellationReasons,
+      complaintSupportReasons:
+          complaintSupportReasons ?? this.complaintSupportReasons,
+      returnSupportReasons: returnSupportReasons ?? this.returnSupportReasons,
       cancelReason: identical(cancelReason, _unset)
           ? this.cancelReason
           : cancelReason as String?,
