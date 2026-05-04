@@ -5,8 +5,8 @@ class LanguageFlagAvatar extends StatelessWidget {
   const LanguageFlagAvatar({
     super.key,
     required this.languageCode,
-    this.size = 32,
-    this.borderRadius = 16,
+    this.size = 25,
+    this.borderRadius = 20,
   });
 
   final String languageCode;
