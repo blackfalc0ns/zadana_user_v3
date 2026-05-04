@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/language_flag_avatar.dart';
 
 /// Language option tile for bottom sheet
 class LanguageOptionTile extends StatelessWidget {
@@ -11,11 +11,14 @@ class LanguageOptionTile extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
+    required this.languageCode,
     required this.isSelected,
     required this.onTap,
   });
+
   final String title;
   final String subtitle;
+  final String languageCode;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -30,15 +33,15 @@ class LanguageOptionTile extends StatelessWidget {
         vertical: Spacing.xs,
       ),
       leading: Container(
-        padding: const EdgeInsets.all(Spacing.sm),
+        padding: const EdgeInsets.all(Spacing.xs),
         decoration: BoxDecoration(
           color: isSelected ? color.primaryContainer : color.surface,
           borderRadius: BorderRadius.circular(Spacing.xs),
         ),
-        child: FaIcon(
-          FontAwesomeIcons.globe,
-          color: isSelected ? color.primary : color.onSurfaceVariant,
-          size: 20,
+        child: LanguageFlagAvatar(
+          languageCode: languageCode,
+          size: 28,
+          borderRadius: 6,
         ),
       ),
       title: Text(
@@ -58,7 +61,7 @@ class LanguageOptionTile extends StatelessWidget {
         ),
       ),
       trailing: isSelected
-          ? FaIcon(FontAwesomeIcons.circleCheck, color: color.primary, size: 20)
+          ? Icon(Icons.check_circle, color: color.primary, size: 20)
           : null,
     );
   }
@@ -111,6 +114,7 @@ void showLanguageBottomSheet({
           LanguageOptionTile(
             title: 'العربية',
             subtitle: 'Arabic',
+            languageCode: 'ar',
             isSelected: selectedLanguage == 'ar',
             onTap: () {
               Navigator.pop(ctx);
@@ -121,6 +125,7 @@ void showLanguageBottomSheet({
           LanguageOptionTile(
             title: 'English',
             subtitle: 'الإنجليزية',
+            languageCode: 'en',
             isSelected: selectedLanguage == 'en',
             onTap: () {
               Navigator.pop(ctx);

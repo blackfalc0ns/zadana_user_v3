@@ -62,7 +62,9 @@ Future<void> _runPostAuthSideEffects({
     _runTaskSafely(
       logName,
       'notification device sync',
-      notificationDeviceService.syncCurrentDeviceIfAuthenticated,
+      () => notificationDeviceService.syncCurrentDeviceIfAuthenticated(
+        force: true,
+      ),
     ),
   ]);
 }

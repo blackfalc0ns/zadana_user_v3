@@ -43,7 +43,8 @@ class _PaymentWebViewView extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return BlocListener<PaymentWebViewCubit, PaymentWebViewState>(
-      listenWhen: (previous, current) => previous.callbackResult != current.callbackResult,
+      listenWhen: (previous, current) =>
+          previous.callbackResult != current.callbackResult,
       listener: (context, state) {
         final result = state.callbackResult;
         if (result == null) return;

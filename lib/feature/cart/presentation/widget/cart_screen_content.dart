@@ -33,6 +33,7 @@ class CartScreenContent extends StatelessWidget {
     required this.selectedVendorId,
     required this.loadedVendorId,
     required this.isLoadingSelectedVendorPrices,
+    required this.unavailableCount,
     required this.priceAnimationVersion,
     required this.activeHeroProductId,
     required this.animatingPriceItemId,
@@ -40,6 +41,7 @@ class CartScreenContent extends StatelessWidget {
     required this.totalOldPrice,
     required this.hasDiscounts,
     required this.selectedVendorName,
+    required this.hasUnavailableItems,
     required this.animations,
     required this.onVendorSelected,
     required this.onItemTap,
@@ -55,6 +57,7 @@ class CartScreenContent extends StatelessWidget {
   final String? selectedVendorId;
   final String? loadedVendorId;
   final bool isLoadingSelectedVendorPrices;
+  final int unavailableCount;
   final int priceAnimationVersion;
   final String? activeHeroProductId;
   final String? animatingPriceItemId;
@@ -62,6 +65,7 @@ class CartScreenContent extends StatelessWidget {
   final double totalOldPrice;
   final bool hasDiscounts;
   final String selectedVendorName;
+  final bool hasUnavailableItems;
   final CartAnimations animations;
   final ValueChanged<String> onVendorSelected;
   final ValueChanged<CartItemModel> onItemTap;
@@ -82,6 +86,7 @@ class CartScreenContent extends StatelessWidget {
               selectedVendorId: selectedVendorId,
               loadedVendorId: loadedVendorId,
               isLoadingSelectedVendorPrices: isLoadingSelectedVendorPrices,
+              unavailableCount: unavailableCount,
               priceAnimationVersion: priceAnimationVersion,
               activeHeroProductId: activeHeroProductId,
               animatingPriceItemId: animatingPriceItemId,
@@ -103,6 +108,7 @@ class CartScreenContent extends StatelessWidget {
             totalOldPrice: totalOldPrice,
             hasDiscounts: hasDiscounts,
             selectedVendorName: selectedVendorName,
+            hasUnavailableItems: hasUnavailableItems,
             animations: animations,
             onCheckout: onCheckout,
           ),

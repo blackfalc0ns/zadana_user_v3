@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/general_cubit/local_cubit.dart';
 import 'package:zadana_user_v3/core/utils/app_package_info.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
+import 'package:zadana_user_v3/core/widgets/language_flag_avatar.dart';
 
 class DrawerDialogs {
   static void showLanguageDialog(BuildContext context) {
@@ -199,17 +200,7 @@ class _LanguageTile extends StatelessWidget {
           color: color.onSurface,
         ),
       ),
-      leading: CircleAvatar(
-        radius: 16,
-        backgroundColor: color.primary.withValues(alpha: 0.1),
-        child: Text(
-          code.toUpperCase(),
-          style: getBoldStyle(
-            fontFamily: FontConstant.cairo,
-            color: color.primary,
-          ),
-        ),
-      ),
+      leading: LanguageFlagAvatar(languageCode: code),
       trailing: isSelected
           ? Icon(Icons.check_circle, color: color.primary)
           : null,

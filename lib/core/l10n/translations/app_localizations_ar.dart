@@ -981,20 +981,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delete_item_confirm => 'تبغى تحذف المنتج؟';
 
   @override
-  String get delete_category_title => 'حذف التصنيف';
+  String get delete_category_title => 'حذف التصفيه';
 
   @override
-  String get delete_category_confirm => 'هل تريد حذف التصنيف؟';
+  String get delete_category_confirm => 'هل تريد حذف التصفيه؟';
 
   @override
-  String get delete_category_tooltip => 'حذف التصنيف ';
+  String get delete_category_tooltip => 'حذف التصفيه ';
 
   @override
-  String get clear_filters_title => 'مسح الفلاتر';
+  String get clear_filters_title => 'حذف التصفيه';
 
   @override
   String get clear_filters_confirm =>
-      'سيتم حذف السعر والبراند وأي فلاتر مفعلة حاليًا. هل تريد المتابعة؟';
+      'سيتم حذف السعر والبراند وأي تصفيه مفعلة حاليًا. هل تريد المتابعة؟';
 
   @override
   String get available_vendors => 'المتاجر';

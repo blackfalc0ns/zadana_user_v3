@@ -29,7 +29,7 @@ class CartScreenBody extends StatelessWidget {
     required this.onCheckout,
   });
   static const double _cartBottomBarGap = 8.0;
-  static const double _cartBottomBarReservedHeight = 96.0;
+  static const double _cartBottomBarReservedHeight = 144.0;
 
   final CartState state;
   final CartScreenViewData viewData;
@@ -101,6 +101,7 @@ class CartScreenBody extends StatelessWidget {
       selectedVendorId: selectedVendorId,
       loadedVendorId: viewData.loadedVendorId,
       isLoadingSelectedVendorPrices: viewData.isLoadingSelectedVendorPrices,
+      unavailableCount: viewData.unavailableCount,
       priceAnimationVersion: priceAnimationVersion,
       activeHeroProductId: activeHeroProductId,
       animatingPriceItemId: animatingPriceItemId,
@@ -108,6 +109,7 @@ class CartScreenBody extends StatelessWidget {
       totalOldPrice: viewData.totalOldPrice,
       hasDiscounts: viewData.hasDiscounts,
       selectedVendorName: viewData.selectedVendorName,
+      hasUnavailableItems: viewData.unavailableCount > 0,
       animations: animations,
       onVendorSelected: onVendorSelected,
       onItemTap: onItemTap,

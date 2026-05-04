@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
+import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/utils/constants.dart';
 
 import 'general_state.dart';
@@ -25,6 +27,7 @@ class LocaleThemeCubit extends Cubit<LocaleThemeState> {
 
     await _languageService.saveLanguageCode(languageCode);
     emit(state.copyWith(locale: Locale(languageCode)));
+    await getIt<NotificationDeviceService>().syncCurrentDeviceIfAuthenticated();
   }
 
   Future<void> setArabic() => setLocale(AppConstants.arKey);

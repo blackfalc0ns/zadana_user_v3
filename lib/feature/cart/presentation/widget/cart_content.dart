@@ -17,6 +17,7 @@ class CartContent extends StatelessWidget {
     required this.selectedVendorId,
     required this.loadedVendorId,
     required this.isLoadingSelectedVendorPrices,
+    required this.unavailableCount,
     required this.priceAnimationVersion,
     required this.onVendorSelected,
     required this.onItemTap,
@@ -31,6 +32,7 @@ class CartContent extends StatelessWidget {
   final String? selectedVendorId;
   final String? loadedVendorId;
   final bool isLoadingSelectedVendorPrices;
+  final int unavailableCount;
   final int priceAnimationVersion;
   final Function(String) onVendorSelected;
   final Function(CartItemModel) onItemTap;
@@ -41,29 +43,16 @@ class CartContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unavailableCount = selectedVendorId == null
-        ? 0
-        : isLoadingSelectedVendorPrices
-        ? 0
-        : items
-              .where(
-                (item) => !item.isAvailableAt(
-                  selectedVendorId!,
-                  loadedVendorId: loadedVendorId,
-                ),
-              )
-              .length;
-
     return Column(
       children: [
+        if (selectedVendorId != null && unavailableCount > 0)
+          _buildUnavailableWarning(context, unavailableCount),
         VendorSelector(
           vendors: vendors,
           selectedVendorId: selectedVendorId,
           onVendorSelected: onVendorSelected,
         ),
         if (selectedVendorId == null) _buildSelectVendorPrompt(context),
-        if (selectedVendorId != null && unavailableCount > 0)
-          _buildUnavailableWarning(context, unavailableCount),
         Container(
           height: 1,
           margin: const EdgeInsets.symmetric(horizontal: 14),
@@ -76,16 +65,16 @@ class CartContent extends StatelessWidget {
 
   Widget _buildUnavailableWarning(BuildContext context, int count) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(14, 6, 14, 0),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.fromLTRB(14, 6, 14, 8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.warning.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.warning.withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.24)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: AppColors.warning, size: 18),
+          const Icon(Icons.info_outline, color: AppColors.warning, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -98,11 +87,12 @@ class CartContent extends StatelessWidget {
                     color: AppColors.textPrimary,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   '$count من المنتجات غير متوفرة في هذا المتجر',
                   style: getRegularStyle(
                     fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size10,
+                    fontSize: FontSize.size11,
                     color: AppColors.textSecondary,
                   ),
                 ),

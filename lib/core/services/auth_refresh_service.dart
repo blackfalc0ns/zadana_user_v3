@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 import 'package:zadana_user_v3/core/services/language_service.dart';
+import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 
 class AuthRefreshService {
@@ -64,6 +67,11 @@ class AuthRefreshService {
         if (nextRefreshToken != null && nextRefreshToken.isNotEmpty) {
           await _tokenService.saveRefreshToken(nextRefreshToken);
         }
+        unawaited(
+          getIt<NotificationDeviceService>().syncCurrentDeviceIfAuthenticated(
+            force: true,
+          ),
+        );
         return accessToken;
       } on DioException catch (error) {
         lastError = error;

@@ -11,6 +11,7 @@ class CartScreenViewData {
     required this.totalQuantity,
     required this.isEmpty,
     required this.isLoadingSelectedVendorPrices,
+    required this.unavailableCount,
     required this.selectedVendorName,
     required this.totalPrice,
     required this.totalOldPrice,
@@ -37,6 +38,17 @@ class CartScreenViewData {
         : 0.0;
     final effectiveHasDiscounts =
         hasLoadedSelectedVendor && (summary?.discountAmount ?? 0.0) > 0;
+    final unavailableCount =
+        selectedVendorId == null || isRefreshingSelectedVendorPrices
+        ? 0
+        : items
+              .where(
+                (item) => !item.isAvailableAt(
+                  selectedVendorId,
+                  loadedVendorId: loadedVendorId,
+                ),
+              )
+              .length;
 
     return CartScreenViewData(
       vendors: vendors,
@@ -46,6 +58,7 @@ class CartScreenViewData {
       isEmpty: items.isEmpty,
       isLoadingSelectedVendorPrices:
           selectedVendorId != null && isRefreshingSelectedVendorPrices,
+      unavailableCount: unavailableCount,
       selectedVendorName: _selectedVendorName(
         vendors: vendors,
         localization: localization,
@@ -63,6 +76,7 @@ class CartScreenViewData {
   final int totalQuantity;
   final bool isEmpty;
   final bool isLoadingSelectedVendorPrices;
+  final int unavailableCount;
   final String selectedVendorName;
   final double totalPrice;
   final double totalOldPrice;

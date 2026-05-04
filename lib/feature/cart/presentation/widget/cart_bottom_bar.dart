@@ -17,6 +17,7 @@ class CartBottomBar extends StatelessWidget {
     required this.totalOldPrice,
     required this.hasDiscounts,
     required this.selectedVendorName,
+    required this.hasUnavailableItems,
     required this.animations,
     required this.onCheckout,
   });
@@ -26,6 +27,7 @@ class CartBottomBar extends StatelessWidget {
   final double totalOldPrice;
   final bool hasDiscounts;
   final String selectedVendorName;
+  final bool hasUnavailableItems;
   final CartAnimations animations;
   final VoidCallback onCheckout;
 
@@ -49,6 +51,7 @@ class CartBottomBar extends StatelessWidget {
               totalOldPrice: totalOldPrice,
               hasDiscounts: hasDiscounts,
               selectedVendorName: selectedVendorName,
+              hasUnavailableItems: hasUnavailableItems,
               animations: animations,
               onCheckout: onCheckout,
             ),
@@ -65,6 +68,7 @@ class _SelectedVendorBar extends StatelessWidget {
     required this.totalOldPrice,
     required this.hasDiscounts,
     required this.selectedVendorName,
+    required this.hasUnavailableItems,
     required this.animations,
     required this.onCheckout,
   });
@@ -75,6 +79,7 @@ class _SelectedVendorBar extends StatelessWidget {
   final double totalOldPrice;
   final bool hasDiscounts;
   final String selectedVendorName;
+  final bool hasUnavailableItems;
   final CartAnimations animations;
   final VoidCallback onCheckout;
 
@@ -84,23 +89,22 @@ class _SelectedVendorBar extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.08),
-            blurRadius: 14,
-            offset: const Offset(0, -3),
+            blurRadius: 18,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Vendor info row + price ──
           Row(
             children: [
               Container(
@@ -140,14 +144,13 @@ class _SelectedVendorBar extends StatelessWidget {
                       '${items.length} ${locale.product}',
                       style: getMediumStyle(
                         fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size10,
+                        fontSize: FontSize.size11,
                         color: AppColors.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
-              // ── Price badge ──
               AnimatedBuilder(
                 animation: animations.priceSlideAnimation,
                 builder: (context, child) {
@@ -157,12 +160,12 @@ class _SelectedVendorBar extends StatelessWidget {
                       opacity: animations.priceFadeAnimation,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
+                          horizontal: 12,
+                          vertical: 7,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: AppColors.primary.withValues(alpha: 0.15),
                           ),
@@ -175,6 +178,7 @@ class _SelectedVendorBar extends StatelessWidget {
                               '${PriceFormatter.formatPrice(totalPrice)} ${locale.currency}',
                               style: getBoldStyle(
                                 fontFamily: FontConstant.cairo,
+                                fontSize: FontSize.size15,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -182,19 +186,18 @@ class _SelectedVendorBar extends StatelessWidget {
                               const SizedBox(height: 1),
                               Text(
                                 '${PriceFormatter.formatPrice(totalOldPrice)} ${locale.currency}',
-                                style:
-                                    getMediumStyle(
-                                      fontFamily: FontConstant.cairo,
-                                      color: AppColors.textSecondary.withValues(
-                                        alpha: 0.75,
-                                      ),
-                                      fontSize: FontSize.size10,
-                                    ).copyWith(
-                                      decoration: TextDecoration.lineThrough,
-                                      decorationColor: AppColors.textSecondary
-                                          .withValues(alpha: 0.55),
-                                      decorationThickness: 1.2,
-                                    ),
+                                style: getMediumStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  color: AppColors.textSecondary.withValues(
+                                    alpha: 0.75,
+                                  ),
+                                  fontSize: FontSize.size11,
+                                ).copyWith(
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor: AppColors.textSecondary
+                                      .withValues(alpha: 0.55),
+                                  decorationThickness: 1.2,
+                                ),
                               ),
                             ],
                           ],
@@ -207,14 +210,35 @@ class _SelectedVendorBar extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          // ── Action buttons row ──
+          if (hasUnavailableItems) ...[
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.warning.withValues(alpha: 0.22),
+                ),
+              ),
+              child: Text(
+                'لا يمكن إتمام الطلب لوجود منتجات غير متوفرة',
+                textAlign: TextAlign.center,
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size11,
+                  color: AppColors.warning,
+                ),
+              ),
+            ),
+          ],
           Row(
             children: [
-              // Checkout button
               Expanded(
                 flex: 3,
                 child: _CartCheckoutButton(
-                  onTap: onCheckout,
+                  onTap: hasUnavailableItems ? null : onCheckout,
                   label: locale.checkout,
                 ),
               ),
@@ -229,26 +253,34 @@ class _SelectedVendorBar extends StatelessWidget {
 class _CartCheckoutButton extends StatelessWidget {
   const _CartCheckoutButton({required this.onTap, required this.label});
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String label;
 
   @override
   Widget build(BuildContext context) {
+    final isEnabled = onTap != null;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         child: Ink(
-          height: 36,
+          height: 48,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.primary, AppColors.primaryLight],
-            ),
-            borderRadius: BorderRadius.circular(12),
+            gradient: isEnabled
+                ? const LinearGradient(
+                    colors: [AppColors.primary, AppColors.primaryLight],
+                  )
+                : null,
+            color: isEnabled
+                ? null
+                : AppColors.disabled.withValues(alpha: 0.35),
+            borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.25),
+                color: (isEnabled ? AppColors.primary : AppColors.disabled)
+                    .withValues(alpha: 0.22),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -257,17 +289,22 @@ class _CartCheckoutButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.shopping_bag_outlined,
-                size: 16,
-                color: AppColors.white,
+                size: 18,
+                color: isEnabled
+                    ? AppColors.white
+                    : AppColors.textSecondary.withValues(alpha: 0.8),
               ),
               const SizedBox(width: 5),
               Text(
                 label,
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  color: AppColors.white,
+                  fontSize: FontSize.size15,
+                  color: isEnabled
+                      ? AppColors.white
+                      : AppColors.textSecondary.withValues(alpha: 0.8),
                 ),
               ),
             ],

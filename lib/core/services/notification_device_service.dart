@@ -61,7 +61,9 @@ class NotificationDeviceService {
     return syncCurrentDeviceIfAuthenticated();
   }
 
-  Future<ApiResult<void>> syncCurrentDeviceIfAuthenticated() async {
+  Future<ApiResult<void>> syncCurrentDeviceIfAuthenticated({
+    bool force = false,
+  }) async {
     final accessToken = await _tokenService.getToken();
     final deviceToken = _pushTokenService.getToken();
     if (accessToken == null ||
@@ -85,7 +87,8 @@ class NotificationDeviceService {
       notificationsEnabled.toString(),
     ].join('|');
 
-    if (_lastSuccessfulRegistrationSignature == registrationSignature) {
+    if (!force &&
+        _lastSuccessfulRegistrationSignature == registrationSignature) {
       return safeLocalCall(() async {});
     }
 
@@ -153,18 +156,23 @@ class NotificationDeviceService {
   Future<ApiResult<void>> unregisterCurrentDevice() async {
     final accessToken = await _tokenService.getToken();
     if (accessToken == null || accessToken.isEmpty) {
+      _lastSuccessfulRegistrationSignature = null;
       return safeLocalCall(() async {});
     }
 
     final deviceId = await _deviceIdService.getOrCreateDeviceId();
     final deviceToken = _pushTokenService.getToken();
 
-    return _unregisterNotificationDeviceUseCase(
+    final result = await _unregisterNotificationDeviceUseCase(
       UnregisterNotificationDeviceRequestEntity(
         deviceId: deviceId,
         deviceToken: deviceToken,
       ),
     );
+    if (result is ApiSuccessResult<void>) {
+      _lastSuccessfulRegistrationSignature = null;
+    }
+    return result;
   }
 
   String _resolvePlatform() {
