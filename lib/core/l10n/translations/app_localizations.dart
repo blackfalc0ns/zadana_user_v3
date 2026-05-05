@@ -1370,6 +1370,12 @@ abstract class AppLocalizations {
   /// **'No explore more products available'**
   String get explore_more_unavailable;
 
+  /// No description provided for @similar_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Similar Products'**
+  String get similar_products;
+
   /// No description provided for @see_all.
   ///
   /// In en, this message translates to:
@@ -1861,6 +1867,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discount'**
   String get discount;
+
+  /// No description provided for @vat.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT'**
+  String get vat;
+
+  /// No description provided for @cod_fee.
+  ///
+  /// In en, this message translates to:
+  /// **'COD Fee'**
+  String get cod_fee;
 
   /// No description provided for @total.
   ///

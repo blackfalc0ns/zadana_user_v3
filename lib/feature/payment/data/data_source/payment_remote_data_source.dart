@@ -5,13 +5,23 @@ import 'package:zadana_user_v3/feature/payment/data/models/place_order_response_
 
 abstract class PaymentRemoteDataSource {
   Future<CheckoutSummaryDto> getCheckoutSummary({
+    String? vendorId,
     String? addressId,
     String? deliverySlotId,
+    String? paymentMethod,
+    String? promoCode,
   });
 
-  Future<CheckoutPromoResultDto> applyPromoCode(String code);
+  Future<CheckoutPromoResultDto> applyPromoCode(
+    String code, {
+    String? vendorId,
+    String? paymentMethod,
+  });
 
-  Future<CheckoutPromoResultDto> removePromoCode();
+  Future<CheckoutPromoResultDto> removePromoCode({
+    String? vendorId,
+    String? paymentMethod,
+  });
 
   Future<PlaceOrderResponseDto> placeOrder(PlaceOrderRequestDto request);
 }

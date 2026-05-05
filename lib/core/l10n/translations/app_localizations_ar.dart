@@ -686,6 +686,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get explore_more_unavailable => 'لا توجد منتجات استكشاف متاحه';
 
   @override
+  String get similar_products => 'منتجات مشابهة';
+
+  @override
   String get see_all => 'عرض الكل';
 
   @override
@@ -955,6 +958,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get discount => 'الخصم';
+
+  @override
+  String get vat => 'ضريبة القيمة المضافة';
+
+  @override
+  String get cod_fee => 'رسوم الدفع عند الاستلام';
 
   @override
   String get total => 'الإجمالي';

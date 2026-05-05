@@ -6,13 +6,23 @@ import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_respo
 
 abstract class PaymentRepository {
   Future<ApiResult<CheckoutSummaryEntity>> getCheckoutSummary({
+    String? vendorId,
     String? addressId,
     String? deliverySlotId,
+    String? paymentMethod,
+    String? promoCode,
   });
 
-  Future<ApiResult<CheckoutPromoResultEntity>> applyPromoCode(String code);
+  Future<ApiResult<CheckoutPromoResultEntity>> applyPromoCode(
+    String code, {
+    String? vendorId,
+    String? paymentMethod,
+  });
 
-  Future<ApiResult<CheckoutPromoResultEntity>> removePromoCode();
+  Future<ApiResult<CheckoutPromoResultEntity>> removePromoCode({
+    String? vendorId,
+    String? paymentMethod,
+  });
 
   Future<ApiResult<PlaceOrderResponseEntity>> placeOrder(
     PlaceOrderRequestEntity request,

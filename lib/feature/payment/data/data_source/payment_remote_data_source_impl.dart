@@ -44,17 +44,24 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
 
   @override
   Future<CheckoutSummaryDto> getCheckoutSummary({
+    String? vendorId,
     String? addressId,
     String? deliverySlotId,
+    String? paymentMethod,
+    String? promoCode,
   }) async {
     await _clearCheckoutSummaryCache();
 
     final response = await _dio.get<Map<String, dynamic>>(
       _checkoutSummaryEndpoint,
       queryParameters: {
+        if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
         if (addressId != null && addressId.isNotEmpty) 'address_id': addressId,
         if (deliverySlotId != null && deliverySlotId.isNotEmpty)
           'delivery_slot_id': deliverySlotId,
+        if (paymentMethod != null && paymentMethod.isNotEmpty)
+          'payment_method': paymentMethod,
+        if (promoCode != null && promoCode.isNotEmpty) 'promo_code': promoCode,
       },
       options: _noCacheOptions(),
     );
@@ -63,11 +70,20 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   }
 
   @override
-  Future<CheckoutPromoResultDto> applyPromoCode(String code) async {
+  Future<CheckoutPromoResultDto> applyPromoCode(
+    String code, {
+    String? vendorId,
+    String? paymentMethod,
+  }) async {
     await _clearCheckoutSummaryCache();
 
     final response = await _dio.post<Map<String, dynamic>>(
       _promoCodeEndpoint,
+      queryParameters: {
+        if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        if (paymentMethod != null && paymentMethod.isNotEmpty)
+          'payment_method': paymentMethod,
+      },
       data: {'code': code},
       options: _noCacheOptions(),
     );
@@ -80,11 +96,19 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   }
 
   @override
-  Future<CheckoutPromoResultDto> removePromoCode() async {
+  Future<CheckoutPromoResultDto> removePromoCode({
+    String? vendorId,
+    String? paymentMethod,
+  }) async {
     await _clearCheckoutSummaryCache();
 
     final response = await _dio.delete<Map<String, dynamic>>(
       _promoCodeEndpoint,
+      queryParameters: {
+        if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        if (paymentMethod != null && paymentMethod.isNotEmpty)
+          'payment_method': paymentMethod,
+      },
       options: _noCacheOptions(),
     );
 

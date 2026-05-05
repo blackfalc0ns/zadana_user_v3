@@ -75,6 +75,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
   }
 
   Future<void> _loadCheckoutData() async {
+    final requestedPaymentMethod = state.selectedPaymentMethodCode;
+    final requestedPromoCode = state.appliedPromoCode;
     emit(
       state.copyWith(
         isLoadingSummary: true,
@@ -88,7 +90,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     developer.log('Loading checkout summary', name: 'PaymentViewModel');
 
-    final checkoutFuture = _getCheckoutSummaryUseCase();
+    final checkoutFuture = _getCheckoutSummaryUseCase(
+      vendorId: state.vendorId,
+      paymentMethod: state.selectedPaymentMethodCode,
+      promoCode: requestedPromoCode,
+    );
     final addressesFuture = _getCustomerAddressesUseCase();
 
     final checkoutResult = await checkoutFuture;
@@ -101,12 +107,15 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     switch (checkoutResult) {
       case ApiSuccessResult<CheckoutSummaryEntity>():
+        final resolvedPaymentMethod = _resolvePaymentMethodCode(
+          checkoutResult.data,
+          preferredCode: state.selectedPaymentMethodCode,
+        );
         nextState = nextState.copyWith(
           checkoutSummary: checkoutResult.data,
-          selectedPaymentMethodCode: _resolvePaymentMethodCode(
-            checkoutResult.data,
-            preferredCode: state.selectedPaymentMethodCode,
-          ),
+          appliedPromoCode:
+              checkoutResult.data.promoCode?.code ?? requestedPromoCode,
+          selectedPaymentMethodCode: resolvedPaymentMethod,
           clearSummaryFailure: true,
         );
       case ApiErrorResult<CheckoutSummaryEntity>():
@@ -126,11 +135,29 @@ class PaymentViewModel extends Cubit<PaymentState> {
     }
 
     emit(nextState);
+
+    if (checkoutResult case ApiSuccessResult<CheckoutSummaryEntity>()) {
+      final resolvedPaymentMethod = nextState.selectedPaymentMethodCode;
+      if ((requestedPaymentMethod == null || requestedPaymentMethod.isEmpty) &&
+          resolvedPaymentMethod != null &&
+          resolvedPaymentMethod.isNotEmpty) {
+        await _refreshSummary(
+          addressId: checkoutResult.data.selectedAddress?.id,
+          deliverySlotId: _selectedDeliverySlotIdFromSummary(
+            checkoutResult.data,
+          ),
+          paymentMethod: resolvedPaymentMethod,
+          promoCode: nextState.appliedPromoCode,
+        );
+      }
+    }
   }
 
   Future<void> _refreshSummary({
     String? addressId,
     String? deliverySlotId,
+    String? paymentMethod,
+    String? promoCode,
   }) async {
     emit(
       state.copyWith(
@@ -141,16 +168,22 @@ class PaymentViewModel extends Cubit<PaymentState> {
     );
 
     final result = await _getCheckoutSummaryUseCase(
+      vendorId: state.vendorId,
       addressId: addressId,
       deliverySlotId: deliverySlotId,
+      paymentMethod: paymentMethod ?? state.selectedPaymentMethodCode,
+      promoCode: promoCode ?? state.appliedPromoCode,
     );
 
     switch (result) {
       case ApiSuccessResult<CheckoutSummaryEntity>():
+        final retainedPromoCode =
+            result.data.promoCode?.code ?? promoCode ?? state.appliedPromoCode;
         emit(
           state.copyWith(
             isRefreshingSummary: false,
             checkoutSummary: result.data,
+            appliedPromoCode: retainedPromoCode,
             selectedPaymentMethodCode: _resolvePaymentMethodCode(
               result.data,
               preferredCode: state.selectedPaymentMethodCode,
@@ -184,6 +217,13 @@ class PaymentViewModel extends Cubit<PaymentState> {
         clearActionFailure: true,
       ),
     );
+
+    _refreshSummary(
+      addressId: state.selectedAddressId,
+      deliverySlotId: state.selectedDeliverySlotId,
+      paymentMethod: paymentMethodCode,
+      promoCode: state.appliedPromoCode,
+    );
   }
 
   Future<void> _applyPromoCode(String code) async {
@@ -198,13 +238,18 @@ class PaymentViewModel extends Cubit<PaymentState> {
       ),
     );
 
-    final result = await _applyCheckoutPromoCodeUseCase(trimmedCode);
+    final result = await _applyCheckoutPromoCodeUseCase(
+      trimmedCode,
+      vendorId: state.vendorId,
+      paymentMethod: state.selectedPaymentMethodCode,
+    );
 
     switch (result) {
       case ApiSuccessResult():
         emit(
           state.copyWith(
             isApplyingPromo: false,
+            appliedPromoCode: result.data.promoCode?.code ?? trimmedCode,
             checkoutSummary: state.checkoutSummary!.copyWith(
               promoCode: result.data.promoCode,
               clearPromoCode: result.data.promoCode == null,
@@ -237,13 +282,17 @@ class PaymentViewModel extends Cubit<PaymentState> {
       ),
     );
 
-    final result = await _removeCheckoutPromoCodeUseCase();
+    final result = await _removeCheckoutPromoCodeUseCase(
+      vendorId: state.vendorId,
+      paymentMethod: state.selectedPaymentMethodCode,
+    );
 
     switch (result) {
       case ApiSuccessResult():
         emit(
           state.copyWith(
             isRemovingPromo: false,
+            clearAppliedPromoCode: true,
             checkoutSummary: state.checkoutSummary!.copyWith(
               clearPromoCode: true,
               deliveryQuote: result.data.deliveryQuote,
@@ -276,9 +325,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
         selectedDeliverySlotId == null) {
       emit(
         state.copyWith(
-            actionFailure: Failure(
-              errorMessage: 'Please complete the checkout details first.',
-            ),
+          actionFailure: Failure(
+            errorMessage: 'Please complete the checkout details first.',
+          ),
         ),
       );
       return;
@@ -294,10 +343,12 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     final result = await _placeOrderUseCase(
       PlaceOrderRequestEntity(
+        vendorId: state.vendorId,
         addressId: selectedAddressId,
         deliverySlotId: selectedDeliverySlotId,
         paymentMethod: selectedPaymentMethodCode,
-        promoCode: checkoutSummary.promoCode?.code ?? '',
+        promoCode:
+            state.appliedPromoCode ?? checkoutSummary.promoCode?.code ?? '',
       ),
     );
 
@@ -377,5 +428,14 @@ class PaymentViewModel extends Cubit<PaymentState> {
     return normalized == 'cash' ||
         normalized == 'cash_on_delivery' ||
         normalized == 'cod';
+  }
+
+  String? _selectedDeliverySlotIdFromSummary(CheckoutSummaryEntity summary) {
+    for (final slot in summary.deliverySlots) {
+      if (slot.isSelected) {
+        return slot.id;
+      }
+    }
+    return null;
   }
 }

@@ -21,6 +21,7 @@ class SimilarProductsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.localization;
     final color = context.colorScheme;
 
     if (similarProducts.isEmpty) {
@@ -34,7 +35,7 @@ class SimilarProductsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ù…Ù†ØªØ¬Ø§Øª Ù…Ø´Ø§Ø¨Ù‡Ø©',
+            l10n.similar_products,
             style: AppTextStyles.h4.copyWith(color: color.onSurface),
           ),
           const SizedBox(height: Spacing.sm),

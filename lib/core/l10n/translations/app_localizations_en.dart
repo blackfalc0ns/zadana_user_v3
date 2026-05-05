@@ -703,6 +703,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explore_more_unavailable => 'No explore more products available';
 
   @override
+  String get similar_products => 'Similar Products';
+
+  @override
   String get see_all => 'See All';
 
   @override
@@ -972,6 +975,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discount => 'Discount';
+
+  @override
+  String get vat => 'VAT';
+
+  @override
+  String get cod_fee => 'COD Fee';
 
   @override
   String get total => 'Total';

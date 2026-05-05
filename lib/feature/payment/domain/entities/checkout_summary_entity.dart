@@ -201,6 +201,8 @@ class CheckoutTotalsEntity {
     required this.discount,
     required this.total,
     required this.currency,
+    this.vatAmount,
+    this.codFee,
   });
 
   final double subtotal;
@@ -208,4 +210,6 @@ class CheckoutTotalsEntity {
   final double discount;
   final double total;
   final String currency;
+  final double? vatAmount;
+  final double? codFee;
 }

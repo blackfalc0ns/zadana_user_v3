@@ -249,6 +249,7 @@
   "recommended_unavailable": "لا توجد منتجات مقترحة متاحه",
   "section_explore": "استكشف أكثر",
   "explore_more_unavailable": "لا توجد منتجات استكشاف متاحه",
+  "similar_products": "منتجات مشابهة",
 
   "see_all": "عرض الكل",
   "refresh": "تحديث",
@@ -356,6 +357,8 @@
   "subtotal": "المجموع",
   "shipping": "الشحن",
   "discount": "الخصم",
+  "vat": "ضريبة القيمة المضافة",
+  "cod_fee": "رسوم الدفع عند الاستلام",
   "total": "الإجمالي",
   "checkout": "إتمام الطلب",
 

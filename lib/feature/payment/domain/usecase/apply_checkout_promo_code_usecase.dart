@@ -9,7 +9,15 @@ class ApplyCheckoutPromoCodeUseCase {
 
   final PaymentRepository _repository;
 
-  Future<ApiResult<CheckoutPromoResultEntity>> call(String code) {
-    return _repository.applyPromoCode(code);
+  Future<ApiResult<CheckoutPromoResultEntity>> call(
+    String code, {
+    String? vendorId,
+    String? paymentMethod,
+  }) {
+    return _repository.applyPromoCode(
+      code,
+      vendorId: vendorId,
+      paymentMethod: paymentMethod,
+    );
   }
 }

@@ -52,6 +52,7 @@ class ShowPaymentInfoEffect extends PaymentUiEffect {
 class PaymentState {
   const PaymentState({
     this.vendorId,
+    this.appliedPromoCode,
     this.isLoadingSummary = false,
     this.isRefreshingSummary = false,
     this.isLoadingAddresses = false,
@@ -70,6 +71,7 @@ class PaymentState {
   });
 
   final String? vendorId;
+  final String? appliedPromoCode;
   final bool isLoadingSummary;
   final bool isRefreshingSummary;
   final bool isLoadingAddresses;
@@ -139,6 +141,7 @@ class PaymentState {
 
   PaymentState copyWith({
     String? vendorId,
+    String? appliedPromoCode,
     bool? isLoadingSummary,
     bool? isRefreshingSummary,
     bool? isLoadingAddresses,
@@ -160,11 +163,15 @@ class PaymentState {
     bool clearActionFailure = false,
     bool clearFeedbackMessage = false,
     bool clearPlacedOrder = false,
+    bool clearAppliedPromoCode = false,
     bool clearSelectedPaymentMethodCode = false,
     bool clearUiEffect = false,
   }) {
     return PaymentState(
       vendorId: vendorId ?? this.vendorId,
+      appliedPromoCode: clearAppliedPromoCode
+          ? null
+          : appliedPromoCode ?? this.appliedPromoCode,
       isLoadingSummary: isLoadingSummary ?? this.isLoadingSummary,
       isRefreshingSummary: isRefreshingSummary ?? this.isRefreshingSummary,
       isLoadingAddresses: isLoadingAddresses ?? this.isLoadingAddresses,

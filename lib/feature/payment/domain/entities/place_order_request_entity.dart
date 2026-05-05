@@ -1,5 +1,6 @@
 class PlaceOrderRequestEntity {
   const PlaceOrderRequestEntity({
+    this.vendorId,
     required this.addressId,
     required this.deliverySlotId,
     required this.paymentMethod,
@@ -7,6 +8,7 @@ class PlaceOrderRequestEntity {
     this.notes,
   });
 
+  final String? vendorId;
   final String addressId;
   final String deliverySlotId;
   final String paymentMethod;

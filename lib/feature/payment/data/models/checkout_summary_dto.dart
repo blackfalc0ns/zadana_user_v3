@@ -433,6 +433,8 @@ class CheckoutTotalsDto {
     required this.discount,
     required this.total,
     required this.currency,
+    this.vatAmount,
+    this.codFee,
   });
 
   factory CheckoutTotalsDto.fromJson(Map<String, dynamic> json) {
@@ -442,6 +444,8 @@ class CheckoutTotalsDto {
       discount: _asDouble(json['discount']),
       total: _asDouble(json['total']),
       currency: json['currency']?.toString() ?? '',
+      vatAmount: _asNullableDouble(json['vat_amount']),
+      codFee: _asNullableDouble(json['cod_fee']),
     );
   }
 
@@ -450,6 +454,8 @@ class CheckoutTotalsDto {
   final double discount;
   final double total;
   final String currency;
+  final double? vatAmount;
+  final double? codFee;
 
   CheckoutTotalsEntity toEntity() {
     return CheckoutTotalsEntity(
@@ -458,6 +464,8 @@ class CheckoutTotalsDto {
       discount: discount,
       total: total,
       currency: currency,
+      vatAmount: vatAmount,
+      codFee: codFee,
     );
   }
 }
@@ -483,6 +491,13 @@ int _asInt(dynamic value) {
 double _asDouble(dynamic value) {
   if (value is num) return value.toDouble();
   return double.tryParse(value?.toString() ?? '') ?? 0;
+}
+
+double? _asNullableDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is String && value.trim().isEmpty) return null;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString());
 }
 
 DateTime _asDateTime(dynamic value) {

@@ -16,30 +16,50 @@ class PaymentRepositoryImpl implements PaymentRepository {
 
   @override
   Future<ApiResult<CheckoutSummaryEntity>> getCheckoutSummary({
+    String? vendorId,
     String? addressId,
     String? deliverySlotId,
+    String? paymentMethod,
+    String? promoCode,
   }) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getCheckoutSummary(
+        vendorId: vendorId,
         addressId: addressId,
         deliverySlotId: deliverySlotId,
+        paymentMethod: paymentMethod,
+        promoCode: promoCode,
       );
       return response.toEntity();
     });
   }
 
   @override
-  Future<ApiResult<CheckoutPromoResultEntity>> applyPromoCode(String code) async {
+  Future<ApiResult<CheckoutPromoResultEntity>> applyPromoCode(
+    String code, {
+    String? vendorId,
+    String? paymentMethod,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.applyPromoCode(code);
+      final response = await _remoteDataSource.applyPromoCode(
+        code,
+        vendorId: vendorId,
+        paymentMethod: paymentMethod,
+      );
       return response.toEntity();
     });
   }
 
   @override
-  Future<ApiResult<CheckoutPromoResultEntity>> removePromoCode() async {
+  Future<ApiResult<CheckoutPromoResultEntity>> removePromoCode({
+    String? vendorId,
+    String? paymentMethod,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.removePromoCode();
+      final response = await _remoteDataSource.removePromoCode(
+        vendorId: vendorId,
+        paymentMethod: paymentMethod,
+      );
       return response.toEntity();
     });
   }

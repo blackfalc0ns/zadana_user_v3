@@ -8,10 +8,7 @@ import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_
 import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
 
 class CheckoutPriceBreakdownCard extends StatelessWidget {
-  const CheckoutPriceBreakdownCard({
-    super.key,
-    required this.checkoutSummary,
-  });
+  const CheckoutPriceBreakdownCard({super.key, required this.checkoutSummary});
 
   final CheckoutSummaryEntity checkoutSummary;
 
@@ -21,6 +18,12 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final summary = checkoutSummary.summary;
     final shippingBreakdown = checkoutSummary.shippingBreakdown;
+    final vatLine = _findLine(shippingBreakdown, _isVatLine);
+    final codLine = _findLine(shippingBreakdown, _isCodLine);
+    final vatAmount = summary.vatAmount ?? vatLine?.amount;
+    final codFee = summary.codFee ?? codLine?.amount;
+    final shouldShowVat = (vatAmount ?? 0) > 0;
+    final shouldShowCodFee = (codFee ?? 0) > 0;
     final currency = localizePaymentCurrency(l10n, summary.currency);
 
     return Container(
@@ -50,7 +53,11 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
                   color: colors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(Spacing.sm),
                 ),
-                child: Icon(Icons.receipt_long, color: colors.primary, size: 20),
+                child: Icon(
+                  Icons.receipt_long,
+                  color: colors.primary,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: Spacing.md),
               Text(
@@ -69,22 +76,12 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
             value: PriceFormatter.formatPrice(summary.subtotal),
             currency: currency,
           ),
-          for (final line in shippingBreakdown) ...[
-            const SizedBox(height: Spacing.xs),
-            _PriceRow(
-              label: _resolveShippingLineLabel(context, line),
-              value: PriceFormatter.formatPrice(line.amount),
-              currency: currency,
-            ),
-          ],
-          if (shippingBreakdown.isEmpty) ...[
-            const SizedBox(height: Spacing.xs),
-            _PriceRow(
-              label: l10n.shipping,
-              value: PriceFormatter.formatPrice(summary.shippingCost),
-              currency: currency,
-            ),
-          ],
+          const SizedBox(height: Spacing.xs),
+          _PriceRow(
+            label: l10n.shipping,
+            value: PriceFormatter.formatPrice(summary.shippingCost),
+            currency: currency,
+          ),
           const SizedBox(height: Spacing.xs),
           _PriceRow(
             label: l10n.discount,
@@ -92,6 +89,22 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
             currency: currency,
             isDiscount: true,
           ),
+          if (shouldShowVat) ...[
+            const SizedBox(height: Spacing.xs),
+            _PriceRow(
+              label: _resolveVatLabel(context, vatLine),
+              value: PriceFormatter.formatPrice(vatAmount!),
+              currency: currency,
+            ),
+          ],
+          if (shouldShowCodFee) ...[
+            const SizedBox(height: Spacing.xs),
+            _PriceRow(
+              label: _resolveCodLabel(context, codLine),
+              value: PriceFormatter.formatPrice(codFee),
+              currency: currency,
+            ),
+          ],
           const SizedBox(height: Spacing.sm),
           Container(
             height: 1,
@@ -116,26 +129,64 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
     );
   }
 
-  String _resolveShippingLineLabel(
+  String _resolveVatLabel(
     BuildContext context,
-    CheckoutShippingLineEntity line,
+    CheckoutShippingLineEntity? line,
   ) {
-    final label = resolveBilingualValue(
-      context,
-      arabic: line.labelAr,
-      english: line.labelEn,
-    );
-    if (label.isNotEmpty) {
-      return label;
+    if (line != null) {
+      final label = resolveBilingualValue(
+        context,
+        arabic: line.labelAr,
+        english: line.labelEn,
+      );
+      if (label.isNotEmpty) {
+        return label;
+      }
     }
 
-    return line.code
-        .split('_')
-        .where((part) => part.isNotEmpty)
-        .map(
-          (part) => '${part[0].toUpperCase()}${part.substring(1).toLowerCase()}',
-        )
-        .join(' ');
+    return AppLocalizations.of(context)!.vat;
+  }
+
+  String _resolveCodLabel(
+    BuildContext context,
+    CheckoutShippingLineEntity? line,
+  ) {
+    if (line != null) {
+      final label = resolveBilingualValue(
+        context,
+        arabic: line.labelAr,
+        english: line.labelEn,
+      );
+      if (label.isNotEmpty) {
+        return label;
+      }
+    }
+
+    return AppLocalizations.of(context)!.cod_fee;
+  }
+
+  CheckoutShippingLineEntity? _findLine(
+    List<CheckoutShippingLineEntity> lines,
+    bool Function(String code) test,
+  ) {
+    for (final line in lines) {
+      if (test(line.code)) {
+        return line;
+      }
+    }
+    return null;
+  }
+
+  bool _isVatLine(String code) {
+    final normalized = code.trim().toLowerCase();
+    return normalized == 'vat' || normalized == 'vat_amount';
+  }
+
+  bool _isCodLine(String code) {
+    final normalized = code.trim().toLowerCase();
+    return normalized == 'cod_fee' ||
+        normalized == 'cod' ||
+        normalized == 'cash_on_delivery_fee';
   }
 }
 
