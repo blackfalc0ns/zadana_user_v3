@@ -155,6 +155,17 @@ class RealtimeNotificationOverlayService {
       'referenceId': notification.referenceId,
     };
     final orderId = NotificationPayloadResolver.resolveOrderId(payload);
+    final caseId = NotificationPayloadResolver.resolveSupportCaseId(payload);
+
+    if (NotificationPayloadResolver.isSupportCaseType(notification.type) &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await _appNavigatorService.pushNamedWhenReady(
+        AppRoutes.orderSupportCase,
+        arguments: {'orderId': orderId, 'caseId': caseId},
+      );
+      return;
+    }
 
     if (NotificationPayloadResolver.isOrderRelatedType(notification.type) &&
         orderId != null &&

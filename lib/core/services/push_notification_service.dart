@@ -332,7 +332,18 @@ class PushNotificationService {
   ) async {
     final type = payload['type']?.toString();
     final orderId = NotificationPayloadResolver.resolveOrderId(payload);
+    final caseId = NotificationPayloadResolver.resolveSupportCaseId(payload);
     final appNavigatorService = getIt<AppNavigatorService>();
+
+    if (NotificationPayloadResolver.isSupportCaseType(type) &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await appNavigatorService.pushNamedWhenReady(
+        AppRoutes.orderSupportCase,
+        arguments: {'orderId': orderId, 'caseId': caseId},
+      );
+      return;
+    }
 
     if (NotificationPayloadResolver.isOrderRelatedType(type) &&
         orderId != null &&

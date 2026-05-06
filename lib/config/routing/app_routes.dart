@@ -25,6 +25,7 @@ abstract class AppRoutes {
   static const String orders = '/orders';
   static const String trackOrder = '/track-order';
   static const String myOrdersPage = '/my-orders';
+  static const String orderSupportCase = '/order-support-case';
   static const String aboutApp = '/about-app';
   static const String helpSupport = '/help-support';
   static const String notifications = '/notifications';

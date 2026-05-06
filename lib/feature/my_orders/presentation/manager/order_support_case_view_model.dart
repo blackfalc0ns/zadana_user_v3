@@ -29,9 +29,14 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
               (_orderId ?? '').trim().toLowerCase()) {
             return;
           }
-          unawaited(refresh());
+          unawaited(refresh(initialCaseId: payload.caseId));
         });
     await refresh(initialCaseId: initialCaseId);
+  }
+
+  void clearFeedback() {
+    if (state.feedbackMessage == null) return;
+    emit(state.copyWith(feedbackMessage: null));
   }
 
   Future<void> refresh({String? initialCaseId}) async {
@@ -75,6 +80,82 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
             isLoading: false,
             isRefreshing: false,
             failure: listResult.failure,
+          ),
+        );
+    }
+  }
+
+  Future<void> sendMessage(
+    String caseId, {
+    required String message,
+    required List<String> attachmentPaths,
+  }) async {
+    final orderId = _orderId;
+    if (orderId == null || orderId.isEmpty || state.isSendingMessage) return;
+
+    emit(
+      state.copyWith(
+        isSendingMessage: true,
+        clearFailure: true,
+        feedbackMessage: null,
+        isFeedbackError: false,
+      ),
+    );
+
+    final uploadedAttachments = <OrderSupportCaseAttachmentEntity>[];
+    for (final path in attachmentPaths) {
+      if (path.trim().isEmpty) {
+        continue;
+      }
+
+      final uploadResult = await _repository.uploadOrderSupportCaseAttachment(
+        orderId,
+        path,
+      );
+      switch (uploadResult) {
+        case ApiSuccessResult():
+          uploadedAttachments.add(
+            OrderSupportCaseAttachmentEntity(
+              fileName: uploadResult.data.fileName,
+              fileUrl: uploadResult.data.url,
+            ),
+          );
+        case ApiErrorResult():
+          emit(
+            state.copyWith(
+              isSendingMessage: false,
+              feedbackMessage: uploadResult.failure.errorMessage,
+              isFeedbackError: true,
+            ),
+          );
+          return;
+      }
+    }
+
+    final sendResult = await _repository.sendOrderSupportCaseMessage(
+      orderId,
+      caseId,
+      message,
+      uploadedAttachments,
+    );
+
+    switch (sendResult) {
+      case ApiSuccessResult<void>():
+        await selectCase(caseId);
+        emit(
+          state.copyWith(
+            isSendingMessage: false,
+            feedbackMessage: 'Message sent',
+            isFeedbackError: false,
+            clearFailure: true,
+          ),
+        );
+      case ApiErrorResult<void>():
+        emit(
+          state.copyWith(
+            isSendingMessage: false,
+            feedbackMessage: sendResult.failure.errorMessage,
+            isFeedbackError: true,
           ),
         );
     }
@@ -140,10 +221,7 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
         }
 
         emit(
-          state.copyWith(
-            isCaseLoading: false,
-            failure: detailsResult.failure,
-          ),
+          state.copyWith(isCaseLoading: false, failure: detailsResult.failure),
         );
     }
   }
@@ -153,8 +231,11 @@ class OrderSupportCaseViewModel extends Cubit<OrderSupportCaseState> {
     required String? requestedCaseId,
   }) {
     final normalizedRequestedCaseId = requestedCaseId?.trim();
-    if (normalizedRequestedCaseId != null && normalizedRequestedCaseId.isNotEmpty) {
-      final matchingItem = items.where((item) => item.id == normalizedRequestedCaseId);
+    if (normalizedRequestedCaseId != null &&
+        normalizedRequestedCaseId.isNotEmpty) {
+      final matchingItem = items.where(
+        (item) => item.id == normalizedRequestedCaseId,
+      );
       if (matchingItem.isNotEmpty) {
         return normalizedRequestedCaseId;
       }

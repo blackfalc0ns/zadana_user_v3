@@ -45,6 +45,14 @@ abstract class MyOrdersRemoteDataSource {
     String caseId,
   );
 
+  Future<void> sendOrderSupportCaseMessage(
+    String orderId,
+    String caseId,
+    Map<String, dynamic> request,
+  );
+
+  Future<OrderRefundStatusResponseDto> getOrderRefundStatus(String orderId);
+
   Future<List<OrderCancellationReasonDto>> getCancellationReasons();
 
   Future<CancelOrderResponseDto> cancelOrder(

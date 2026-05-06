@@ -35,6 +35,16 @@ class OrderSupportCaseResult {
   final List<PlatformFile> attachments;
 }
 
+class OrderSupportMessageResult {
+  const OrderSupportMessageResult({
+    required this.message,
+    required this.attachments,
+  });
+
+  final String message;
+  final List<PlatformFile> attachments;
+}
+
 Future<OrderCancelResult?> showOrderCancelSheet({
   required BuildContext context,
   required OrderStatus status,
@@ -276,6 +286,90 @@ Future<OrderSupportCaseResult?> showOrderSupportCaseSheet({
                   ),
                 );
               },
+      ),
+    ),
+  );
+}
+
+Future<OrderSupportMessageResult?> showOrderSupportMessageSheet({
+  required BuildContext context,
+}) {
+  final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+  final controller = TextEditingController();
+  List<PlatformFile> attachments = [];
+
+  return showModalBottomSheet<OrderSupportMessageResult>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => StatefulBuilder(
+      builder: (context, setSheetState) => BottomSheetScaffold(
+        title: isArabic ? 'إرسال متابعة' : 'Send update',
+        subtitle: isArabic
+            ? 'أضف رسالة أو مرفقًا جديدًا داخل الحالة.'
+            : 'Add a message or new attachment to this case.',
+        summary: const SizedBox.shrink(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SheetTextField(
+              controller: controller,
+              hintText: isArabic
+                  ? 'اكتب رسالتك هنا'
+                  : 'Write your message here',
+              maxLines: 5,
+              onChanged: (_) => setSheetState(() {}),
+            ),
+            const SizedBox(height: Spacing.md),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final result = await FilePicker.platform.pickFiles(
+                    allowMultiple: true,
+                    withData: true,
+                  );
+                  if (result == null) return;
+                  setSheetState(() => attachments = result.files);
+                },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(56),
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1.4,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+                icon: const Icon(Icons.attach_file_rounded),
+                label: Text(
+                  attachments.isEmpty
+                      ? (isArabic ? 'إرفاق ملفات' : 'Attach files')
+                      : (isArabic
+                            ? 'تم إرفاق ${attachments.length} ملف'
+                            : '${attachments.length} file(s) attached'),
+                ),
+              ),
+            ),
+            if (attachments.isNotEmpty) ...[
+              const SizedBox(height: Spacing.sm),
+              ComplaintAttachmentsPreview(attachments: attachments),
+            ],
+          ],
+        ),
+        secondaryActionLabel: isArabic ? 'إلغاء' : 'Cancel',
+        primaryActionLabel: isArabic ? 'إرسال' : 'Send',
+        onSecondaryTap: () => Navigator.pop(context),
+        onPrimaryTap: controller.text.trim().isEmpty && attachments.isEmpty
+            ? null
+            : () => Navigator.pop(
+                context,
+                OrderSupportMessageResult(
+                  message: controller.text.trim(),
+                  attachments: attachments,
+                ),
+              ),
       ),
     ),
   );

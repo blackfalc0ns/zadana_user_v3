@@ -284,6 +284,7 @@ class OrderDetailsPage extends StatelessWidget {
 
           return OrderDetailsBodyView(
             order: orderDetails,
+            refundStatus: state.refundStatus,
             status: state.status ?? orderDetails.status,
             isBusy: state.isLoading,
             isCancelling: state.isCancelling,

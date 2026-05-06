@@ -1,6 +1,7 @@
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_cancellation_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_reason_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 
@@ -13,6 +14,7 @@ class OrderDetailsState {
     this.isSubmittingSupportCase = false,
     this.isDeleted = false,
     this.order,
+    this.refundStatus,
     this.failure,
     this.status,
     this.cancellationReasons = const [],
@@ -32,6 +34,7 @@ class OrderDetailsState {
   final bool isSubmittingSupportCase;
   final bool isDeleted;
   final OrderDetailsEntity? order;
+  final OrderRefundStatusEntity? refundStatus;
   final Failure? failure;
   final OrderStatus? status;
   final List<OrderCancellationReasonEntity> cancellationReasons;
@@ -49,6 +52,7 @@ class OrderDetailsState {
     bool? isSubmittingSupportCase,
     bool? isDeleted,
     OrderDetailsEntity? order,
+    Object? refundStatus = _unset,
     Failure? failure,
     OrderStatus? status,
     List<OrderCancellationReasonEntity>? cancellationReasons,
@@ -69,6 +73,9 @@ class OrderDetailsState {
           isSubmittingSupportCase ?? this.isSubmittingSupportCase,
       isDeleted: isDeleted ?? this.isDeleted,
       order: clearOrder ? null : order ?? this.order,
+      refundStatus: identical(refundStatus, _unset)
+          ? this.refundStatus
+          : refundStatus as OrderRefundStatusEntity?,
       failure: clearFailure ? null : failure ?? this.failure,
       status: status ?? this.status,
       cancellationReasons: cancellationReasons ?? this.cancellationReasons,

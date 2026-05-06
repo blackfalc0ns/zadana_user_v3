@@ -113,9 +113,9 @@ class MyOrdersRepositoryImpl implements MyOrdersRepository {
   ) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getOrderSupportCases(orderId);
-      return response.items.map((item) => item.toEntity()).toList(
-        growable: false,
-      );
+      return response.items
+          .map((item) => item.toEntity())
+          .toList(growable: false);
     });
   }
 
@@ -144,6 +144,38 @@ class MyOrdersRepositoryImpl implements MyOrdersRepository {
         caseId,
       );
       return response.orderSupportCase.toEntity();
+    });
+  }
+
+  @override
+  Future<ApiResult<void>> sendOrderSupportCaseMessage(
+    String orderId,
+    String caseId,
+    String message,
+    List<OrderSupportCaseAttachmentEntity> attachments,
+  ) async {
+    return safeApiCall(() async {
+      await _remoteDataSource.sendOrderSupportCaseMessage(orderId, caseId, {
+        'message': message,
+        'attachments': attachments
+            .map(
+              (item) => OrderSupportCaseAttachmentDto(
+                fileName: item.fileName,
+                fileUrl: item.fileUrl,
+              ).toJson(),
+            )
+            .toList(growable: false),
+      });
+    });
+  }
+
+  @override
+  Future<ApiResult<OrderRefundStatusEntity>> getOrderRefundStatus(
+    String orderId,
+  ) async {
+    return safeApiCall(() async {
+      final response = await _remoteDataSource.getOrderRefundStatus(orderId);
+      return response.refundStatus.toEntity();
     });
   }
 

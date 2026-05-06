@@ -59,6 +59,7 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
       state.copyWith(
         isLoading: true,
         isDeleted: false,
+        refundStatus: null,
         clearFailure: true,
         feedbackMessage: null,
         isFeedbackError: false,
@@ -68,10 +69,18 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
     final result = await _getOrderDetailsUseCase(orderId);
     switch (result) {
       case ApiSuccessResult<OrderDetailsEntity>():
+        final refundStatusResult = await _repository.getOrderRefundStatus(
+          orderId,
+        );
         emit(
           state.copyWith(
             isLoading: false,
             order: result.data,
+            refundStatus: switch (refundStatusResult) {
+              ApiSuccessResult<OrderRefundStatusEntity>() =>
+                refundStatusResult.data,
+              ApiErrorResult<OrderRefundStatusEntity>() => null,
+            },
             status: result.data.status,
             clearFailure: true,
           ),
@@ -436,7 +445,9 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
     var returnReasons = state.returnSupportReasons;
 
     if (_canCreateComplaint(status)) {
-      final result = await _ensureSupportReasons(OrderSupportCaseType.complaint);
+      final result = await _ensureSupportReasons(
+        OrderSupportCaseType.complaint,
+      );
       if (result == null) {
         return null;
       }

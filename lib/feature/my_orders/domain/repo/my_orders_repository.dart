@@ -50,6 +50,17 @@ abstract class MyOrdersRepository {
     String caseId,
   );
 
+  Future<ApiResult<void>> sendOrderSupportCaseMessage(
+    String orderId,
+    String caseId,
+    String message,
+    List<OrderSupportCaseAttachmentEntity> attachments,
+  );
+
+  Future<ApiResult<OrderRefundStatusEntity>> getOrderRefundStatus(
+    String orderId,
+  );
+
   Future<ApiResult<List<OrderCancellationReasonEntity>>>
   getCancellationReasons();
 

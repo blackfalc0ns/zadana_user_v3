@@ -20,8 +20,12 @@ import 'package:zadana_user_v3/feature/location/presentation/pages/building_deta
 import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_support_case_view_model.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
@@ -191,6 +195,22 @@ class RouteGenerator {
 
       case AppRoutes.myOrdersPage:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());
+      case AppRoutes.orderSupportCase:
+        final arguments = settings.arguments as Map<dynamic, dynamic>?;
+        final orderId = arguments?['orderId']?.toString() ?? '';
+        final caseId = arguments?['caseId']?.toString();
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => OrderSupportCaseViewModel(
+              getIt<MyOrdersRepository>(),
+              getIt<NotificationsSignalRService>(),
+            )..initialize(orderId, initialCaseId: caseId),
+            child: OrderSupportCasePage(
+              orderId: orderId,
+              initialCaseId: caseId,
+            ),
+          ),
+        );
       case AppRoutes.aboutApp:
         return MaterialPageRoute(builder: (_) => const AboutAppScreen());
       case AppRoutes.helpSupport:

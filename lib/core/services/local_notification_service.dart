@@ -165,6 +165,19 @@ class LocalNotificationService {
     final orderId = NotificationPayloadResolver.resolveOrderId(
       normalizedPayload,
     );
+    final caseId = NotificationPayloadResolver.resolveSupportCaseId(
+      normalizedPayload,
+    );
+
+    if (NotificationPayloadResolver.isSupportCaseType(type) &&
+        orderId != null &&
+        orderId.isNotEmpty) {
+      await _appNavigatorService.pushNamedWhenReady(
+        AppRoutes.orderSupportCase,
+        arguments: {'orderId': orderId, 'caseId': caseId},
+      );
+      return;
+    }
 
     if (NotificationPayloadResolver.isOrderRelatedType(type) &&
         orderId != null &&

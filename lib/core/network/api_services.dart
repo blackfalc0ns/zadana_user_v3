@@ -337,6 +337,25 @@ abstract class ApiServices {
     @Path('caseId') String caseId,
   );
 
+  @POST(EndPoints.orderSupportCaseMessages)
+  Future<void> sendOrderSupportCaseMessage(
+    @Path('orderId') String orderId,
+    @Path('caseId') String caseId,
+    @Body() Map<String, dynamic> request,
+  );
+
+  @POST(EndPoints.orderSupportCaseReply)
+  Future<void> sendOrderSupportCaseReply(
+    @Path('orderId') String orderId,
+    @Path('caseId') String caseId,
+    @Body() Map<String, dynamic> request,
+  );
+
+  @GET(EndPoints.orderRefundStatus)
+  Future<OrderRefundStatusResponseDto> getOrderRefundStatus(
+    @Path('orderId') String orderId,
+  );
+
   @GET(EndPoints.orderTracking)
   Future<OrderTrackingResponseDto> getOrderTracking(
     @Path('orderId') String orderId,

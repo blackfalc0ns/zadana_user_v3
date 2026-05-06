@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_item_dto.dart';
-import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_price_summary_dto.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_dtos.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 
@@ -41,10 +41,7 @@ class OrderDetailsDto {
   final int itemsCount;
   final OrderPriceSummaryDto summary;
   final List<OrderItemDto> items;
-  @JsonKey(
-    fromJson: _activeCaseFromJson,
-    toJson: _activeCaseToJson,
-  )
+  @JsonKey(fromJson: _activeCaseFromJson, toJson: _activeCaseToJson)
   final OrderSupportCaseSummaryDto? activeCase;
 
   Map<String, dynamic> toJson() => _$OrderDetailsDtoToJson(this);
@@ -81,10 +78,15 @@ class OrderDetailsDto {
     return <String, dynamic>{
       'id': value.id,
       'type': value.type,
+      'type_label': value.typeLabel,
       'status': value.status,
+      'status_label': value.statusLabel,
       'queue': value.queue,
+      'queue_label': value.queueLabel,
       'priority': value.priority,
+      'priority_label': value.priorityLabel,
       'reason_code': value.reasonCode,
+      'reason_label': value.reasonLabel,
       'message': value.message,
       'created_at': value.createdAt?.toIso8601String(),
       'updated_at': value.updatedAt?.toIso8601String(),

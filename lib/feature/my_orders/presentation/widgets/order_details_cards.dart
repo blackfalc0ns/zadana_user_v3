@@ -182,6 +182,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
     required this.message,
     required this.status,
     required this.typeLabel,
+    this.statusLabel,
     this.actionLabel,
     this.customerVisibleNote,
     this.onTap,
@@ -191,6 +192,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
   final String message;
   final OrderSupportCaseStatus status;
   final String typeLabel;
+  final String? statusLabel;
   final String? actionLabel;
   final String? customerVisibleNote;
   final VoidCallback? onTap;
@@ -260,7 +262,10 @@ class ActiveSupportCaseCard extends StatelessWidget {
                             Expanded(
                               child: Align(
                                 alignment: AlignmentDirectional.centerEnd,
-                                child: SupportCaseStatusBadge(status: status),
+                                child: SupportCaseStatusBadge(
+                                  status: status,
+                                  label: statusLabel,
+                                ),
                               ),
                             ),
                             const SizedBox(width: Spacing.xs),
@@ -335,9 +340,10 @@ class _SupportCaseMetaChip extends StatelessWidget {
 }
 
 class SupportCaseStatusBadge extends StatelessWidget {
-  const SupportCaseStatusBadge({super.key, required this.status});
+  const SupportCaseStatusBadge({super.key, required this.status, this.label});
 
   final OrderSupportCaseStatus status;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -354,7 +360,9 @@ class SupportCaseStatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        supportCaseStatusLabel(l10n, status),
+        (label?.trim().isNotEmpty ?? false)
+            ? label!.trim()
+            : supportCaseStatusLabel(l10n, status),
         style: TextStyle(
           color: colors.$2,
           fontWeight: FontWeight.w700,

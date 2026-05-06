@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_details_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_cards.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_shared.dart';
 
 class OrderDetailsBodyView extends StatelessWidget {
   const OrderDetailsBodyView({
     super.key,
     required this.order,
+    required this.refundStatus,
     required this.status,
     required this.isBusy,
     required this.isCancelling,
@@ -26,6 +28,7 @@ class OrderDetailsBodyView extends StatelessWidget {
   });
 
   final OrderDetailsEntity order;
+  final OrderRefundStatusEntity? refundStatus;
   final OrderStatus status;
   final bool isBusy;
   final bool isCancelling;
@@ -41,6 +44,12 @@ class OrderDetailsBodyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final hasActiveSupportCase = order.activeCase != null;
+    final showRefundStatusCard =
+        refundStatus != null &&
+        (refundStatus!.hasActiveCase ||
+            refundStatus!.settlementStatus !=
+                OrderSupportSettlementStatus.unknown ||
+            (refundStatus!.couponCode?.trim().isNotEmpty ?? false));
     final canShowSupportAction =
         hasActiveSupportCase ||
         status.canCreateComplaint ||
@@ -115,9 +124,10 @@ class OrderDetailsBodyView extends StatelessWidget {
             child: Column(
               children: [
                 ActiveSupportCaseCard(
-                  title: _supportCaseHeadline(l10n, order.activeCase!.status),
+                  title: order.activeCase!.displayType,
                   status: order.activeCase!.status,
-                  typeLabel: '',
+                  statusLabel: order.activeCase!.displayStatus,
+                  typeLabel: order.activeCase!.displayType,
                   message: order.activeCase!.message,
                 ),
                 const SizedBox(height: Spacing.sm),
@@ -131,6 +141,26 @@ class OrderDetailsBodyView extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ],
+            ),
+          ),
+        ],
+        if (showRefundStatusCard) ...[
+          const SizedBox(height: Spacing.base),
+          DetailSection(
+            title: _isArabic(l10n)
+                ? 'حالة الاسترجاع / الإرجاع'
+                : 'Refund / Return Status',
+            child: _RefundStatusCard(
+              refundStatus: refundStatus!,
+              money: money,
+              onCopyCoupon: (code) async {
+                await Clipboard.setData(ClipboardData(text: code));
+                if (!context.mounted) return;
+                CustomSnackbar.showSuccess(
+                  context: context,
+                  message: _isArabic(l10n) ? 'تم نسخ الكود' : 'Code copied',
+                );
+              },
             ),
           ),
         ],
@@ -152,6 +182,9 @@ class OrderDetailsBodyView extends StatelessWidget {
       ],
     );
   }
+
+  bool _isArabic(AppLocalizations l10n) =>
+      l10n.localeName.toLowerCase().startsWith('ar');
 
   String _paymentMethodLabel(AppLocalizations l10n, String paymentMethod) {
     switch (paymentMethod.trim().toLowerCase()) {
@@ -201,28 +234,143 @@ class OrderDetailsBodyView extends StatelessWidget {
         );
     return words.join(' ');
   }
+}
 
-  String _supportCaseHeadline(
-    AppLocalizations l10n,
-    OrderSupportCaseStatus status,
+class _RefundStatusCard extends StatelessWidget {
+  const _RefundStatusCard({
+    required this.refundStatus,
+    required this.money,
+    required this.onCopyCoupon,
+  });
+
+  final OrderRefundStatusEntity refundStatus;
+  final String Function(double value) money;
+  final ValueChanged<String> onCopyCoupon;
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final couponCode = refundStatus.couponCode?.trim() ?? '';
+    final note = refundStatus.customerNote?.trim() ?? '';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SummaryRow(
+          label: isArabic ? 'النتيجة' : 'Result',
+          value: _settlementLabel(refundStatus.settlementStatus, isArabic),
+          emphasized: true,
+        ),
+        if (refundStatus.approvedAmount != null) ...[
+          const SizedBox(height: Spacing.sm),
+          SummaryRow(
+            label: isArabic ? 'المبلغ المعتمد' : 'Approved amount',
+            value: money(refundStatus.approvedAmount!),
+          ),
+        ],
+        if (refundStatus.requestedAmount != null) ...[
+          const SizedBox(height: Spacing.sm),
+          SummaryRow(
+            label: isArabic ? 'المبلغ المطلوب' : 'Requested amount',
+            value: money(refundStatus.requestedAmount!),
+          ),
+        ],
+        if ((refundStatus.refundMethod?.trim().isNotEmpty ?? false)) ...[
+          const SizedBox(height: Spacing.sm),
+          SummaryRow(
+            label: isArabic ? 'طريقة التعويض' : 'Settlement method',
+            value: _humanize(refundStatus.refundMethod!),
+          ),
+        ],
+        if (couponCode.isNotEmpty) ...[
+          const SizedBox(height: Spacing.base),
+          DecoratedBlock(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SummaryRow(
+                  label: isArabic ? 'كود الكوبون' : 'Coupon code',
+                  value: couponCode,
+                  emphasized: true,
+                ),
+                if (refundStatus.couponExpiresAt != null) ...[
+                  const SizedBox(height: Spacing.sm),
+                  SummaryRow(
+                    label: isArabic ? 'ينتهي في' : 'Expires at',
+                    value: _formatDate(refundStatus.couponExpiresAt!, isArabic),
+                  ),
+                ],
+                const SizedBox(height: Spacing.sm),
+                SummaryRow(
+                  label: isArabic ? 'تم الاستخدام' : 'Redeemed',
+                  value: refundStatus.couponRedeemed
+                      ? (isArabic ? 'نعم' : 'Yes')
+                      : (isArabic ? 'لا' : 'No'),
+                ),
+                const SizedBox(height: Spacing.sm),
+                AppButton.outlined(
+                  text: isArabic ? 'نسخ الكود' : 'Copy code',
+                  onPressed: () => onCopyCoupon(couponCode),
+                  height: 42,
+                  borderRadius: 14,
+                  color: Theme.of(context).colorScheme.primary,
+                  textColor: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ],
+            ),
+          ),
+        ],
+        if (note.isNotEmpty) ...[
+          const SizedBox(height: Spacing.base),
+          SecondaryText(note),
+        ],
+      ],
+    );
+  }
+
+  static String _settlementLabel(
+    OrderSupportSettlementStatus status,
+    bool isArabic,
   ) {
-    final isArabic = l10n.localeName.toLowerCase().startsWith('ar');
-
     switch (status) {
-      case OrderSupportCaseStatus.submitted:
-        return isArabic ? 'تم فتح الحالة' : 'Case Opened';
-      case OrderSupportCaseStatus.inReview:
-        return isArabic ? 'قيد المتابعة' : 'Under Review';
-      case OrderSupportCaseStatus.awaitingCustomerEvidence:
-        return isArabic ? 'نحتاج تفاصيل' : 'More Details Needed';
-      case OrderSupportCaseStatus.approved:
+      case OrderSupportSettlementStatus.pendingReview:
+        return isArabic ? 'الطلب قيد المراجعة' : 'Pending review';
+      case OrderSupportSettlementStatus.cashRefunded:
+        return isArabic ? 'تم استرجاع المبلغ' : 'Cash refunded';
+      case OrderSupportSettlementStatus.couponIssued:
+        return isArabic ? 'تم إصدار كوبون تعويضي' : 'Coupon issued';
+      case OrderSupportSettlementStatus.couponRedeemed:
+        return isArabic ? 'تم استخدام الكوبون' : 'Coupon redeemed';
+      case OrderSupportSettlementStatus.rejected:
+        return isArabic ? 'تم رفض الطلب' : 'Rejected';
+      case OrderSupportSettlementStatus.approved:
         return isArabic ? 'تمت الموافقة' : 'Approved';
-      case OrderSupportCaseStatus.rejected:
-        return isArabic ? 'تم رفض الحالة' : 'Rejected';
-      case OrderSupportCaseStatus.resolved:
-        return isArabic ? 'تمت المعالجة' : 'Resolved';
-      case OrderSupportCaseStatus.unknown:
-        return supportCaseStatusLabel(l10n, status);
+      case OrderSupportSettlementStatus.unknown:
+        return isArabic ? 'لا توجد بيانات' : 'No status';
     }
+  }
+
+  static String _humanize(String value) {
+    return value
+        .trim()
+        .replaceAll(RegExp(r'[_-]+'), ' ')
+        .split(RegExp(r'\s+'))
+        .where((word) => word.isNotEmpty)
+        .map(
+          (word) =>
+              '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
+        )
+        .join(' ');
+  }
+
+  static String _formatDate(DateTime dateTime, bool isArabic) {
+    final local = dateTime.toLocal();
+    final month = local.month.toString().padLeft(2, '0');
+    final day = local.day.toString().padLeft(2, '0');
+    final hour = local.hour.toString().padLeft(2, '0');
+    final minute = local.minute.toString().padLeft(2, '0');
+    final value = '${local.year}-$month-$day $hour:$minute';
+    return isArabic ? value : value;
   }
 }

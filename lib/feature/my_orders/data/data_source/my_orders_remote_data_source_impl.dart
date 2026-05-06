@@ -53,7 +53,10 @@ class MyOrdersRemoteDataSourceImpl implements MyOrdersRemoteDataSource {
     String filePath,
   ) async {
     final multipartFile = await MultipartFile.fromFile(filePath);
-    return _apiServices.uploadOrderSupportCaseAttachment(orderId, multipartFile);
+    return _apiServices.uploadOrderSupportCaseAttachment(
+      orderId,
+      multipartFile,
+    );
   }
 
   @override
@@ -80,6 +83,24 @@ class MyOrdersRemoteDataSourceImpl implements MyOrdersRemoteDataSource {
     String caseId,
   ) {
     return _apiServices.getOrderSupportCaseDetails(orderId, caseId);
+  }
+
+  @override
+  Future<void> sendOrderSupportCaseMessage(
+    String orderId,
+    String caseId,
+    Map<String, dynamic> request,
+  ) async {
+    try {
+      await _apiServices.sendOrderSupportCaseMessage(orderId, caseId, request);
+    } on DioException catch (_) {
+      await _apiServices.sendOrderSupportCaseReply(orderId, caseId, request);
+    }
+  }
+
+  @override
+  Future<OrderRefundStatusResponseDto> getOrderRefundStatus(String orderId) {
+    return _apiServices.getOrderRefundStatus(orderId);
   }
 
   @override
