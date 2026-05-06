@@ -42,7 +42,7 @@ class CustomerAddressesContent extends StatelessWidget {
         Spacing.base,
         Spacing.base,
         Spacing.base,
-        110,
+        Spacing.xl,
       ),
       children: [
         AddressesSummaryCard(

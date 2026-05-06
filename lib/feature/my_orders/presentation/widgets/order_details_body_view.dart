@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_c
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_cards.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/support_case/support_case_formatters.dart';
 
 class OrderDetailsBodyView extends StatelessWidget {
   const OrderDetailsBodyView({
@@ -44,6 +45,7 @@ class OrderDetailsBodyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final hasActiveSupportCase = order.activeCase != null;
+    final activeSupportCase = order.activeCase;
     final showRefundStatusCard =
         refundStatus != null &&
         (refundStatus!.hasActiveCase ||
@@ -124,11 +126,30 @@ class OrderDetailsBodyView extends StatelessWidget {
             child: Column(
               children: [
                 ActiveSupportCaseCard(
-                  title: order.activeCase!.displayType,
-                  status: order.activeCase!.status,
-                  statusLabel: order.activeCase!.displayStatus,
-                  typeLabel: order.activeCase!.displayType,
-                  message: order.activeCase!.message,
+                  title: supportCaseOperationalTypeLabel(
+                    l10n,
+                    type: activeSupportCase!.type,
+                    status: activeSupportCase.status,
+                    settlementStatus: OrderSupportSettlementStatus.unknown,
+                  ),
+                  status: activeSupportCase.status,
+                  statusLabel: supportCaseMainStatusLabel(
+                    l10n,
+                    activeSupportCase.status,
+                  ),
+                  typeLabel: supportCaseOperationalTypeLabel(
+                    l10n,
+                    type: activeSupportCase.type,
+                    status: activeSupportCase.status,
+                    settlementStatus: OrderSupportSettlementStatus.unknown,
+                  ),
+                  typeMeta: supportCaseSanitizeVisibleText(
+                    l10n,
+                    activeSupportCase.message,
+                    caseId: activeSupportCase.id,
+                    fieldName: 'summary.message',
+                  ),
+                  message: activeSupportCase.message,
                 ),
                 const SizedBox(height: Spacing.sm),
                 AppButton.outlined(

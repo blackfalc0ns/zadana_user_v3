@@ -2162,6 +2162,12 @@ abstract class AppLocalizations {
   /// **'Not Available'**
   String get not_available;
 
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
   /// No description provided for @redirecting_to_checkout.
   ///
   /// In en, this message translates to:
@@ -3188,6 +3194,12 @@ abstract class AppLocalizations {
   /// **'Support'**
   String get my_orders_support_case_type_generic;
 
+  /// No description provided for @my_orders_support_case_type_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Case type'**
+  String get my_orders_support_case_type_label;
+
   /// No description provided for @my_orders_support_case_reason_label.
   ///
   /// In en, this message translates to:
@@ -3205,6 +3217,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Priority'**
   String get my_orders_support_case_priority_label;
+
+  /// No description provided for @my_orders_support_case_status_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get my_orders_support_case_status_label;
+
+  /// No description provided for @my_orders_support_case_settlement_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement'**
+  String get my_orders_support_case_settlement_label;
+
+  /// No description provided for @my_orders_support_case_waiting_for_reply.
+  ///
+  /// In en, this message translates to:
+  /// **'The case is waiting for your reply now.'**
+  String get my_orders_support_case_waiting_for_reply;
+
+  /// No description provided for @my_orders_support_case_case_details_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Case details'**
+  String get my_orders_support_case_case_details_label;
+
+  /// No description provided for @my_orders_support_case_approved_amount_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved amount'**
+  String get my_orders_support_case_approved_amount_label;
+
+  /// No description provided for @my_orders_support_case_coupon_code_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon code'**
+  String get my_orders_support_case_coupon_code_label;
+
+  /// No description provided for @my_orders_support_case_expires_at_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires at'**
+  String get my_orders_support_case_expires_at_label;
+
+  /// No description provided for @my_orders_support_case_redeemed_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed'**
+  String get my_orders_support_case_redeemed_label;
+
+  /// No description provided for @my_orders_support_case_copy_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get my_orders_support_case_copy_code;
+
+  /// No description provided for @my_orders_support_case_code_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get my_orders_support_case_code_copied;
+
+  /// No description provided for @my_orders_support_case_admin_decision_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin decision'**
+  String get my_orders_support_case_admin_decision_label;
+
+  /// No description provided for @my_orders_support_case_send_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Send update'**
+  String get my_orders_support_case_send_update;
+
+  /// No description provided for @my_orders_support_case_messages_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get my_orders_support_case_messages_title;
+
+  /// No description provided for @my_orders_support_case_messages_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No visible messages yet.'**
+  String get my_orders_support_case_messages_empty;
+
+  /// No description provided for @my_orders_support_case_actor_you.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get my_orders_support_case_actor_you;
+
+  /// No description provided for @my_orders_support_case_actor_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get my_orders_support_case_actor_support;
+
+  /// No description provided for @my_orders_support_case_preview_image_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to preview image'**
+  String get my_orders_support_case_preview_image_error;
+
+  /// No description provided for @my_orders_support_case_priority_high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get my_orders_support_case_priority_high;
+
+  /// No description provided for @my_orders_support_case_priority_medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get my_orders_support_case_priority_medium;
+
+  /// No description provided for @my_orders_support_case_priority_low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get my_orders_support_case_priority_low;
+
+  /// No description provided for @my_orders_support_case_queue_finance.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get my_orders_support_case_queue_finance;
+
+  /// No description provided for @my_orders_support_case_queue_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get my_orders_support_case_queue_support;
+
+  /// No description provided for @my_orders_support_case_queue_operations.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations'**
+  String get my_orders_support_case_queue_operations;
+
+  /// No description provided for @my_orders_support_case_settlement_pending_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending review'**
+  String get my_orders_support_case_settlement_pending_review;
+
+  /// No description provided for @my_orders_support_case_settlement_cash_refunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash refunded'**
+  String get my_orders_support_case_settlement_cash_refunded;
+
+  /// No description provided for @my_orders_support_case_settlement_coupon_issued.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon issued'**
+  String get my_orders_support_case_settlement_coupon_issued;
+
+  /// No description provided for @my_orders_support_case_settlement_coupon_redeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon redeemed'**
+  String get my_orders_support_case_settlement_coupon_redeemed;
+
+  /// No description provided for @my_orders_support_case_settlement_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get my_orders_support_case_settlement_rejected;
+
+  /// No description provided for @my_orders_support_case_settlement_approved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get my_orders_support_case_settlement_approved;
 
   /// No description provided for @my_orders_support_case_evidence_guidance.
   ///

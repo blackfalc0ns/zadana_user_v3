@@ -1,6 +1,8 @@
 enum OrderSupportCaseType {
   complaint,
   returnRequest,
+  driverReport,
+  driverDispute,
   unknown;
 
   static OrderSupportCaseType fromApi(String? value) {
@@ -9,6 +11,10 @@ enum OrderSupportCaseType {
         return OrderSupportCaseType.complaint;
       case 'return_request':
         return OrderSupportCaseType.returnRequest;
+      case 'driver_report':
+        return OrderSupportCaseType.driverReport;
+      case 'driver_dispute':
+        return OrderSupportCaseType.driverDispute;
       default:
         return OrderSupportCaseType.unknown;
     }
@@ -20,6 +26,10 @@ enum OrderSupportCaseType {
         return 'complaint';
       case OrderSupportCaseType.returnRequest:
         return 'return_request';
+      case OrderSupportCaseType.driverReport:
+        return 'driver_report';
+      case OrderSupportCaseType.driverDispute:
+        return 'driver_dispute';
       case OrderSupportCaseType.unknown:
         return 'complaint';
     }
@@ -193,7 +203,7 @@ class OrderSupportCaseMessageEntity {
   String get displayBody {
     final localized = localizedBody?.trim() ?? '';
     if (localized.isNotEmpty) return localized;
-    return body;
+    return body.trim();
   }
 }
 

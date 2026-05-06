@@ -31,7 +31,6 @@ class _MyOrdersView extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-      
         appBar: CustomAppBar(title: l10n.my_orders_title),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(

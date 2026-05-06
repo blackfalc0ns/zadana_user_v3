@@ -43,10 +43,11 @@ class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: colors.surfaceContainerLowest,
       appBar: CustomAppBar(title: l10n.addresses),
-      backgroundColor: AppColors.background,
       body: BlocConsumer<CustomerAddressesViewModel, CustomerAddressesState>(
         listenWhen: (previous, current) =>
             previous.actionType != current.actionType ||
@@ -72,12 +73,23 @@ class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(
-          context,
-        ).pushNamed(AppRoutes.startSelectLocationPage, arguments: true),
-        icon: const Icon(Icons.add_location_alt_outlined),
-        label: Text(l10n.add_address),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        child: FilledButton.icon(
+          onPressed: () => Navigator.of(
+            context,
+          ).pushNamed(AppRoutes.startSelectLocationPage, arguments: true),
+          icon: const Icon(Icons.add_location_alt_outlined),
+          label: Text(l10n.add_address),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(56),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            backgroundColor: AppColors.primary,
+            foregroundColor: colors.onPrimary,
+          ),
+        ),
       ),
     );
   }

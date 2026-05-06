@@ -150,7 +150,7 @@ class _ActionButton extends StatelessWidget {
           child: isPrimary
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
-                child: Stack(
+                  child: Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.topRight,
                     children: [
@@ -188,7 +188,6 @@ class _ActionButton extends StatelessWidget {
                                 fontFamily: FontConstant.cairo,
                                 color: color.onError,
                                 fontSize: 7,
-                               
                               ),
                             ),
                           ),

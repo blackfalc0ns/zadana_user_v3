@@ -30,19 +30,22 @@ class AddressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final colors = Theme.of(context).colorScheme;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.base),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isSelectedDefault ? AppColors.primary : AppColors.border,
+          color: isSelectedDefault
+              ? colors.primary.withValues(alpha: .60)
+              : colors.outlineVariant.withValues(alpha: .55),
           width: isSelectedDefault ? 1.2 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: colors.shadow.withValues(alpha: 0.05),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -67,7 +70,7 @@ class AddressCard extends StatelessWidget {
             style: getRegularStyle(
               fontFamily: FontConstant.cairo,
               fontSize: FontSize.size13,
-              color: AppColors.textSecondary,
+              color: colors.onSurfaceVariant,
             ).copyWith(height: 1.4),
           ),
           const SizedBox(height: Spacing.md),
@@ -103,22 +106,21 @@ class _AddressCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Row(
       children: [
         Container(
           width: 42,
           height: 42,
           decoration: BoxDecoration(
-            color:
-                (isSelectedDefault ? AppColors.primary : AppColors.primaryLight)
-                    .withValues(alpha: 0.12),
+            color: (isSelectedDefault ? colors.primary : colors.secondary)
+                .withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(
             Icons.location_on_outlined,
-            color: isSelectedDefault
-                ? AppColors.primary
-                : AppColors.primaryLight,
+            color: isSelectedDefault ? colors.primary : colors.secondary,
             size: 20,
           ),
         ),
@@ -137,7 +139,7 @@ class _AddressCardHeader extends StatelessWidget {
                     style: getSemiBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: FontSize.size16,
-                      color: AppColors.textPrimary,
+                      color: colors.onSurface,
                     ),
                   ),
                   if (isSelectedDefault)
@@ -152,7 +154,7 @@ class _AddressCardHeader extends StatelessWidget {
                 style: getRegularStyle(
                   fontFamily: FontConstant.cairo,
                   fontSize: FontSize.size11,
-                  color: AppColors.textSecondary,
+                  color: colors.onSurfaceVariant,
                 ),
               ),
             ],
@@ -163,7 +165,7 @@ class _AddressCardHeader extends StatelessWidget {
             onPressed: isDeleting ? null : onDelete,
             tooltip: l10n.addresses_delete,
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.error.withValues(alpha: 0.08),
+              backgroundColor: colors.errorContainer.withValues(alpha: 0.45),
               minimumSize: const Size(38, 38),
               padding: EdgeInsets.zero,
             ),
@@ -222,12 +224,16 @@ class _AddressCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Row(
       children: [
         Expanded(
           child: OutlinedButton.icon(
             onPressed: isDeleting ? null : onEdit,
             style: OutlinedButton.styleFrom(
+              foregroundColor: colors.primary,
+              side: BorderSide(color: colors.primary.withValues(alpha: .70)),
               visualDensity: VisualDensity.compact,
               minimumSize: const Size.fromHeight(42),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -249,7 +255,7 @@ class _AddressCardActions extends StatelessWidget {
               height: 42,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.successLight,
+                color: colors.secondaryContainer.withValues(alpha: .55),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: FittedBox(
@@ -259,7 +265,7 @@ class _AddressCardActions extends StatelessWidget {
                   style: getSemiBoldStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size11,
-                    color: AppColors.success,
+                    color: colors.onSecondaryContainer,
                   ),
                 ),
               ),
@@ -270,6 +276,8 @@ class _AddressCardActions extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: isDeleting ? null : onSetDefault,
               style: ElevatedButton.styleFrom(
+                backgroundColor: colors.primary,
+                foregroundColor: colors.onPrimary,
                 visualDensity: VisualDensity.compact,
                 minimumSize: const Size.fromHeight(42),
                 padding: const EdgeInsets.symmetric(
@@ -299,10 +307,12 @@ class _DefaultBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.10),
+        color: colors.primary.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -310,7 +320,7 @@ class _DefaultBadge extends StatelessWidget {
         style: getSemiBoldStyle(
           fontFamily: FontConstant.cairo,
           fontSize: FontSize.size11,
-          color: AppColors.primary,
+          color: colors.primary,
         ),
       ),
     );

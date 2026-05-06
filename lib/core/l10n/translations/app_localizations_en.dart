@@ -1134,6 +1134,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get not_available => 'Not Available';
 
   @override
+  String get yes => 'Yes';
+
+  @override
   String get redirecting_to_checkout => 'Redirecting to checkout...';
 
   @override
@@ -1671,6 +1674,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get my_orders_support_case_type_generic => 'Support';
 
   @override
+  String get my_orders_support_case_type_label => 'Case type';
+
+  @override
   String get my_orders_support_case_reason_label => 'Reason';
 
   @override
@@ -1678,6 +1684,98 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get my_orders_support_case_priority_label => 'Priority';
+
+  @override
+  String get my_orders_support_case_status_label => 'Status';
+
+  @override
+  String get my_orders_support_case_settlement_label => 'Settlement';
+
+  @override
+  String get my_orders_support_case_waiting_for_reply =>
+      'The case is waiting for your reply now.';
+
+  @override
+  String get my_orders_support_case_case_details_label => 'Case details';
+
+  @override
+  String get my_orders_support_case_approved_amount_label => 'Approved amount';
+
+  @override
+  String get my_orders_support_case_coupon_code_label => 'Coupon code';
+
+  @override
+  String get my_orders_support_case_expires_at_label => 'Expires at';
+
+  @override
+  String get my_orders_support_case_redeemed_label => 'Redeemed';
+
+  @override
+  String get my_orders_support_case_copy_code => 'Copy code';
+
+  @override
+  String get my_orders_support_case_code_copied => 'Code copied';
+
+  @override
+  String get my_orders_support_case_admin_decision_label => 'Admin decision';
+
+  @override
+  String get my_orders_support_case_send_update => 'Send update';
+
+  @override
+  String get my_orders_support_case_messages_title => 'Messages';
+
+  @override
+  String get my_orders_support_case_messages_empty =>
+      'No visible messages yet.';
+
+  @override
+  String get my_orders_support_case_actor_you => 'You';
+
+  @override
+  String get my_orders_support_case_actor_support => 'Support';
+
+  @override
+  String get my_orders_support_case_preview_image_error =>
+      'Unable to preview image';
+
+  @override
+  String get my_orders_support_case_priority_high => 'High';
+
+  @override
+  String get my_orders_support_case_priority_medium => 'Medium';
+
+  @override
+  String get my_orders_support_case_priority_low => 'Low';
+
+  @override
+  String get my_orders_support_case_queue_finance => 'Finance';
+
+  @override
+  String get my_orders_support_case_queue_support => 'Support';
+
+  @override
+  String get my_orders_support_case_queue_operations => 'Operations';
+
+  @override
+  String get my_orders_support_case_settlement_pending_review =>
+      'Pending review';
+
+  @override
+  String get my_orders_support_case_settlement_cash_refunded => 'Cash refunded';
+
+  @override
+  String get my_orders_support_case_settlement_coupon_issued => 'Coupon issued';
+
+  @override
+  String get my_orders_support_case_settlement_coupon_redeemed =>
+      'Coupon redeemed';
+
+  @override
+  String get my_orders_support_case_settlement_rejected => 'Rejected';
+
+  @override
+  String get my_orders_support_case_settlement_approved => 'Approved';
 
   @override
   String get my_orders_support_case_evidence_guidance =>

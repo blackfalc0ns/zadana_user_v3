@@ -33,6 +33,14 @@ String supportCaseTypeLabel(
       return l10n.my_orders_support_case_type_complaint;
     case OrderSupportCaseType.returnRequest:
       return l10n.my_orders_support_case_type_return_request;
+    case OrderSupportCaseType.driverReport:
+      return l10n.localeName.toLowerCase().startsWith('ar')
+          ? 'بلاغ سائق'
+          : 'Driver report';
+    case OrderSupportCaseType.driverDispute:
+      return l10n.localeName.toLowerCase().startsWith('ar')
+          ? 'نزاع سائق'
+          : 'Driver dispute';
     case OrderSupportCaseType.unknown:
       return l10n.my_orders_support_case_type_generic;
   }

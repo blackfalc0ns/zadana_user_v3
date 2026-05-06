@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -18,17 +17,18 @@ class AddressesSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final colors = Theme.of(context).colorScheme;
     final localizedDefaultLabel = _localizedLabel(l10n, defaultLabel);
 
     return Container(
       padding: const EdgeInsets.all(Spacing.md),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDFEFE),
+        color: colors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.14)),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.14)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.04),
+            color: colors.shadow.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -45,7 +45,7 @@ class AddressesSummaryCard extends StatelessWidget {
                   style: getSemiBoldStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size16,
-                    color: AppColors.textPrimary,
+                    color: colors.onSurface,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -55,7 +55,7 @@ class AddressesSummaryCard extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.07),
+                    color: colors.primary.withValues(alpha: 0.07),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -64,7 +64,7 @@ class AddressesSummaryCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: getRegularStyle(
                       fontFamily: FontConstant.cairo,
-                      color: AppColors.primary,
+                      color: colors.primary,
                     ),
                   ),
                 ),
@@ -76,7 +76,7 @@ class AddressesSummaryCard extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
+              color: colors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Column(
@@ -87,7 +87,7 @@ class AddressesSummaryCard extends StatelessWidget {
                   style: getBoldStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size18,
-                    color: AppColors.primary,
+                    color: colors.primary,
                   ),
                 ),
                 Text(
@@ -97,7 +97,7 @@ class AddressesSummaryCard extends StatelessWidget {
                   style: getRegularStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size8,
-                    color: AppColors.primary,
+                    color: colors.primary,
                   ),
                 ),
               ],

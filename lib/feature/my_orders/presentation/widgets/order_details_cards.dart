@@ -182,6 +182,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
     required this.message,
     required this.status,
     required this.typeLabel,
+    this.typeMeta,
     this.statusLabel,
     this.actionLabel,
     this.customerVisibleNote,
@@ -192,6 +193,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
   final String message;
   final OrderSupportCaseStatus status;
   final String typeLabel;
+  final String? typeMeta;
   final String? statusLabel;
   final String? actionLabel;
   final String? customerVisibleNote;
@@ -290,6 +292,10 @@ class ActiveSupportCaseCard extends StatelessWidget {
                               ),
                           ],
                         ),
+                        if (typeMeta?.trim().isNotEmpty ?? false) ...[
+                          const SizedBox(height: 8),
+                          SecondaryText(typeMeta!.trim(), maxLines: 2),
+                        ],
                       ],
                     ),
                   ),

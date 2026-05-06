@@ -70,7 +70,22 @@ class ContactButton extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_left, size: 20, color: color.onSurfaceVariant),
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: color.surfaceContainerHighest.withValues(alpha: 0.28),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: color.onSurfaceVariant,
+                  textDirection: Directionality.of(context),
+                ),
+              ),
+            ),
           ],
         ),
       ),

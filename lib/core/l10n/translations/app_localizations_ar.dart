@@ -1111,6 +1111,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get not_available => 'غير متوفر';
 
   @override
+  String get yes => 'نعم';
+
+  @override
   String get redirecting_to_checkout => 'جاري تحويلك لإتمام الطلب...';
 
   @override
@@ -1639,6 +1642,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_support_case_type_generic => 'دعم';
 
   @override
+  String get my_orders_support_case_type_label => 'نوع الحالة';
+
+  @override
   String get my_orders_support_case_reason_label => 'السبب';
 
   @override
@@ -1646,6 +1652,98 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_support_case_priority_label => 'الأولوية';
+
+  @override
+  String get my_orders_support_case_status_label => 'الحالة';
+
+  @override
+  String get my_orders_support_case_settlement_label => 'حالة التسوية';
+
+  @override
+  String get my_orders_support_case_waiting_for_reply =>
+      'النظام ينتظر ردك الآن.';
+
+  @override
+  String get my_orders_support_case_case_details_label => 'تفاصيل الحالة';
+
+  @override
+  String get my_orders_support_case_approved_amount_label => 'المبلغ المعتمد';
+
+  @override
+  String get my_orders_support_case_coupon_code_label => 'كود الكوبون';
+
+  @override
+  String get my_orders_support_case_expires_at_label => 'ينتهي في';
+
+  @override
+  String get my_orders_support_case_redeemed_label => 'تم الاستخدام';
+
+  @override
+  String get my_orders_support_case_copy_code => 'نسخ الكود';
+
+  @override
+  String get my_orders_support_case_code_copied => 'تم نسخ الكود';
+
+  @override
+  String get my_orders_support_case_admin_decision_label => 'قرار الإدارة';
+
+  @override
+  String get my_orders_support_case_send_update => 'إرسال متابعة';
+
+  @override
+  String get my_orders_support_case_messages_title => 'المحادثة';
+
+  @override
+  String get my_orders_support_case_messages_empty =>
+      'لا توجد رسائل ظاهرة حتى الآن.';
+
+  @override
+  String get my_orders_support_case_actor_you => 'أنت';
+
+  @override
+  String get my_orders_support_case_actor_support => 'الدعم';
+
+  @override
+  String get my_orders_support_case_preview_image_error => 'تعذر عرض الصورة';
+
+  @override
+  String get my_orders_support_case_priority_high => 'عالية';
+
+  @override
+  String get my_orders_support_case_priority_medium => 'متوسطة';
+
+  @override
+  String get my_orders_support_case_priority_low => 'منخفضة';
+
+  @override
+  String get my_orders_support_case_queue_finance => 'المالية';
+
+  @override
+  String get my_orders_support_case_queue_support => 'الدعم';
+
+  @override
+  String get my_orders_support_case_queue_operations => 'العمليات';
+
+  @override
+  String get my_orders_support_case_settlement_pending_review => 'قيد المراجعة';
+
+  @override
+  String get my_orders_support_case_settlement_cash_refunded =>
+      'تم الاسترجاع النقدي';
+
+  @override
+  String get my_orders_support_case_settlement_coupon_issued =>
+      'تم إصدار كوبون';
+
+  @override
+  String get my_orders_support_case_settlement_coupon_redeemed =>
+      'تم استخدام الكوبون';
+
+  @override
+  String get my_orders_support_case_settlement_rejected => 'تم الرفض';
+
+  @override
+  String get my_orders_support_case_settlement_approved => 'تمت الموافقة';
 
   @override
   String get my_orders_support_case_evidence_guidance =>

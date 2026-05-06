@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/models/order_ui_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_status_badge.dart';
@@ -401,12 +402,13 @@ class SecondaryText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color=context.colorScheme;
     return Text(
       text,
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,
-      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      style: TextStyle(color: color.primary),
     );
   }
 }
