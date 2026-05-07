@@ -1,14 +1,12 @@
 workflows:
   ios-ipa:
     name: iOS IPA Build
-
     environment:
       flutter: stable
       xcode: latest
-
     scripts:
       - flutter pub get
       - flutter build ipa --release --no-codesign
-
+      - find . -name "*.ipa"
     artifacts:
-      - build/ios/ipa/*.ipa
+      - "**/*.ipa"
