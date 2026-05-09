@@ -981,6 +981,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cart_empty_message => 'ابدأ تسوق وحط منتجات';
 
   @override
+  String get cart_unavailable_products_title => 'منتجات غير متوفرة';
+
+  @override
+  String cart_unavailable_products_message(int count) {
+    return '$count من المنتجات غير متوفرة في هذا المتجر';
+  }
+
+  @override
+  String get cart_checkout_blocked_unavailable_products =>
+      'لا يمكن إتمام الطلب لوجود منتجات غير متوفرة';
+
+  @override
   String get shop_now => 'تسوّق الحين';
 
   @override

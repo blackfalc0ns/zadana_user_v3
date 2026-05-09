@@ -94,21 +94,29 @@ class OrderTrackingResponseDto {
 }
 
 class OrderTrackingOrderDto {
-  const OrderTrackingOrderDto({required this.id, required this.status});
+  const OrderTrackingOrderDto({
+    required this.id,
+    required this.orderNumber,
+    required this.status,
+  });
 
   factory OrderTrackingOrderDto.fromJson(Map<String, dynamic> json) {
     return OrderTrackingOrderDto(
       id: json['id']?.toString() ?? '',
+      orderNumber:
+          json['order_number']?.toString() ?? json['id']?.toString() ?? '',
       status: json['status']?.toString() ?? '',
     );
   }
 
   final String id;
+  final String orderNumber;
   final String status;
 
   OrderTrackingOrderEntity toEntity() {
     return OrderTrackingOrderEntity(
       id: id,
+      orderNumber: orderNumber,
       status: OrderStatus.fromApi(status),
     );
   }

@@ -52,22 +52,18 @@ class DrawerDialogs {
               label: locale.arabic,
               code: 'ar',
               selectedLanguage: selectedLanguage,
-              onTap: () async {
-                await context.read<LocaleThemeCubit>().setArabic();
-                if (sheetContext.mounted) {
-                  Navigator.pop(sheetContext);
-                }
+              onTap: () {
+                Navigator.pop(sheetContext);
+                context.read<LocaleThemeCubit>().setArabic();
               },
             ),
             _LanguageTile(
               label: locale.english,
               code: 'en',
               selectedLanguage: selectedLanguage,
-              onTap: () async {
-                await context.read<LocaleThemeCubit>().setEnglish();
-                if (sheetContext.mounted) {
-                  Navigator.pop(sheetContext);
-                }
+              onTap: () {
+                Navigator.pop(sheetContext);
+                context.read<LocaleThemeCubit>().setEnglish();
               },
             ),
             const SizedBox(height: Spacing.md),

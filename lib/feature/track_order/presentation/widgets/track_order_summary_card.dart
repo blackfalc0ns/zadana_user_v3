@@ -120,7 +120,7 @@ class TrackOrderSummaryCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            tracking.order.id,
+                            tracking.order.displayNumber,
                             textAlign: TextAlign.end,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

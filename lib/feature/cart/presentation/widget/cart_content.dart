@@ -64,6 +64,8 @@ class CartContent extends StatelessWidget {
   }
 
   Widget _buildUnavailableWarning(BuildContext context, int count) {
+    final locale = context.localization;
+
     return Container(
       margin: const EdgeInsets.fromLTRB(14, 6, 14, 8),
       padding: const EdgeInsets.all(12),
@@ -81,7 +83,7 @@ class CartContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'منتجات غير متوفرة',
+                  locale.cart_unavailable_products_title,
                   style: getBoldStyle(
                     fontFamily: FontConstant.cairo,
                     color: AppColors.textPrimary,
@@ -89,7 +91,7 @@ class CartContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$count من المنتجات غير متوفرة في هذا المتجر',
+                  locale.cart_unavailable_products_message(count),
                   style: getRegularStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size11,

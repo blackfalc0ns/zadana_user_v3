@@ -24,7 +24,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   static const Duration _minimumSplashDuration = Duration(
-    milliseconds: 1200,
+  seconds: 5,
   );
 
   @override

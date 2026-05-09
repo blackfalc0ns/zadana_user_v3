@@ -38,7 +38,6 @@ class ProductBottomActions extends StatelessWidget {
         top: false,
         child: Row(
           children: [
-          
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: isAddingToCart ? null : onAddToCart,
@@ -94,8 +93,8 @@ class ProductBottomActions extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 28,
-                      height: 24,
+                      width: 32,
+                      height: 28,
                       child: Stack(
                         clipBehavior: Clip.none,
                         alignment: Alignment.center,
@@ -103,8 +102,8 @@ class ProductBottomActions extends StatelessWidget {
                           const FaIcon(FontAwesomeIcons.cartShopping, size: 17),
                           if (cartCount > 0)
                             PositionedDirectional(
-                              top: -3,
-                              end: -1,
+                              top: -5,
+                              end: -3,
                               child: _CartCountBadge(count: cartCount),
                             ),
                         ],

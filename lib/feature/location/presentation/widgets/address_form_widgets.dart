@@ -80,12 +80,12 @@ class AddressFormWidgets {
   }) {
     final color = context.colorScheme;
     return Container(
-      padding: EdgeInsets.only(
-        left: Spacing.screenH,
-        right: Spacing.screenH,
-        bottom: MediaQuery.of(context).padding.bottom + Spacing.base,
-        top: Spacing.base,
-      ),
+     padding: EdgeInsets.only(
+       left: Spacing.screenH,
+      right: Spacing.screenH,
+      //   bottom: MediaQuery.of(context).padding.bottom + Spacing.base,
+      //   top: Spacing.base,
+    ),
       decoration: BoxDecoration(
         color: color.surface,
         boxShadow: [

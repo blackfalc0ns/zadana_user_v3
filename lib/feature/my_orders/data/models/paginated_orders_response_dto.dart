@@ -13,8 +13,16 @@ class PaginatedOrdersResponseDto {
     required this.total,
   });
 
-  factory PaginatedOrdersResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$PaginatedOrdersResponseDtoFromJson(json);
+  factory PaginatedOrdersResponseDto.fromJson(Map<String, dynamic> json) {
+    return PaginatedOrdersResponseDto(
+      items: _list(
+        json['items'],
+      ).map((item) => OrderListItemDto.fromJson(_map(item))).toList(),
+      page: (json['page'] as num?)?.toInt() ?? 1,
+      perPage: (json['per_page'] as num?)?.toInt() ?? 10,
+      total: (json['total'] as num?)?.toInt() ?? 0,
+    );
+  }
 
   final List<OrderListItemDto> items;
   final int page;
@@ -30,5 +38,19 @@ class PaginatedOrdersResponseDto {
       perPage: perPage,
       total: total,
     );
+  }
+
+  static Map<String, dynamic> _map(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) {
+      return value.map((key, value) => MapEntry(key.toString(), value));
+    }
+
+    return const <String, dynamic>{};
+  }
+
+  static List<dynamic> _list(dynamic value) {
+    if (value is List) return value;
+    return const <dynamic>[];
   }
 }

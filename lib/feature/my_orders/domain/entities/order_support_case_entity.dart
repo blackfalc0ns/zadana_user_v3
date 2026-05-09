@@ -210,6 +210,7 @@ class OrderSupportCaseMessageEntity {
 class OrderSupportCaseSummaryEntity {
   const OrderSupportCaseSummaryEntity({
     required this.id,
+    required this.orderNumber,
     required this.type,
     required this.typeLabel,
     required this.status,
@@ -226,6 +227,7 @@ class OrderSupportCaseSummaryEntity {
   });
 
   final String id;
+  final String orderNumber;
   final OrderSupportCaseType type;
   final String? typeLabel;
   final OrderSupportCaseStatus status;
@@ -239,6 +241,12 @@ class OrderSupportCaseSummaryEntity {
   final String message;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+
+  String get displayOrderNumber {
+    final normalized = orderNumber.trim();
+    if (normalized.isNotEmpty) return normalized;
+    return id;
+  }
 
   String get displayType => _displayValue(typeLabel, type.apiValue);
   String get displayStatus =>
@@ -284,6 +292,7 @@ class OrderSupportCaseEntity {
   const OrderSupportCaseEntity({
     required this.id,
     required this.orderId,
+    required this.orderNumber,
     required this.type,
     required this.typeLabel,
     required this.status,
@@ -319,6 +328,7 @@ class OrderSupportCaseEntity {
 
   final String id;
   final String orderId;
+  final String orderNumber;
   final OrderSupportCaseType type;
   final String? typeLabel;
   final OrderSupportCaseStatus status;
@@ -350,6 +360,12 @@ class OrderSupportCaseEntity {
   final List<OrderSupportCaseAttachmentEntity> attachments;
   final List<OrderSupportCaseActivityEntity> activities;
   final List<OrderSupportCaseMessageEntity> messages;
+
+  String get displayOrderNumber {
+    final normalized = orderNumber.trim();
+    if (normalized.isNotEmpty) return normalized;
+    return orderId;
+  }
 
   bool get canSendMessage =>
       allowedActions.any((action) => action.trim().toLowerCase() == 'message');

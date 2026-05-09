@@ -284,7 +284,10 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
           return Scaffold(
             body: CustomScrollView(
               slivers: [
-                BrandHeader(brand: brand),
+                BrandHeader(
+                  brand: brand,
+                  productCount: state.totalProducts,
+                ),
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: BrandSearchBarDelegate(

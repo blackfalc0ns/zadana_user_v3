@@ -836,6 +836,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i525.GetCustomerAddressesUseCase>(),
       ),
     );
+    gh.factory<_i31.ProductDetailsCubit>(
+      () => _i31.ProductDetailsCubit(
+        productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
+        addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
+        languageService: gh<_i819.LanguageService>(),
+      ),
+    );
     gh.factory<_i341.CartViewModel>(
       () => _i341.CartViewModel(
         gh<_i1065.GetCartVendorsUseCase>(),
@@ -971,14 +978,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i248.LoginUseCase>(
       () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
-    );
-    gh.factory<_i31.ProductDetailsCubit>(
-      () => _i31.ProductDetailsCubit(
-        productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
-        addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
-        getCartUseCase: gh<_i925.GetCartUseCase>(),
-        languageService: gh<_i819.LanguageService>(),
-      ),
     );
     gh.factory<_i166.RegisterUseCase>(
       () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),

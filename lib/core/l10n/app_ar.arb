@@ -365,6 +365,16 @@
   "cart_empty": "السلة فارغة",
   "cart_empty_description": "لا توجد منتجات في سلة التسوق",
   "cart_empty_message": "ابدأ تسوق وحط منتجات",
+  "cart_unavailable_products_title": "منتجات غير متوفرة",
+  "cart_unavailable_products_message": "{count} من المنتجات غير متوفرة في هذا المتجر",
+  "@cart_unavailable_products_message": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cart_checkout_blocked_unavailable_products": "لا يمكن إتمام الطلب لوجود منتجات غير متوفرة",
   "shop_now": "تسوّق الحين",
 
   "delete_item": "حذف المنتج",

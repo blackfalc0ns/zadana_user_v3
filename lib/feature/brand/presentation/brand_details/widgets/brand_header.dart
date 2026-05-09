@@ -7,9 +7,14 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 
 class BrandHeader extends StatelessWidget {
-  const BrandHeader({super.key, required this.brand});
+  const BrandHeader({
+    super.key,
+    required this.brand,
+    required this.productCount,
+  });
 
   final BrandModel brand;
+  final int productCount;
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +73,17 @@ class BrandHeader extends StatelessWidget {
   }
 
   Widget _buildCover() {
-    return Image.network(
-      brand.coverImage ??
-          'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    final imageUrl = _resolveCoverImageUrl();
+    if (imageUrl == null) {
+      return Image.asset(Assets.notFound, fit: BoxFit.cover);
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(color: const Color(0xFFF3EEE8));
-      },
+      placeholder: (context, url) => Container(color: const Color(0xFFF3EEE8)),
+      errorWidget: (context, url, error) =>
+          Image.asset(Assets.notFound, fit: BoxFit.cover),
     );
   }
 
@@ -169,7 +178,7 @@ class BrandHeader extends StatelessWidget {
             border: Border.all(color: AppColors.white.withValues(alpha: 0.22)),
           ),
           child: Text(
-            context.localization.brand_product_count(brand.productCount),
+            context.localization.brand_product_count(productCount),
             style: AppTextStyles.labelMedium.copyWith(
               color: AppColors.white,
               fontWeight: FontWeight.w700,
@@ -178,5 +187,19 @@ class BrandHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String? _resolveCoverImageUrl() {
+    final coverImage = brand.coverImage?.trim();
+    if (coverImage != null && coverImage.isNotEmpty) {
+      return coverImage;
+    }
+
+    final logo = brand.logo.trim();
+    if (logo.isNotEmpty) {
+      return logo;
+    }
+
+    return null;
   }
 }

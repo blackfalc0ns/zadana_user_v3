@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -27,7 +29,9 @@ class LocaleThemeCubit extends Cubit<LocaleThemeState> {
 
     await _languageService.saveLanguageCode(languageCode);
     emit(state.copyWith(locale: Locale(languageCode)));
-    await getIt<NotificationDeviceService>().syncCurrentDeviceIfAuthenticated();
+    unawaited(
+      getIt<NotificationDeviceService>().syncCurrentDeviceIfAuthenticated(),
+    );
   }
 
   Future<void> setArabic() => setLocale(AppConstants.arKey);

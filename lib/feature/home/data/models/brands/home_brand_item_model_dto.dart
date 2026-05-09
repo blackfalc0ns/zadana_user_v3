@@ -13,7 +13,8 @@ class HomeBrandItemModelDto {
       id: json['id'] as String?,
       name: json['name'] as String?,
       logo: json['logo'] as String?,
-      coverImage: json['cover_image'] as String?,
+      coverImage:
+          json['cover_image_url'] as String? ?? json['cover_image'] as String?,
       productCount: json['product_count'] as int?,
       description: json['description'] as String?,
     );

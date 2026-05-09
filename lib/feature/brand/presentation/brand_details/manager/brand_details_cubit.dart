@@ -141,6 +141,7 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
           state.copyWith(
             isLoading: false,
             products: result.data.items,
+            totalProducts: result.data.total,
             errorMessage: null,
           ),
         );
@@ -149,6 +150,7 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
           state.copyWith(
             isLoading: false,
             products: const [],
+            totalProducts: 0,
             errorMessage: result.failure.errorMessage,
           ),
         );

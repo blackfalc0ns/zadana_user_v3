@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_c
 class OrderDetailsEntity {
   const OrderDetailsEntity({
     required this.id,
+    required this.orderNumber,
     required this.createdAt,
     required this.totalPrice,
     required this.status,
@@ -21,6 +22,7 @@ class OrderDetailsEntity {
   });
 
   final String id;
+  final String orderNumber;
   final DateTime createdAt;
   final double totalPrice;
   final OrderStatus status;
@@ -33,4 +35,10 @@ class OrderDetailsEntity {
   final OrderPriceSummaryEntity summary;
   final List<OrderItemEntity> items;
   final OrderSupportCaseSummaryEntity? activeCase;
+
+  String get displayOrderNumber {
+    final normalized = orderNumber.trim();
+    if (normalized.isNotEmpty) return normalized;
+    return id;
+  }
 }

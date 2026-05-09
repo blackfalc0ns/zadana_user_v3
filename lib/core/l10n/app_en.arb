@@ -362,6 +362,16 @@
   "cart_empty": "Your cart is empty",
   "cart_empty_description": "There are no products in your shopping cart",
   "cart_empty_message": "Start shopping and add products to your cart",
+  "cart_unavailable_products_title": "Unavailable products",
+  "cart_unavailable_products_message": "{count} products are unavailable in this store",
+  "@cart_unavailable_products_message": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cart_checkout_blocked_unavailable_products": "Checkout is unavailable because some products are not available",
   "shop_now": "Shop Now",
   "delete_item": "Delete Item",
   "delete_item_confirm": "Do you want to remove this item from your cart?",

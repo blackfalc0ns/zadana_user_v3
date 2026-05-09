@@ -171,6 +171,7 @@ class OrderSupportCaseMessageDto {
 class OrderSupportCaseSummaryDto {
   const OrderSupportCaseSummaryDto({
     required this.id,
+    required this.orderNumber,
     required this.type,
     required this.typeLabel,
     required this.status,
@@ -189,6 +190,8 @@ class OrderSupportCaseSummaryDto {
   factory OrderSupportCaseSummaryDto.fromJson(Map<String, dynamic> json) {
     return OrderSupportCaseSummaryDto(
       id: json['id']?.toString() ?? '',
+      orderNumber:
+          json['order_number']?.toString() ?? json['order_id']?.toString() ?? '',
       type: json['type']?.toString() ?? '',
       typeLabel: json['type_label']?.toString(),
       status: json['status']?.toString() ?? '',
@@ -206,6 +209,7 @@ class OrderSupportCaseSummaryDto {
   }
 
   final String id;
+  final String orderNumber;
   final String type;
   final String? typeLabel;
   final String status;
@@ -223,6 +227,7 @@ class OrderSupportCaseSummaryDto {
   OrderSupportCaseSummaryEntity toEntity() {
     return OrderSupportCaseSummaryEntity(
       id: id,
+      orderNumber: orderNumber,
       type: OrderSupportCaseType.fromApi(type),
       typeLabel: typeLabel,
       status: OrderSupportCaseStatus.fromApi(status),
@@ -244,6 +249,7 @@ class OrderSupportCaseDto {
   const OrderSupportCaseDto({
     required this.id,
     required this.orderId,
+    required this.orderNumber,
     required this.type,
     required this.typeLabel,
     required this.status,
@@ -281,6 +287,8 @@ class OrderSupportCaseDto {
     return OrderSupportCaseDto(
       id: json['id']?.toString() ?? '',
       orderId: json['order_id']?.toString() ?? '',
+      orderNumber:
+          json['order_number']?.toString() ?? json['order_id']?.toString() ?? '',
       type: json['type']?.toString() ?? '',
       typeLabel: json['type_label']?.toString(),
       status: json['status']?.toString() ?? '',
@@ -329,6 +337,7 @@ class OrderSupportCaseDto {
 
   final String id;
   final String orderId;
+  final String orderNumber;
   final String type;
   final String? typeLabel;
   final String status;
@@ -365,6 +374,7 @@ class OrderSupportCaseDto {
     return OrderSupportCaseEntity(
       id: id,
       orderId: orderId,
+      orderNumber: orderNumber,
       type: OrderSupportCaseType.fromApi(type),
       typeLabel: typeLabel,
       status: OrderSupportCaseStatus.fromApi(status),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
@@ -12,12 +14,14 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_stat
 class OrderHeaderCard extends StatelessWidget {
   const OrderHeaderCard({
     super.key,
+    required this.orderNumber,
     required this.status,
     required this.date,
     required this.itemCount,
     required this.total,
   });
 
+  final String orderNumber;
   final OrderStatus status;
   final String date;
   final int itemCount;
@@ -38,15 +42,20 @@ class OrderHeaderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${l10n.my_orders_created_at}: $date',
+                  '${l10n.order_number}: $orderNumber',
                   style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: colors.onSurface,
+                    fontWeight: FontWeight.w800,
+                    color: colors.primary,
                   ),
                 ),
               ),
               OrderStatusBadge(status: status),
             ],
+          ),
+          const SizedBox(height: Spacing.xs),
+          Text(
+            '${l10n.my_orders_created_at}: $date',
+            style:getSemiBoldStyle(fontFamily: FontConstant.cairo,color:  colors.onSurface,)
           ),
           const SizedBox(height: Spacing.md),
           Row(
@@ -182,6 +191,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
     required this.message,
     required this.status,
     required this.typeLabel,
+    this.orderNumber,
     this.typeMeta,
     this.statusLabel,
     this.actionLabel,
@@ -193,6 +203,7 @@ class ActiveSupportCaseCard extends StatelessWidget {
   final String message;
   final OrderSupportCaseStatus status;
   final String typeLabel;
+  final String? orderNumber;
   final String? typeMeta;
   final String? statusLabel;
   final String? actionLabel;
@@ -284,6 +295,11 @@ class ActiveSupportCaseCard extends StatelessWidget {
                           spacing: 8,
                           runSpacing: 8,
                           children: [
+                            if (orderNumber?.trim().isNotEmpty ?? false)
+                              _SupportCaseMetaChip(
+                                label: orderNumber!.trim(),
+                                icon: Icons.receipt_long_outlined,
+                              ),
                             if (typeLabel.trim().isNotEmpty &&
                                 typeLabel != title)
                               _SupportCaseMetaChip(
@@ -329,8 +345,8 @@ class _SupportCaseMetaChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: colors.primary),
-          const SizedBox(width: 4),
+        
+         
           Text(
             label,
             style: TextStyle(

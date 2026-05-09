@@ -77,3 +77,6 @@ class HomeDynamicSectionRetryEvent extends HomeEvent {
 class HomeResetEvent extends HomeEvent {
   const HomeResetEvent();
 }
+class HomeAppBarLoadEvent extends HomeEvent {
+  const HomeAppBarLoadEvent();
+}

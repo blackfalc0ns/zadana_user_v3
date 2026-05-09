@@ -204,10 +204,6 @@ class _SupportCaseOverviewCard extends StatelessWidget {
                       const SizedBox(height: 6),
                       SecondaryText(typeMeta, maxLines: 2),
                     ],
-                    const SizedBox(height: 6),
-                    SecondaryText(
-                      '${locale == 'ar' ? 'رقم الحالة' : 'Case ID'}: ${orderSupportCase.id}',
-                    ),
                   ],
                 ),
               ),

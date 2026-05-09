@@ -13,7 +13,6 @@ import 'package:zadana_user_v3/core/services/language_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_details_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/usecase/product_details_usecase.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_event.dart';
@@ -24,17 +23,14 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   ProductDetailsCubit({
     required ProductDetailsUseCase productDetailsUseCase,
     required AddCartItemUseCase addCartItemUseCase,
-    required GetCartUseCase getCartUseCase,
     required LanguageService languageService,
   }) : _productDetailsUseCase = productDetailsUseCase,
        _addCartItemUseCase = addCartItemUseCase,
-       _getCartUseCase = getCartUseCase,
        _languageService = languageService,
        super(const ProductDetailsState());
 
   final ProductDetailsUseCase _productDetailsUseCase;
   final AddCartItemUseCase _addCartItemUseCase;
-  final GetCartUseCase _getCartUseCase;
   final LanguageService _languageService;
   final CartRepository _cartRepository = GetIt.instance<CartRepository>();
 
@@ -83,7 +79,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
       ),
     );
     await _loadProductDetails();
-    await _loadInitialCartCount();
   }
 
   Future<void> _loadProductDetails() async {
@@ -146,9 +141,9 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     if (productDetails.masterProductId.isEmpty) {
       emit(
         state.copyWith(
-            addToCartFailure: Failure(
-              errorMessage: 'Product id is unavailable for this item.',
-            ),
+          addToCartFailure: Failure(
+            errorMessage: 'Product id is unavailable for this item.',
+          ),
         ),
       );
       return;
@@ -203,22 +198,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     );
   }
 
-  Future<void> _loadInitialCartCount() async {
-    final result = await _getCartUseCase.call();
-    if (isClosed) return;
-
-    switch (result) {
-      case ApiSuccessResult():
-        emit(state.copyWith(cartCount: result.data.summary.totalQuantity));
-      case ApiErrorResult():
-        developer.log(
-          'Loading cart count failed: ${result.failure.errorMessage}',
-          name: 'ProductDetailsCubit',
-        );
-        break;
-    }
-  }
-
   void _attachCartListenerIfNeeded() {
     _cartMutationSubscription ??= _cartRepository.mutations.listen(
       _handleCartMutation,
@@ -233,10 +212,6 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
       emit(
         state.copyWith(cartCount: math.max(0, state.cartCount + event.delta)),
       );
-    }
-
-    if (event.refreshRequested) {
-      _loadInitialCartCount();
     }
   }
 

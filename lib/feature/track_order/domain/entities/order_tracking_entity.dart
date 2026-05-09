@@ -55,14 +55,30 @@ class OrderTrackingEntity {
 }
 
 class OrderTrackingOrderEntity {
-  const OrderTrackingOrderEntity({required this.id, required this.status});
+  const OrderTrackingOrderEntity({
+    required this.id,
+    required this.orderNumber,
+    required this.status,
+  });
 
   final String id;
+  final String orderNumber;
   final OrderStatus status;
 
-  OrderTrackingOrderEntity copyWith({String? id, OrderStatus? status}) {
+  String get displayNumber {
+    final normalized = orderNumber.trim();
+    if (normalized.isNotEmpty) return normalized;
+    return id;
+  }
+
+  OrderTrackingOrderEntity copyWith({
+    String? id,
+    String? orderNumber,
+    OrderStatus? status,
+  }) {
     return OrderTrackingOrderEntity(
       id: id ?? this.id,
+      orderNumber: orderNumber ?? this.orderNumber,
       status: status ?? this.status,
     );
   }

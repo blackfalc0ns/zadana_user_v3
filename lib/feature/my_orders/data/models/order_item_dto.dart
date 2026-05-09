@@ -12,8 +12,14 @@ class OrderItemDto {
     required this.price,
   });
 
-  factory OrderItemDto.fromJson(Map<String, dynamic> json) =>
-      _$OrderItemDtoFromJson(json);
+  factory OrderItemDto.fromJson(Map<String, dynamic> json) {
+    return OrderItemDto(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      quantity: (json['quantity'] as num?)?.toInt() ?? 0,
+      price: (json['price'] as num?)?.toDouble() ?? 0,
+    );
+  }
 
   final String id;
   final String name;

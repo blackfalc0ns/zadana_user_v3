@@ -40,15 +40,6 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
       status: orderSupportCase.status,
       settlementStatus: orderSupportCase.settlementStatus,
     );
-    final operationalMetaText = supportCaseOperationalMetaText(
-      l10n,
-      caseId: orderSupportCase.id,
-      type: orderSupportCase.type,
-      status: orderSupportCase.status,
-      settlementStatus: orderSupportCase.settlementStatus,
-      backendText: orderSupportCase.message,
-      sourceField: 'message',
-    );
     final showWaitingBadge = supportCaseShouldShowWaitingBadge(
       status: orderSupportCase.status,
       waitingOnRole: orderSupportCase.waitingOnRole,
@@ -108,12 +99,6 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
         : (localizedMessageFallback.isNotEmpty
               ? localizedMessageFallback
               : localizedActivityNoteFallback);
-    final resolvedOperationalMetaText = operationalMetaText.isNotEmpty
-        ? operationalMetaText
-        : (localizedMessageFallback.isNotEmpty
-              ? localizedMessageFallback
-              : localizedActivityNoteFallback);
-
     return Column(
       children: [
         DetailSection(
@@ -126,10 +111,6 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
                 value: operationalTypeLabel,
                 valueColor: colors.primary,
               ),
-              if (resolvedOperationalMetaText.isNotEmpty) ...[
-                const SizedBox(height: Spacing.xs),
-                SecondaryText(resolvedOperationalMetaText),
-              ],
               const _SupportCaseDivider(),
               SupportCaseDetailRow(
                 label: l10n.my_orders_support_case_reason_label,
@@ -165,8 +146,7 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
                 label: l10n.my_orders_support_case_status_label,
                 value: mainStatusLabel,
               ),
-              if (orderSupportCase.type ==
-                      OrderSupportCaseType.returnRequest &&
+              if (orderSupportCase.type == OrderSupportCaseType.returnRequest &&
                   orderSupportCase.settlementStatus !=
                       OrderSupportSettlementStatus.unknown) ...[
                 const _SupportCaseDivider(),

@@ -43,7 +43,7 @@ class Assets {
 
   // Lottie
   static const String emptyCart = '$_lottie/empty_cart.json';
-  
+
   static const String loading = '$_lottie/loading_animation.json';
   static const String successPayment = '$_lottie/success_payment.json';
 

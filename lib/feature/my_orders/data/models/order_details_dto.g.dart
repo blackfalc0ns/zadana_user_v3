@@ -9,6 +9,7 @@ part of 'order_details_dto.dart';
 OrderDetailsDto _$OrderDetailsDtoFromJson(Map<String, dynamic> json) =>
     OrderDetailsDto(
       id: json['id'] as String,
+      orderNumber: json['order_number'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       totalPrice: (json['total_price'] as num).toDouble(),
       status: json['status'] as String,
@@ -32,6 +33,7 @@ OrderDetailsDto _$OrderDetailsDtoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$OrderDetailsDtoToJson(OrderDetailsDto instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'order_number': instance.orderNumber,
       'created_at': instance.createdAt.toIso8601String(),
       'total_price': instance.totalPrice,
       'status': instance.status,

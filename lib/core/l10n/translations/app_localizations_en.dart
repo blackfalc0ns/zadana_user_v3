@@ -1000,6 +1000,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Start shopping and add products to your cart';
 
   @override
+  String get cart_unavailable_products_title => 'Unavailable products';
+
+  @override
+  String cart_unavailable_products_message(int count) {
+    return '$count products are unavailable in this store';
+  }
+
+  @override
+  String get cart_checkout_blocked_unavailable_products =>
+      'Checkout is unavailable because some products are not available';
+
+  @override
   String get shop_now => 'Shop Now';
 
   @override

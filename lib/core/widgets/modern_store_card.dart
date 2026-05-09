@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/formatters/price_formatter.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
@@ -152,6 +154,7 @@ class _StoreLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final hasStoreImage = storeImage?.trim().isNotEmpty ?? false;
 
     return Container(
       width: 36,
@@ -165,20 +168,39 @@ class _StoreLogo extends StatelessWidget {
               : color.outlineVariant,
         ),
       ),
-      child: storeImage != null
+      child: hasStoreImage
           ? ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                storeImage!,
-                fit: BoxFit.contain,
+              child: CachedNetworkImage(
+                imageUrl: storeImage!,
+                fit: BoxFit.cover,
                 width: 36,
                 height: 36,
+                placeholder: (context, url) => Center(
+                  child: SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: isLowest
+                          ? color.primary
+                          : color.onSurfaceVariant.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Image.asset(
+                  Assets.notFound,
+                  fit: BoxFit.cover,
+                  width: 36,
+                  height: 36,
+                ),
               ),
             )
-          : Icon(
-              icon,
-              color: isLowest ? color.primary : color.onSurfaceVariant,
-              size: 18,
+          : Image.asset(
+              Assets.notFound,
+              fit: BoxFit.cover,
+              width: 36,
+              height: 36,
             ),
     );
   }

@@ -186,18 +186,19 @@ class _SelectedVendorBar extends StatelessWidget {
                               const SizedBox(height: 1),
                               Text(
                                 '${PriceFormatter.formatPrice(totalOldPrice)} ${locale.currency}',
-                                style: getMediumStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  color: AppColors.textSecondary.withValues(
-                                    alpha: 0.75,
-                                  ),
-                                  fontSize: FontSize.size11,
-                                ).copyWith(
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationColor: AppColors.textSecondary
-                                      .withValues(alpha: 0.55),
-                                  decorationThickness: 1.2,
-                                ),
+                                style:
+                                    getMediumStyle(
+                                      fontFamily: FontConstant.cairo,
+                                      color: AppColors.textSecondary.withValues(
+                                        alpha: 0.75,
+                                      ),
+                                      fontSize: FontSize.size11,
+                                    ).copyWith(
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: AppColors.textSecondary
+                                          .withValues(alpha: 0.55),
+                                      decorationThickness: 1.2,
+                                    ),
                               ),
                             ],
                           ],
@@ -223,7 +224,7 @@ class _SelectedVendorBar extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'لا يمكن إتمام الطلب لوجود منتجات غير متوفرة',
+                locale.cart_checkout_blocked_unavailable_products,
                 textAlign: TextAlign.center,
                 style: getMediumStyle(
                   fontFamily: FontConstant.cairo,

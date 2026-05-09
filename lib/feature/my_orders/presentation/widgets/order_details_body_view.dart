@@ -70,6 +70,7 @@ class OrderDetailsBodyView extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.base),
       children: [
         OrderHeaderCard(
+          orderNumber: order.displayOrderNumber,
           status: status,
           date: createdAt,
           itemCount: order.itemsCount,
@@ -143,13 +144,9 @@ class OrderDetailsBodyView extends StatelessWidget {
                     status: activeSupportCase.status,
                     settlementStatus: OrderSupportSettlementStatus.unknown,
                   ),
-                  typeMeta: supportCaseSanitizeVisibleText(
-                    l10n,
-                    activeSupportCase.message,
-                    caseId: activeSupportCase.id,
-                    fieldName: 'summary.message',
-                  ),
+                  orderNumber: activeSupportCase.displayOrderNumber,
                   message: activeSupportCase.message,
+                  onTap: onSupportCase,
                 ),
                 const SizedBox(height: Spacing.sm),
                 AppButton.outlined(

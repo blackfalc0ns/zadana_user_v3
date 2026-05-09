@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,17 +49,15 @@ class HomeViewModel extends Cubit<HomeState> {
   final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
 
   Future<void> loadInitial() async {
-    await Future.wait([
-      _getHomeAppBar(),
-      _getHomeBanners(),
-      _getHomeCategories(),
-      _getHomeBestSelling(),
-      _getHomeBrands(),
-      _getHomeRecommended(),
-      _getHomeFeatured(),
-      _getHomeSpecialOffers(),
-      _getHomeDynamicSections(),
-    ]);
+    unawaited(_getHomeAppBar());
+    unawaited(_getHomeBanners());
+    unawaited(_getHomeCategories());
+    unawaited(_getHomeBestSelling());
+    unawaited(_getHomeBrands());
+    unawaited(_getHomeRecommended());
+    unawaited(_getHomeFeatured());
+    unawaited(_getHomeSpecialOffers());
+    unawaited(_getHomeDynamicSections());
   }
 
   void doIntent(HomeEvent event) {
@@ -99,6 +98,8 @@ class HomeViewModel extends Cubit<HomeState> {
         _getHomeSpecialOffers();
       case HomeDynamicSectionRetryEvent():
         _getHomeDynamicSections();
+      case HomeAppBarLoadEvent():
+        _getHomeAppBar();
       case HomeResetEvent():
         emit(const HomeState());
     }
@@ -522,10 +523,7 @@ class HomeViewModel extends Cubit<HomeState> {
     }
   }
 
-  void syncFavorite({
-    required String productId,
-    required bool isFavorite,
-  }) {
+  void syncFavorite({required String productId, required bool isFavorite}) {
     emit(
       state.copyWith(
         bestSellingSection: state.bestSellingSection.copyWith(

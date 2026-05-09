@@ -11,6 +11,7 @@ part 'order_details_dto.g.dart';
 class OrderDetailsDto {
   const OrderDetailsDto({
     required this.id,
+    required this.orderNumber,
     required this.createdAt,
     required this.totalPrice,
     required this.status,
@@ -29,6 +30,7 @@ class OrderDetailsDto {
       _$OrderDetailsDtoFromJson(json);
 
   final String id;
+  final String orderNumber;
   final DateTime createdAt;
   final double totalPrice;
   final String status;
@@ -49,6 +51,7 @@ class OrderDetailsDto {
   OrderDetailsEntity toEntity() {
     return OrderDetailsEntity(
       id: id,
+      orderNumber: orderNumber,
       createdAt: createdAt,
       totalPrice: totalPrice,
       status: OrderStatus.fromApi(status),
@@ -77,6 +80,7 @@ class OrderDetailsDto {
     if (value == null) return null;
     return <String, dynamic>{
       'id': value.id,
+      'order_number': value.orderNumber,
       'type': value.type,
       'type_label': value.typeLabel,
       'status': value.status,

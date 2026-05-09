@@ -8,6 +8,7 @@ class BrandDetailsState {
   const BrandDetailsState({
     this.isLoading = false,
     this.products = const [],
+    this.totalProducts = 0,
     this.categories = const [],
     this.subcategories = const [],
     this.units = const [],
@@ -23,6 +24,7 @@ class BrandDetailsState {
 
   final bool isLoading;
   final List<BrandProductModel> products;
+  final int totalProducts;
   final List<BrandFilterOptionEntity> categories;
   final List<BrandFilterSubcategoryEntity> subcategories;
   final List<BrandFilterOptionEntity> units;
@@ -67,6 +69,7 @@ class BrandDetailsState {
   BrandDetailsState copyWith({
     bool? isLoading,
     List<BrandProductModel>? products,
+    int? totalProducts,
     List<BrandFilterOptionEntity>? categories,
     List<BrandFilterSubcategoryEntity>? subcategories,
     List<BrandFilterOptionEntity>? units,
@@ -82,6 +85,7 @@ class BrandDetailsState {
     return BrandDetailsState(
       isLoading: isLoading ?? this.isLoading,
       products: products ?? this.products,
+      totalProducts: totalProducts ?? this.totalProducts,
       categories: categories ?? this.categories,
       subcategories: subcategories ?? this.subcategories,
       units: units ?? this.units,

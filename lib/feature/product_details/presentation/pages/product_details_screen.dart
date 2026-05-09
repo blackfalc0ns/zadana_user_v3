@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,10 +8,13 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_cubit.dart';
@@ -54,6 +59,7 @@ class _ProductDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final globalCubit = maybeReadBloc<AppSectionGlobalCubit>(context);
 
     return BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
       listenWhen: (previous, current) =>
@@ -94,67 +100,79 @@ class _ProductDetailsView extends StatelessWidget {
         }
 
         if (productDetails != null) {
-          return ReusableProductDetailsScreen(
-            productId: productId,
-            productName: title,
-            unit: productDetails.unit,
-            emoji: product.emoji ?? '',
-            imageUrl: imageUrl,
-            quantity: state.quantity,
-            onIncrease: () =>
-                cubit.doIntent(const IncreaseProductQuantityEvent()),
-            onDecrease: () =>
-                cubit.doIntent(const DecreaseProductQuantityEvent()),
-            descriptionTitle: l10n.product_description,
-            description: productDetails.description,
-            basePrice: productDetails.price,
-            oldPrice: productDetails.oldPrice,
-            currency: l10n.currency,
-            vendorPrices: productDetails.vendorPrices,
-            similarProducts: productDetails.similarProducts,
-            onSimilarProductTap: (similarProduct) async {
-              cubit.doIntent(SetActiveProductDetailsEvent(similarProduct.id));
-              await WidgetsBinding.instance.endOfFrame;
-              if (!context.mounted) return;
+          Widget buildScreen(int cartCount) {
+            return ReusableProductDetailsScreen(
+              productId: productId,
+              productName: title,
+              unit: productDetails.unit,
+              emoji: product.emoji ?? '',
+              imageUrl: imageUrl,
+              quantity: state.quantity,
+              onIncrease: () =>
+                  cubit.doIntent(const IncreaseProductQuantityEvent()),
+              onDecrease: () =>
+                  cubit.doIntent(const DecreaseProductQuantityEvent()),
+              descriptionTitle: l10n.product_description,
+              description: productDetails.description,
+              basePrice: productDetails.price,
+              oldPrice: productDetails.oldPrice,
+              currency: l10n.currency,
+              vendorPrices: productDetails.vendorPrices,
+              similarProducts: productDetails.similarProducts,
+              onSimilarProductTap: (similarProduct) async {
+                cubit.doIntent(SetActiveProductDetailsEvent(similarProduct.id));
+                await WidgetsBinding.instance.endOfFrame;
+                if (!context.mounted) return;
 
-              ProductNavigationHelper.navigateToProductDetails(
-                context,
-                similarProduct,
-                activeProductId: similarProduct.id,
-                heroTag: productHeroTag(
-                  similarProduct.id,
-                  source: 'similar-products',
+                ProductNavigationHelper.navigateToProductDetails(
+                  context,
+                  similarProduct,
+                  activeProductId: similarProduct.id,
+                  heroTag: productHeroTag(
+                    similarProduct.id,
+                    source: 'similar-products',
+                  ),
+                );
+              },
+              onSimilarProductAddToCart: (_) async {},
+              onAddToCart: () => cubit.doIntent(const AddProductToCartEvent()),
+              onGoToCart: () => _goToCartTab(context),
+              activeProductId: state.activeProductId,
+              heroTag: heroTag,
+              backgroundColor: color.surface,
+              appBarBackgroundColor: color.surface,
+              appBarTitleColor: color.onSurface,
+              appBarLeading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: color.onSurface,
                 ),
-              );
-            },
-            onSimilarProductAddToCart: (_) async {},
-            onAddToCart: () => cubit.doIntent(const AddProductToCartEvent()),
-            onGoToCart: () => _goToCartTab(context),
-            activeProductId: state.activeProductId,
-            heroTag: heroTag,
-            backgroundColor: color.surface,
-            appBarBackgroundColor: color.surface,
-            appBarTitleColor: color.onSurface,
-            appBarLeading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: color.onSurface,
+                onPressed: () => Navigator.of(context).pop(),
+                splashRadius: 20,
               ),
-              onPressed: () => Navigator.of(context).pop(),
-              splashRadius: 20,
-            ),
-            appBarSystemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: color.brightness == Brightness.dark
-                  ? Brightness.light
-                  : Brightness.dark,
-              statusBarBrightness: color.brightness == Brightness.dark
-                  ? Brightness.dark
-                  : Brightness.light,
-            ),
-            cartCount: state.cartCount,
-            isAddingToCart: state.isAddingToCart,
-          );
+              appBarSystemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: color.brightness == Brightness.dark
+                    ? Brightness.light
+                    : Brightness.dark,
+                statusBarBrightness: color.brightness == Brightness.dark
+                    ? Brightness.dark
+                    : Brightness.light,
+              ),
+              cartCount: cartCount,
+              isAddingToCart: state.isAddingToCart,
+            );
+          }
+
+          if (globalCubit != null) {
+            return BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
+              bloc: globalCubit,
+              builder: (context, globalState) =>
+                  buildScreen(math.max(globalState.cartCount, state.cartCount)),
+            );
+          }
+
+          return buildScreen(state.cartCount);
         }
 
         if (state.loadFailure != null) {
@@ -177,9 +195,9 @@ class _ProductDetailsView extends StatelessWidget {
             body: Padding(
               padding: const EdgeInsets.all(Spacing.md),
               child: ApiErrorWidget(
-                  exception: state.loadFailure!.exception,
-                  onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
-                  onGoBack: () => Navigator.of(context).maybePop(),
+                exception: state.loadFailure!.exception,
+                onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
+                onGoBack: () => Navigator.of(context).maybePop(),
               ),
             ),
           );

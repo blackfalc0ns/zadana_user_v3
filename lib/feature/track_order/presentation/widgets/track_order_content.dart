@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_cards.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/support_case/support_case_formatters.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_view_model.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_actions_section.dart';
@@ -54,6 +58,13 @@ class TrackOrderContent extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.base),
           ],
+          if (tracking.activeCase != null) ...[
+            _TrackOrderActiveSupportCaseSection(
+              orderId: orderId,
+              activeCase: tracking.activeCase!,
+            ),
+            const SizedBox(height: Spacing.base),
+          ],
           if (tracking.showDeliveryOtp) ...[
             TrackOrderDeliveryOtpCard(
               onViewOtp: () => Navigator.pushNamed(
@@ -79,6 +90,50 @@ class TrackOrderContent extends StatelessWidget {
           const SizedBox(height: Spacing.base),
           TrackOrderActionsSection(orderId: orderId, tracking: tracking),
         ],
+      ),
+    );
+  }
+}
+
+class _TrackOrderActiveSupportCaseSection extends StatelessWidget {
+  const _TrackOrderActiveSupportCaseSection({
+    required this.orderId,
+    required this.activeCase,
+  });
+
+  final String orderId;
+  final OrderSupportCaseSummaryEntity activeCase;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typeLabel = supportCaseOperationalTypeLabel(
+      l10n,
+      type: activeCase.type,
+      status: activeCase.status,
+      settlementStatus: OrderSupportSettlementStatus.unknown,
+    );
+
+    return DetailSection(
+      title: l10n.my_orders_support_case_title,
+      child: ActiveSupportCaseCard(
+        title: typeLabel,
+        message: activeCase.message,
+        status: activeCase.status,
+        typeLabel: typeLabel,
+        orderNumber: activeCase.displayOrderNumber,
+        typeMeta: supportCaseSanitizeVisibleText(
+          l10n,
+          activeCase.message,
+          caseId: activeCase.id,
+          fieldName: 'tracking.activeCase.message',
+        ),
+        statusLabel: supportCaseMainStatusLabel(l10n, activeCase.status),
+        onTap: () => Navigator.pushNamed(
+          context,
+          AppRoutes.orderSupportCase,
+          arguments: {'orderId': orderId, 'caseId': activeCase.id},
+        ),
       ),
     );
   }

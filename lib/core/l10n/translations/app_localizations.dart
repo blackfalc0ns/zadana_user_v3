@@ -1910,6 +1910,24 @@ abstract class AppLocalizations {
   /// **'Start shopping and add products to your cart'**
   String get cart_empty_message;
 
+  /// No description provided for @cart_unavailable_products_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable products'**
+  String get cart_unavailable_products_title;
+
+  /// No description provided for @cart_unavailable_products_message.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products are unavailable in this store'**
+  String cart_unavailable_products_message(int count);
+
+  /// No description provided for @cart_checkout_blocked_unavailable_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout is unavailable because some products are not available'**
+  String get cart_checkout_blocked_unavailable_products;
+
   /// No description provided for @shop_now.
   ///
   /// In en, this message translates to:

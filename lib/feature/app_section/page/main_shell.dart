@@ -148,6 +148,7 @@ class MainShellState extends State<MainShell> {
 
     switch (index) {
       case 0:
+        _globalCubit.homeViewModel.doIntent(const HomeLoadEvent());
         break;
       case 1:
         _globalCubit.categoryViewModel.initialize();
