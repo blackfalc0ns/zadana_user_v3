@@ -1421,6 +1421,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Thank you! Your order has been received and will be delivered soon';
 
   @override
+  String get payment_confirmation_failed => 'Payment Confirmation Failed';
+
+  @override
+  String get payment_confirmation_failed_message =>
+      'We could not confirm the payment, and the order is still waiting for payment. You can track the order or try again later.';
+
+  @override
   String get estimated_delivery => 'Estimated Delivery Time';
 
   @override

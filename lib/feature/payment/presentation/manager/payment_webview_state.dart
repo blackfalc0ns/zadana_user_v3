@@ -8,6 +8,7 @@ class PaymentWebViewState {
     this.hasError = false,
     this.isInitializing = true,
     this.didOpenExternalFallback = false,
+    this.isResolvingCallback = false,
     this.didCompleteCallback = false,
     this.callbackResult,
   });
@@ -17,6 +18,7 @@ class PaymentWebViewState {
   final bool hasError;
   final bool isInitializing;
   final bool didOpenExternalFallback;
+  final bool isResolvingCallback;
   final bool didCompleteCallback;
   final PaymentCallbackResult? callbackResult;
 
@@ -28,6 +30,7 @@ class PaymentWebViewState {
     bool? hasError,
     bool? isInitializing,
     bool? didOpenExternalFallback,
+    bool? isResolvingCallback,
     bool? didCompleteCallback,
     PaymentCallbackResult? callbackResult,
     bool clearController = false,
@@ -40,6 +43,7 @@ class PaymentWebViewState {
       isInitializing: isInitializing ?? this.isInitializing,
       didOpenExternalFallback:
           didOpenExternalFallback ?? this.didOpenExternalFallback,
+      isResolvingCallback: isResolvingCallback ?? this.isResolvingCallback,
       didCompleteCallback: didCompleteCallback ?? this.didCompleteCallback,
       callbackResult: clearCallbackResult
           ? null

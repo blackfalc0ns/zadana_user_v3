@@ -5,6 +5,8 @@ part 'home_response_model_dto.g.dart';
 @JsonSerializable()
 class HomeAppBarModelDto {
   const HomeAppBarModelDto({
+    this.fullName,
+    this.email,
     this.deliverToLabel,
     this.location,
     this.addressLine,
@@ -13,6 +15,12 @@ class HomeAppBarModelDto {
 
   factory HomeAppBarModelDto.fromJson(Map<String, dynamic> json) =>
       _$HomeAppBarModelDtoFromJson(json);
+
+  @JsonKey(name: 'full_name')
+  final String? fullName;
+
+  final String? email;
+
   @JsonKey(name: 'deliver_to_label')
   final String? deliverToLabel;
   final String? location;

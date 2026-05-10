@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,6 +46,7 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
         progress: 0,
         hasError: false,
         isInitializing: true,
+        isResolvingCallback: false,
         didCompleteCallback: false,
         clearController: true,
         clearCallbackResult: true,
@@ -124,16 +127,19 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     WebViewController controller,
     String url,
   ) async {
-    if (state.didCompleteCallback) return;
+    if (state.didCompleteCallback || state.isResolvingCallback) return;
 
     _logWebViewEvent('onPageFinished', url);
 
-    final callbackResult = _extractCallbackResult(url);
+    final callbackResult = await _extractCallbackResult(controller, url);
 
     if (callbackResult == null) return;
 
+    emit(state.copyWith(isResolvingCallback: true));
+
     debugPrint(
-      '[PaymentWebViewCubit] Callback detected with status=${callbackResult['status']} '
+      '[PaymentWebViewCubit] Callback detected from ${callbackResult['source'] ?? 'unknown'} '
+      'with status=${callbackResult['status'] ?? callbackResult['paymentStatus']} '
       'transactionId=${callbackResult['transactionId']} '
       'message=${callbackResult['message']}',
     );
@@ -166,7 +172,10 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     return NavigationDecision.navigate;
   }
 
-  PaymentCallbackResult? _extractCallbackResult(String? currentUrl) {
+  Future<PaymentCallbackResult?> _extractCallbackResult(
+    WebViewController controller,
+    String? currentUrl,
+  ) async {
     if (state.didCompleteCallback || currentUrl == null || currentUrl.isEmpty) {
       return null;
     }
@@ -177,7 +186,32 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
         return null;
       }
 
-      return _buildCallbackResult(uri);
+      // Ignore the transient HTTP callback page and wait for the HTTPS version
+      // before deciding the final result.
+      if (uri.scheme.toLowerCase() != 'https') {
+        debugPrint(
+          '[PaymentWebViewCubit] Skipping non-HTTPS callback result: $uri',
+        );
+        return null;
+      }
+
+      final callbackBodyResult = await _extractCallbackBodyResult(controller);
+      if (callbackBodyResult != null) {
+        return callbackBodyResult;
+      }
+
+      for (var attempt = 1; attempt <= 3; attempt++) {
+        await Future<void>.delayed(const Duration(milliseconds: 250));
+        final retriedBodyResult = await _extractCallbackBodyResult(controller);
+        if (retriedBodyResult != null) {
+          debugPrint(
+            '[PaymentWebViewCubit] Callback body resolved on retry attempt $attempt',
+          );
+          return retriedBodyResult;
+        }
+      }
+
+      return _buildCallbackQueryResult(uri);
     } on FormatException catch (error) {
       debugPrint('Invalid payment callback URL: $error');
       return null;
@@ -196,7 +230,57 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     return normalizedHost == expectedHost && normalizedPath == expectedPath;
   }
 
-  PaymentCallbackResult? _buildCallbackResult(Uri uri) {
+  Future<PaymentCallbackResult?> _extractCallbackBodyResult(
+    WebViewController controller,
+  ) async {
+    try {
+      final rawBodyText = await controller.runJavaScriptReturningResult(
+        "JSON.stringify((document.body && (document.body.innerText || document.body.textContent)) || (document.documentElement && (document.documentElement.innerText || document.documentElement.textContent)) || '')",
+      );
+      debugPrint(
+        '[PaymentWebViewCubit] Callback body JS result type=${rawBodyText.runtimeType}',
+      );
+      final bodyText = _normalizeJavascriptStringResult(rawBodyText);
+      if (bodyText == null) {
+        debugPrint('[PaymentWebViewCubit] Callback body text is empty');
+        return null;
+      }
+
+      debugPrint(
+        '[PaymentWebViewCubit] Callback body preview=${bodyText.substring(0, bodyText.length > 220 ? 220 : bodyText.length)}',
+      );
+
+      final decoded = jsonDecode(bodyText);
+      final normalizedDecoded = decoded is String
+          ? jsonDecode(decoded)
+          : decoded;
+      if (normalizedDecoded is! Map<String, dynamic>) {
+        debugPrint(
+          '[PaymentWebViewCubit] Callback body is not a JSON object: ${normalizedDecoded.runtimeType}',
+        );
+        return null;
+      }
+
+      return <String, String?>{
+        'source': 'response_body',
+        'status': _resolveStatusFromBackendPayload(normalizedDecoded),
+        'paymentId': _stringValue(normalizedDecoded['paymentId']),
+        'paymentStatus': _stringValue(normalizedDecoded['paymentStatus']),
+        'userId': _stringValue(normalizedDecoded['userId']),
+        'orderId': _stringValue(normalizedDecoded['orderId']),
+        'orderStatus': _stringValue(normalizedDecoded['orderStatus']),
+        'alreadyConfirmed': _stringValue(normalizedDecoded['alreadyConfirmed']),
+        'message': _stringValue(normalizedDecoded['message']),
+      };
+    } catch (error) {
+      debugPrint(
+        '[PaymentWebViewCubit] Failed to read callback response body: $error',
+      );
+      return null;
+    }
+  }
+
+  PaymentCallbackResult? _buildCallbackQueryResult(Uri uri) {
     final queryParameters = uri.queryParameters;
     final isFailed =
         _isFalse(queryParameters['success']) ||
@@ -218,12 +302,71 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
     }
 
     return <String, String?>{
+      'source': 'query_params',
       'status': status,
+      'paymentId': _nullIfEmpty(queryParameters['paymentId']),
       'transactionId': _nullIfEmpty(queryParameters['id']),
+      'orderId': _nullIfEmpty(queryParameters['merchant_order_id']),
       'message': _nullIfEmpty(
         resolveLocalizedApiMessageFromQuery(queryParameters),
       ),
     };
+  }
+
+  String? _resolveStatusFromBackendPayload(Map<String, dynamic> payload) {
+    final paymentStatus = _stringValue(payload['paymentStatus'])?.toLowerCase();
+    if (paymentStatus == null || paymentStatus.isEmpty) {
+      return null;
+    }
+
+    if (paymentStatus == 'paid' ||
+        paymentStatus == 'success' ||
+        paymentStatus == 'succeeded') {
+      return _statusSuccess;
+    }
+
+    if (paymentStatus == 'failed' ||
+        paymentStatus == 'unpaid' ||
+        paymentStatus == 'canceled' ||
+        paymentStatus == 'cancelled') {
+      return _statusFailed;
+    }
+
+    if (paymentStatus == 'pending' || paymentStatus == 'processing') {
+      return _statusPending;
+    }
+
+    return null;
+  }
+
+  String? _normalizeJavascriptStringResult(Object? value) {
+    if (value == null) return null;
+
+    if (value is String) {
+      final normalized = value.trim();
+      if (normalized.isEmpty) {
+        return null;
+      }
+
+      try {
+        final decoded = jsonDecode(normalized);
+        if (decoded is String && decoded.trim().isNotEmpty) {
+          return decoded.trim();
+        }
+      } catch (_) {
+        if (normalized.isNotEmpty) {
+          return normalized;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  String? _stringValue(Object? value) {
+    if (value == null) return null;
+    final normalized = value.toString().trim();
+    return normalized.isEmpty ? null : normalized;
   }
 
   bool _isTrue(String? value) {
@@ -259,6 +402,12 @@ class PaymentWebViewCubit extends Cubit<PaymentWebViewState> {
   void _finishWithResult(PaymentCallbackResult result) {
     if (state.didCompleteCallback) return;
 
-    emit(state.copyWith(callbackResult: result, didCompleteCallback: true));
+    emit(
+      state.copyWith(
+        callbackResult: result,
+        didCompleteCallback: true,
+        isResolvingCallback: false,
+      ),
+    );
   }
 }

@@ -532,6 +532,8 @@
   "order_number": "Order Number",
   "payment_successful": "Payment Successful! ",
   "payment_success_message": "Thank you! Your order has been received and will be delivered soon",
+  "payment_confirmation_failed": "Payment Confirmation Failed",
+  "payment_confirmation_failed_message": "We could not confirm the payment, and the order is still waiting for payment. You can track the order or try again later.",
   "estimated_delivery": "Estimated Delivery Time",
   "minutes": "minutes",
   "track_order": "Track Order",

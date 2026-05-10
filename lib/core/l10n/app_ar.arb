@@ -425,6 +425,8 @@
   "order_number": "رقم الطلب",
   "payment_successful": "تم الدفع!",
   "payment_success_message": "طلبك وصلنا وبيوصلك قريب",
+  "payment_confirmation_failed": "فشل تأكيد الدفع",
+  "payment_confirmation_failed_message": "لم يتم تأكيد الدفع بنجاح، وما زال الطلب في انتظار الدفع. يمكنك متابعة الطلب أو المحاولة مرة أخرى لاحقًا.",
   "estimated_delivery": "وقت التوصيل",
   "minutes": "دقائق",
 

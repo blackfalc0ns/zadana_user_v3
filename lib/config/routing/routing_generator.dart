@@ -21,13 +21,14 @@ import 'package:zadana_user_v3/feature/location/presentation/pages/manual_addres
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_support_case_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
-import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_support_case_view_model.dart';
-import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
+import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_failed_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
@@ -174,6 +175,21 @@ class RouteGenerator {
             orderId: orderId,
             isCashOnDelivery: isCashOnDelivery,
           ),
+        );
+      case AppRoutes.paymentFailed:
+        final arguments = settings.arguments;
+        final orderId = switch (arguments) {
+          final String id => id,
+          final Map<dynamic, dynamic> map => map['orderId']?.toString(),
+          _ => null,
+        };
+        final message = switch (arguments) {
+          final Map<dynamic, dynamic> map => map['message']?.toString(),
+          _ => null,
+        };
+        return MaterialPageRoute(
+          builder: (_) =>
+              PaymentFailedScreen(orderId: orderId, message: message),
         );
       case AppRoutes.orders:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());

@@ -102,10 +102,16 @@ class OrderDetailsPageFlow {
     final orderId = result['orderId'] ?? fallbackOrderId;
 
     if (paymentStatus == _paymentStatusFailed) {
-      CustomSnackbar.showError(
-        context: context,
-        message: paymentMessage ?? fallbackErrorMessage,
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        Navigator.of(context).pushReplacementNamed(
+          AppRoutes.paymentFailed,
+          arguments: {
+            'orderId': orderId,
+            'message': paymentMessage ?? fallbackErrorMessage,
+          },
+        );
+      });
       return;
     }
 
@@ -118,9 +124,12 @@ class OrderDetailsPageFlow {
     }
 
     if (paymentStatus == _paymentStatusSuccess && orderId.isNotEmpty) {
-      await Navigator.of(
-        context,
-      ).pushReplacementNamed(AppRoutes.paymentSuccess, arguments: orderId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        Navigator.of(
+          context,
+        ).pushReplacementNamed(AppRoutes.paymentSuccess, arguments: orderId);
+      });
       return;
     }
 

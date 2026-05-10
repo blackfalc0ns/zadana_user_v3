@@ -1,44 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_actions.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_footer.dart';
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_header.dart'
     as custom_header;
 import 'package:zadana_user_v3/core/widgets/drawer/drawer_menu_item.dart';
-import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
-import 'package:zadana_user_v3/feature/profile/domain/usecase/profile_usecase.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
+import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
-
-  Future<_DrawerViewData> _loadDrawerViewData() async {
-    final token = await getIt<TokenService>().getToken();
-    final isGuest = token == null || token.isEmpty;
-
-    if (isGuest) {
-      return const _DrawerViewData(isGuest: true);
-    }
-
-    final result = await getIt<ProfileUseCase>().call();
-    if (result is ApiSuccessResult<ProfileResponseEntity>) {
-      final profile = result.data;
-      final secondary = profile.email.trim().isNotEmpty
-          ? profile.email.trim()
-          : profile.phone.trim();
-      return _DrawerViewData(
-        isGuest: false,
-        displayName: profile.fullName.trim(),
-        secondaryText: secondary,
-      );
-    }
-
-    return const _DrawerViewData(isGuest: false);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,45 +24,72 @@ class AppDrawer extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.68,
       child: Drawer(
         backgroundColor: color.surface,
-        child: FutureBuilder<_DrawerViewData>(
-          future: _loadDrawerViewData(),
-          builder: (context, snapshot) {
-            final data = snapshot.data ?? const _DrawerViewData(isGuest: true);
+        child: BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
+          builder: (context, globalState) {
+            return BlocBuilder<HomeViewModel, HomeState>(
+              builder: (context, homeState) {
+                final data = _resolveDrawerViewData(
+                  globalState: globalState,
+                  homeState: homeState,
+                );
 
-            return Column(
-              children: [
-                custom_header.DrawerHeader(
-                  isGuest: data.isGuest,
-                  displayName: data.displayName,
-                  secondaryText: data.secondaryText,
-                ),
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverList(
-                        delegate: SliverChildListDelegate([
-                          const SizedBox(height: Spacing.sm),
-                          _buildMainMenuItems(context, isGuest: data.isGuest),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Spacing.base,
-                            ),
-                            child: Divider(
-                              color: color.onSurface.withValues(alpha: 0.12),
-                            ),
+                return Column(
+                  children: [
+                    custom_header.DrawerHeader(
+                      isGuest: data.isGuest,
+                      displayName: data.displayName,
+                      secondaryText: data.secondaryText,
+                    ),
+                    Expanded(
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverList(
+                            delegate: SliverChildListDelegate([
+                              const SizedBox(height: Spacing.sm),
+                              _buildMainMenuItems(
+                                context,
+                                isGuest: data.isGuest,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: Spacing.base,
+                                ),
+                                child: Divider(
+                                  color: color.onSurface.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                ),
+                              ),
+                              _buildSettingsMenuItems(context),
+                            ]),
                           ),
-                          _buildSettingsMenuItems(context),
-                        ]),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                DrawerFooter(isGuest: data.isGuest),
-              ],
+                    ),
+                    DrawerFooter(isGuest: data.isGuest),
+                  ],
+                );
+              },
             );
           },
         ),
       ),
+    );
+  }
+
+  _DrawerViewData _resolveDrawerViewData({
+    required AppSectionGlobalState globalState,
+    required HomeState homeState,
+  }) {
+    if (!globalState.isAuthResolved || globalState.isGuest) {
+      return const _DrawerViewData(isGuest: true);
+    }
+
+    final appBarData = homeState.appBarSection.data;
+    return _DrawerViewData(
+      isGuest: false,
+      displayName: appBarData?.fullName.trim(),
+      secondaryText: appBarData?.email.trim(),
     );
   }
 

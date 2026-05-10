@@ -2720,6 +2720,18 @@ abstract class AppLocalizations {
   /// **'Thank you! Your order has been received and will be delivered soon'**
   String get payment_success_message;
 
+  /// No description provided for @payment_confirmation_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Confirmation Failed'**
+  String get payment_confirmation_failed;
+
+  /// No description provided for @payment_confirmation_failed_message.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not confirm the payment, and the order is still waiting for payment. You can track the order or try again later.'**
+  String get payment_confirmation_failed_message;
+
   /// No description provided for @estimated_delivery.
   ///
   /// In en, this message translates to:

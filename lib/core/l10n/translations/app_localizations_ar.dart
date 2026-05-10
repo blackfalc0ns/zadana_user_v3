@@ -1394,6 +1394,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get payment_success_message => 'طلبك وصلنا وبيوصلك قريب';
 
   @override
+  String get payment_confirmation_failed => 'فشل تأكيد الدفع';
+
+  @override
+  String get payment_confirmation_failed_message =>
+      'لم يتم تأكيد الدفع بنجاح، وما زال الطلب في انتظار الدفع. يمكنك متابعة الطلب أو المحاولة مرة أخرى لاحقًا.';
+
+  @override
   String get estimated_delivery => 'وقت التوصيل';
 
   @override

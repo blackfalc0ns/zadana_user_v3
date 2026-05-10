@@ -7,9 +7,9 @@ import 'package:signalr_netcore/signalr_client.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
+import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/app_notification_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
-import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/driver_arrival_state_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_status_changed_realtime_payload.dart';
 
@@ -268,6 +268,7 @@ class NotificationsSignalRService {
     _orderStatusChangedController.add(
       OrderStatusChangedRealtimePayload.fromJson(payload),
     );
+    _emitSyntheticRealtimeNotificationFromOrderStatus(payload);
   }
 
   void _handleDriverArrivalStateChanged(List<Object?>? args) {
@@ -553,6 +554,151 @@ class NotificationsSignalRService {
     }
 
     return null;
+  }
+
+  void _emitSyntheticRealtimeNotificationFromOrderStatus(
+    Map<String, dynamic> rawPayload,
+  ) {
+    if (_notificationsController.isClosed || !_notificationsController.hasListener) {
+      return;
+    }
+
+    final payload = NotificationPayloadResolver.normalize(rawPayload);
+    final displayContent = NotificationPayloadResolver.resolveDisplayContent(
+      payload: payload,
+    );
+    if (displayContent.hasVisibleContent) {
+      return;
+    }
+
+    final orderId = NotificationPayloadResolver.resolveOrderId(payload);
+    if (orderId == null || orderId.isEmpty) {
+      return;
+    }
+
+    final newStatus = NotificationPayloadResolver.resolveStatus(payload);
+    final syntheticNotification = AppNotificationEntity(
+      id: _buildSyntheticOrderStatusNotificationId(payload, orderId, newStatus),
+      titleAr: 'تحديث على الطلب',
+      titleEn: 'Order update',
+      bodyAr: _syntheticOrderStatusBodyAr(orderId: orderId, status: newStatus),
+      bodyEn: _syntheticOrderStatusBodyEn(orderId: orderId, status: newStatus),
+      type: _firstNonEmptyString([
+        payload['type'],
+        'order_status_changed',
+      ]),
+      referenceId: _firstNonEmptyString([
+        payload['referenceId'],
+        orderId,
+      ]),
+      data: jsonEncode(payload),
+      dataObject: payload,
+      isRead: false,
+      createdAtUtc:
+          DateTime.tryParse(payload['changedAtUtc']?.toString() ?? '') ??
+          DateTime.now().toUtc(),
+    );
+
+    if (_isDuplicateNotification(syntheticNotification.id)) {
+      _logger.i(
+        'Notifications SignalR synthetic order status notification skipped: '
+        '${syntheticNotification.id}',
+      );
+      return;
+    }
+
+    _logger.i(
+      'Notifications SignalR synthesized a visible notification from order '
+      'status payload. '
+      '${NotificationPayloadResolver.resolveDebugSummary(payload, title: syntheticNotification.titleEn, body: syntheticNotification.bodyEn)}',
+    );
+    _notificationsController.add(syntheticNotification);
+  }
+
+  String _buildSyntheticOrderStatusNotificationId(
+    Map<String, dynamic> payload,
+    String orderId,
+    String? status,
+  ) {
+    final changedAt = payload['changedAtUtc']?.toString().trim();
+    final normalizedStatus = (status ?? 'updated').trim().toLowerCase();
+    return 'synthetic-order-status-$orderId-$normalizedStatus-${changedAt?.isNotEmpty == true ? changedAt : 'now'}';
+  }
+
+  String _syntheticOrderStatusBodyAr({
+    required String orderId,
+    String? status,
+  }) {
+    final statusLabel = _orderStatusLabelAr(status);
+    if (statusLabel == null) {
+      return 'تم تحديث حالة الطلب #$orderId.';
+    }
+    return 'تم تحديث حالة الطلب #$orderId إلى $statusLabel.';
+  }
+
+  String _syntheticOrderStatusBodyEn({
+    required String orderId,
+    String? status,
+  }) {
+    final statusLabel = _orderStatusLabelEn(status);
+    if (statusLabel == null) {
+      return 'Your order #$orderId status was updated.';
+    }
+    return 'Your order #$orderId status changed to $statusLabel.';
+  }
+
+  String? _orderStatusLabelAr(String? status) {
+    switch (status?.trim().toLowerCase()) {
+      case 'pending':
+      case 'pendingvendoracceptance':
+        return 'قيد التنفيذ';
+      case 'processing':
+        return 'قيد المعالجة';
+      case 'confirmed':
+      case 'vendorconfirmed':
+        return 'تم التأكيد';
+      case 'preparing':
+        return 'جارٍ التجهيز';
+      case 'shipped':
+      case 'outfordelivery':
+        return 'خرج للتوصيل';
+      case 'delivered':
+        return 'تم التوصيل';
+      case 'cancelled':
+      case 'canceled':
+        return 'ملغي';
+      case 'paid':
+        return 'تم الدفع';
+      default:
+        return null;
+    }
+  }
+
+  String? _orderStatusLabelEn(String? status) {
+    switch (status?.trim().toLowerCase()) {
+      case 'pending':
+      case 'pendingvendoracceptance':
+        return 'pending';
+      case 'processing':
+        return 'processing';
+      case 'confirmed':
+      case 'vendorconfirmed':
+        return 'confirmed';
+      case 'preparing':
+        return 'preparing';
+      case 'shipped':
+      case 'outfordelivery':
+        return 'out for delivery';
+      case 'delivered':
+        return 'delivered';
+      case 'cancelled':
+      case 'canceled':
+        return 'cancelled';
+      case 'paid':
+        return 'paid';
+      default:
+        return null;
+    }
   }
 
   String _buildHubUrl() {

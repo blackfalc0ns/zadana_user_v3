@@ -33,6 +33,8 @@ import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 extension HomeAppBarModelDtoMapper on HomeAppBarModelDto {
   HomeAppBarEntity toEntity() {
     return HomeAppBarEntity(
+      fullName: fullName ?? '',
+      email: email ?? '',
       deliverToLabel: deliverToLabel ?? '',
       location: location ?? '',
       addressLine: addressLine ?? '',

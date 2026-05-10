@@ -20,15 +20,27 @@ class PaymentScreenEffectHandler {
     String orderId, {
     bool isCashOnDelivery = false,
   }) async {
-    await Navigator.of(
-      context,
-    ).pushReplacementNamed(
-      AppRoutes.paymentSuccess,
-      arguments: {
-        'orderId': orderId,
-        'isCashOnDelivery': isCashOnDelivery,
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.paymentSuccess,
+        arguments: {'orderId': orderId, 'isCashOnDelivery': isCashOnDelivery},
+      );
+    });
+  }
+
+  static Future<void> _navigateToPaymentFailed(
+    BuildContext context, {
+    String? orderId,
+    String? message,
+  }) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.paymentFailed,
+        arguments: {'orderId': orderId, 'message': message},
+      );
+    });
   }
 
   static Future<void> _handlePaymentCallbackResult({
@@ -48,8 +60,9 @@ class PaymentScreenEffectHandler {
     final orderId = callbackOrderId ?? fallbackOrderId;
 
     if (paymentStatus == _paymentStatusFailed) {
-      CustomSnackbar.showError(
-        context: context,
+      await _navigateToPaymentFailed(
+        context,
+        orderId: orderId,
         message: paymentMessage ?? fallbackErrorMessage,
       );
       return;

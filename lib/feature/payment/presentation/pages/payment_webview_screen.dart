@@ -48,7 +48,10 @@ class _PaymentWebViewView extends StatelessWidget {
       listener: (context, state) {
         final result = state.callbackResult;
         if (result == null) return;
-        Navigator.of(context).pop(result);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          Navigator.of(context).pop(result);
+        });
       },
       child: AppScaffold(
         backgroundColor: colors.surface,

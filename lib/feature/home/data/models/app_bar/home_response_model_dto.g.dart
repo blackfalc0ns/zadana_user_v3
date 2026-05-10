@@ -8,6 +8,8 @@ part of 'home_response_model_dto.dart';
 
 HomeAppBarModelDto _$HomeAppBarModelDtoFromJson(Map<String, dynamic> json) =>
     HomeAppBarModelDto(
+      fullName: json['full_name'] as String?,
+      email: json['email'] as String?,
       deliverToLabel: json['deliver_to_label'] as String?,
       location: json['location'] as String?,
       addressLine: json['address_line'] as String?,
@@ -16,6 +18,8 @@ HomeAppBarModelDto _$HomeAppBarModelDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$HomeAppBarModelDtoToJson(HomeAppBarModelDto instance) =>
     <String, dynamic>{
+      'full_name': instance.fullName,
+      'email': instance.email,
       'deliver_to_label': instance.deliverToLabel,
       'location': instance.location,
       'address_line': instance.addressLine,
