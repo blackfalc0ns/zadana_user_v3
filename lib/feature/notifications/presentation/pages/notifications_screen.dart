@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
+import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
@@ -17,6 +18,7 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_detail
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/manager/notifications_state.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/manager/notifications_view_model.dart';
+import 'package:zadana_user_v3/feature/notifications/presentation/pages/notification_gest_screen.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/widgets/notification_list_item.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -24,9 +26,27 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<NotificationsViewModel>()..loadInitial(),
-      child: const _NotificationsView(),
+    return FutureBuilder<String?>(
+      future: getIt<TokenService>().getToken(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final token = snapshot.data?.trim();
+        final isGuest = token == null || token.isEmpty;
+
+        if (isGuest) {
+          return const NotificationsGuestView();
+        }
+
+        return BlocProvider(
+          create: (_) => getIt<NotificationsViewModel>()..loadInitial(),
+          child: const _NotificationsView(),
+        );
+      },
     );
   }
 }

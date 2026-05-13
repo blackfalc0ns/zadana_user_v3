@@ -123,10 +123,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
     final cardBackground = color.surface;
     final cardBorderColor = color.outlineVariant;
     final titleColor = color.onSurface;
-    final imageBackground = Color.alphaBlend(
-      color.surfaceTint.withValues(alpha: 0.04),
-      color.surface,
-    );
     final favoriteBackground = Color.alphaBlend(
       color.surfaceTint.withValues(alpha: 0.08),
       color.surface,
@@ -185,7 +181,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
                               width: double.infinity,
                               height: spec.imageHeight,
                               whiteBackground: useTabletLayout,
-                              backgroundColor: imageBackground,
                               heroTag: widget.enableHeroAnimation
                                   ? (widget.heroTag ??
                                         productHeroTag(widget.product.id))

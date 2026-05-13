@@ -37,7 +37,7 @@ class ProductImage extends StatelessWidget {
         child: ColoredBox(
           color:
               backgroundColor ??
-              (whiteBackground ? AppColors.white : AppColors.background),
+              (whiteBackground ? AppColors.white : Colors.transparent),
           child: (url?.isNotEmpty ?? false)
               ? _buildImage()
               : (emoji != null && emoji!.isNotEmpty
@@ -116,11 +116,12 @@ class ProductImage extends StatelessWidget {
                   errorBuilder: (_, _, _) => _errorWidget(),
                 )
               : Image.network(
+             
                   imageUrl,
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
                   //   fit: resolvedFit,
-                  gaplessPlayback: true,
+                
                   errorBuilder: (_, _, _) => _errorWidget(),
                 );
 

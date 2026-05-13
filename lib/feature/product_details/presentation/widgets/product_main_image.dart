@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
 
@@ -22,12 +21,6 @@ class ProductMainImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = context.colorScheme;
-    final surfaceColor = Color.alphaBlend(
-      color.surfaceTint.withValues(alpha: 0.04),
-      color.surface,
-    );
-
     return Container(
       padding: const EdgeInsets.all(Spacing.sm),
       child: ProductImage(
@@ -36,7 +29,6 @@ class ProductMainImage extends StatelessWidget {
         width: double.infinity,
         height: height,
         borderRadius: Spacing.cardRadius - 4,
-        backgroundColor: surfaceColor,
         heroTag: heroTag ?? productHeroTag(productId),
       ),
     );
