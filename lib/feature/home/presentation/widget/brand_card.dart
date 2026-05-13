@@ -29,7 +29,7 @@ class BrandCard extends StatelessWidget {
     final color = context.colorScheme;
     final horizontalPadding = isCompact ? 6.0 : Spacing.xs;
     final verticalPadding = isCompact ? 8.0 : Spacing.sm;
-    final imageSize = isCompact ? 32.0 : 40.0;
+    final imageSize = isCompact ? 48.0 : 48.0;
     final imageSpacing = isCompact ? 6.0 : Spacing.xs;
     final fontSize = isCompact
         ? (compactFontSize ?? FontSize.size10)
@@ -64,7 +64,7 @@ class BrandCard extends StatelessWidget {
               SizedBox(height: imageSpacing),
               Text(
                 name,
-                style: getSemiBoldStyle(
+                style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
                   fontSize: fontSize,
                   color: color.onSurface,
@@ -96,7 +96,7 @@ class _BrandImage extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      fit: BoxFit.cover,
+     fit: BoxFit.contain,
 
       placeholder: (context, url) =>
           Container(color: color.primaryContainer.withValues(alpha: 0.45)),

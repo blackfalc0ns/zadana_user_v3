@@ -84,7 +84,7 @@ class CustomFilterChip extends StatelessWidget {
                   imageUrl: normalizedImageUrl,
                   width: 30,
                   height: 30,
-                  fit: BoxFit.cover,
+                
                   placeholder: (context, url) => SizedBox(
                     width: 30,
                     height: 30,

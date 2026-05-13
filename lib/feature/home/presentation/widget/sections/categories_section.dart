@@ -54,7 +54,7 @@ class CategoriesSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(
-              height: 102,
+              height: 126,
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.screenH,
@@ -97,45 +97,52 @@ class _HomeCategoryItem extends StatelessWidget {
         );
         mainShellKey.currentState?.jumpToTab(1);
       },
-      child: SizedBox(
-        width: 66,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: color.surface,
-                shape: BoxShape.circle,
-                border: Border.all(color: color.outline, width: .9),
-              ),
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: category.imageUrl,
-                  placeholder: (_, _) =>
-                      Container(color: color.surfaceContainerHighest),
-                  errorWidget: (_, _, _) => Image.asset(
-                    'assets/images/image_not_found.png',
-                    fit: BoxFit.cover,
-                  ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(shape: BoxShape.circle,
+              color: color.surfaceContainerLowest,
+              
+              boxShadow: [
+                BoxShadow(
+                  color: color.shadow.withValues(alpha: 0.05),
+            
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: CachedNetworkImage(
+              imageUrl: category.imageUrl,
+              fit: BoxFit.contain,
+              placeholder: (_, _) => Container(
+                decoration: BoxDecoration(
+                  color: color.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ),
-            const SizedBox(height: Spacing.sm),
-            Text(
-              category.name,
-              style: getRegularStyle(
-                fontSize: FontSize.size11,
-                fontFamily: FontConstant.cairo,
-                color: color.onSurface,
+              errorWidget: (_, _, _) => Image.asset(
+                'assets/images/image_not_found.png',
+                fit: BoxFit.contain,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: Spacing.sm),
+          Text(
+            category.name,
+            style: getSemiBoldStyle(
+              fontSize: FontSize.size11,
+              fontFamily: FontConstant.cairo,
+              color: color.onSurface,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
