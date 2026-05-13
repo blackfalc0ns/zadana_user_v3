@@ -61,14 +61,14 @@ class ProductDetailsContent extends StatelessWidget {
         PriceComparisonSection(
           vendorPrices: vendorPrices,
         ),
-        const SizedBox(height: Spacing.base),
+      const SizedBox(height: Spacing.base),
         SimilarProductsSection(
           similarProducts: similarProducts,
           onProductTap: onSimilarProductTap,
           onAddToCart: onSimilarProductAddToCart,
           activeProductId: activeProductId,
         ),
-        const SizedBox(height: 100),
+        const SizedBox(height: Spacing.base),
       ],
     );
   }

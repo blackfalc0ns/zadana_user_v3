@@ -31,7 +31,7 @@ class ProductHeaderSection extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(Spacing.base),
+      
       color: color.surface,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

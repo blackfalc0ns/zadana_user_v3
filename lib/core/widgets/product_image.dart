@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 
 class ProductImage extends StatelessWidget {
@@ -32,18 +31,13 @@ class ProductImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageShell = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: ColoredBox(
-          color:
-              backgroundColor ??
-              (whiteBackground ? AppColors.white : Colors.transparent),
-          child: (url?.isNotEmpty ?? false)
-              ? _buildImage()
-              : (emoji != null && emoji!.isNotEmpty
-                    ? _buildEmoji()
-                    : _errorWidget()),
+      child: ColoredBox(
+        color: backgroundColor ??
+            (whiteBackground ? Colors.white : Colors.transparent),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: _buildImage(),
         ),
       ),
     );
@@ -76,48 +70,22 @@ class ProductImage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmoji() {
-    return SizedBox.expand(
-      child: Center(
-        child: Text(
-          emoji!,
-          style: TextStyle(
-            fontSize: (height * 0.42)
-                .clamp(FontSize.size24, FontSize.size30)
-                .toDouble(),
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
+ 
 
   Widget _buildImage() {
-    final imageUrl = url;
-    if (imageUrl == null || imageUrl.isEmpty) {
-      return _errorWidget();
-    }
-
-    // final resolvedFit = fit;
-    // final imagePadding = whiteBackground && resolvedFit == BoxFit.contain
-    //     ? 8.0
-        //: 0.0;
+    // final imageUrl = url;
+    // if (imageUrl == null || imageUrl.isEmpty) {
+    //   return _errorWidget();
+    // }
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        
-             Image.network(
-                imageUrl,
-                // width: constraints.maxWidth,
-                // height: constraints.maxHeight,
-               
-                filterQuality: FilterQuality.high,
-                errorBuilder: (_, _, _) => _errorWidget(),
-              );
-
-        final networkImage = CachedNetworkImage(
-          imageUrl: imageUrl,
-          
+        return CachedNetworkImage(
+          imageUrl: url ?? '',
+        //   width: constraints.maxWidth.isFinite ? constraints.maxWidth : width,
+        //   height: constraints.maxHeight.isFinite ? constraints.maxHeight : height,
+        // //  fit: fit,
+        //  filterQuality: FilterQuality.high,
           placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(
               strokeWidth: .5,
@@ -126,8 +94,6 @@ class ProductImage extends StatelessWidget {
           ),
           errorWidget: (context, url, error) => _errorWidget(),
         );
-
-        return networkImage;
       },
     );
   }

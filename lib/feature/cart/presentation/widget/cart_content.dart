@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_animations.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_item_card.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_prompt_card.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 
 class CartContent extends StatelessWidget {
@@ -47,12 +49,12 @@ class CartContent extends StatelessWidget {
       children: [
         if (selectedVendorId != null && unavailableCount > 0)
           _buildUnavailableWarning(context, unavailableCount),
+        if (selectedVendorId == null) _buildSelectVendorPrompt(),
         VendorSelector(
           vendors: vendors,
           selectedVendorId: selectedVendorId,
           onVendorSelected: onVendorSelected,
         ),
-        if (selectedVendorId == null) _buildSelectVendorPrompt(context),
         Container(
           height: 1,
           margin: const EdgeInsets.symmetric(horizontal: 14),
@@ -106,9 +108,7 @@ class CartContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSelectVendorPrompt(BuildContext context) {
-    final locale = context.localization;
-
+  Widget _buildSelectVendorPrompt() {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       transitionBuilder: (Widget child, Animation<double> animation) {
@@ -119,65 +119,8 @@ class CartContent extends StatelessWidget {
       },
       child: Container(
         key: const ValueKey('select_prompt'),
-        margin: const EdgeInsets.fromLTRB(14, 6, 14, 6),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primary.withValues(alpha: 0.06),
-              AppColors.primaryLight.withValues(alpha: 0.03),
-            ],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.store_rounded,
-                color: AppColors.primary,
-                size: 18,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    locale.select_vendor_to_show_price,
-                    style: getBoldStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    locale.select_vendors_to_compare,
-                    style: getRegularStyle(
-                      fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size10,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.touch_app_rounded,
-              color: AppColors.primary.withValues(alpha: 0.6),
-              size: 20,
-            ),
-          ],
-        ),
+       padding: const EdgeInsets.symmetric(horizontal:Spacing.screenH),
+        child: const VendorPromptCard(),
       ),
     );
   }

@@ -19,7 +19,7 @@ class ProductDescriptionSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(Spacing.base),
+     
       color: color.surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

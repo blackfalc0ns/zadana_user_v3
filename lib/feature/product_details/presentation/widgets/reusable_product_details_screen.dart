@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -84,34 +85,37 @@ class ReusableProductDetailsScreen extends StatelessWidget {
         leading: appBarLeading,
         systemOverlayStyle: appBarSystemOverlayStyle,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProductMainImage(
-              emoji: emoji,
-              imageUrl: imageUrl,
-              productId: productId,
-              height: imageHeight,
-              heroTag: heroTag,
-            ),
-            ProductDetailsContent(
-              productName: productName,
-              unit: unit,
-              quantity: quantity,
-              onIncrease: onIncrease,
-              onDecrease: onDecrease,
-              descriptionTitle: descriptionTitle,
-              description: description,
-              basePrice: basePrice,
-              oldPrice: oldPrice,
-              currency: currency,
-              vendorPrices: vendorPrices,
-              similarProducts: similarProducts,
-              onSimilarProductTap: onSimilarProductTap,
-              onSimilarProductAddToCart: onSimilarProductAddToCart,
-              activeProductId: activeProductId,
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(Spacing.base),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ProductMainImage(
+                emoji: emoji,
+                imageUrl: imageUrl,
+                productId: productId,
+                height: imageHeight,
+                heroTag: heroTag,
+              ),
+              ProductDetailsContent(
+                productName: productName,
+                unit: unit,
+                quantity: quantity,
+                onIncrease: onIncrease,
+                onDecrease: onDecrease,
+                descriptionTitle: descriptionTitle,
+                description: description,
+                basePrice: basePrice,
+                oldPrice: oldPrice,
+                currency: currency,
+                vendorPrices: vendorPrices,
+                similarProducts: similarProducts,
+                onSimilarProductTap: onSimilarProductTap,
+                onSimilarProductAddToCart: onSimilarProductAddToCart,
+                activeProductId: activeProductId,
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: ProductBottomActions(
@@ -120,6 +124,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
         cartCount: cartCount,
         isAddingToCart: isAddingToCart,
       ),
+      
     );
   }
 }

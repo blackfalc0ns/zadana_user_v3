@@ -162,7 +162,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
         final scale = math.min(widthScale, heightScale);
 
         return GestureDetector(
-          behavior: HitTestBehavior.translucent,
           onTap: widget.onCardTap,
           child: Stack(
             clipBehavior: Clip.none,
@@ -239,6 +238,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                     ),
                                     SizedBox(width: spec.actionSpacing),
                                     GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
                                       onTap: _handleAddTap,
                                       child: Container(
                                         width: spec.cartSize,
@@ -289,6 +289,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                         top: 4,
                         right: 4,
                         child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: _handleFavoriteTap,
                           child: Container(
                             width: spec.favoriteSize,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
@@ -13,6 +14,7 @@ import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_addres
 import 'package:zadana_user_v3/feature/addresses/presentation/manager/customer_addresses_event.dart';
 import 'package:zadana_user_v3/feature/addresses/presentation/manager/customer_addresses_state.dart';
 import 'package:zadana_user_v3/feature/addresses/presentation/manager/customer_addresses_view_model.dart';
+import 'package:zadana_user_v3/feature/addresses/presentation/pages/customer_addresses_guest_page.dart';
 import 'package:zadana_user_v3/feature/addresses/presentation/widgets/customer_addresses_content.dart';
 import 'package:zadana_user_v3/feature/addresses/presentation/widgets/customer_addresses_loading_view.dart';
 import 'package:zadana_user_v3/feature/addresses/presentation/widgets/delete_address_dialog.dart';
@@ -42,6 +44,12 @@ class _CustomerAddressesView extends StatefulWidget {
 class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<CustomerAddressesViewModel>().state;
+
+    if (state.items.isEmpty && _isUnauthorizedFailure(state.failure)) {
+      return const CustomerAddressesGuestPage();
+    }
+
     final l10n = context.localization;
     final colors = Theme.of(context).colorScheme;
 
@@ -92,6 +100,10 @@ class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
         ),
       ),
     );
+  }
+
+  bool _isUnauthorizedFailure(Failure? failure) {
+    return failure?.exception.errorType == ApiErrorType.unauthorized;
   }
 
   void _handleActionFeedback(

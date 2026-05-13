@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -30,13 +31,16 @@ class SimilarProductsSection extends StatelessWidget {
 
     return Container(
       color: color.surface,
-      padding: const EdgeInsets.all(Spacing.base),
+      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.similar_products,
-            style: AppTextStyles.h4.copyWith(color: color.onSurface),
+            style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurfaceVariant,fontSize: FontSize.size15,
+                ),
           ),
           const SizedBox(height: Spacing.sm),
           SizedBox(

@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
+import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
@@ -134,7 +135,12 @@ class _ProductDetailsView extends StatelessWidget {
                   ),
                 );
               },
-              onSimilarProductAddToCart: (_) async {},
+              onSimilarProductAddToCart: (similarProduct) async {
+                await HomeProductCartHelper.addProductToCart(
+                  context,
+                  similarProduct,
+                );
+              },
               onAddToCart: () => cubit.doIntent(const AddProductToCartEvent()),
               onGoToCart: () => _goToCartTab(context),
               activeProductId: state.activeProductId,
@@ -176,28 +182,31 @@ class _ProductDetailsView extends StatelessWidget {
         }
 
         if (state.loadFailure != null) {
-          return Scaffold(
-            backgroundColor: color.surface,
-            appBar: CustomAppBar(
-              title: title,
+          return Padding(
+            padding: const EdgeInsets.all(Spacing.base),
+            child: Scaffold(
               backgroundColor: color.surface,
-              titleColor: color.onSurface,
-              showShadow: false,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: color.onSurface,
+              appBar: CustomAppBar(
+                title: title,
+                backgroundColor: color.surface,
+                titleColor: color.onSurface,
+                showShadow: false,
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: color.onSurface,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                  splashRadius: 20,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
-                splashRadius: 20,
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(Spacing.md),
-              child: ApiErrorWidget(
-                exception: state.loadFailure!.exception,
-                onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
-                onGoBack: () => Navigator.of(context).maybePop(),
+              body: Padding(
+                padding: const EdgeInsets.all(Spacing.md),
+                child: ApiErrorWidget(
+                  exception: state.loadFailure!.exception,
+                  onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
+                  onGoBack: () => Navigator.of(context).maybePop(),
+                ),
               ),
             ),
           );

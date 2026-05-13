@@ -53,72 +53,67 @@ class ModernStoreCard extends StatelessWidget {
                   ? color.primary.withValues(alpha: 0.28)
                   : color.outlineVariant,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: color.shadow.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: color.shadow.withValues(alpha: 0.08),
+            //     blurRadius: 8,
+            //     offset: const Offset(0, 3),
+            //   ),
+            // ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 12, 10, 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _StoreLogo(
-                  storeImage: storeImage,
-                  icon: icon,
-                  isLowest: isLowest,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _StoreLogo(
+                storeImage: storeImage,
+                icon: icon,
+                isLowest: isLowest,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                storeName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  color: color.onSurfaceVariant,
+                  fontSize: FontSize.size14,
                 ),
-                const SizedBox(height: 8),
+              ),
+              const SizedBox(height: 8),
+              if (hasDiscount) ...[
                 Text(
-                  storeName,
+                  '${PriceFormatter.formatPrice(oldPrice!)} ${locale.currency}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: isLowest ? color.primary : color.onSurface,
-                    fontSize: 12,
-                    fontFamily: 'Cairo',
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                if (hasDiscount) ...[
-                  Text(
-                    '${PriceFormatter.formatPrice(oldPrice!)} ${locale.currency}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: color.onSurfaceVariant,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.lineThrough,
-                      decorationColor: color.onSurfaceVariant.withValues(
-                        alpha: 0.7,
-                      ),
-                      fontFamily: 'Cairo',
-                      height: 1.1,
+                    color: color.onSurfaceVariant,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.lineThrough,
+                    decorationColor: color.onSurfaceVariant.withValues(
+                      alpha: 0.7,
                     ),
+                    fontFamily: 'Cairo',
+                    height: 1.1,
                   ),
-                  const SizedBox(height: 2),
-                ] else
-                  const SizedBox(height: 14),
-                Text(
-                  '${PriceFormatter.formatPrice(price)} ${locale.currency}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: getBoldStyle(fontFamily: FontConstant.cairo, color: AppColors.primary, fontSize: 14),
                 ),
-              ],
-            ),
+                const SizedBox(height: 2),
+              ] else
+                const SizedBox(height: 14),
+              Text(
+                '${PriceFormatter.formatPrice(price)} ${locale.currency}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: getBoldStyle(fontFamily: FontConstant.cairo, color: AppColors.primary, fontSize: 14),
+              ),
+            ],
           ),
         ),
-        if (hasDiscount)
+        if (hasDiscount && discountPercentage > 0)
           Positioned(
             left: 0,
             top: 0,
@@ -169,8 +164,8 @@ class _StoreLogo extends StatelessWidget {
           ? ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
-                imageUrl: storeImage!,
-                fit: BoxFit.cover,
+                imageUrl: storeImage??"",
+                
                 width: 36,
                 height: 36,
                 placeholder: (context, url) => Center(
