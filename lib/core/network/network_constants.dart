@@ -36,8 +36,7 @@ abstract class EndPoints {
   static const String homeExploreMore = '/home/dynamic-sections';
   static const String brandProducts = '/brands/{brandId}/products';
   static const String brandFilters = '/brands/{brandId}/filters';
-  static const String categorySubcategories =
-      '/categories/{categoryId}/subcategories';
+  static const String categorySubcategories = '/categories/subcategories';
   static const String categoryFilters = '/categories/{categoryId}/filters';
   static const String categoryProducts = '/categories/{subCategoryId}/products';
   static const String shoppingProducts = '/categories/products';

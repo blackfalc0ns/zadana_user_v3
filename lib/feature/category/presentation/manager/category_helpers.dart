@@ -165,6 +165,19 @@ ShoppingSubCategoriesData buildShoppingSubCategoriesFromLists({
   );
 }
 
+ShoppingSubCategoriesData buildShoppingSubCategoriesFromFlatList(
+  List<CategorySubcategoryItemDto> subCategories,
+) {
+  return ShoppingSubCategoriesData(
+    subCategories: validItems(
+      subCategories,
+      idOf: (item) => item.id,
+      nameOf: (item) => item.name,
+    ),
+    categoryMap: const {},
+  );
+}
+
 CategoryFiltersResponseModelDto resolveCategoryFilters(
   String categoryId,
   List<CategoryFiltersResponseModelDto> filters,

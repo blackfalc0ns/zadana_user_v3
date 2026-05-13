@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
 
 class BrandHeader extends StatelessWidget {
   const BrandHeader({
@@ -80,8 +81,12 @@ class BrandHeader extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
-     fit: BoxFit.fill,
-      placeholder: (context, url) => Container(color: const Color(0xFFF3EEE8)),
+      fit: BoxFit.fill,
+      placeholder: (context, url) => ShimmerEffect(
+        child: Container(
+          color: AppColors.white.withValues(alpha: 0.22),
+        ),
+      ),
       errorWidget: (context, url, error) =>
           Image.asset(Assets.notFound, fit: BoxFit.cover),
     );
@@ -134,7 +139,6 @@ class BrandHeader extends StatelessWidget {
         child: brand.logo.isNotEmpty
             ? CachedNetworkImage(
                 imageUrl: brand.logo,
-
                 placeholder: (context, url) => Center(
                   child: SizedBox(
                     width: 22,

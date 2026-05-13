@@ -28,7 +28,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   @override
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
-    String categoryId,
+    String? categoryId,
   ) {
     return _apiServices.getCategorySubcategories(categoryId);
   }

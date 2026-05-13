@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/core/utils/main_shell_navigation.dart';
@@ -75,12 +78,14 @@ class CategoriesSection extends StatelessWidget {
 }
 
 class _HomeCategoryItem extends StatelessWidget {
+  
   const _HomeCategoryItem({required this.category});
 
   final HomeCategoryItemEntity category;
 
   @override
   Widget build(BuildContext context) {
+    
     final color = context.colorScheme;
 
     return GestureDetector(
@@ -104,13 +109,14 @@ class _HomeCategoryItem extends StatelessWidget {
             width: 72,
             height: 72,
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(shape: BoxShape.circle,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
               color: color.surfaceContainerLowest,
-              
+
               boxShadow: [
                 BoxShadow(
                   color: color.shadow.withValues(alpha: 0.05),
-            
+
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -118,16 +124,14 @@ class _HomeCategoryItem extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: category.imageUrl,
               fit: BoxFit.contain,
-              placeholder: (_, _) => Container(
-                decoration: BoxDecoration(
-                  color: color.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              placeholder: (_, _) =>
+                  const Center(child: CircularProgressIndicator(
+                    strokeWidth: .5,
+              valueColor: AlwaysStoppedAnimation(AppColors.primary
               ),
-              errorWidget: (_, _, _) => Image.asset(
-                'assets/images/image_not_found.png',
-                fit: BoxFit.contain,
-              ),
+                  )),
+              errorWidget: (_, _, _) =>
+                  Image.asset(Assets.notFound, fit: BoxFit.contain),
             ),
           ),
           const SizedBox(height: Spacing.sm),

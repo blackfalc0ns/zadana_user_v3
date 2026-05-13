@@ -14,7 +14,7 @@ abstract class CategoryRepository {
   );
 
   Future<ApiResult<List<CategorySubcategoryItemDto>>> getCategorySubcategories(
-    String categoryId,
+    String? categoryId,
   );
 
   Future<ApiResult<List<ProductModel>>> getCategoryProducts(

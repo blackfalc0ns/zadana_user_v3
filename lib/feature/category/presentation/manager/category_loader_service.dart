@@ -25,31 +25,16 @@ class CategoryLoaderService {
     return _getCategoriesUseCase();
   }
 
-  Future<DefaultShoppingLoadResult> loadDefaultShoppingData({
-    required List<CategoryEntity> categories,
-  }) async {
-    final results = await Future.wait(
-      categories
-          .map((item) => _getCategorySubcategoriesUseCase(item.id))
-          .toList(growable: false),
-    );
-
-    final subCategories = <List<CategorySubcategoryItemDto>>[];
-    for (final result in results) {
-      switch (result) {
-        case ApiSuccessResult<List<CategorySubcategoryItemDto>>():
-          subCategories.add(result.data);
-        case ApiErrorResult<List<CategorySubcategoryItemDto>>():
-          return DefaultShoppingLoadFailure(result.failure);
-      }
+  Future<DefaultShoppingLoadResult> loadDefaultShoppingData() async {
+    final result = await _getCategorySubcategoriesUseCase();
+    switch (result) {
+      case ApiSuccessResult<List<CategorySubcategoryItemDto>>():
+        return DefaultShoppingLoadSuccess(
+          buildShoppingSubCategoriesFromFlatList(result.data),
+        );
+      case ApiErrorResult<List<CategorySubcategoryItemDto>>():
+        return DefaultShoppingLoadFailure(result.failure);
     }
-
-    return DefaultShoppingLoadSuccess(
-      buildShoppingSubCategoriesFromLists(
-        categories: categories,
-        categorySubCategories: subCategories,
-      ),
-    );
   }
 
   Future<CategorySelectionLoadResult> loadCategorySelection({
@@ -94,7 +79,7 @@ class CategoryLoaderService {
   }) async {
     for (final category in categories) {
       final subCategoriesResult = await _getCategorySubcategoriesUseCase(
-        category.id,
+        categoryId: category.id,
       );
 
       if (subCategoriesResult
@@ -194,7 +179,7 @@ class CategoryLoaderService {
   ) async {
     final filtersResult = await _getCategoryFiltersUseCase(category.id);
     final subCategoriesResult = await _getCategorySubcategoriesUseCase(
-      category.id,
+      categoryId: category.id,
     );
 
     if (filtersResult case ApiErrorResult<CategoryFiltersResponseModelDto>()) {

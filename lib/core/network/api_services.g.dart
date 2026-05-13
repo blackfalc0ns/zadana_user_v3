@@ -346,17 +346,18 @@ class _ApiServices implements ApiServices {
 
   @override
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
-    String categoryId,
+    String? categoryId,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'categoryId': categoryId};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<CategorySubcategoryItemDto>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/categories/${categoryId}/subcategories',
+            '/categories/subcategories',
             queryParameters: queryParameters,
             data: _data,
           )

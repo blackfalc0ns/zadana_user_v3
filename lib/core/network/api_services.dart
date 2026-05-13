@@ -126,7 +126,7 @@ abstract class ApiServices {
 
   @GET(EndPoints.categorySubcategories)
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
-    @Path('categoryId') String categoryId,
+    @Query('categoryId') String? categoryId,
   );
 
   @GET(EndPoints.categoryFilters)

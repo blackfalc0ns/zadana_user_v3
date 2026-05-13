@@ -54,11 +54,7 @@ class BrandCard extends StatelessWidget {
               SizedBox(
                 width: imageSize,
                 height: imageSize,
-                // decoration: BoxDecoration(
-                 
-                //   shape: BoxShape.circle,
-                // ),
-                // clipBehavior: Clip.antiAlias,
+                
                 child: _BrandImage(imageUrl: imageUrl, emoji: emoji),
               ),
               SizedBox(height: imageSpacing),
@@ -99,7 +95,12 @@ class _BrandImage extends StatelessWidget {
      fit: BoxFit.contain,
 
       placeholder: (context, url) =>
-          Container(color: color.primaryContainer.withValues(alpha: 0.45)),
+          Center(
+            child: CircularProgressIndicator(
+            strokeWidth: .5,
+              valueColor: AlwaysStoppedAnimation(color.primary),
+            ),
+          ),
       errorWidget: (context, url, error) =>
           Image.asset(Assets.notFound, fit: BoxFit.cover),
     );

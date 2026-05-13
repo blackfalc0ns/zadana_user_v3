@@ -147,11 +147,10 @@ class MainShellState extends State<MainShell> {
     _requestedInitialData[index] = true;
 
     switch (index) {
-      case 0:
-        _globalCubit.homeViewModel.doIntent(const HomeLoadEvent());
-        break;
       case 1:
-        _globalCubit.categoryViewModel.initialize();
+        _globalCubit.categoryViewModel.initialize(
+          preloadedCategories: _globalCubit.homeCategoriesForShopping,
+        );
         break;
       case 2:
         final loadedVendorId = _globalCubit.cartViewModel.state.loadedVendorId;

@@ -13,6 +13,7 @@ import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase
 import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_cubit.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
@@ -75,6 +76,20 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   FavoritesViewModel get favoritesViewModel => _favoritesViewModel;
   ProfileViewModel get profileViewModel => _profileViewModel;
   CategoryViewModel get categoryViewModel => _categoryViewModel;
+  List<CategoryEntity> get homeCategoriesForShopping {
+    final items = _homeViewModel.state.categoriesSection.data?.items ?? const [];
+    return items
+        .where((item) => item.id.isNotEmpty && item.name.isNotEmpty)
+        .map(
+          (item) => CategoryEntity(
+            id: item.id,
+            name: item.name,
+            imageAsset: item.imageUrl,
+            emoji: item.name.isNotEmpty ? item.name.substring(0, 1) : '',
+          ),
+        )
+        .toList(growable: false);
+  }
 
   Future<void> initialize() async {
     if (_didInitialize) return;

@@ -9,9 +9,9 @@ class GetCategorySubcategoriesUseCase {
 
   final CategoryRepository _repository;
 
-  Future<ApiResult<List<CategorySubcategoryItemDto>>> call(
-    String categoryId,
-  ) async {
+  Future<ApiResult<List<CategorySubcategoryItemDto>>> call({
+    String? categoryId,
+  }) async {
     return _repository.getCategorySubcategories(categoryId);
   }
 }

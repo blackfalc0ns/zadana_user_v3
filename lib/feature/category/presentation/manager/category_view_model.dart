@@ -49,9 +49,22 @@ class CategoryViewModel extends Cubit<CategoryState> {
   final CategoryFiltersService _filtersService;
   final CategoryNavigationHandler _navigationHandler;
   final CategoryNavigationService _navigationService;
+  bool _isInitialized = false;
 
-  void initialize() {
+  void initialize({List<CategoryEntity>? preloadedCategories}) {
+    if (_isInitialized) {
+      return;
+    }
+    _isInitialized = true;
     _navigationService.addListener(_checkSelectedCategory);
+    final validPreloadedCategories = (preloadedCategories ?? const [])
+        .where((item) => item.id.isNotEmpty && item.name.isNotEmpty)
+        .toList(growable: false);
+    if (validPreloadedCategories.isNotEmpty) {
+      unawaited(_handleInitialLoadSuccess(validPreloadedCategories));
+      return;
+    }
+
     doIntent(const CategoryInitializeEvent());
   }
 
@@ -226,9 +239,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
   }) async {
     emit(state.startDefaultShoppingView(categories));
 
-    final result = await _loaderService.loadDefaultShoppingData(
-      categories: categories,
-    );
+    final result = await _loaderService.loadDefaultShoppingData();
     switch (result) {
       case DefaultShoppingLoadSuccess():
         emit(state.loadedShoppingSubCategories(result.data));
@@ -548,6 +559,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
   @override
   Future<void> close() {
+    _isInitialized = false;
     _navigationService.removeListener(_checkSelectedCategory);
     return super.close();
   }

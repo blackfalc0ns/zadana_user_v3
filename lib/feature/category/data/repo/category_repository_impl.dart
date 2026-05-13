@@ -36,7 +36,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<ApiResult<List<CategorySubcategoryItemDto>>> getCategorySubcategories(
-    String categoryId,
+    String? categoryId,
   ) async {
     return safeApiCall(() async {
       return _remoteDataSource.getCategorySubcategories(categoryId);

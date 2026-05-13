@@ -11,7 +11,7 @@ abstract class CategoryRemoteDataSource {
   Future<CategoryFiltersResponseModelDto> getCategoryFilters(String categoryId);
 
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
-    String categoryId,
+    String? categoryId,
   );
 
   Future<CategoryProductsResponseModelDto> getCategoryProducts(
