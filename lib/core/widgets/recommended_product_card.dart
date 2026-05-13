@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
@@ -114,7 +115,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
         (MediaQuery.sizeOf(context).width / 2.2).clamp(140.0, 200.0).toDouble();
     final resolvedMinHeight = widget.minHeight ?? 78.0;
     final isLargeCard = resolvedCardWidth >= 220 || resolvedMinHeight >= 90;
-    final imageSize = isLargeCard ? 56.0 : 48.0;
+    final imageSize = isLargeCard ? 68.0 : 58.0;
     final titleFontSize = isLargeCard ? 13.5 : 12.5;
     final actionPadding = isLargeCard ? 8.0 : 7.0;
     final actionIconSize = isLargeCard ? 15.0 : 14.0;
@@ -136,17 +137,15 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
             ),
             child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(end: Spacing.sm),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Spacing.cardRadius),
-                    child: ProductImage(
-                      emoji: widget.product.emoji,
-                      url: widget.product.imageUrl,
-                      width: imageSize,
-                      height: imageSize,
-                      heroTag: widget.heroTag,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(Spacing.cardRadius),
+                  child: ProductImage(
+                    emoji: widget.product.emoji,
+                    url: widget.product.imageUrl,
+                    width: imageSize,
+                    height: imageSize,
+                    fit: BoxFit.contain,
+                    heroTag: widget.heroTag,
                   ),
                 ),
                 Expanded(
@@ -157,10 +156,10 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                     children: [
                       Text(
                         widget.product.name,
-                        style: AppTextStyles.labelMedium.copyWith(
-                          fontSize: titleFontSize,
-                          height: 1.15,
+                        style: getSemiBoldStyle(
+                          fontFamily: FontConstant.cairo,
                           color: color.onSurface,
+                          fontSize: titleFontSize,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -213,22 +212,22 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
             ),
           ),
           PositionedDirectional(
-            top: 4,
-            start: 4,
+            top: 2,
+            start: 2,
             child: GestureDetector(
               onTap: _handleFavoriteTap,
               child: Container(
                 width: favoriteSize,
                 height: favoriteSize,
                 decoration: BoxDecoration(
-                  color: color.surface.withValues(alpha: 0.92),
+                  color: color.surface.withValues(alpha: .6),
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.shadow.withValues(alpha: 0.12),
-                      blurRadius: 2,
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: color.shadow.withValues(alpha: 0.12),
+                  //     blurRadius: 2,
+                  //   ),
+                  // ],
                 ),
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 180),

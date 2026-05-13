@@ -396,13 +396,13 @@ class CartItemCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.local_offer, size: 11, color: AppColors.primary),
+      
         const SizedBox(width: 3),
         Flexible(
           child: Text(
             priceLabel,
             overflow: TextOverflow.ellipsis,
-            style: getBoldStyle(
+            style: getBoldStyle(fontSize: FontSize.size14,
               color: AppColors.primary,
               fontFamily: FontConstant.cairo,
             ),

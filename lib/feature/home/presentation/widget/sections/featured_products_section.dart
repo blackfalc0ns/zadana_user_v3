@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/featured/presentation/pages/featured_products_page.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
@@ -20,6 +21,7 @@ class FeaturedProductsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
+    final globalCubit = context.read<AppSectionGlobalCubit>();
     final sectionHeight = HomeSectionCardLayout.featuredSectionHeight(
       MediaQuery.sizeOf(context).width,
     );
@@ -37,8 +39,12 @@ class FeaturedProductsSection extends StatelessWidget {
                 onActionTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) =>
-                          FeaturedProductsPage(title: locale.section_featured),
+                      builder: (_) => BlocProvider.value(
+                        value: globalCubit,
+                        child: FeaturedProductsPage(
+                          title: locale.section_featured,
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -78,8 +84,12 @@ class FeaturedProductsSection extends StatelessWidget {
               onActionTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) =>
-                        FeaturedProductsPage(title: locale.section_featured),
+                    builder: (_) => BlocProvider.value(
+                      value: globalCubit,
+                      child: FeaturedProductsPage(
+                        title: locale.section_featured,
+                      ),
+                    ),
                   ),
                 );
               },

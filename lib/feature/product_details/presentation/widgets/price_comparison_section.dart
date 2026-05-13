@@ -87,6 +87,7 @@ class PriceComparisonSection extends StatelessWidget {
                         : 0,
                     isDiscounted: hasDiscount,
                     oldPrice: hasDiscount ? originalPrice : null,
+                    storeImage: store.logoUrl,
                   ),
                 );
               },

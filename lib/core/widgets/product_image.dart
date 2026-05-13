@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
@@ -97,37 +98,37 @@ class ProductImage extends StatelessWidget {
       return _errorWidget();
     }
 
-    final resolvedFit = fit;
-    final imagePadding = whiteBackground && resolvedFit == BoxFit.contain
-        ? 8.0
-        : 0.0;
+    // final resolvedFit = fit;
+    // final imagePadding = whiteBackground && resolvedFit == BoxFit.contain
+    //     ? 8.0
+        //: 0.0;
 
-    return Padding(
-      padding: EdgeInsets.all(imagePadding),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final image = imageUrl.startsWith('assets/')
-              ? Image.asset(
-                  imageUrl,
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  // fit: resolvedFit,
-                  gaplessPlayback: true,
-                  errorBuilder: (_, _, _) => _errorWidget(),
-                )
-              : Image.network(
-             
-                  imageUrl,
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  //   fit: resolvedFit,
-                
-                  errorBuilder: (_, _, _) => _errorWidget(),
-                );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        
+             Image.network(
+                imageUrl,
+                // width: constraints.maxWidth,
+                // height: constraints.maxHeight,
+               
+                filterQuality: FilterQuality.high,
+                errorBuilder: (_, _, _) => _errorWidget(),
+              );
 
-          return Center(child: image);
-        },
-      ),
+        final networkImage = CachedNetworkImage(
+          imageUrl: imageUrl,
+          
+          placeholder: (context, url) => const Center(
+            child: CircularProgressIndicator(
+              strokeWidth: .5,
+              valueColor: AlwaysStoppedAnimation(AppColors.primary),
+            ),
+          ),
+          errorWidget: (context, url, error) => _errorWidget(),
+        );
+
+        return networkImage;
+      },
     );
   }
 

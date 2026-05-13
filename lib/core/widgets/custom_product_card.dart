@@ -145,6 +145,14 @@ class _CustomProductCardState extends State<CustomProductCard> {
           cardHeight: cardHeight,
           isTablet: useTabletLayout,
         );
+        final imageSectionHeight = math.min(
+          spec.imageSectionHeight,
+          math.max(0.0, cardHeight - spec.minContentHeight),
+        );
+        final imageHeight = math.min(
+          spec.imageHeight,
+          math.max(0.0, imageSectionHeight - spec.imageBottomInset),
+        );
         final widthScale = (cardWidth / (useTabletLayout ? 150 : 110))
             .clamp(0.82, useTabletLayout ? 1.18 : 1.12)
             .toDouble();
@@ -171,7 +179,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: spec.imageSectionHeight,
+                          height: imageSectionHeight,
                           width: double.infinity,
                           child: Align(
                             alignment: Alignment.bottomCenter,
@@ -179,7 +187,8 @@ class _CustomProductCardState extends State<CustomProductCard> {
                               emoji: widget.product.emoji,
                               url: widget.product.imageUrl,
                               width: double.infinity,
-                              height: spec.imageHeight,
+                              height: imageHeight,
+                              fit: BoxFit.contain,
                               whiteBackground: useTabletLayout,
                               heroTag: widget.enableHeroAnimation
                                   ? (widget.heroTag ??
@@ -361,6 +370,8 @@ class _CardLayoutSpec {
     required this.badgeFontSize,
     required this.actionSpacing,
     required this.buttonRadius,
+    required this.minContentHeight,
+    required this.imageBottomInset,
   });
 
   final double imageHeight;
@@ -378,6 +389,8 @@ class _CardLayoutSpec {
   final double badgeFontSize;
   final double actionSpacing;
   final double buttonRadius;
+  final double minContentHeight;
+  final double imageBottomInset;
 
   static _CardLayoutSpec resolve({
     required double cardWidth,
@@ -386,8 +399,8 @@ class _CardLayoutSpec {
   }) {
     if (isTablet) {
       return _CardLayoutSpec(
-        imageHeight: (cardHeight * 0.4).clamp(58.0, 90.0).toDouble(),
-        imageSectionHeight: (cardHeight * 0.52).clamp(86.0, 118.0).toDouble(),
+        imageHeight: (cardHeight * 0.5).clamp(74.0, 112.0).toDouble(),
+        imageSectionHeight: (cardHeight * 0.6).clamp(98.0, 134.0).toDouble(),
         horizontalPadding: (cardWidth * 0.06).clamp(6.0, 10.0).toDouble(),
         verticalPadding: (cardHeight * 0.038).clamp(4.0, 8.0).toDouble(),
         bottomPadding: (cardHeight * 0.03).clamp(4.0, 7.0).toDouble(),
@@ -401,16 +414,18 @@ class _CardLayoutSpec {
         badgeFontSize: (cardWidth * 0.07).clamp(10.0, 14.0).toDouble(),
         actionSpacing: (cardWidth * 0.04).clamp(5.0, 8.0).toDouble(),
         buttonRadius: 8.0,
+        minContentHeight: 74.0,
+        imageBottomInset: 8.0,
       );
     }
 
     return _CardLayoutSpec(
-      imageHeight: (cardHeight * 0.34).clamp(38.0, 60.0).toDouble(),
-      imageSectionHeight: (cardHeight * 0.5).clamp(54.0, 84.0).toDouble(),
+      imageHeight: (cardHeight * 0.45).clamp(50.0, 76.0).toDouble(),
+      imageSectionHeight: (cardHeight * 0.58).clamp(62.0, 92.0).toDouble(),
       horizontalPadding: (cardWidth * 0.06).clamp(4.0, 8.0).toDouble(),
       verticalPadding: (cardHeight * 0.042).clamp(3.0, 6.0).toDouble(),
-      bottomPadding: (cardHeight * 0.023).clamp(2.0, 4.0).toDouble(),
-      contentSpacing: (cardHeight * 0.012).clamp(0.5, 2.0).toDouble(),
+      bottomPadding: (cardHeight * 0.02).clamp(1.0, 3.0).toDouble(),
+      contentSpacing: (cardHeight * 0.01).clamp(0.0, 1.5).toDouble(),
       titleFontSize: (cardWidth * 0.11).clamp(9.0, 12.0).toDouble(),
       cartSize: (cardWidth * 0.24).clamp(20.0, 27.0).toDouble(),
       cartIconSize: (cardWidth * 0.11).clamp(9.0, 12.0).toDouble(),
@@ -420,6 +435,8 @@ class _CardLayoutSpec {
       badgeFontSize: (cardWidth * 0.11).clamp(9.0, 13.0).toDouble(),
       actionSpacing: (cardWidth * 0.035).clamp(3.0, 6.0).toDouble(),
       buttonRadius: 6.0,
+      minContentHeight: 57.0,
+      imageBottomInset: 6.0,
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/recommended_product_card.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -20,6 +21,7 @@ class RecommendedSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
+    final globalCubit = context.read<AppSectionGlobalCubit>();
     final viewportWidth = MediaQuery.sizeOf(context).width;
     final cardWidth = HomeSectionCardLayout.compactCardWidth(viewportWidth);
     final sectionHeight = HomeSectionCardLayout.compactSectionHeight(
@@ -39,8 +41,11 @@ class RecommendedSection extends StatelessWidget {
                 onActionTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => RecommendedProductsPage(
-                        title: locale.section_recommended,
+                      builder: (_) => BlocProvider.value(
+                        value: globalCubit,
+                        child: RecommendedProductsPage(
+                          title: locale.section_recommended,
+                        ),
                       ),
                     ),
                   );
@@ -86,8 +91,11 @@ class RecommendedSection extends StatelessWidget {
               onActionTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => RecommendedProductsPage(
-                      title: locale.section_recommended,
+                    builder: (_) => BlocProvider.value(
+                      value: globalCubit,
+                      child: RecommendedProductsPage(
+                        title: locale.section_recommended,
+                      ),
                     ),
                   ),
                 );

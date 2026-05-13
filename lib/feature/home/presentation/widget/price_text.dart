@@ -44,7 +44,7 @@ class PriceText extends StatelessWidget {
       decorationThickness: 1.2,
       color: AppColors.textHint,
       fontSize: (compact ? 11 : 12) * fontScale,
-      height: 1,
+      height: compact ? 0.92 : 1,
     );
     final currencyLabel = unit ?? locale.currency;
 
@@ -60,7 +60,7 @@ class PriceText extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (oldPrice != null) ...[
-                SizedBox(height: compact ? 0.5 : 1),
+                SizedBox(height: compact ? 0 : 1),
                 Text(
                   '${PriceFormatter.formatPrice(oldPrice!)} $currencyLabel',
                   style: oldPriceStyle,

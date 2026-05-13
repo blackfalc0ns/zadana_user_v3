@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/best_selling/presentation/pages/best_selling_products_page.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
@@ -20,6 +21,7 @@ class BestSellingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
+    final globalCubit = context.read<AppSectionGlobalCubit>();
     final viewportWidth = MediaQuery.sizeOf(context).width;
     final cardWidth = HomeSectionCardLayout.classicCardWidth(viewportWidth);
     final sectionHeight = HomeSectionCardLayout.classicSectionHeight(
@@ -39,8 +41,11 @@ class BestSellingSection extends StatelessWidget {
                 onActionTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => BestSellingProductsPage(
-                        title: locale.section_best_selling,
+                      builder: (_) => BlocProvider.value(
+                        value: globalCubit,
+                        child: BestSellingProductsPage(
+                          title: locale.section_best_selling,
+                        ),
                       ),
                     ),
                   );
@@ -86,8 +91,11 @@ class BestSellingSection extends StatelessWidget {
               onActionTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => BestSellingProductsPage(
-                      title: locale.section_best_selling,
+                    builder: (_) => BlocProvider.value(
+                      value: globalCubit,
+                      child: BestSellingProductsPage(
+                        title: locale.section_best_selling,
+                      ),
                     ),
                   ),
                 );
