@@ -31,10 +31,20 @@ class CustomFilterChip extends StatelessWidget {
   final Color? borderColor;
   final TextStyle? textStyle;
 
+  String? _normalizedImageUrl() {
+    final rawUrl = imageUrl?.trim();
+    if (rawUrl == null || rawUrl.isEmpty) {
+      return null;
+    }
+
+    return Uri.encodeFull(rawUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
+    final normalizedImageUrl = _normalizedImageUrl();
+    final hasImage = normalizedImageUrl != null;
     final shouldShowFallbackImage = !hasImage && icon == null;
 
     Widget fallbackImage() {
@@ -57,8 +67,8 @@ class CustomFilterChip extends StatelessWidget {
           vertical: Spacing.xs,
         ),
         decoration: BoxDecoration(
-         border: Border.all(color: AppColors.lightGrey),
-        
+          border: Border.all(color: AppColors.lightGrey),
+
           color: isSelected
               ? (selectedColor ?? color.primary)
               : (backgroundColor ?? AppColors.white),
@@ -71,15 +81,23 @@ class CustomFilterChip extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(999),
                 child: CachedNetworkImage(
-                  imageUrl: imageUrl!.trim(),
-                  width: 18,
-                  height: 18,
+                  imageUrl: normalizedImageUrl,
+                  width: 30,
+                  height: 30,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Image.asset(
-                    Assets.notFound,
-                    width: 18,
-                    height: 18,
-                    fit: BoxFit.cover,
+                  placeholder: (context, url) => SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Center(
+                      child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: color.primary,
+                        ),
+                      ),
+                    ),
                   ),
                   errorWidget: (context, url, error) => Image.asset(
                     Assets.notFound,

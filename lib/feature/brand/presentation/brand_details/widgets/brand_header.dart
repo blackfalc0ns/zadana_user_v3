@@ -80,7 +80,7 @@ class BrandHeader extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      fit: BoxFit.cover,
+     fit: BoxFit.fill,
       placeholder: (context, url) => Container(color: const Color(0xFFF3EEE8)),
       errorWidget: (context, url, error) =>
           Image.asset(Assets.notFound, fit: BoxFit.cover),
@@ -132,23 +132,20 @@ class BrandHeader extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: brand.logo.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(10),
-                child: CachedNetworkImage(
-                  imageUrl: brand.logo,
-                  fit: BoxFit.contain,
-                  placeholder: (context, url) => Center(
-                    child: SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.primary.withValues(alpha: 0.7),
-                      ),
+            ? CachedNetworkImage(
+                imageUrl: brand.logo,
+
+                placeholder: (context, url) => Center(
+                  child: SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.primary.withValues(alpha: 0.7),
                     ),
                   ),
-                  errorWidget: (context, url, error) => fallbackLogo(),
                 ),
+                errorWidget: (context, url, error) => fallbackLogo(),
               )
             : fallbackLogo(),
       ),

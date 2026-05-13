@@ -113,7 +113,6 @@ class _HomeCategoryItem extends StatelessWidget {
               child: ClipOval(
                 child: CachedNetworkImage(
                   imageUrl: category.imageUrl,
-                  fit: BoxFit.cover,
                   placeholder: (_, _) =>
                       Container(color: color.surfaceContainerHighest),
                   errorWidget: (_, _, _) => Image.asset(

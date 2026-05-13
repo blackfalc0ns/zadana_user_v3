@@ -41,6 +41,7 @@ class SubCategoryChips extends StatelessWidget {
           final subCategory = subCategories[index];
           return CategoryChip(
             label: subCategory.name ?? '',
+            imageUrl: subCategory.imageUrl,
             emoji: '',
             isSelected: subCategory.id == selectedSubCategoryId,
             onTap: () => onSubCategorySelected(subCategory),

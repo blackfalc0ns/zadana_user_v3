@@ -8,12 +8,14 @@ class CategoryChip extends StatelessWidget {
   const CategoryChip({
     super.key,
     required this.label,
+    this.imageUrl,
     required this.emoji,
     required this.isSelected,
     this.onTap,
   });
 
   final String label;
+  final String? imageUrl;
   final String emoji;
   final bool isSelected;
   final VoidCallback? onTap;
@@ -24,6 +26,7 @@ class CategoryChip extends StatelessWidget {
 
     return CustomFilterChip(
       label: label,
+      imageUrl: imageUrl,
       icon: emoji.isEmpty ? null : emoji,
       isSelected: isSelected,
       onTap: onTap ?? () {},

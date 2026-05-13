@@ -51,14 +51,14 @@ class BrandCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: imageSize,
                 height: imageSize,
-                decoration: BoxDecoration(
-                  color: color.primaryContainer.withValues(alpha: 0.55),
-                  shape: BoxShape.circle,
-                ),
-                clipBehavior: Clip.antiAlias,
+                // decoration: BoxDecoration(
+                 
+                //   shape: BoxShape.circle,
+                // ),
+                // clipBehavior: Clip.antiAlias,
                 child: _BrandImage(imageUrl: imageUrl, emoji: emoji),
               ),
               SizedBox(height: imageSpacing),
@@ -97,7 +97,7 @@ class _BrandImage extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: imageUrl,
       fit: BoxFit.cover,
-      fadeInDuration: const Duration(milliseconds: 180),
+
       placeholder: (context, url) =>
           Container(color: color.primaryContainer.withValues(alpha: 0.45)),
       errorWidget: (context, url, error) =>
