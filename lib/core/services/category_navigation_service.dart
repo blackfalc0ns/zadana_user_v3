@@ -15,6 +15,7 @@ class CategoryNavigationService extends ChangeNotifier {
   CategoryEntity? _selectedCategory;
   String? _selectedSubCategoryId;
   String? _selectedSubCategoryName;
+  bool _preferCategoryIdForSubCategorySelection = false;
   bool _shouldResetToDefault = false;
   bool _shouldOpenSearch = false;
   bool _hasPendingExternalSelection = false;
@@ -23,6 +24,8 @@ class CategoryNavigationService extends ChangeNotifier {
   CategoryEntity? get selectedCategory => _selectedCategory;
   String? get selectedSubCategoryId => _selectedSubCategoryId;
   String? get selectedSubCategoryName => _selectedSubCategoryName;
+  bool get preferCategoryIdForSubCategorySelection =>
+      _preferCategoryIdForSubCategorySelection;
   bool get hasPendingSearchRequest => _shouldOpenSearch;
 
   bool consumePendingExternalSelection() {
@@ -42,13 +45,18 @@ class CategoryNavigationService extends ChangeNotifier {
     _selectedCategory = category;
     _selectedSubCategoryId = null;
     _selectedSubCategoryName = null;
+    _preferCategoryIdForSubCategorySelection = false;
     _shouldResetToDefault = false;
     _hasPendingExternalSelection = true;
     notifyListeners();
   }
 
   /// Update the selected shopping subcategory.
-  void setSelectedSubCategory({String? id, String? name}) {
+  void setSelectedSubCategory({
+    String? id,
+    String? name,
+    bool preferCategoryId = false,
+  }) {
     final normalizedId = id?.trim();
     final normalizedName = name?.trim();
     if ((normalizedId == null || normalizedId.isEmpty) &&
@@ -63,6 +71,7 @@ class CategoryNavigationService extends ChangeNotifier {
     _selectedSubCategoryName = normalizedName == null || normalizedName.isEmpty
         ? null
         : normalizedName;
+    _preferCategoryIdForSubCategorySelection = preferCategoryId;
     _shouldResetToDefault = false;
     _hasPendingExternalSelection = true;
     notifyListeners();
@@ -73,6 +82,7 @@ class CategoryNavigationService extends ChangeNotifier {
     _selectedCategory = null;
     _selectedSubCategoryId = null;
     _selectedSubCategoryName = null;
+    _preferCategoryIdForSubCategorySelection = false;
     notifyListeners();
   }
 

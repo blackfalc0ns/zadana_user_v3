@@ -65,6 +65,7 @@ class CategoryState {
     this.selectedPartId,
     this.isCategoryPreselectedFromOutside = false,
     this.showAllSubCategories = false,
+    this.preferCategoryIdForShoppingSelection = false,
     this.subCategoryCategoryMap = const {},
     this.isLoading = true,
     this.isSubCategoriesLoading = false,
@@ -102,6 +103,7 @@ class CategoryState {
   final String? selectedPartId;
   final bool isCategoryPreselectedFromOutside;
   final bool showAllSubCategories;
+  final bool preferCategoryIdForShoppingSelection;
   final Map<String, String> subCategoryCategoryMap;
   final bool isLoading;
   final bool isSubCategoriesLoading;
@@ -147,7 +149,8 @@ class CategoryState {
       .toList(growable: false);
 
   bool get hasActivePriceFilter =>
-      priceRange.start != priceBounds.start || priceRange.end != priceBounds.end;
+      priceRange.start != priceBounds.start ||
+      priceRange.end != priceBounds.end;
 
   bool get hasActiveCategoryFilter =>
       !isCategoryPreselectedFromOutside &&
@@ -193,6 +196,7 @@ class CategoryState {
     Object? selectedPartId = _unset,
     bool? isCategoryPreselectedFromOutside,
     bool? showAllSubCategories,
+    bool? preferCategoryIdForShoppingSelection,
     Map<String, String>? subCategoryCategoryMap,
     bool? isLoading,
     bool? isSubCategoriesLoading,
@@ -254,6 +258,9 @@ class CategoryState {
           isCategoryPreselectedFromOutside ??
           this.isCategoryPreselectedFromOutside,
       showAllSubCategories: showAllSubCategories ?? this.showAllSubCategories,
+      preferCategoryIdForShoppingSelection:
+          preferCategoryIdForShoppingSelection ??
+          this.preferCategoryIdForShoppingSelection,
       subCategoryCategoryMap:
           subCategoryCategoryMap ?? this.subCategoryCategoryMap,
       isLoading: isLoading ?? this.isLoading,
@@ -330,6 +337,7 @@ class CategoryState {
     priceRange: const RangeValues(0, 1000),
     isCategoryPreselectedFromOutside: fromOutside,
     showAllSubCategories: showAllSubCategories,
+    preferCategoryIdForShoppingSelection: false,
     isLoading: true,
     isSubCategoriesLoading: true,
     errorMessage: null,
@@ -362,9 +370,11 @@ class CategoryState {
   CategoryState selectSubCategory({
     required String? subCategoryId,
     required String? subCategoryName,
+    bool? preferCategoryIdForShoppingSelection,
   }) => copyWith(
     selectedSubCategoryId: subCategoryId,
     selectedSubCategory: subCategoryName,
+    preferCategoryIdForShoppingSelection: preferCategoryIdForShoppingSelection,
   );
 
   CategoryState applyFilterSelection({
@@ -419,7 +429,8 @@ class CategoryState {
     sortOptions: data.sortOptions,
     priceBounds: data.priceBounds,
     priceRange: data.priceBounds,
-    subCategoryCategoryMap: subCategoryCategoryMap ?? this.subCategoryCategoryMap,
+    subCategoryCategoryMap:
+        subCategoryCategoryMap ?? this.subCategoryCategoryMap,
     isSubCategoriesLoading: false,
   );
 
@@ -427,6 +438,7 @@ class CategoryState {
     required CategoryEntity category,
     required String subCategoryId,
     required String? subCategoryName,
+    bool preferCategoryIdForShoppingSelection = false,
   }) => copyWith(
     selectedCategory: category.name,
     selectedCategoryId: category.id,
@@ -446,42 +458,45 @@ class CategoryState {
     errorMessage: null,
     failure: null,
     retryAction: CategoryRetryAction.loadFiltersAndProducts,
+    preferCategoryIdForShoppingSelection: preferCategoryIdForShoppingSelection,
   );
 
-  CategoryState startDefaultShoppingView(List<CategoryEntity> value) => copyWith(
-    categories: value,
-    selectedCategory: '',
-    selectedSortOption: '',
-    selectedCategoryId: null,
-    selectedSubCategory: null,
-    selectedSubCategoryId: null,
-    subCategories: const [],
-    subCategoryCategoryMap: const {},
-    products: const [],
-    quantityOptions: const [],
-    brandOptions: const [],
-    productTypeOptions: const [],
-    partOptions: const [],
-    sortOptions: const [],
-    filterSelectedCategory: null,
-    filterSelectedQuantity: null,
-    filterSelectedBrand: null,
-    filterSelectedProductType: null,
-    filterSelectedPart: null,
-    selectedQuantityId: null,
-    selectedBrandId: null,
-    selectedProductTypeId: null,
-    selectedPartId: null,
-    isCategoryPreselectedFromOutside: false,
-    showAllSubCategories: true,
-    priceBounds: const RangeValues(0, 1000),
-    priceRange: const RangeValues(0, 1000),
-    isLoading: true,
-    isSubCategoriesLoading: true,
-    errorMessage: null,
-    failure: null,
-    retryAction: CategoryRetryAction.initialLoad,
-  );
+  CategoryState startDefaultShoppingView(List<CategoryEntity> value) =>
+      copyWith(
+        categories: value,
+        selectedCategory: '',
+        selectedSortOption: '',
+        selectedCategoryId: null,
+        selectedSubCategory: null,
+        selectedSubCategoryId: null,
+        subCategories: const [],
+        subCategoryCategoryMap: const {},
+        products: const [],
+        quantityOptions: const [],
+        brandOptions: const [],
+        productTypeOptions: const [],
+        partOptions: const [],
+        sortOptions: const [],
+        filterSelectedCategory: null,
+        filterSelectedQuantity: null,
+        filterSelectedBrand: null,
+        filterSelectedProductType: null,
+        filterSelectedPart: null,
+        selectedQuantityId: null,
+        selectedBrandId: null,
+        selectedProductTypeId: null,
+        selectedPartId: null,
+        isCategoryPreselectedFromOutside: false,
+        showAllSubCategories: true,
+        preferCategoryIdForShoppingSelection: false,
+        priceBounds: const RangeValues(0, 1000),
+        priceRange: const RangeValues(0, 1000),
+        isLoading: true,
+        isSubCategoriesLoading: true,
+        errorMessage: null,
+        failure: null,
+        retryAction: CategoryRetryAction.initialLoad,
+      );
 
   CategoryState loadedShoppingSubCategories(ShoppingSubCategoriesData data) =>
       copyWith(

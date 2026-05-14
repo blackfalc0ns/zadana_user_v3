@@ -99,7 +99,7 @@ class CustomVerticalFilterChip extends StatelessWidget {
                       imageUrl: imageUrl!.trim(),
                       width: imageSize,
                       height: imageSize,
-                      fit: BoxFit.cover,
+                      //fit: BoxFit.cover,
                       placeholder: (context, url) => Image.asset(
                         Assets.notFound,
                         width: imageSize,

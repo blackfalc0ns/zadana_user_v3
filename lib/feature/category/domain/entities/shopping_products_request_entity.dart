@@ -1,6 +1,7 @@
 class ShoppingProductsRequestEntity {
   const ShoppingProductsRequestEntity({
     this.categoryId,
+    this.subCategoryId,
     this.productTypeId,
     this.partId,
     this.quantityId,
@@ -13,6 +14,7 @@ class ShoppingProductsRequestEntity {
   });
 
   final String? categoryId;
+  final String? subCategoryId;
   final String? productTypeId;
   final String? partId;
   final String? quantityId;

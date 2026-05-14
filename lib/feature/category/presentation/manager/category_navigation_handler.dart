@@ -31,6 +31,8 @@ class CategoryNavigationHandler {
     return ExternalSubCategorySelection(
       subCategoryId: subCategoryId,
       subCategoryName: subCategoryName,
+      preferCategoryId:
+          _navigationService.preferCategoryIdForSubCategorySelection,
     );
   }
 
@@ -46,10 +48,7 @@ class CategoryNavigationHandler {
     );
   }
 
-  String? resolveTargetCategoryId(
-    CategoryState state,
-    String? subCategoryId,
-  ) {
+  String? resolveTargetCategoryId(CategoryState state, String? subCategoryId) {
     return resolveCategoryIdForSubCategory(
       showAllSubCategories: state.showAllSubCategories,
       subCategoryCategoryMap: state.subCategoryCategoryMap,
@@ -71,10 +70,12 @@ class ExternalSubCategorySelection {
   const ExternalSubCategorySelection({
     required this.subCategoryId,
     required this.subCategoryName,
+    required this.preferCategoryId,
   });
 
   final String? subCategoryId;
   final String? subCategoryName;
+  final bool preferCategoryId;
 }
 
 CategoryEntity? resolveRequestedCategoryHelper(

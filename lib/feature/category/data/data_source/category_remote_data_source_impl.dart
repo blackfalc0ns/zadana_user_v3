@@ -53,8 +53,12 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   Future<CategoryProductsResponseModelDto> getShoppingProducts(
     ShoppingProductsRequestEntity request,
   ) {
+    final hasCategoryId =
+        request.categoryId != null && request.categoryId!.trim().isNotEmpty;
+    final categoryId = hasCategoryId ? request.categoryId!.trim() : null;
+
     return _apiServices.getShoppingProducts(
-      request.categoryId,
+      categoryId,
       request.productTypeId,
       request.partId,
       request.quantityId,

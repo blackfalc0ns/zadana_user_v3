@@ -468,7 +468,7 @@ class _ApiServices implements ApiServices {
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'categoryId': categoryId,
+      r'category_Id': categoryId,
       r'product_type_id': productTypeId,
       r'part_id': partId,
       r'quantity_id': quantityId,

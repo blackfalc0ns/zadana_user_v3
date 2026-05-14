@@ -116,6 +116,7 @@ class _DynamicSectionBlock extends StatelessWidget {
             CategoryNavigationService().setSelectedSubCategory(
               id: section.key,
               name: section.title,
+              preferCategoryId: true,
             );
             openShoppingTab();
           },

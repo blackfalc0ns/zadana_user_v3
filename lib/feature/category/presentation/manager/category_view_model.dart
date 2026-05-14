@@ -160,6 +160,8 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _selectShoppingSubCategory(
         subCategoryId: nextSelection.id!,
         subCategoryName: nextSelection.name,
+        preferCategoryIdForShoppingSelection:
+            state.preferCategoryIdForShoppingSelection,
       );
       return;
     }
@@ -304,6 +306,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _applyExternalSubCategorySelection(
         subCategoryId: requestedSubCategory.subCategoryId,
         subCategoryName: requestedSubCategory.subCategoryName,
+        preferCategoryId: requestedSubCategory.preferCategoryId,
       );
       _navigationHandler.clearSelectedCategory();
       return;
@@ -342,6 +345,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _applyExternalSubCategorySelection(
         subCategoryId: requestedSubCategory.subCategoryId,
         subCategoryName: requestedSubCategory.subCategoryName,
+        preferCategoryId: requestedSubCategory.preferCategoryId,
       );
       _navigationHandler.clearSelectedCategory();
       return;
@@ -384,6 +388,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
   Future<void> _applyExternalSubCategorySelection({
     String? subCategoryId,
     String? subCategoryName,
+    bool preferCategoryId = false,
   }) async {
     if (state.categories.isEmpty) {
       return;
@@ -403,6 +408,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
       await _selectShoppingSubCategory(
         subCategoryId: resolvedSubCategoryId,
         subCategoryName: requestedSubCategory?.name,
+        preferCategoryIdForShoppingSelection: preferCategoryId,
       );
       return;
     }
@@ -419,6 +425,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
             category: result.category,
             subCategoryId: result.subCategory.id!,
             subCategoryName: result.subCategory.name,
+            preferCategoryIdForShoppingSelection: preferCategoryId,
           ),
         );
         _emitCategoryFilters(
@@ -430,6 +437,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
           state.selectSubCategory(
             subCategoryId: result.subCategory.id,
             subCategoryName: result.subCategory.name,
+            preferCategoryIdForShoppingSelection: preferCategoryId,
           ),
         );
         await loadCategoryProducts(
@@ -446,7 +454,11 @@ class CategoryViewModel extends Cubit<CategoryState> {
   Future<void> _selectShoppingSubCategory({
     required String subCategoryId,
     required String? subCategoryName,
+    bool? preferCategoryIdForShoppingSelection,
   }) async {
+    final shouldPreferCategoryId =
+        preferCategoryIdForShoppingSelection ??
+        state.preferCategoryIdForShoppingSelection;
     final targetCategoryId = _navigationHandler.resolveTargetCategoryId(
       state,
       subCategoryId,
@@ -457,6 +469,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
         state.selectSubCategory(
           subCategoryId: subCategoryId,
           subCategoryName: subCategoryName,
+          preferCategoryIdForShoppingSelection: shouldPreferCategoryId,
         ),
       );
       await loadCategoryProducts(overrideSubCategoryId: subCategoryId);
@@ -476,6 +489,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
         category: category,
         subCategoryId: subCategoryId,
         subCategoryName: subCategoryName,
+        preferCategoryIdForShoppingSelection: shouldPreferCategoryId,
       ),
     );
 
@@ -495,6 +509,7 @@ class CategoryViewModel extends Cubit<CategoryState> {
           state.selectSubCategory(
             subCategoryId: subCategoryId,
             subCategoryName: subCategoryName,
+            preferCategoryIdForShoppingSelection: shouldPreferCategoryId,
           ),
         );
         await loadCategoryProducts(

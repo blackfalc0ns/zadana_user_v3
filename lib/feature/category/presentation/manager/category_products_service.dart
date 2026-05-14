@@ -32,6 +32,7 @@ class CategoryProductsService {
           subCategoryId: subCategoryId,
           overrideCategoryId: overrideCategoryId,
         ),
+        subCategoryId: subCategoryId,
       );
     }
 
@@ -43,6 +44,7 @@ class CategoryProductsService {
           subCategoryId: subCategoryId,
           overrideCategoryId: overrideCategoryId,
         ),
+        subCategoryId: subCategoryId,
       );
     }
 
@@ -77,7 +79,9 @@ class CategoryProductsService {
         brandId: state.selectedBrandId,
         minPrice: state.priceRange.start,
         maxPrice: state.priceRange.end,
-        sort: state.selectedSortOption.isEmpty ? null : state.selectedSortOption,
+        sort: state.selectedSortOption.isEmpty
+            ? null
+            : state.selectedSortOption,
       ),
     );
   }
@@ -85,19 +89,32 @@ class CategoryProductsService {
   Future<ApiResult<List<ProductModel>>> _loadShoppingProducts(
     CategoryState state, {
     String? categoryId,
+    String? subCategoryId,
   }) {
     final hasPriceFilter = state.priceRange != state.priceBounds;
+    final requestCategoryId =
+        state.preferCategoryIdForShoppingSelection &&
+            subCategoryId != null &&
+            subCategoryId.isNotEmpty
+        ? subCategoryId
+        : categoryId;
+    final requestSubCategoryId = state.preferCategoryIdForShoppingSelection
+        ? null
+        : subCategoryId;
 
     return _getShoppingProductsUseCase(
       ShoppingProductsRequestEntity(
-        categoryId: categoryId,
+        categoryId: requestCategoryId,
+        subCategoryId: requestSubCategoryId,
         productTypeId: state.selectedProductTypeId,
         partId: state.selectedPartId,
         quantityId: state.selectedQuantityId,
         brandId: state.selectedBrandId,
         minPrice: hasPriceFilter ? state.priceRange.start : null,
         maxPrice: hasPriceFilter ? state.priceRange.end : null,
-        sort: state.selectedSortOption.isEmpty ? null : state.selectedSortOption,
+        sort: state.selectedSortOption.isEmpty
+            ? null
+            : state.selectedSortOption,
       ),
     );
   }

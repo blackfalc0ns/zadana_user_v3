@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
+import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
@@ -94,9 +96,10 @@ class _CustomFilterBottomSheetState extends State<CustomFilterBottomSheet> {
                             onPressed: widget.onClearAll,
                             child: Text(
                               resolvedClearAllLabel,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: color.primary,
-                                fontWeight: FontWeight.w600,
+                              style: getRegularStyle(
+                                fontFamily: FontConstant.cairo,
+                                color: color.error,
+                                fontSize: FontSize.size14,
                               ),
                             ),
                           ),
