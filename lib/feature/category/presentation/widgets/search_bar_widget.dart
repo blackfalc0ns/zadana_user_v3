@@ -155,7 +155,7 @@ class SearchBarWidget extends StatelessWidget {
                 minWidth: isFilterDestructive ? 88 : 48,
                 minHeight: 48,
               ),
-              margin: const EdgeInsets.only(right: 8),
+              margin: const EdgeInsetsDirectional.only(start: 8),
               decoration: BoxDecoration(
                 color: actionColor,
                 borderRadius: BorderRadius.circular(12),
@@ -176,12 +176,18 @@ class SearchBarWidget extends StatelessWidget {
                     ),
                     child: isFilterDestructive
                         ? Center(
-                            child: Text(
-                              filterTooltip ?? locale.delete_category_tooltip,
-                              style: getRegularStyle(
-                                fontSize: FontSize.size14,
-                                fontFamily: FontConstant.cairo,
-                                color: color.onPrimary,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                filterTooltip ??
+                                    locale.delete_category_tooltip,
+                                style: getRegularStyle(
+                                  fontSize: FontSize.size14,
+                                  fontFamily: FontConstant.cairo,
+                                  color: color.onPrimary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           )

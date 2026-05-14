@@ -6,13 +6,14 @@ import 'package:zadana_user_v3/feature/category/domain/entities/shopping_product
 import 'package:zadana_user_v3/feature/home/data/models/categories/home_categories_response_model_dto.dart';
 
 abstract class CategoryRemoteDataSource {
-  Future<HomeCategoriesResponseModelDto> getCategories();
+  Future<HomeCategoriesResponseModelDto> getCategories({int? take});
 
   Future<CategoryFiltersResponseModelDto> getCategoryFilters(String categoryId);
 
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
-    String? categoryId,
-  );
+    String? categoryId, {
+    int? limit,
+  });
 
   Future<CategoryProductsResponseModelDto> getCategoryProducts(
     CategoryProductsRequestEntity request,

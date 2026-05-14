@@ -1,5 +1,6 @@
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_products_request_entity.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/paginated_products_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/shopping_products_request_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_products_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_shopping_products_usecase.dart';
@@ -61,6 +62,29 @@ class CategoryProductsService {
     );
   }
 
+  Future<ApiResult<PaginatedProductsEntity>> loadProductsPaginated({
+    required CategoryState state,
+    required int page,
+    int perPage = 20,
+    String? overrideSubCategoryId,
+    String? overrideCategoryId,
+  }) {
+    final subCategoryId = overrideSubCategoryId ?? state.selectedSubCategoryId;
+    final categoryId = resolveCategoryIdForProducts(
+      state: state,
+      subCategoryId: subCategoryId,
+      overrideCategoryId: overrideCategoryId,
+    );
+
+    return _loadShoppingProductsPaginated(
+      state,
+      categoryId: categoryId,
+      subCategoryId: subCategoryId,
+      page: page,
+      perPage: perPage,
+    );
+  }
+
   String? resolveCategoryIdForProducts({
     required CategoryState state,
     required String? subCategoryId,
@@ -105,15 +129,10 @@ class CategoryProductsService {
   }) {
     final hasPriceFilter = state.priceRange != state.priceBounds;
 
-    // categoryId = the parent category (goes as categoryId query param)
-    // subCategoryId = the selected subcategory (goes as subcategory_id query param)
     final String? requestCategoryId;
     final String? requestSubCategoryId;
 
     if (subCategoryId != null && subCategoryId.isNotEmpty) {
-      // When a subcategory is selected, resolve the parent categoryId.
-      // Use the provided categoryId, or look it up from the map, or fall back
-      // to the currently selected category.
       requestCategoryId = categoryId ??
           state.subCategoryCategoryMap[subCategoryId] ??
           state.selectedCategoryId;
@@ -136,6 +155,47 @@ class CategoryProductsService {
         sort: state.selectedSortOption.isEmpty
             ? null
             : state.selectedSortOption,
+      ),
+    );
+  }
+
+  Future<ApiResult<PaginatedProductsEntity>> _loadShoppingProductsPaginated(
+    CategoryState state, {
+    String? categoryId,
+    String? subCategoryId,
+    required int page,
+    required int perPage,
+  }) {
+    final hasPriceFilter = state.priceRange != state.priceBounds;
+
+    final String? requestCategoryId;
+    final String? requestSubCategoryId;
+
+    if (subCategoryId != null && subCategoryId.isNotEmpty) {
+      requestCategoryId = categoryId ??
+          state.subCategoryCategoryMap[subCategoryId] ??
+          state.selectedCategoryId;
+      requestSubCategoryId = subCategoryId;
+    } else {
+      requestCategoryId = categoryId;
+      requestSubCategoryId = null;
+    }
+
+    return _getShoppingProductsUseCase.callPaginated(
+      ShoppingProductsRequestEntity(
+        categoryId: requestCategoryId,
+        subCategoryId: requestSubCategoryId,
+        productTypeId: state.selectedProductTypeId,
+        partId: state.selectedPartId,
+        quantityId: state.selectedQuantityId,
+        brandId: state.selectedBrandId,
+        minPrice: hasPriceFilter ? state.priceRange.start : null,
+        maxPrice: hasPriceFilter ? state.priceRange.end : null,
+        sort: state.selectedSortOption.isEmpty
+            ? null
+            : state.selectedSortOption,
+        page: page,
+        perPage: perPage,
       ),
     );
   }

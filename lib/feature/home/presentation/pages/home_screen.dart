@@ -151,12 +151,14 @@ class _HomeScreenView extends StatelessWidget {
   Future<void> _openNotifications(BuildContext context) async {
     await Navigator.of(context).pushNamed(AppRoutes.notifications);
     if (!context.mounted) return;
-    context.read<HomeViewModel>().doIntent(const HomeLoadEvent());
+    // Only refresh the app bar (notification count) instead of reloading everything
+    context.read<HomeViewModel>().doIntent(const HomeAppBarLoadEvent());
   }
 
   Future<void> _openCustomerAddresses(BuildContext context) async {
     await Navigator.of(context).pushNamed(AppRoutes.customerAddresses);
     if (!context.mounted) return;
-    context.read<HomeViewModel>().doIntent(const HomeLoadEvent());
+    // Only refresh the app bar (location) instead of reloading everything
+    context.read<HomeViewModel>().doIntent(const HomeAppBarLoadEvent());
   }
 }

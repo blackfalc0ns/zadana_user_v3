@@ -14,7 +14,7 @@ import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
-import 'package:zadana_user_v3/feature/category/presentation/manager/category_cubit.dart';
+import 'package:zadana_user_v3/feature/category/presentation/manager/category_view_model.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/presentation/manager/favorites_view_model.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';

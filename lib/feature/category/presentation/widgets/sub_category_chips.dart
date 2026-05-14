@@ -13,40 +13,68 @@ class SubCategoryChips extends StatelessWidget {
     required this.selectedSubCategoryId,
     required this.onSubCategorySelected,
     this.isLoading = false,
+    this.isLoadingMore = false,
+    this.hasMore = false,
+    this.onLoadMore,
   });
 
   final List<CategorySubcategoryItemDto> subCategories;
   final String? selectedSubCategoryId;
   final ValueChanged<CategorySubcategoryItemDto> onSubCategorySelected;
   final bool isLoading;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final VoidCallback? onLoadMore;
 
   @override
   Widget build(BuildContext context) {
-    return _buildContent();
-  }
-
-  Widget _buildContent() {
     if (isLoading) {
       return const _SubCategoryChipsSkeleton();
     }
 
     return SizedBox(
       height: 40,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(left: Spacing.xs, right: Spacing.md),
-        itemCount: subCategories.length,
-        separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
-        itemBuilder: (context, index) {
-          final subCategory = subCategories[index];
-          return CategoryChip(
-            label: subCategory.name ?? '',
-            imageUrl: subCategory.imageUrl,
-            emoji: '',
-            isSelected: subCategory.id == selectedSubCategoryId,
-            onTap: () => onSubCategorySelected(subCategory),
-          );
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification is ScrollEndNotification &&
+              hasMore &&
+              !isLoadingMore &&
+              onLoadMore != null) {
+            final metrics = notification.metrics;
+            if (metrics.extentAfter < 100) {
+              onLoadMore!();
+            }
+          }
+          return false;
         },
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.only(left: Spacing.xs, right: Spacing.md),
+          itemCount: subCategories.length + (isLoadingMore ? 1 : 0),
+          separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
+          itemBuilder: (context, index) {
+            if (index >= subCategories.length) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            }
+            final subCategory = subCategories[index];
+            return CategoryChip(
+              label: subCategory.name ?? '',
+              imageUrl: subCategory.imageUrl,
+              emoji: '',
+              isSelected: subCategory.id == selectedSubCategoryId,
+              onTap: () => onSubCategorySelected(subCategory),
+            );
+          },
+        ),
       ),
     );
   }

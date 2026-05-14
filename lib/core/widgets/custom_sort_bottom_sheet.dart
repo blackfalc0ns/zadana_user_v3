@@ -77,76 +77,74 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
       ),
     );
 
-    return SafeArea(
-      top: false,
-      child: Container(
-        constraints: BoxConstraints(
-          maxHeight: screenHeight * 0.58,
-          minHeight: screenHeight * 0.36,
-        ),
-        decoration: BoxDecoration(
-          color: color.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(Spacing.xxl),
-              width: 42,
-              height: 4,
-              decoration: BoxDecoration(
-                color: color.outlineVariant,
-                borderRadius: BorderRadius.circular(999),
-              ),
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: screenHeight * 0.58,
+        minHeight: screenHeight * 0.36,
+      ),
+      decoration: BoxDecoration(
+        color: color.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: Spacing.sm),
+          Container(
+            width: 42,
+            height: 4,
+            decoration: BoxDecoration(
+              color: color.outlineVariant,
+              borderRadius: BorderRadius.circular(999),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(Spacing.lg, 14, Spacing.lg, 6),
-              child: Row(
-                children: [
-                  if (!isRtl) endAction else startAction,
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      resolvedTitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.h3.copyWith(
-                        color: color.onSurface,
-                        fontWeight: FontWeight.w700,
-                      ),
+          ),
+          const SizedBox(height: Spacing.md),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(Spacing.lg, 0, Spacing.lg, 6),
+            child: Row(
+              children: [
+                if (!isRtl) endAction else startAction,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    resolvedTitle,
+                    textAlign: TextAlign.center,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size15,
                     ),
                   ),
-                  if (!isRtl) startAction else endAction,
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.fromLTRB(
-                  Spacing.xl,
-                  8,
-                  Spacing.xl,
-                  bottomInset + Spacing.lg,
                 ),
-                itemCount: widget.sortOptions.length,
-                itemBuilder: (context, index) {
-                  final option = widget.sortOptions[index];
-                  final isSelected = selectedOption == option['value'];
-
-                  return CustomSortOptionItem(
-                    title: option['title'] ?? '',
-                    subtitle: option['subtitle'],
-                    isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        selectedOption = option['value'];
-                      });
-                    },
-                  );
-                },
-              ),
+                if (!isRtl) startAction else endAction,
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.fromLTRB(
+                Spacing.xl,
+                8,
+                Spacing.xl,
+                bottomInset + Spacing.lg,
+              ),
+              itemCount: widget.sortOptions.length,
+              itemBuilder: (context, index) {
+                final option = widget.sortOptions[index];
+                final isSelected = selectedOption == option['value'];
+
+                return CustomSortOptionItem(
+                  title: option['title'] ?? '',
+                  subtitle: option['subtitle'],
+                  isSelected: isSelected,
+                  onTap: () {
+                    setState(() {
+                      selectedOption = option['value'];
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

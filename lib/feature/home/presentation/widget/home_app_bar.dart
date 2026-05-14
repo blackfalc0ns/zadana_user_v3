@@ -58,27 +58,31 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    _ActionButton(icon: Icons.menu_rounded, onTap: onMenuTap),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _LocationCard(
-                        deliverToLabel: locale.deliver_to,
-                        location: homeResponse?.location.isNotEmpty == true
-                            ? homeResponse!.location
-                            : locale.location,
-                        addressLine: homeResponse?.addressLine ?? '',
-                        onTap: onLocationTap,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm),
+                  child: Row(
+                    children: [
+                      _ActionButton(icon: Icons.menu_rounded, onTap: onMenuTap),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _LocationCard(
+                          deliverToLabel: locale.deliver_to,
+                          location: homeResponse?.location.isNotEmpty == true
+                              ? homeResponse!.location
+                              : locale.location,
+                          addressLine: homeResponse?.addressLine ?? '',
+                          onTap: onLocationTap,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: Spacing.md),
-                    _ActionButton(
-                      notificationCount: homeResponse?.notificationsCount ?? 0,
-                      onTap: onNotificationsTap,
-                      isPrimary: true,
-                    ),
-                  ],
+                      const SizedBox(width: Spacing.md),
+                      _ActionButton(
+                        notificationCount:
+                            homeResponse?.notificationsCount ?? 0,
+                        onTap: onNotificationsTap,
+                        isPrimary: true,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 2),
                 HomeSearchBar(
@@ -139,17 +143,10 @@ class _ActionButton extends StatelessWidget {
                 : null,
             color: isPrimary ? null : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: color.shadow.withValues(alpha: isPrimary ? 0.12 : 0.06),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: isPrimary
               ? Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(5),
                   child: Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.topRight,

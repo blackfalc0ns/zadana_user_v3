@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/paginated_products_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_categories_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_filters_usecase.dart';
 import 'package:zadana_user_v3/feature/category/domain/usecase/get_category_products_usecase.dart';
@@ -19,7 +20,6 @@ import 'package:zadana_user_v3/feature/category/presentation/manager/category_lo
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_navigation_handler.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_products_service.dart';
 import 'package:zadana_user_v3/feature/category/presentation/manager/category_state.dart';
-import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 @injectable
 class CategoryViewModel extends Cubit<CategoryState> {
@@ -88,6 +88,12 @@ class CategoryViewModel extends Cubit<CategoryState> {
         unawaited(retry());
       case CategorySetActiveHeroProductEvent():
         emit(state.copyWith(activeHeroProductId: event.productId));
+      case CategoryLoadMoreProductsEvent():
+        unawaited(_loadMoreProducts());
+      case CategoryLoadMoreCategoriesEvent():
+        unawaited(_loadMoreCategories());
+      case CategoryLoadMoreSubCategoriesEvent():
+        unawaited(_loadMoreSubCategories());
     }
   }
 
@@ -227,13 +233,99 @@ class CategoryViewModel extends Cubit<CategoryState> {
   }) async {
     emit(state.startProductsLoad());
 
-    final result = await _productsService.loadProducts(
+    final result = await _productsService.loadProductsPaginated(
       state: state,
+      page: 1,
       overrideSubCategoryId: overrideSubCategoryId,
       overrideCategoryId: overrideCategoryId,
     );
 
-    _handleProductsResult(result);
+    _handlePaginatedProductsResult(result);
+  }
+
+  Future<void> _loadMoreProducts() async {
+    if (state.isLoadingMore || !state.hasMoreProducts || state.isLoading) {
+      return;
+    }
+
+    emit(state.startLoadingMore());
+
+    final nextPage = state.currentPage + 1;
+    final result = await _productsService.loadProductsPaginated(
+      state: state,
+      page: nextPage,
+    );
+
+    switch (result) {
+      case ApiSuccessResult<PaginatedProductsEntity>():
+        emit(
+          state.moreProductsLoaded(
+            appendedItems: result.data.items,
+            page: result.data.page,
+            total: result.data.total,
+            hasMore: result.data.hasMore,
+          ),
+        );
+      case ApiErrorResult<PaginatedProductsEntity>():
+        // Silently fail on load more - don't show error
+        emit(state.copyWith(isLoadingMore: false));
+    }
+  }
+
+  static const int _categoriesPageSize = 8;
+
+  Future<void> _loadMoreCategories() async {
+    if (state.isLoadingMoreCategories || !state.hasMoreCategories) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMoreCategories: true));
+
+    final nextTake = state.categories.length + _categoriesPageSize;
+    final result = await _loaderService.loadInitialCategories(take: nextTake);
+
+    switch (result) {
+      case ApiSuccessResult<List<CategoryEntity>>():
+        final newCategories = result.data;
+        final hasMore = newCategories.length > state.categories.length;
+        emit(state.copyWith(
+          categories: newCategories,
+          isLoadingMoreCategories: false,
+          hasMoreCategories: hasMore,
+        ));
+      case ApiErrorResult<List<CategoryEntity>>():
+        emit(state.copyWith(isLoadingMoreCategories: false));
+    }
+  }
+
+  static const int _subCategoriesPageSize = 10;
+
+  Future<void> _loadMoreSubCategories() async {
+    if (state.isLoadingMoreSubCategories || !state.hasMoreSubCategories) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMoreSubCategories: true));
+
+    final nextLimit = state.subCategories.length + _subCategoriesPageSize;
+    final result = await _loaderService.loadSubCategories(limit: nextLimit);
+
+    switch (result) {
+      case ApiSuccessResult<List<CategorySubcategoryItemDto>>():
+        final newItems = result.data;
+        final hasMore = newItems.length > state.subCategories.length;
+        final categoryMap = <String, String>{
+          ...state.subCategoryCategoryMap,
+        };
+        emit(state.copyWith(
+          subCategories: newItems,
+          subCategoryCategoryMap: categoryMap,
+          isLoadingMoreSubCategories: false,
+          hasMoreSubCategories: hasMore,
+        ));
+      case ApiErrorResult<List<CategorySubcategoryItemDto>>():
+        emit(state.copyWith(isLoadingMoreSubCategories: false));
+    }
   }
 
   Future<void> loadDefaultShoppingView({
@@ -554,11 +646,20 @@ class CategoryViewModel extends Cubit<CategoryState> {
     );
   }
 
-  void _handleProductsResult(ApiResult<List<ProductModel>> result) {
+  void _handlePaginatedProductsResult(
+    ApiResult<PaginatedProductsEntity> result,
+  ) {
     switch (result) {
-      case ApiSuccessResult<List<ProductModel>>():
-        emit(state.productsLoaded(result.data));
-      case ApiErrorResult<List<ProductModel>>():
+      case ApiSuccessResult<PaginatedProductsEntity>():
+        emit(
+          state.paginatedProductsLoaded(
+            items: result.data.items,
+            total: result.data.total,
+            page: result.data.page,
+            hasMore: result.data.hasMore,
+          ),
+        );
+      case ApiErrorResult<PaginatedProductsEntity>():
         emit(state.productsLoadFailed(result.failure));
     }
   }

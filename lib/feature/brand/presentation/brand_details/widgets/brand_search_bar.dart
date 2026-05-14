@@ -157,7 +157,7 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                     minWidth: isActionDestructive ? 88 : 44,
                     minHeight: 44,
                   ),
-                  margin: const EdgeInsets.only(right: 8),
+                  margin: const EdgeInsetsDirectional.only(start: 8),
                   decoration: BoxDecoration(
                     color: actionColor,
                     borderRadius: BorderRadius.circular(12),
@@ -178,15 +178,20 @@ class BrandSearchBarDelegate extends SliverPersistentHeaderDelegate {
                         ),
                         child: isActionDestructive
                             ? Center(
-                                child: Text(
-                                  actionTooltip ??
-                                      context
-                                          .localization
-                                          .delete_category_tooltip,
-                                  style: getRegularStyle(
-                                    fontSize: FontSize.size14,
-                                    fontFamily: FontConstant.cairo,
-                                    color: color.onPrimary,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    actionTooltip ??
+                                        context
+                                            .localization
+                                            .delete_category_tooltip,
+                                    style: getRegularStyle(
+                                      fontSize: FontSize.size14,
+                                      fontFamily: FontConstant.cairo,
+                                      color: color.onPrimary,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               )

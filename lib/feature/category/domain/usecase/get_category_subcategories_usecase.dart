@@ -11,7 +11,8 @@ class GetCategorySubcategoriesUseCase {
 
   Future<ApiResult<List<CategorySubcategoryItemDto>>> call({
     String? categoryId,
+    int? limit,
   }) async {
-    return _repository.getCategorySubcategories(categoryId);
+    return _repository.getCategorySubcategories(categoryId, limit: limit);
   }
 }

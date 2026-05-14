@@ -49,3 +49,15 @@ class CategorySetActiveHeroProductEvent extends CategoryEvent {
 
   final String? productId;
 }
+
+class CategoryLoadMoreProductsEvent extends CategoryEvent {
+  const CategoryLoadMoreProductsEvent();
+}
+
+class CategoryLoadMoreCategoriesEvent extends CategoryEvent {
+  const CategoryLoadMoreCategoriesEvent();
+}
+
+class CategoryLoadMoreSubCategoriesEvent extends CategoryEvent {
+  const CategoryLoadMoreSubCategoriesEvent();
+}

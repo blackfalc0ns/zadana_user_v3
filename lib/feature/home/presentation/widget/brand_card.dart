@@ -29,7 +29,6 @@ class BrandCard extends StatelessWidget {
     final color = context.colorScheme;
     final horizontalPadding = isCompact ? 6.0 : Spacing.xs;
     final verticalPadding = isCompact ? 8.0 : Spacing.sm;
-    final imageSize = isCompact ? 48.0 : 48.0;
     final imageSpacing = isCompact ? 6.0 : Spacing.xs;
     final fontSize = isCompact
         ? (compactFontSize ?? FontSize.size10)
@@ -48,13 +47,10 @@ class BrandCard extends StatelessWidget {
             vertical: verticalPadding,
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                width: imageSize,
-                height: imageSize,
-                
+              Expanded(
                 child: _BrandImage(imageUrl: imageUrl, emoji: emoji),
               ),
               SizedBox(height: imageSpacing),

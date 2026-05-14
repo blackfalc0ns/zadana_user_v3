@@ -47,16 +47,7 @@ class VendorPromptCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          // Row(
-          //   children: [
-          //     const Spacer(),
-          //     Icon(
-          //       Icons.keyboard_double_arrow_down_rounded,
-          //       color: AppColors.primary.withValues(alpha: 0.72),
-          //       size: 16,
-          //     ),
-          //   ],
-          // ),
+        
         ],
       ),
     );
@@ -82,21 +73,7 @@ class VendorPromptCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Container(
-        //   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-        //   decoration: BoxDecoration(
-        //     color: Colors.white.withValues(alpha: 0.7),
-        //     borderRadius: BorderRadius.circular(999),
-        //   ),
-        //   child: Text(
-        //     locale.compare,
-        //     style: getBoldStyle(
-        //       fontFamily: FontConstant.cairo,
-        //       fontSize: FontSize.size9,
-        //       color: AppColors.primary,
-        //     ),
-        //   ),
-        // ),
+        
         const SizedBox(height: 4),
         Text(
           locale.select_vendor_to_show_price,

@@ -74,9 +74,10 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<HomeCategoriesResponseModelDto> getHomeCategories() async {
+  Future<HomeCategoriesResponseModelDto> getHomeCategories({int? take}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'take': take};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HomeCategoriesResponseModelDto>(
@@ -347,9 +348,13 @@ class _ApiServices implements ApiServices {
   @override
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
     String? categoryId,
+    int? limit,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'categoryId': categoryId};
+    final queryParameters = <String, dynamic>{
+      r'categoryId': categoryId,
+      r'limit': limit,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;

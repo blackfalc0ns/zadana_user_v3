@@ -82,7 +82,9 @@ abstract class ApiServices {
   Future<HomeBannerResponseModelDto> getHomeBanners();
 
   @GET(EndPoints.homeCategories)
-  Future<HomeCategoriesResponseModelDto> getHomeCategories();
+  Future<HomeCategoriesResponseModelDto> getHomeCategories({
+    @Query('take') int? take,
+  });
 
   @GET(EndPoints.homeBestSelling)
   Future<HomeBestSellingResponseModelDto> getHomeBestSelling(
@@ -127,6 +129,7 @@ abstract class ApiServices {
   @GET(EndPoints.categorySubcategories)
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
     @Query('categoryId') String? categoryId,
+    @Query('limit') int? limit,
   );
 
   @GET(EndPoints.categoryFilters)

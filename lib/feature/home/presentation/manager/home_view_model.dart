@@ -48,7 +48,11 @@ class HomeViewModel extends Cubit<HomeState> {
   final GetHomeSpecialOffersUseCase _getHomeSpecialOffersUseCase;
   final GetHomeDynamicSectionsUseCase _getHomeDynamicSectionsUseCase;
 
+  bool _isLoadingInitial = false;
+
   Future<void> loadInitial() async {
+    if (_isLoadingInitial) return;
+    _isLoadingInitial = true;
     unawaited(_getHomeAppBar());
     unawaited(_getHomeBanners());
     unawaited(_getHomeCategories());
@@ -58,6 +62,10 @@ class HomeViewModel extends Cubit<HomeState> {
     unawaited(_getHomeFeatured());
     unawaited(_getHomeSpecialOffers());
     unawaited(_getHomeDynamicSections());
+    // Allow re-entry after a short delay to prevent double-fire on init
+    // but still allow manual refresh/retry.
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    _isLoadingInitial = false;
   }
 
   void doIntent(HomeEvent event) {

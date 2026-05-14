@@ -26,6 +26,9 @@ class ProductsGrid extends StatelessWidget {
     this.activeHeroProductId,
     this.onProductTap,
     this.isLoading = false,
+    this.isLoadingMore = false,
+    this.hasMore = false,
+    this.onLoadMore,
     this.emptyStateMessage,
     this.errorFailure,
     this.onRetryError,
@@ -41,6 +44,9 @@ class ProductsGrid extends StatelessWidget {
   final String? activeHeroProductId;
   final Future<void> Function(ProductModel product)? onProductTap;
   final bool isLoading;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final VoidCallback? onLoadMore;
   final String? emptyStateMessage;
   final Failure? errorFailure;
   final VoidCallback? onRetryError;
@@ -82,47 +88,70 @@ class ProductsGrid extends StatelessWidget {
           );
         }
 
-        return GridView.builder(
-          key: PageStorageKey<String>(
-            'products_grid_${visibleProducts.length}_$subCategory',
-          ),
-          padding: const EdgeInsets.only(
-            top: 4,
-            left: Spacing.md,
-            right: Spacing.md,
-            bottom: 85,
-          ),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: layout.crossAxisCount,
-            childAspectRatio: layout.childAspectRatio,
-            crossAxisSpacing: Spacing.xss,
-            mainAxisSpacing: Spacing.xss,
-          ),
-          itemCount: visibleProducts.length,
-          itemBuilder: (context, index) {
-            final product = visibleProducts[index];
-            final heroTag = productHeroTag(product.id, source: 'category-grid');
-            return CustomProductCard(
-              discountPercentage: product.discountPercentage,
-              isDiscounted: product.isDiscounted,
-              product: product,
-              heroTag: heroTag,
-              onCardTap: () {
-                if (onProductTap != null) {
-                  onProductTap!(product);
-                  return;
-                }
-                ProductNavigationHelper.navigateToProductDetails(
-                  context,
-                  product,
-                  heroTag: heroTag,
-                );
-              },
-              onAddTap: () =>
-                  HomeProductCartHelper.addProductToCart(context, product),
-              showFavorite: true,
-            );
+        return NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollEndNotification &&
+                hasMore &&
+                !isLoadingMore &&
+                onLoadMore != null) {
+              final metrics = notification.metrics;
+              if (metrics.extentAfter < 300) {
+                onLoadMore!();
+              }
+            }
+            return false;
           },
+          child: GridView.builder(
+            key: PageStorageKey<String>(
+              'products_grid_${visibleProducts.length}_$subCategory',
+            ),
+            padding: const EdgeInsets.only(
+              top: 4,
+              left: Spacing.md,
+              right: Spacing.md,
+              bottom: 85,
+            ),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: layout.crossAxisCount,
+              childAspectRatio: layout.childAspectRatio,
+              crossAxisSpacing: Spacing.xss,
+              mainAxisSpacing: Spacing.xss,
+            ),
+            itemCount: visibleProducts.length + (isLoadingMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index >= visibleProducts.length) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                );
+              }
+              final product = visibleProducts[index];
+              final heroTag =
+                  productHeroTag(product.id, source: 'category-grid');
+              return CustomProductCard(
+                discountPercentage: product.discountPercentage,
+                isDiscounted: product.isDiscounted,
+                product: product,
+                heroTag: heroTag,
+                onCardTap: () {
+                  if (onProductTap != null) {
+                    onProductTap!(product);
+                    return;
+                  }
+                  ProductNavigationHelper.navigateToProductDetails(
+                    context,
+                    product,
+                    heroTag: heroTag,
+                  );
+                },
+                onAddTap: () =>
+                    HomeProductCartHelper.addProductToCart(context, product),
+                showFavorite: true,
+              );
+            },
+          ),
         );
       },
     );

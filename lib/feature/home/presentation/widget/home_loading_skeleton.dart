@@ -84,11 +84,12 @@ class ProductCardSkeleton extends StatelessWidget {
         border: Border.all(color: skeletonBorderColor),
       ),
       child: const Stack(
+        clipBehavior: Clip.hardEdge,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Bone(height: 75, radius: Spacing.cardRadius),
+              Bone(height: 70, radius: Spacing.cardRadius),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(7, 7, 7, 3.5),

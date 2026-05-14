@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/utils/product_sort_options.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
+import 'package:zadana_user_v3/feature/category/data/mapper/category_mapper.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_part_item_dto.dart';
@@ -72,6 +73,15 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.searchActionIcon = Icons.tune_rounded,
     this.searchActionTooltip,
     this.isSearchActionDestructive = false,
+    this.isLoadingMore = false,
+    this.hasMore = false,
+    this.onLoadMore,
+    this.onLoadMoreCategories,
+    this.isLoadingMoreCategories = false,
+    this.hasMoreCategories = true,
+    this.isLoadingMoreSubCategories = false,
+    this.hasMoreSubCategories = false,
+    this.onLoadMoreSubCategories,
   });
 
   final List<CategoryEntity> categories;
@@ -126,6 +136,15 @@ class ReusableCategoryScreen extends StatefulWidget {
   final IconData searchActionIcon;
   final String? searchActionTooltip;
   final bool isSearchActionDestructive;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final VoidCallback? onLoadMore;
+  final VoidCallback? onLoadMoreCategories;
+  final bool isLoadingMoreCategories;
+  final bool hasMoreCategories;
+  final bool isLoadingMoreSubCategories;
+  final bool hasMoreSubCategories;
+  final VoidCallback? onLoadMoreSubCategories;
 
   @override
   State<ReusableCategoryScreen> createState() => _ReusableCategoryScreenState();
@@ -133,6 +152,7 @@ class ReusableCategoryScreen extends StatefulWidget {
 
 class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   late String? _tempFilterCategory;
+  late String? _tempFilterCategoryId;
   late String? _tempSubCategoryName;
   late String? _tempSubCategoryId;
   late String? _tempFilterQuantity;
@@ -146,6 +166,10 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   late List<CategoryFilterBrandItemDto> _tempBrandOptions;
   late List<CategoryFilterOptionDto> _tempProductTypeOptions;
   late List<CategoryFilterPartItemDto> _tempPartOptions;
+
+  /// Cached expanded categories list from "show more" loads.
+  List<CategoryEntity>? _cachedSheetCategories;
+  bool _cachedHasMoreCategories = true;
 
   @override
   void initState() {
@@ -181,6 +205,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
         (widget.showCategoryFilterSection
             ? _resolveParentCategoryName()
             : widget.selectedCategory);
+    _tempFilterCategoryId = widget.selectedCategoryId;
     _tempSubCategoryName = widget.selectedSubCategory.isEmpty
         ? null
         : widget.selectedSubCategory;
@@ -248,6 +273,21 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     return null;
   }
 
+  CategoryEntity? _findCategoryInList(
+    String? categoryId,
+    List<CategoryEntity> categories,
+  ) {
+    if (categoryId == null || categoryId.isEmpty) return null;
+
+    for (final category in categories) {
+      if (category.id == categoryId) {
+        return category;
+      }
+    }
+
+    return null;
+  }
+
   String? _findCategoryNameById(String? categoryId) {
     return _findCategoryById(categoryId)?.name;
   }
@@ -255,6 +295,22 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   String? _resolveTempFilterCategoryId() {
     return _findCategoryByName(_tempFilterCategory)?.id ??
         widget.selectedCategoryId;
+  }
+
+  String? _resolveTempFilterCategoryIdFrom(List<CategoryEntity> categories) {
+    // First try the directly stored ID
+    if (_tempFilterCategoryId != null && _tempFilterCategoryId!.isNotEmpty) {
+      return _tempFilterCategoryId;
+    }
+    // Fallback: search by name
+    if (_tempFilterCategory != null && _tempFilterCategory!.isNotEmpty) {
+      for (final category in categories) {
+        if (category.name == _tempFilterCategory) {
+          return category.id;
+        }
+      }
+    }
+    return widget.selectedCategoryId;
   }
 
   String? _findProductTypeIdByName(String? productTypeName) {
@@ -310,11 +366,12 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
         : _tempSubCategories;
   }
 
-  Future<void> _loadTempCategoryFilters(
+  Future<void> _loadTempCategoryFiltersFromList(
     String? categoryId,
+    List<CategoryEntity> categories,
     StateSetter setSheetState,
   ) async {
-    final category = _findCategoryById(categoryId);
+    final category = _findCategoryInList(categoryId, categories);
 
     if (category == null) {
       setSheetState(_resetTempFilters);
@@ -333,7 +390,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     try {
       final results = await Future.wait<dynamic>([
         getIt<ApiServices>().getCategoryFilters(category.id),
-        getIt<ApiServices>().getCategorySubcategories(category.id),
+        getIt<ApiServices>().getCategorySubcategories(category.id, 5),
       ]);
       if (!mounted) return;
 
@@ -442,11 +499,53 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     _resetTempFilters();
     final locale = context.localization;
     final sheetScrollController = ScrollController();
+    // Use cached categories if available, otherwise start from widget.categories
+    var sheetCategories = _cachedSheetCategories != null &&
+            _cachedSheetCategories!.length >= widget.categories.length
+        ? List<CategoryEntity>.from(_cachedSheetCategories!)
+        : List<CategoryEntity>.from(widget.categories);
+    var isLoadingMoreCats = false;
+    var hasMoreCats = _cachedHasMoreCategories;
+
+    // If the currently selected category is not in the initial list,
+    // we need to expand categories when the sheet opens.
+    final selectedCatId = widget.selectedCategoryId;
+    final needsAutoExpand = selectedCatId != null &&
+        selectedCatId.isNotEmpty &&
+        _findCategoryInList(selectedCatId, sheetCategories) == null;
 
     _showBottomSheet(
       context,
       (sheetContext) => StatefulBuilder(
         builder: (sheetContext, setSheetState) {
+          // Auto-expand categories once if selected category is not visible
+          if (needsAutoExpand &&
+              !isLoadingMoreCats &&
+              _findCategoryInList(selectedCatId, sheetCategories) == null) {
+            isLoadingMoreCats = true;
+            Future(() async {
+              try {
+                final response = await getIt<ApiServices>().getHomeCategories(
+                  take: 50,
+                );
+                if (!mounted) return;
+                final allCategories = response.toCategoryEntities();
+                setSheetState(() {
+                  hasMoreCats =
+                      allCategories.length > sheetCategories.length;
+                  sheetCategories = allCategories;
+                  isLoadingMoreCats = false;
+                });
+                // Cache for next time
+                _cachedSheetCategories = sheetCategories;
+                _cachedHasMoreCategories = hasMoreCats;
+              } catch (_) {
+                if (!mounted) return;
+                setSheetState(() => isLoadingMoreCats = false);
+              }
+            });
+          }
+
           return CustomFilterBottomSheet(
             title: locale.filter_title,
             cancelLabel: locale.cancel,
@@ -456,7 +555,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
             children: [
               CategoryFilterSection(
                 showCategorySection: widget.showCategoryFilterSection,
-                categories: widget.categories,
+                categories: sheetCategories,
                 subCategories: _visibleTempSubCategories(),
                 quantities: _tempQuantityOptions
                     .map((item) => item.name?.trim() ?? '')
@@ -475,7 +574,9 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     .where((item) => item.isNotEmpty)
                     .toList(growable: false),
                 parts: _visibleTempParts(),
-                selectedCategoryId: _resolveTempFilterCategoryId(),
+                selectedCategoryId: _resolveTempFilterCategoryIdFrom(
+                  sheetCategories,
+                ),
                 selectedSubCategoryId: _tempSubCategoryId,
                 selectedQuantity: _tempFilterQuantity,
                 selectedBrand: _tempFilterBrand,
@@ -483,15 +584,47 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                 selectedPart: _tempFilterPart,
                 priceRange: _tempPriceRange,
                 priceBounds: _tempPriceBounds,
+                onLoadMoreCategories: () async {
+                  if (isLoadingMoreCats || !hasMoreCats) return;
+                  setSheetState(() => isLoadingMoreCats = true);
+                  try {
+                    final nextTake =
+                        sheetCategories.length + 8;
+                    final response = await getIt<ApiServices>()
+                        .getHomeCategories(take: nextTake);
+                    if (!mounted) return;
+                    final newItems = response.toCategoryEntities();
+                    setSheetState(() {
+                      hasMoreCats =
+                          newItems.length > sheetCategories.length;
+                      sheetCategories = newItems;
+                      isLoadingMoreCats = false;
+                    });
+                    // Cache for next time
+                    _cachedSheetCategories = sheetCategories;
+                    _cachedHasMoreCategories = hasMoreCats;
+                  } catch (_) {
+                    if (!mounted) return;
+                    setSheetState(() => isLoadingMoreCats = false);
+                  }
+                },
+                isLoadingMoreCategories: isLoadingMoreCats,
+                hasMoreCategories: hasMoreCats,
                 onCategorySelected: (categoryId) async {
                   setSheetState(() {
-                    _tempFilterCategory = _findCategoryNameById(categoryId);
+                    _tempFilterCategoryId = categoryId;
+                    _tempFilterCategory =
+                        _findCategoryInList(categoryId, sheetCategories)?.name;
                     _tempFilterQuantity = null;
                     _tempFilterBrand = null;
                     _tempFilterProductType = null;
                     _tempFilterPart = null;
                   });
-                  await _loadTempCategoryFilters(categoryId, setSheetState);
+                  await _loadTempCategoryFiltersFromList(
+                    categoryId,
+                    sheetCategories,
+                    setSheetState,
+                  );
                   if (categoryId != null) {
                     _scrollSheetTo(sheetScrollController, 170);
                   }
@@ -546,6 +679,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                 _tempFilterCategory = widget.showCategoryFilterSection
                     ? null
                     : widget.selectedCategory;
+                _tempFilterCategoryId = null;
                 _tempFilterQuantity = null;
                 _tempFilterBrand = null;
                 _tempFilterProductType = null;
@@ -616,6 +750,12 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               searchActionTooltip:
                   widget.searchActionTooltip ?? locale.filter_button,
               isSearchActionDestructive: widget.isSearchActionDestructive,
+              isLoadingMore: widget.isLoadingMore,
+              hasMore: widget.hasMore,
+              onLoadMore: widget.onLoadMore,
+              isLoadingMoreSubCategories: widget.isLoadingMoreSubCategories,
+              hasMoreSubCategories: widget.hasMoreSubCategories,
+              onLoadMoreSubCategories: widget.onLoadMoreSubCategories,
             ),
             if (!widget.isLoading &&
                 !widget.isSearchActive &&

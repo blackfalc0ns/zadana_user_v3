@@ -87,8 +87,9 @@ class _CustomFilterBottomSheetState extends State<CustomFilterBottomSheet> {
                             child: Text(
                               resolvedTitle,
                               textAlign: TextAlign.center,
-                              style: AppTextStyles.h3.copyWith(
-                                color: color.onSurface,
+                              style: getBoldStyle(
+                                fontFamily: FontConstant.cairo,
+                                fontSize: FontSize.size15,
                               ),
                             ),
                           ),

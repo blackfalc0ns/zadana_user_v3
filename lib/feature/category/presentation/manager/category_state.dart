@@ -75,6 +75,14 @@ class CategoryState {
     this.priceRange = const RangeValues(0, 1000),
     this.priceBounds = const RangeValues(0, 1000),
     this.activeHeroProductId,
+    this.currentPage = 1,
+    this.totalProducts = 0,
+    this.hasMoreProducts = false,
+    this.isLoadingMore = false,
+    this.isLoadingMoreCategories = false,
+    this.hasMoreCategories = true,
+    this.isLoadingMoreSubCategories = false,
+    this.hasMoreSubCategories = true,
   });
 
   static const _unset = Object();
@@ -113,6 +121,14 @@ class CategoryState {
   final RangeValues priceRange;
   final RangeValues priceBounds;
   final String? activeHeroProductId;
+  final int currentPage;
+  final int totalProducts;
+  final bool hasMoreProducts;
+  final bool isLoadingMore;
+  final bool isLoadingMoreCategories;
+  final bool hasMoreCategories;
+  final bool isLoadingMoreSubCategories;
+  final bool hasMoreSubCategories;
 
   bool get isShoppingMode =>
       showAllSubCategories && !isCategoryPreselectedFromOutside;
@@ -206,6 +222,14 @@ class CategoryState {
     RangeValues? priceRange,
     RangeValues? priceBounds,
     Object? activeHeroProductId = _unset,
+    int? currentPage,
+    int? totalProducts,
+    bool? hasMoreProducts,
+    bool? isLoadingMore,
+    bool? isLoadingMoreCategories,
+    bool? hasMoreCategories,
+    bool? isLoadingMoreSubCategories,
+    bool? hasMoreSubCategories,
   }) {
     return CategoryState(
       categories: categories ?? this.categories,
@@ -276,6 +300,16 @@ class CategoryState {
       activeHeroProductId: identical(activeHeroProductId, _unset)
           ? this.activeHeroProductId
           : activeHeroProductId as String?,
+      currentPage: currentPage ?? this.currentPage,
+      totalProducts: totalProducts ?? this.totalProducts,
+      hasMoreProducts: hasMoreProducts ?? this.hasMoreProducts,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isLoadingMoreCategories:
+          isLoadingMoreCategories ?? this.isLoadingMoreCategories,
+      hasMoreCategories: hasMoreCategories ?? this.hasMoreCategories,
+      isLoadingMoreSubCategories:
+          isLoadingMoreSubCategories ?? this.isLoadingMoreSubCategories,
+      hasMoreSubCategories: hasMoreSubCategories ?? this.hasMoreSubCategories,
     );
   }
 
@@ -357,7 +391,41 @@ class CategoryState {
     isLoading: false,
     errorMessage: null,
     failure: null,
+    currentPage: 1,
+    hasMoreProducts: false,
+    isLoadingMore: false,
   );
+
+  CategoryState paginatedProductsLoaded({
+    required List<ProductModel> items,
+    required int total,
+    required int page,
+    required bool hasMore,
+  }) => copyWith(
+    products: items,
+    isLoading: false,
+    errorMessage: null,
+    failure: null,
+    currentPage: page,
+    totalProducts: total,
+    hasMoreProducts: hasMore,
+    isLoadingMore: false,
+  );
+
+  CategoryState moreProductsLoaded({
+    required List<ProductModel> appendedItems,
+    required int page,
+    required int total,
+    required bool hasMore,
+  }) => copyWith(
+    products: [...products, ...appendedItems],
+    currentPage: page,
+    totalProducts: total,
+    hasMoreProducts: hasMore,
+    isLoadingMore: false,
+  );
+
+  CategoryState startLoadingMore() => copyWith(isLoadingMore: true);
 
   CategoryState productsLoadFailed(Failure value) => copyWith(
     products: const [],

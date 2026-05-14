@@ -21,12 +21,14 @@ class CategoryLoaderService {
   final GetCategoryFiltersUseCase _getCategoryFiltersUseCase;
   final GetCategorySubcategoriesUseCase _getCategorySubcategoriesUseCase;
 
-  Future<ApiResult<List<CategoryEntity>>> loadInitialCategories() {
-    return _getCategoriesUseCase();
+  Future<ApiResult<List<CategoryEntity>>> loadInitialCategories({
+    int? take,
+  }) {
+    return _getCategoriesUseCase(take: take);
   }
 
   Future<DefaultShoppingLoadResult> loadDefaultShoppingData() async {
-    final result = await _getCategorySubcategoriesUseCase();
+    final result = await _getCategorySubcategoriesUseCase(limit: 10);
     switch (result) {
       case ApiSuccessResult<List<CategorySubcategoryItemDto>>():
         return DefaultShoppingLoadSuccess(
@@ -35,6 +37,12 @@ class CategoryLoaderService {
       case ApiErrorResult<List<CategorySubcategoryItemDto>>():
         return DefaultShoppingLoadFailure(result.failure);
     }
+  }
+
+  Future<ApiResult<List<CategorySubcategoryItemDto>>> loadSubCategories({
+    int? limit,
+  }) {
+    return _getCategorySubcategoriesUseCase(limit: limit);
   }
 
   Future<CategorySelectionLoadResult> loadCategorySelection({
@@ -80,6 +88,7 @@ class CategoryLoaderService {
     for (final category in categories) {
       final subCategoriesResult = await _getCategorySubcategoriesUseCase(
         categoryId: category.id,
+        limit: 5,
       );
 
       if (subCategoriesResult
@@ -180,6 +189,7 @@ class CategoryLoaderService {
     final filtersResult = await _getCategoryFiltersUseCase(category.id);
     final subCategoriesResult = await _getCategorySubcategoriesUseCase(
       categoryId: category.id,
+      limit: 5,
     );
 
     if (filtersResult case ApiErrorResult<CategoryFiltersResponseModelDto>()) {

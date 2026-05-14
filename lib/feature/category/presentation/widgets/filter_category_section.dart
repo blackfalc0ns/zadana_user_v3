@@ -12,18 +12,23 @@ class FilterCategorySection extends StatefulWidget {
     required this.categories,
     required this.selectedCategoryId,
     required this.onCategorySelected,
+    this.onLoadMore,
+    this.isLoadingMore = false,
+    this.hasMore = true,
   });
 
   final List<CategoryEntity> categories;
   final String? selectedCategoryId;
   final Function(String?) onCategorySelected;
+  final VoidCallback? onLoadMore;
+  final bool isLoadingMore;
+  final bool hasMore;
 
   @override
   State<FilterCategorySection> createState() => _FilterCategorySectionState();
 }
 
 class _FilterCategorySectionState extends State<FilterCategorySection> {
-  bool showAllCategories = false;
   String? localSelectedCategory;
 
   @override
@@ -44,9 +49,6 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
   Widget build(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
-    final displayedCategories = showAllCategories
-        ? widget.categories
-        : widget.categories.take(8).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,9 +76,9 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
                 crossAxisSpacing: Spacing.sm,
                 mainAxisSpacing: Spacing.sm,
               ),
-              itemCount: displayedCategories.length,
+              itemCount: widget.categories.length,
               itemBuilder: (context, index) {
-                final category = displayedCategories[index];
+                final category = widget.categories[index];
                 final isSelected = localSelectedCategory == category.id;
 
                 return CustomVerticalFilterChip(
@@ -94,17 +96,23 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
             );
           },
         ),
-        if (widget.categories.length > 8)
+        if (widget.hasMore && widget.onLoadMore != null)
           Padding(
             padding: const EdgeInsets.only(top: Spacing.xs),
             child: Center(
-              child: TextButton(
-                onPressed: () =>
-                    setState(() => showAllCategories = !showAllCategories),
-                child: Text(
-                  showAllCategories ? locale.show_less : locale.show_more,
-                ),
-              ),
+              child: widget.isLoadingMore
+                  ? const Padding(
+                      padding: EdgeInsets.all(8),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  : TextButton(
+                      onPressed: widget.onLoadMore,
+                      child: Text(locale.show_more),
+                    ),
             ),
           ),
       ],

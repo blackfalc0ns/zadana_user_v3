@@ -49,6 +49,12 @@ class CategoryContent extends StatelessWidget {
     this.searchActionIcon = Icons.tune_rounded,
     this.searchActionTooltip,
     this.isSearchActionDestructive = false,
+    this.isLoadingMore = false,
+    this.hasMore = false,
+    this.onLoadMore,
+    this.isLoadingMoreSubCategories = false,
+    this.hasMoreSubCategories = false,
+    this.onLoadMoreSubCategories,
   });
 
   final List<CategoryEntity> categories;
@@ -87,6 +93,12 @@ class CategoryContent extends StatelessWidget {
   final IconData searchActionIcon;
   final String? searchActionTooltip;
   final bool isSearchActionDestructive;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final VoidCallback? onLoadMore;
+  final bool isLoadingMoreSubCategories;
+  final bool hasMoreSubCategories;
+  final VoidCallback? onLoadMoreSubCategories;
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +137,9 @@ class CategoryContent extends StatelessWidget {
             selectedSubCategoryId: selectedSubCategoryId,
             onSubCategorySelected: onSubCategorySelected,
             isLoading: isSubCategoriesLoading,
+            isLoadingMore: isLoadingMoreSubCategories,
+            hasMore: hasMoreSubCategories,
+            onLoadMore: onLoadMoreSubCategories,
           ),
         ],
         const SizedBox(height: Spacing.sm),
@@ -144,6 +159,9 @@ class CategoryContent extends StatelessWidget {
                     activeHeroProductId: activeHeroProductId,
                     onProductTap: onProductTap,
                     isLoading: isLoading,
+                    isLoadingMore: isLoadingMore,
+                    hasMore: hasMore,
+                    onLoadMore: onLoadMore,
                     emptyStateMessage: emptyStateMessage,
                     errorFailure: errorFailure,
                     onRetryError: onRetryError,

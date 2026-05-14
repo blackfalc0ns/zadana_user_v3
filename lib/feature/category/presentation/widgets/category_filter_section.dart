@@ -38,6 +38,9 @@ class CategoryFilterSection extends StatelessWidget {
     required this.onProductTypeSelected,
     required this.onPartSelected,
     required this.onPriceRangeChanged,
+    this.onLoadMoreCategories,
+    this.isLoadingMoreCategories = false,
+    this.hasMoreCategories = true,
   });
 
   final bool showCategorySection;
@@ -63,6 +66,9 @@ class CategoryFilterSection extends StatelessWidget {
   final Function(String?) onProductTypeSelected;
   final Function(String?) onPartSelected;
   final Function(RangeValues) onPriceRangeChanged;
+  final VoidCallback? onLoadMoreCategories;
+  final bool isLoadingMoreCategories;
+  final bool hasMoreCategories;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +86,9 @@ class CategoryFilterSection extends StatelessWidget {
         FilterCategorySection(
           categories: categories,
           selectedCategoryId: selectedCategoryId,
+          onLoadMore: onLoadMoreCategories,
+          isLoadingMore: isLoadingMoreCategories,
+          hasMore: hasMoreCategories,
           onCategorySelected: (category) {
             onCategorySelected(category);
             onQuantitySelected(null);

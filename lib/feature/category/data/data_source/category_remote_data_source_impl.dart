@@ -15,8 +15,8 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   final ApiServices _apiServices;
 
   @override
-  Future<HomeCategoriesResponseModelDto> getCategories() {
-    return _apiServices.getHomeCategories();
+  Future<HomeCategoriesResponseModelDto> getCategories({int? take}) {
+    return _apiServices.getHomeCategories(take: take);
   }
 
   @override
@@ -28,9 +28,10 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   @override
   Future<List<CategorySubcategoryItemDto>> getCategorySubcategories(
-    String? categoryId,
-  ) {
-    return _apiServices.getCategorySubcategories(categoryId);
+    String? categoryId, {
+    int? limit,
+  }) {
+    return _apiServices.getCategorySubcategories(categoryId, limit);
   }
 
   @override

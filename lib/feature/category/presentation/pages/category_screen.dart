@@ -404,10 +404,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
           searchActionTooltip: hasSelectedCategory
               ? context.localization.delete_category_tooltip
               : hasClearableFilters
-              ? context.localization.clear_all
+              ? context.localization.clear_filters_title
               : null,
           isSearchActionDestructive: showClearAction,
           searchResults: _buildSearchResults(),
+          isLoadingMore: state.isLoadingMore,
+          hasMore: state.hasMoreProducts,
+          onLoadMore: () => context.read<CategoryViewModel>().doIntent(
+            const CategoryLoadMoreProductsEvent(),
+          ),
+          onLoadMoreCategories: () => context.read<CategoryViewModel>().doIntent(
+            const CategoryLoadMoreCategoriesEvent(),
+          ),
+          isLoadingMoreCategories: state.isLoadingMoreCategories,
+          hasMoreCategories: state.hasMoreCategories,
+          isLoadingMoreSubCategories: state.isLoadingMoreSubCategories,
+          hasMoreSubCategories: state.hasMoreSubCategories,
+          onLoadMoreSubCategories: () =>
+              context.read<CategoryViewModel>().doIntent(
+                const CategoryLoadMoreSubCategoriesEvent(),
+              ),
         );
       },
     );

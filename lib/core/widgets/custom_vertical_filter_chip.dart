@@ -90,30 +90,37 @@ class CustomVerticalFilterChip extends StatelessWidget {
               ],
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (hasImage) ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl!.trim(),
-                      width: imageSize,
-                      height: imageSize,
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) =>const Center(child:CircularProgressIndicator( strokeWidth: .5,
-              valueColor: AlwaysStoppedAnimation(AppColors.primary),)),
-                      errorWidget: (context, url, error) => Image.asset(
-                        Assets.notFound,
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl!.trim(),
                         width: imageSize,
                         height: imageSize,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: .5,
+                            valueColor:
+                                AlwaysStoppedAnimation(AppColors.primary),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          Assets.notFound,
+                          width: imageSize,
+                          height: imageSize,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(height: spacing),
                 ] else if (shouldShowFallbackImage) ...[
-                  fallbackImage(),
+                  Expanded(child: fallbackImage()),
                   SizedBox(height: spacing),
                 ] else if (icon != null) ...[
                   Text(
@@ -125,18 +132,16 @@ class CustomVerticalFilterChip extends StatelessWidget {
                   ),
                   SizedBox(height: spacing),
                 ],
-                Flexible(
-                  child: Text(
-                    label,
-                    style: getSemiBoldStyle(
-                      fontFamily: FontConstant.cairo,
-                      fontSize: labelFontSize,
-                      color: isSelected ? color.onPrimary : color.onSurface,
-                    ).copyWith(height: ultraCompact ? 1.15 : 1.25),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                Text(
+                  label,
+                  style: getSemiBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: labelFontSize,
+                    color: isSelected ? color.onPrimary : color.onSurface,
+                  ).copyWith(height: ultraCompact ? 1.15 : 1.25),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

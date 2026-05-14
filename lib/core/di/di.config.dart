@@ -154,8 +154,6 @@ import '../../feature/category/domain/usecase/get_category_subcategories_usecase
     as _i737;
 import '../../feature/category/domain/usecase/get_shopping_products_usecase.dart'
     as _i45;
-import '../../feature/category/presentation/manager/category_cubit.dart'
-    as _i729;
 import '../../feature/category/presentation/manager/category_view_model.dart'
     as _i228;
 import '../../feature/delivery_verification/data/data_source/delivery_verification_remote_data_source.dart'
@@ -1077,7 +1075,7 @@ extension GetItInjectableX on _i174.GetIt {
         cartViewModel: gh<_i341.CartViewModel>(),
         favoritesViewModel: gh<_i190.FavoritesViewModel>(),
         profileViewModel: gh<_i701.ProfileViewModel>(),
-        categoryViewModel: gh<_i729.CategoryViewModel>(),
+        categoryViewModel: gh<_i228.CategoryViewModel>(),
         tokenService: gh<_i227.TokenService>(),
         favoritesRepository: gh<_i140.FavoritesRepository>(),
         cartRepository: gh<_i435.CartRepository>(),

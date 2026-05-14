@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/feature/category/data/models/category_filters_res
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_products_request_entity.dart';
+import 'package:zadana_user_v3/feature/category/domain/entities/paginated_products_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/shopping_products_request_entity.dart';
 import 'package:zadana_user_v3/feature/category/domain/repo/category_repository.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -18,9 +19,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource _remoteDataSource;
 
   @override
-  Future<ApiResult<List<CategoryEntity>>> getCategories() async {
+  Future<ApiResult<List<CategoryEntity>>> getCategories({int? take}) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getCategories();
+      final response = await _remoteDataSource.getCategories(take: take);
       return response.toCategoryEntities();
     });
   }
@@ -36,10 +37,11 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<ApiResult<List<CategorySubcategoryItemDto>>> getCategorySubcategories(
-    String? categoryId,
-  ) async {
+    String? categoryId, {
+    int? limit,
+  }) async {
     return safeApiCall(() async {
-      return _remoteDataSource.getCategorySubcategories(categoryId);
+      return _remoteDataSource.getCategorySubcategories(categoryId, limit: limit);
     });
   }
 
@@ -64,6 +66,24 @@ class CategoryRepositoryImpl implements CategoryRepository {
       return (response.items ?? const [])
           .map((item) => item.toEntity())
           .toList(growable: false);
+    });
+  }
+
+  @override
+  Future<ApiResult<PaginatedProductsEntity>> getShoppingProductsPaginated(
+    ShoppingProductsRequestEntity request,
+  ) async {
+    return safeApiCall(() async {
+      final response = await _remoteDataSource.getShoppingProducts(request);
+      final items = (response.items ?? const [])
+          .map((item) => item.toEntity())
+          .toList(growable: false);
+      return PaginatedProductsEntity(
+        items: items,
+        total: response.total ?? items.length,
+        page: response.page ?? request.page,
+        perPage: response.perPage ?? request.perPage,
+      );
     });
   }
 }

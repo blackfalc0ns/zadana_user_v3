@@ -9,7 +9,7 @@ class GetCategoriesUseCase {
 
   final CategoryRepository _repository;
 
-  Future<ApiResult<List<CategoryEntity>>> call() async {
-    return _repository.getCategories();
+  Future<ApiResult<List<CategoryEntity>>> call({int? take}) async {
+    return _repository.getCategories(take: take);
   }
 }
