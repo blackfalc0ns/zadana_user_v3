@@ -9,6 +9,7 @@ part of 'category_products_applied_filters_dto.dart';
 CategoryProductsAppliedFiltersDto _$CategoryProductsAppliedFiltersDtoFromJson(
   Map<String, dynamic> json,
 ) => CategoryProductsAppliedFiltersDto(
+  categoryId: json['category_id'] as String?,
   subcategoryId: json['subcategory_id'] as String?,
   quantityId: json['quantity_id'] as String?,
   brandId: json['brand_id'] as String?,
@@ -20,6 +21,7 @@ CategoryProductsAppliedFiltersDto _$CategoryProductsAppliedFiltersDtoFromJson(
 Map<String, dynamic> _$CategoryProductsAppliedFiltersDtoToJson(
   CategoryProductsAppliedFiltersDto instance,
 ) => <String, dynamic>{
+  'category_id': instance.categoryId,
   'subcategory_id': instance.subcategoryId,
   'quantity_id': instance.quantityId,
   'brand_id': instance.brandId,

@@ -48,7 +48,17 @@ class CategoryProductsService {
       );
     }
 
-    return _loadCategoryProductsBySubCategory(state, subCategoryId);
+    final categoryId = resolveCategoryIdForProducts(
+      state: state,
+      subCategoryId: subCategoryId,
+      overrideCategoryId: overrideCategoryId,
+    );
+
+    return _loadCategoryProductsBySubCategory(
+      state,
+      categoryId: categoryId ?? state.selectedCategoryId ?? '',
+      subCategoryId: subCategoryId,
+    );
   }
 
   String? resolveCategoryIdForProducts({
@@ -67,11 +77,13 @@ class CategoryProductsService {
   }
 
   Future<ApiResult<List<ProductModel>>> _loadCategoryProductsBySubCategory(
-    CategoryState state,
-    String subCategoryId,
-  ) {
+    CategoryState state, {
+    required String categoryId,
+    required String subCategoryId,
+  }) {
     return _getCategoryProductsUseCase(
       CategoryProductsRequestEntity(
+        categoryId: categoryId,
         subCategoryId: subCategoryId,
         productTypeId: state.selectedProductTypeId,
         partId: state.selectedPartId,
@@ -93,22 +105,28 @@ class CategoryProductsService {
   }) {
     final hasPriceFilter = state.priceRange != state.priceBounds;
 
-    // When a subcategory is selected, send its id as categoryId to the API.
-    // The /categories/products endpoint uses categoryId to filter by subcategory.
+    // categoryId = the parent category (goes as categoryId query param)
+    // subCategoryId = the selected subcategory (goes as subcategory_id query param)
     final String? requestCategoryId;
+    final String? requestSubCategoryId;
+
     if (subCategoryId != null && subCategoryId.isNotEmpty) {
-      requestCategoryId = subCategoryId;
-    } else if (state.preferCategoryIdForShoppingSelection &&
-        subCategoryId != null &&
-        subCategoryId.isNotEmpty) {
-      requestCategoryId = subCategoryId;
+      // When a subcategory is selected, resolve the parent categoryId.
+      // Use the provided categoryId, or look it up from the map, or fall back
+      // to the currently selected category.
+      requestCategoryId = categoryId ??
+          state.subCategoryCategoryMap[subCategoryId] ??
+          state.selectedCategoryId;
+      requestSubCategoryId = subCategoryId;
     } else {
       requestCategoryId = categoryId;
+      requestSubCategoryId = null;
     }
 
     return _getShoppingProductsUseCase(
       ShoppingProductsRequestEntity(
         categoryId: requestCategoryId,
+        subCategoryId: requestSubCategoryId,
         productTypeId: state.selectedProductTypeId,
         partId: state.selectedPartId,
         quantityId: state.selectedQuantityId,

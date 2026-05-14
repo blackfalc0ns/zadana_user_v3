@@ -63,7 +63,7 @@ class CustomFilterChip extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.md,
+          horizontal: Spacing.sm,
           vertical: Spacing.xs,
         ),
         decoration: BoxDecoration(
@@ -82,45 +82,41 @@ class CustomFilterChip extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
                 child: CachedNetworkImage(
                   imageUrl: normalizedImageUrl,
-                  width: 30,
-                  height: 30,
+                  width: 22,
+                  height: 22,
                 
-                  placeholder: (context, url) => SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Center(
-                      child: SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: color.primary,
-                        ),
-                      ),
-                    ),
-                  ),
+                  placeholder: (context, url) => const Center(
+            child: CircularProgressIndicator(
+              strokeWidth: .5,
+              valueColor: AlwaysStoppedAnimation(AppColors.primary),
+            ),
+          ),
                   errorWidget: (context, url, error) => Image.asset(
                     Assets.notFound,
-                    width: 18,
-                    height: 18,
+                    width: 22,
+                    height: 22,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
             ] else if (shouldShowFallbackImage) ...[
               fallbackImage(),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
             ] else if (icon != null) ...[
               Text(icon!, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 3),
             ],
-            Text(
-              label,
-              style: getMediumStyle(
-                fontFamily: FontConstant.cairo,
-                color: isSelected ? color.onPrimary : color.onSurface,
-              ).merge(textStyle),
+            Flexible(
+              child: Text(
+                label,
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                  color: isSelected ? color.onPrimary : color.onSurface,
+                ).merge(textStyle),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),

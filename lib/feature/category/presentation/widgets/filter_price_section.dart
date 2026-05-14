@@ -19,9 +19,14 @@ class FilterPriceSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
+    final sliderMin = priceBounds.start;
     final sliderMax = priceBounds.end <= priceBounds.start
         ? priceBounds.start + 1
         : priceBounds.end;
+    final clampedRange = RangeValues(
+      priceRange.start.clamp(sliderMin, sliderMax),
+      priceRange.end.clamp(sliderMin, sliderMax),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,13 +40,13 @@ class FilterPriceSection extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.md),
         RangeSlider(
-          values: priceRange,
-          min: priceBounds.start,
+          values: clampedRange,
+          min: sliderMin,
           max: sliderMax,
           divisions: 20,
           labels: RangeLabels(
-            '${priceRange.start.round()} ${locale.currency}',
-            '${priceRange.end.round()} ${locale.currency}',
+            '${clampedRange.start.round()} ${locale.currency}',
+            '${clampedRange.end.round()} ${locale.currency}',
           ),
           onChanged: onPriceRangeChanged,
         ),
@@ -49,13 +54,13 @@ class FilterPriceSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${priceRange.start.round()} ${locale.currency}',
+              '${clampedRange.start.round()} ${locale.currency}',
               style: AppTextStyles.bodySmall.copyWith(
                 color: color.onSurfaceVariant,
               ),
             ),
             Text(
-              '${priceRange.end.round()} ${locale.currency}',
+              '${clampedRange.end.round()} ${locale.currency}',
               style: AppTextStyles.bodySmall.copyWith(
                 color: color.onSurfaceVariant,
               ),

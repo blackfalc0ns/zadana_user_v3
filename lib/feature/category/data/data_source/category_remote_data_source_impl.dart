@@ -38,6 +38,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     CategoryProductsRequestEntity request,
   ) {
     return _apiServices.getCategoryProducts(
+      request.categoryId,
       request.subCategoryId,
       request.productTypeId,
       request.partId,
@@ -57,8 +58,13 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
         request.categoryId != null && request.categoryId!.trim().isNotEmpty;
     final categoryId = hasCategoryId ? request.categoryId!.trim() : null;
 
+    final hasSubCategoryId =
+        request.subCategoryId != null && request.subCategoryId!.trim().isNotEmpty;
+    final subCategoryId = hasSubCategoryId ? request.subCategoryId!.trim() : null;
+
     return _apiServices.getShoppingProducts(
       categoryId,
+      subCategoryId,
       request.productTypeId,
       request.partId,
       request.quantityId,

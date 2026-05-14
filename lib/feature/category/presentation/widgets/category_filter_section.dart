@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/widgets/custom_filter_chip.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_brand_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_category_section.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_grid.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_option_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_price_section.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_quantity_section.dart';
@@ -90,7 +90,7 @@ class CategoryFilterSection extends StatelessWidget {
         ),
       );
 
-      if (subCategories.isNotEmpty) {
+      if (subCategories.isNotEmpty && selectedCategoryId != null) {
         sections.add(
           _FilterSubCategorySection(
             subCategories: subCategories,
@@ -182,19 +182,11 @@ class _FilterSubCategorySectionState extends State<_FilterSubCategorySection> {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final options = widget.subCategories
-        .map((subCategory) => subCategory.name ?? '')
-        .where((name) => name.isNotEmpty)
+    final validSubCategories = widget.subCategories
+        .where((item) => (item.name ?? '').isNotEmpty)
         .toList();
-    final selectedValue = widget.subCategories
-        .cast<CategorySubcategoryItemDto?>()
-        .firstWhere(
-          (subCategory) => subCategory?.id == localSelectedSubCategoryId,
-          orElse: () => null,
-        )
-        ?.name;
 
-    if (options.isEmpty) {
+    if (validSubCategories.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -203,24 +195,26 @@ class _FilterSubCategorySectionState extends State<_FilterSubCategorySection> {
       children: [
         GradientSectionTitle(title: locale.filter_subcategory_title),
         const SizedBox(height: Spacing.sm),
-        FilterOptionGrid(
-          options: options,
-          selectedValue: selectedValue,
-          onOptionTap: (value) {
-            final selectedSubCategory = widget.subCategories.firstWhere(
-              (subCategory) => subCategory.name == value,
-            );
-            final newSelectionId =
-                localSelectedSubCategoryId == selectedSubCategory.id
-                ? null
-                : selectedSubCategory.id;
+        Wrap(
+          spacing: Spacing.sm,
+          runSpacing: Spacing.sm,
+          children: validSubCategories.map((subCategory) {
+            final name = subCategory.name?.trim() ?? '';
+            final isSelected = localSelectedSubCategoryId == subCategory.id;
 
-            setState(() => localSelectedSubCategoryId = newSelectionId);
-
-            widget.onSubCategorySelected(
-              newSelectionId == null ? null : selectedSubCategory,
+            return CustomFilterChip(
+              label: name,
+              imageUrl: subCategory.imageUrl,
+              isSelected: isSelected,
+              onTap: () {
+                final newSelectionId = isSelected ? null : subCategory.id;
+                setState(() => localSelectedSubCategoryId = newSelectionId);
+                widget.onSubCategorySelected(
+                  newSelectionId == null ? null : subCategory,
+                );
+              },
             );
-          },
+          }).toList(),
         ),
       ],
     );

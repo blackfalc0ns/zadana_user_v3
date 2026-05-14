@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
@@ -6,6 +7,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/brand_details/pages/brand_details_page_view.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/brand_card.dart';
@@ -43,10 +45,16 @@ class BrandGridTile extends StatelessWidget {
         isCompact: true,
         compactFontSize: FontSize.size11,
         onTap: () {
+          final globalCubit = context.read<AppSectionGlobalCubit>();
           Navigator.of(
             context,
           ).push(
-            MaterialPageRoute(builder: (_) => BrandDetailsPage(brand: brand)),
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: globalCubit,
+                child: BrandDetailsPage(brand: brand),
+              ),
+            ),
           );
         },
       ),

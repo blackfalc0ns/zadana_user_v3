@@ -168,13 +168,27 @@ ShoppingSubCategoriesData buildShoppingSubCategoriesFromLists({
 ShoppingSubCategoriesData buildShoppingSubCategoriesFromFlatList(
   List<CategorySubcategoryItemDto> subCategories,
 ) {
+  final items = validItems(
+    subCategories,
+    idOf: (item) => item.id,
+    nameOf: (item) => item.name,
+  );
+
+  final categoryMap = <String, String>{};
+  for (final item in items) {
+    final id = item.id;
+    final parentId = item.categoryId;
+    if (id != null &&
+        id.isNotEmpty &&
+        parentId != null &&
+        parentId.isNotEmpty) {
+      categoryMap[id] = parentId;
+    }
+  }
+
   return ShoppingSubCategoriesData(
-    subCategories: validItems(
-      subCategories,
-      idOf: (item) => item.id,
-      nameOf: (item) => item.name,
-    ),
-    categoryMap: const {},
+    subCategories: items,
+    categoryMap: categoryMap,
   );
 }
 

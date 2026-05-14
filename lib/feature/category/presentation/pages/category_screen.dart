@@ -342,6 +342,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           selectedFilters: const [],
           products: state.products,
           availableBrands: state.availableBrands,
+          brandItems: state.brandOptions,
           availableQuantities: state.availableQuantities,
           availableProductTypes: state.availableProductTypes,
           availableParts: state.availableParts,

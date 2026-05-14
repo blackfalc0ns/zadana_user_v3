@@ -17,7 +17,7 @@ class LanguageFlagAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final country = languageCode == 'ar'
         ? Country.saudiArabia
-        : Country.england;
+        : Country.unitedKingdom;
 
     return FlutterCountryFlags(
       country: country,

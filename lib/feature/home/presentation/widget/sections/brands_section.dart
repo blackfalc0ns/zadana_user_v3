@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/brand/domain/entities/brand_model.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/brand/pages/brands_listing_page.dart';
 import 'package:zadana_user_v3/feature/brand/presentation/brand_details/pages/brand_details_page_view.dart';
@@ -15,9 +16,15 @@ class BrandsSection extends StatelessWidget {
   const BrandsSection({super.key});
 
   void _navigateToBrandDetailsPage(BuildContext context, BrandModel brand) {
+    final globalCubit = context.read<AppSectionGlobalCubit>();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BrandDetailsPage(brand: brand)),
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: globalCubit,
+          child: BrandDetailsPage(brand: brand),
+        ),
+      ),
     );
   }
 

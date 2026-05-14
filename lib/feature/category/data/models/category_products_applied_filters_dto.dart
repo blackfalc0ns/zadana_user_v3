@@ -5,6 +5,7 @@ part 'category_products_applied_filters_dto.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class CategoryProductsAppliedFiltersDto {
   const CategoryProductsAppliedFiltersDto({
+    this.categoryId,
     this.subcategoryId,
     this.quantityId,
     this.brandId,
@@ -17,6 +18,7 @@ class CategoryProductsAppliedFiltersDto {
     Map<String, dynamic> json,
   ) => _$CategoryProductsAppliedFiltersDtoFromJson(json);
 
+  final String? categoryId;
   final String? subcategoryId;
   final String? quantityId;
   final String? brandId;

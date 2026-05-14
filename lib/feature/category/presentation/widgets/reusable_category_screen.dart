@@ -28,6 +28,7 @@ class ReusableCategoryScreen extends StatefulWidget {
     required this.selectedFilters,
     required this.products,
     this.availableBrands = const [],
+    this.brandItems = const [],
     this.availableQuantities = const [],
     this.availableProductTypes = const [],
     this.availableParts = const [],
@@ -81,6 +82,7 @@ class ReusableCategoryScreen extends StatefulWidget {
   final List<String> selectedFilters;
   final List<ProductModel> products;
   final List<String> availableBrands;
+  final List<CategoryFilterBrandItemDto> brandItems;
   final List<String> availableQuantities;
   final List<String> availableProductTypes;
   final List<String> availableParts;
@@ -176,7 +178,9 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
   void _resetTempFilters() {
     _tempFilterCategory =
         widget.filterSelectedCategory ??
-        (widget.showCategoryFilterSection ? null : widget.selectedCategory);
+        (widget.showCategoryFilterSection
+            ? _resolveParentCategoryName()
+            : widget.selectedCategory);
     _tempSubCategoryName = widget.selectedSubCategory.isEmpty
         ? null
         : widget.selectedSubCategory;
@@ -193,9 +197,13 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     _tempQuantityOptions = widget.availableQuantities
         .map((item) => CategoryFilterOptionDto(name: item))
         .toList(growable: false);
-    _tempBrandOptions = widget.availableBrands
-        .map((item) => CategoryFilterBrandItemDto(name: item))
-        .toList(growable: false);
+    _tempBrandOptions = widget.brandItems.isNotEmpty
+        ? widget.brandItems
+            .where((item) => (item.name?.trim() ?? '').isNotEmpty)
+            .toList(growable: false)
+        : widget.availableBrands
+            .map((item) => CategoryFilterBrandItemDto(name: item))
+            .toList(growable: false);
     _tempProductTypeOptions = widget.availableProductTypes
         .map((item) => CategoryFilterOptionDto(name: item))
         .toList(growable: false);
@@ -214,6 +222,18 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
     }
 
     return null;
+  }
+
+  /// Resolves the parent category name from the selected subcategory using
+  /// the subCategoryCategoryMap or falls back to selectedCategoryId.
+  String? _resolveParentCategoryName() {
+    final subCategoryId = widget.selectedSubCategoryId;
+    if (subCategoryId == null || subCategoryId.isEmpty) return null;
+
+    final parentCategoryId =
+        widget.subCategoryCategoryMap[subCategoryId] ??
+        widget.selectedCategoryId;
+    return _findCategoryById(parentCategoryId)?.name;
   }
 
   CategoryEntity? _findCategoryById(String? categoryId) {
@@ -480,6 +500,16 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                   setSheetState(() {
                     _tempSubCategoryId = subCategory?.id;
                     _tempSubCategoryName = subCategory?.name;
+                    // Auto-select the parent category when a subcategory is chosen
+                    if (subCategory != null && subCategory.id != null) {
+                      final parentCategoryId =
+                          widget.subCategoryCategoryMap[subCategory.id!];
+                      if (parentCategoryId != null &&
+                          parentCategoryId.isNotEmpty) {
+                        _tempFilterCategory =
+                            _findCategoryNameById(parentCategoryId);
+                      }
+                    }
                   });
                 },
                 onQuantitySelected: (quantity) {
@@ -522,6 +552,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                 _tempFilterPart = null;
                 _tempSubCategoryId = null;
                 _tempSubCategoryName = null;
+                _tempPriceBounds = widget.priceBounds;
                 _tempPriceRange = widget.priceBounds;
               });
               widget.onClearAllFilters();

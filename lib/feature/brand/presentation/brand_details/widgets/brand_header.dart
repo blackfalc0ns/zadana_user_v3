@@ -101,7 +101,7 @@ class BrandHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: IconTheme(
-        data: const IconThemeData(color: AppColors.white, size: 18),
+        data: const IconThemeData(color: AppColors.white, size: 25),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),

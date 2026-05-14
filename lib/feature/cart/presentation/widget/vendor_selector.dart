@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendor_entity.dart';
 
@@ -116,11 +117,11 @@ class _VendorChip extends StatelessWidget {
                 height: 36,
                 child: CachedNetworkImage(
                   imageUrl: vendor.logoUrl ?? '',
-                  fit: BoxFit.cover,
+                 // fit: BoxFit.cover,
                   placeholder: (_, _) =>
                       ColoredBox(color: color.surfaceContainerHighest),
                   errorWidget: (_, _, _) => Image.asset(
-                    'assets/images/image_not_found.png',
+                    Assets.notFound,
                     fit: BoxFit.cover,
                   ),
                 ),

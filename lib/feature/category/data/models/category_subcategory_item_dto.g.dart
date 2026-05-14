@@ -12,6 +12,7 @@ CategorySubcategoryItemDto _$CategorySubcategoryItemDtoFromJson(
   id: json['id'] as String?,
   name: json['name'] as String?,
   imageUrl: json['image_url'] as String?,
+  categoryId: json['category_id'] as String?,
 );
 
 Map<String, dynamic> _$CategorySubcategoryItemDtoToJson(
@@ -20,4 +21,5 @@ Map<String, dynamic> _$CategorySubcategoryItemDtoToJson(
   'id': instance.id,
   'name': instance.name,
   'image_url': instance.imageUrl,
+  'category_id': instance.categoryId,
 };

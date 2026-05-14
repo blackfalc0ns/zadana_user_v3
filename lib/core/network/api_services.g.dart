@@ -410,7 +410,8 @@ class _ApiServices implements ApiServices {
 
   @override
   Future<CategoryProductsResponseModelDto> getCategoryProducts(
-    String subCategoryId,
+    String categoryId,
+    String? subCategoryId,
     String? productTypeId,
     String? partId,
     String? quantityId,
@@ -421,6 +422,7 @@ class _ApiServices implements ApiServices {
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
+      r'subcategory_id': subCategoryId,
       r'product_type_id': productTypeId,
       r'part_id': partId,
       r'quantity_id': quantityId,
@@ -436,7 +438,7 @@ class _ApiServices implements ApiServices {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/categories/${subCategoryId}/products',
+            '/categories/${categoryId}/products',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -456,6 +458,7 @@ class _ApiServices implements ApiServices {
   @override
   Future<CategoryProductsResponseModelDto> getShoppingProducts(
     String? categoryId,
+    String? subCategoryId,
     String? productTypeId,
     String? partId,
     String? quantityId,
@@ -469,6 +472,7 @@ class _ApiServices implements ApiServices {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'categoryId': categoryId,
+      r'subcategory_id': subCategoryId,
       r'product_type_id': productTypeId,
       r'part_id': partId,
       r'quantity_id': quantityId,

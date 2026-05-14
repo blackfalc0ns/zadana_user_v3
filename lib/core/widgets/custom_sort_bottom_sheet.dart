@@ -52,7 +52,11 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             resolvedCancelLabel,
-            style:getRegularStyle(fontFamily: FontConstant.cairo,color: color.error,fontSize: FontSize.size14),
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              color: color.error,
+              fontSize: FontSize.size14,
+            ),
           ),
         ),
       ),
@@ -87,11 +91,11 @@ class _CustomSortBottomSheetState extends State<CustomSortBottomSheet> {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 52,
-              height: 6,
+              padding: const EdgeInsets.all(Spacing.xxl),
+              width: 42,
+              height: 4,
               decoration: BoxDecoration(
-                color: color.surfaceContainerHighest.withValues(alpha: 0.7),
+                color: color.outlineVariant,
                 borderRadius: BorderRadius.circular(999),
               ),
             ),

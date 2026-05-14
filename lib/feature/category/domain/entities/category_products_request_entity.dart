@@ -1,6 +1,7 @@
 class CategoryProductsRequestEntity {
   const CategoryProductsRequestEntity({
-    required this.subCategoryId,
+    required this.categoryId,
+    this.subCategoryId,
     this.productTypeId,
     this.partId,
     this.quantityId,
@@ -10,7 +11,8 @@ class CategoryProductsRequestEntity {
     this.sort,
   });
 
-  final String subCategoryId;
+  final String categoryId;
+  final String? subCategoryId;
   final String? productTypeId;
   final String? partId;
   final String? quantityId;

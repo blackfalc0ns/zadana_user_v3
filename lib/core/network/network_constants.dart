@@ -38,7 +38,7 @@ abstract class EndPoints {
   static const String brandFilters = '/brands/{brandId}/filters';
   static const String categorySubcategories = '/categories/subcategories';
   static const String categoryFilters = '/categories/{categoryId}/filters';
-  static const String categoryProducts = '/categories/{subCategoryId}/products';
+  static const String categoryProducts = '/categories/{categoryId}/products';
   static const String shoppingProducts = '/categories/products';
   static const String productsSearch = '/products/search';
   static const String productDetails = '/products/{productId}';
