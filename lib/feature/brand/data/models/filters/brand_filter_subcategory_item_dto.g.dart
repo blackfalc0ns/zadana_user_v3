@@ -12,6 +12,7 @@ BrandFilterSubcategoryItemDto _$BrandFilterSubcategoryItemDtoFromJson(
   id: json['id'] as String?,
   name: json['name'] as String?,
   categoryId: json['category_id'] as String?,
+  imageUrl: json['image_url'] as String?,
 );
 
 Map<String, dynamic> _$BrandFilterSubcategoryItemDtoToJson(
@@ -20,4 +21,5 @@ Map<String, dynamic> _$BrandFilterSubcategoryItemDtoToJson(
   'id': instance.id,
   'name': instance.name,
   'category_id': instance.categoryId,
+  'image_url': instance.imageUrl,
 };

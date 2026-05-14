@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
@@ -38,8 +39,8 @@ class CustomVerticalFilterChip extends StatelessWidget {
         final itemHeight = constraints.maxHeight;
         final compact = itemWidth < 84;
         final ultraCompact = itemHeight.isFinite && itemHeight < 68;
-        final iconSize = ultraCompact ? 16.0 : (compact ? 18.0 : 22.0);
-        final imageSize = ultraCompact ? 22.0 : (compact ? 26.0 : 32.0);
+        final iconSize = ultraCompact ? 18.0 : (compact ? 22.0 : 26.0);
+        final imageSize = ultraCompact ? 32.0 : (compact ? 38.0 : 44.0);
         final labelFontSize = ultraCompact
             ? FontSize.size10
             : (compact ? FontSize.size11 : FontSize.size12);
@@ -99,13 +100,9 @@ class CustomVerticalFilterChip extends StatelessWidget {
                       imageUrl: imageUrl!.trim(),
                       width: imageSize,
                       height: imageSize,
-                      //fit: BoxFit.cover,
-                      placeholder: (context, url) => Image.asset(
-                        Assets.notFound,
-                        width: imageSize,
-                        height: imageSize,
-                        fit: BoxFit.cover,
-                      ),
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) =>const Center(child:CircularProgressIndicator( strokeWidth: .5,
+              valueColor: AlwaysStoppedAnimation(AppColors.primary),)),
                       errorWidget: (context, url, error) => Image.asset(
                         Assets.notFound,
                         width: imageSize,

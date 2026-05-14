@@ -92,20 +92,23 @@ class CategoryProductsService {
     String? subCategoryId,
   }) {
     final hasPriceFilter = state.priceRange != state.priceBounds;
-    final requestCategoryId =
-        state.preferCategoryIdForShoppingSelection &&
-            subCategoryId != null &&
-            subCategoryId.isNotEmpty
-        ? subCategoryId
-        : categoryId;
-    final requestSubCategoryId = state.preferCategoryIdForShoppingSelection
-        ? null
-        : subCategoryId;
+
+    // When a subcategory is selected, send its id as categoryId to the API.
+    // The /categories/products endpoint uses categoryId to filter by subcategory.
+    final String? requestCategoryId;
+    if (subCategoryId != null && subCategoryId.isNotEmpty) {
+      requestCategoryId = subCategoryId;
+    } else if (state.preferCategoryIdForShoppingSelection &&
+        subCategoryId != null &&
+        subCategoryId.isNotEmpty) {
+      requestCategoryId = subCategoryId;
+    } else {
+      requestCategoryId = categoryId;
+    }
 
     return _getShoppingProductsUseCase(
       ShoppingProductsRequestEntity(
         categoryId: requestCategoryId,
-        subCategoryId: requestSubCategoryId,
         productTypeId: state.selectedProductTypeId,
         partId: state.selectedPartId,
         quantityId: state.selectedQuantityId,

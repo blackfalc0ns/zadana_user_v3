@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_brand_section.dart';
@@ -19,6 +20,7 @@ class CategoryFilterSection extends StatelessWidget {
     this.subCategories = const [],
     this.quantities = const [],
     this.brands = const [],
+    this.brandItems = const [],
     this.productTypes = const [],
     this.parts = const [],
     this.selectedCategoryId,
@@ -43,6 +45,7 @@ class CategoryFilterSection extends StatelessWidget {
   final List<CategorySubcategoryItemDto> subCategories;
   final List<String> quantities;
   final List<String> brands;
+  final List<CategoryFilterBrandItemDto> brandItems;
   final List<String> productTypes;
   final List<String> parts;
   final String? selectedCategoryId;
@@ -106,6 +109,7 @@ class CategoryFilterSection extends StatelessWidget {
       ),
       FilterBrandSection(
         brands: brands,
+        brandItems: brandItems,
         selectedBrand: selectedBrand,
         onBrandSelected: onBrandSelected,
       ),

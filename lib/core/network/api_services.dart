@@ -148,7 +148,7 @@ abstract class ApiServices {
 
   @GET(EndPoints.shoppingProducts)
   Future<CategoryProductsResponseModelDto> getShoppingProducts(
-    @Query('category_Id') String? categoryId,
+    @Query('categoryId') String? categoryId,
     @Query('product_type_id') String? productTypeId,
     @Query('part_id') String? partId,
     @Query('quantity_id') String? quantityId,

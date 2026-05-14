@@ -446,6 +446,10 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     .map((item) => item.name?.trim() ?? '')
                     .where((item) => item.isNotEmpty)
                     .toList(growable: false),
+                brandItems: _tempBrandOptions
+                    .where((item) =>
+                        (item.name?.trim() ?? '').isNotEmpty)
+                    .toList(growable: false),
                 productTypes: _tempProductTypeOptions
                     .map((item) => item.name?.trim() ?? '')
                     .where((item) => item.isNotEmpty)

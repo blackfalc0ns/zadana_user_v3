@@ -34,6 +34,7 @@ extension BrandFiltersResponseModelDtoMapper on BrandFiltersResponseModelDto {
               id: item.id ?? '',
               name: item.name?.trim() ?? '',
               categoryId: item.categoryId ?? '',
+              imageUrl: _resolveImageUrl(item.imageUrl),
             ),
           )
           .toList(growable: false),

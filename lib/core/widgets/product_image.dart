@@ -73,19 +73,13 @@ class ProductImage extends StatelessWidget {
  
 
   Widget _buildImage() {
-    // final imageUrl = url;
-    // if (imageUrl == null || imageUrl.isEmpty) {
-    //   return _errorWidget();
-    // }
+    
 
     return LayoutBuilder(
       builder: (context, constraints) {
         return CachedNetworkImage(
           imageUrl: url ?? '',
-        //   width: constraints.maxWidth.isFinite ? constraints.maxWidth : width,
-        //   height: constraints.maxHeight.isFinite ? constraints.maxHeight : height,
-        // //  fit: fit,
-        //  filterQuality: FilterQuality.high,
+       
           placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(
               strokeWidth: .5,
