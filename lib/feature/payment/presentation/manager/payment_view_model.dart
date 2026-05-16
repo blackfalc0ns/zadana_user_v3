@@ -179,6 +179,12 @@ class PaymentViewModel extends Cubit<PaymentState> {
       case ApiSuccessResult<CheckoutSummaryEntity>():
         final retainedPromoCode =
             result.data.promoCode?.code ?? promoCode ?? state.appliedPromoCode;
+
+        // Check if delivery is unavailable after address change
+        final deliveryCheck = result.data.deliveryCheck;
+        final isDeliveryUnavailable =
+            deliveryCheck != null && !deliveryCheck.isDeliverable;
+
         emit(
           state.copyWith(
             isRefreshingSummary: false,
@@ -190,6 +196,13 @@ class PaymentViewModel extends Cubit<PaymentState> {
             ),
             clearSummaryFailure: true,
             clearActionFailure: true,
+            uiEffect: isDeliveryUnavailable
+                ? ShowDeliveryUnavailableDialogEffect(
+                    deliveryCheck.messageAr.isNotEmpty
+                        ? deliveryCheck.messageAr
+                        : deliveryCheck.messageEn,
+                  )
+                : null,
           ),
         );
       case ApiErrorResult<CheckoutSummaryEntity>():
@@ -329,6 +342,18 @@ class PaymentViewModel extends Cubit<PaymentState> {
             errorMessage: 'Please complete the checkout details first.',
           ),
         ),
+      );
+      return;
+    }
+
+    // Block order placement if delivery check indicates invalid delivery.
+    if (!checkoutSummary.isDeliveryValid) {
+      final message =
+          checkoutSummary.deliveryCheck?.messageAr.isNotEmpty == true
+              ? checkoutSummary.deliveryCheck!.messageAr
+              : 'Delivery is not available for the selected address.';
+      emit(
+        state.copyWith(actionFailure: Failure(errorMessage: message)),
       );
       return;
     }

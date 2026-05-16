@@ -15,6 +15,7 @@ import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/pages/verify
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/delivery_otp_screen.dart';
 import 'package:zadana_user_v3/feature/delivery_verification/presentation/pages/success_order_screen.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/home/presentation/pages/all_categories_page.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/building_details_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/manual_address_entry_page.dart';
@@ -260,6 +261,10 @@ class RouteGenerator {
             orderId: arguments?['orderId'],
             courierName: arguments?['courierName'],
           ),
+        );
+      case AppRoutes.allCategories:
+        return MaterialPageRoute(
+          builder: (_) => const AllCategoriesPage(),
         );
       default:
         return unDefinedRoute();

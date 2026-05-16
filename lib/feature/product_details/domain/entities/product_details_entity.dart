@@ -1,4 +1,5 @@
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/entities/product_variant_option_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
 
 class ProductDetailsEntity {
@@ -19,6 +20,7 @@ class ProductDetailsEntity {
     this.unit,
     required this.isDiscounted,
     required this.description,
+    required this.variantOptions,
     required this.vendorPrices,
     required this.similarProducts,
   });
@@ -38,6 +40,7 @@ class ProductDetailsEntity {
   final String? unit;
   final bool isDiscounted;
   final String description;
+  final List<ProductVariantOptionEntity> variantOptions;
   final List<ProductVendorPriceEntity> vendorPrices;
   final List<ProductModel> similarProducts;
 }

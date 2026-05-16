@@ -3,13 +3,13 @@ import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 
 class ProductHeaderSection extends StatelessWidget {
   const ProductHeaderSection({
     super.key,
     required this.productName,
     this.unit,
+    this.displaySize,
     required this.quantity,
     required this.onIncrease,
     required this.onDecrease,
@@ -17,13 +17,13 @@ class ProductHeaderSection extends StatelessWidget {
 
   final String productName;
   final String? unit;
+  final String? displaySize;
   final int quantity;
   final VoidCallback onIncrease;
   final VoidCallback onDecrease;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final color = context.colorScheme;
     final quantityBackground = Color.alphaBlend(
       color.surfaceTint.withValues(alpha: 0.03),
@@ -44,30 +44,6 @@ class ProductHeaderSection extends StatelessWidget {
                   productName,
                   style: AppTextStyles.h3.copyWith(color: color.onSurface),
                 ),
-                const SizedBox(height: 4),
-                if (unit != null && unit!.trim().isNotEmpty) ...[
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.45),
-                      ),
-                    ),
-                    child: Text(
-                      unit!,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

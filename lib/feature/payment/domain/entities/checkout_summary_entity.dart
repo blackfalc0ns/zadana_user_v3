@@ -1,3 +1,6 @@
+import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_delivery_check_entity.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/estimated_delivery_window_entity.dart';
+
 class CheckoutSummaryEntity {
   const CheckoutSummaryEntity({
     required this.cart,
@@ -10,6 +13,8 @@ class CheckoutSummaryEntity {
     this.promoCode,
     this.deliveryQuote,
     this.pricingMode,
+    this.deliveryCheck,
+    this.estimatedDeliveryWindow,
   });
 
   final CheckoutCartEntity cart;
@@ -22,6 +27,13 @@ class CheckoutSummaryEntity {
   final List<CheckoutShippingLineEntity> shippingBreakdown;
   final String? pricingMode;
   final CheckoutTotalsEntity summary;
+  final CheckoutDeliveryCheckEntity? deliveryCheck;
+  final EstimatedDeliveryWindowEntity? estimatedDeliveryWindow;
+
+  /// Whether delivery is valid based on the backend delivery check.
+  /// Returns true if no delivery check is present (backwards compatibility).
+  bool get isDeliveryValid =>
+      deliveryCheck == null || deliveryCheck!.canProceedToCheckout;
 
   CheckoutSummaryEntity copyWith({
     CheckoutCartEntity? cart,
@@ -38,6 +50,10 @@ class CheckoutSummaryEntity {
     String? pricingMode,
     bool clearPricingMode = false,
     CheckoutTotalsEntity? summary,
+    CheckoutDeliveryCheckEntity? deliveryCheck,
+    bool clearDeliveryCheck = false,
+    EstimatedDeliveryWindowEntity? estimatedDeliveryWindow,
+    bool clearEstimatedDeliveryWindow = false,
   }) {
     return CheckoutSummaryEntity(
       cart: cart ?? this.cart,
@@ -54,6 +70,12 @@ class CheckoutSummaryEntity {
       shippingBreakdown: shippingBreakdown ?? this.shippingBreakdown,
       pricingMode: clearPricingMode ? null : pricingMode ?? this.pricingMode,
       summary: summary ?? this.summary,
+      deliveryCheck: clearDeliveryCheck
+          ? null
+          : deliveryCheck ?? this.deliveryCheck,
+      estimatedDeliveryWindow: clearEstimatedDeliveryWindow
+          ? null
+          : estimatedDeliveryWindow ?? this.estimatedDeliveryWindow,
     );
   }
 }

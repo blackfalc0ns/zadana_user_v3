@@ -65,10 +65,14 @@ class BrandsSection extends StatelessWidget {
                 title: locale.section_brands,
                 actionLabel: locale.see_all,
                 onActionTap: () {
+                  final globalCubit = context.read<AppSectionGlobalCubit>();
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) =>
-                          BrandsListingPage(title: locale.section_brands),
+                      builder: (_) => BlocProvider.value(
+                        value: globalCubit,
+                        child:
+                            BrandsListingPage(title: locale.section_brands),
+                      ),
                     ),
                   );
                 },
@@ -143,10 +147,14 @@ class _BrandsLoadingSection extends StatelessWidget {
             title: locale.section_brands,
             actionLabel: locale.see_all,
             onActionTap: () {
+              final globalCubit = context.read<AppSectionGlobalCubit>();
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) =>
-                      BrandsListingPage(title: locale.section_brands),
+                  builder: (_) => BlocProvider.value(
+                    value: globalCubit,
+                    child:
+                        BrandsListingPage(title: locale.section_brands),
+                  ),
                 ),
               );
             },

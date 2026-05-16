@@ -179,8 +179,7 @@ class SearchBarWidget extends StatelessWidget {
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                filterTooltip ??
-                                    locale.delete_category_tooltip,
+                                filterTooltip ?? locale.delete_category_tooltip,
                                 style: getRegularStyle(
                                   fontSize: FontSize.size14,
                                   fontFamily: FontConstant.cairo,

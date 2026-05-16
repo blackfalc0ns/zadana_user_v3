@@ -126,22 +126,46 @@ class OrderEstimatedDeliveryDto {
   const OrderEstimatedDeliveryDto({
     required this.dateTime,
     required this.formatted,
+    this.minMinutes,
+    this.maxMinutes,
+    this.label,
+    this.confidence,
+    this.source,
+    this.isApproximate,
   });
 
   factory OrderEstimatedDeliveryDto.fromJson(Map<String, dynamic> json) {
     return OrderEstimatedDeliveryDto(
       dateTime: DateTime.tryParse(json['datetime']?.toString() ?? ''),
       formatted: json['formatted']?.toString() ?? '',
+      minMinutes: json['min_minutes'] as int?,
+      maxMinutes: json['max_minutes'] as int?,
+      label: json['label']?.toString(),
+      confidence: json['confidence']?.toString(),
+      source: json['source']?.toString(),
+      isApproximate: json['is_approximate'] as bool?,
     );
   }
 
   final DateTime? dateTime;
   final String formatted;
+  final int? minMinutes;
+  final int? maxMinutes;
+  final String? label;
+  final String? confidence;
+  final String? source;
+  final bool? isApproximate;
 
   OrderEstimatedDeliveryEntity toEntity() {
     return OrderEstimatedDeliveryEntity(
       dateTime: dateTime,
       formatted: formatted,
+      minMinutes: minMinutes,
+      maxMinutes: maxMinutes,
+      label: label,
+      confidence: confidence,
+      source: source,
+      isApproximate: isApproximate,
     );
   }
 }

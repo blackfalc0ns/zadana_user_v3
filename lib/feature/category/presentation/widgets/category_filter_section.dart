@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_filter_chip.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_measurement_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/filter_brand_section.dart';
@@ -23,12 +24,19 @@ class CategoryFilterSection extends StatelessWidget {
     this.brandItems = const [],
     this.productTypes = const [],
     this.parts = const [],
+    this.packageTypes = const [],
+    this.measurementUnits = const [],
+    this.measurementValues = const [],
+    this.measurementOptions = const [],
     this.selectedCategoryId,
     this.selectedSubCategoryId,
     this.selectedQuantity,
     this.selectedBrand,
     this.selectedProductType,
     this.selectedPart,
+    this.selectedPackageType,
+    this.selectedMeasurementUnit,
+    this.selectedMeasurementValue,
     required this.priceRange,
     required this.priceBounds,
     required this.onCategorySelected,
@@ -38,6 +46,9 @@ class CategoryFilterSection extends StatelessWidget {
     required this.onProductTypeSelected,
     required this.onPartSelected,
     required this.onPriceRangeChanged,
+    this.onPackageTypeSelected,
+    this.onMeasurementUnitSelected,
+    this.onMeasurementValueSelected,
     this.onLoadMoreCategories,
     this.isLoadingMoreCategories = false,
     this.hasMoreCategories = true,
@@ -51,12 +62,19 @@ class CategoryFilterSection extends StatelessWidget {
   final List<CategoryFilterBrandItemDto> brandItems;
   final List<String> productTypes;
   final List<String> parts;
+  final List<String> packageTypes;
+  final List<String> measurementUnits;
+  final List<double> measurementValues;
+  final List<CategoryMeasurementOptionDto> measurementOptions;
   final String? selectedCategoryId;
   final String? selectedSubCategoryId;
   final String? selectedQuantity;
   final String? selectedBrand;
   final String? selectedProductType;
   final String? selectedPart;
+  final String? selectedPackageType;
+  final String? selectedMeasurementUnit;
+  final double? selectedMeasurementValue;
   final RangeValues priceRange;
   final RangeValues priceBounds;
   final Function(String?) onCategorySelected;
@@ -66,6 +84,9 @@ class CategoryFilterSection extends StatelessWidget {
   final Function(String?) onProductTypeSelected;
   final Function(String?) onPartSelected;
   final Function(RangeValues) onPriceRangeChanged;
+  final Function(String?)? onPackageTypeSelected;
+  final Function(String?)? onMeasurementUnitSelected;
+  final Function(double?)? onMeasurementValueSelected;
   final VoidCallback? onLoadMoreCategories;
   final bool isLoadingMoreCategories;
   final bool hasMoreCategories;
@@ -116,6 +137,71 @@ class CategoryFilterSection extends StatelessWidget {
         selectedQuantity: selectedQuantity,
         onQuantitySelected: onQuantitySelected,
       ),
+      if (packageTypes.isNotEmpty && onPackageTypeSelected != null)
+        FilterOptionSection(
+          title: locale.brand_filter_package_type_title,
+          options: packageTypes,
+          selectedValue: selectedPackageType,
+          onOptionSelected: onPackageTypeSelected!,
+        ),
+      if (measurementUnits.isNotEmpty && onMeasurementUnitSelected != null)
+        FilterOptionSection(
+          title: locale.brand_filter_measurement_unit_title,
+          options: measurementUnits,
+          selectedValue: selectedMeasurementUnit,
+          onOptionSelected: onMeasurementUnitSelected!,
+        ),
+      if (measurementOptions.isNotEmpty && onMeasurementValueSelected != null)
+        FilterOptionSection(
+          title: locale.brand_filter_measurement_value_title,
+          options: measurementOptions
+              .map((o) => o.label ?? '')
+              .where((l) => l.isNotEmpty)
+              .toList(growable: false),
+          selectedValue: selectedMeasurementValue != null
+              ? measurementOptions
+                    .where(
+                      (o) => o.measurementValue == selectedMeasurementValue,
+                    )
+                    .firstOrNull
+                    ?.label
+              : null,
+          onOptionSelected: (value) {
+            if (value == null) {
+              onMeasurementValueSelected!(null);
+            } else {
+              final option = measurementOptions.firstWhere(
+                (o) => o.label == value,
+                orElse: () => const CategoryMeasurementOptionDto(),
+              );
+              onMeasurementValueSelected!(option.measurementValue);
+            }
+          },
+        )
+      else if (measurementValues.isNotEmpty &&
+          onMeasurementValueSelected != null)
+        FilterOptionSection(
+          title: locale.brand_filter_measurement_value_title,
+          options: measurementValues.map(_formatMeasurementValue).toList(
+            growable: false,
+          ),
+          selectedValue: selectedMeasurementValue != null
+              ? _formatMeasurementValue(selectedMeasurementValue!)
+              : null,
+          onOptionSelected: (value) {
+            if (value == null) {
+              onMeasurementValueSelected!(null);
+            } else {
+              final index = measurementValues
+                  .map(_formatMeasurementValue)
+                  .toList()
+                  .indexOf(value);
+              if (index >= 0) {
+                onMeasurementValueSelected!(measurementValues[index]);
+              }
+            }
+          },
+        ),
       FilterBrandSection(
         brands: brands,
         brandItems: brandItems,
@@ -151,6 +237,13 @@ class CategoryFilterSection extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  static String _formatMeasurementValue(double value) {
+    if (value == value.roundToDouble()) {
+      return value.toInt().toString();
+    }
+    return value.toString();
   }
 }
 

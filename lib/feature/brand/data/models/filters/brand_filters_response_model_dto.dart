@@ -13,6 +13,9 @@ class BrandFiltersResponseModelDto {
     this.categories,
     this.subcategories,
     this.units,
+    this.packageTypes,
+    this.measurementUnits,
+    this.measurementValues,
     this.priceRange,
     this.sortOptions,
   });
@@ -24,6 +27,9 @@ class BrandFiltersResponseModelDto {
   final List<BrandFilterOptionDto>? categories;
   final List<BrandFilterSubcategoryItemDto>? subcategories;
   final List<BrandFilterOptionDto>? units;
+  final List<BrandFilterOptionDto>? packageTypes;
+  final List<BrandFilterOptionDto>? measurementUnits;
+  final List<double>? measurementValues;
   final BrandFilterPriceRangeDto? priceRange;
   final List<BrandFilterSortOptionDto>? sortOptions;
 

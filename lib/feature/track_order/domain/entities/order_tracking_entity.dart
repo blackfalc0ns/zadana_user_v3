@@ -88,18 +88,53 @@ class OrderEstimatedDeliveryEntity {
   const OrderEstimatedDeliveryEntity({
     required this.dateTime,
     required this.formatted,
+    this.minMinutes,
+    this.maxMinutes,
+    this.label,
+    this.confidence,
+    this.source,
+    this.isApproximate,
   });
 
   final DateTime? dateTime;
   final String formatted;
+  final int? minMinutes;
+  final int? maxMinutes;
+  final String? label;
+  final String? confidence;
+  final String? source;
+  final bool? isApproximate;
+
+  /// Returns the best display label for the ETA.
+  /// Prefers the window-based [label] if available, falls back to [formatted].
+  String get displayLabel {
+    final windowLabel = label?.trim() ?? '';
+    if (windowLabel.isNotEmpty) return windowLabel;
+    return formatted;
+  }
+
+  /// Whether this ETA uses the new window-based format.
+  bool get hasDeliveryWindow => minMinutes != null && maxMinutes != null;
 
   OrderEstimatedDeliveryEntity copyWith({
     DateTime? dateTime,
     String? formatted,
+    int? minMinutes,
+    int? maxMinutes,
+    String? label,
+    String? confidence,
+    String? source,
+    bool? isApproximate,
   }) {
     return OrderEstimatedDeliveryEntity(
       dateTime: dateTime ?? this.dateTime,
       formatted: formatted ?? this.formatted,
+      minMinutes: minMinutes ?? this.minMinutes,
+      maxMinutes: maxMinutes ?? this.maxMinutes,
+      label: label ?? this.label,
+      confidence: confidence ?? this.confidence,
+      source: source ?? this.source,
+      isApproximate: isApproximate ?? this.isApproximate,
     );
   }
 }

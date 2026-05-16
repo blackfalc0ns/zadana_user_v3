@@ -1,3 +1,4 @@
+import 'package:zadana_user_v3/feature/product_details/data/models/product_variant_option_model_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_vendor_price_model_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/similar_product_model_dto.dart';
 
@@ -19,6 +20,7 @@ class ProductDetailsResponseModelDto {
     this.unit,
     this.isDiscounted,
     this.description,
+    this.variantOptions,
     this.vendorPrices,
     this.similarProducts,
   });
@@ -41,6 +43,13 @@ class ProductDetailsResponseModelDto {
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
       description: json['description'] as String?,
+      variantOptions: (json['variant_options'] as List<dynamic>?)
+          ?.map(
+            (item) => ProductVariantOptionModelDto.fromJson(
+              item as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
       vendorPrices: (json['vendor_prices'] as List<dynamic>?)
           ?.map(
             (item) => ProductVendorPriceModelDto.fromJson(
@@ -72,6 +81,7 @@ class ProductDetailsResponseModelDto {
   final String? unit;
   final bool? isDiscounted;
   final String? description;
+  final List<ProductVariantOptionModelDto>? variantOptions;
   final List<ProductVendorPriceModelDto>? vendorPrices;
   final List<SimilarProductModelDto>? similarProducts;
 }

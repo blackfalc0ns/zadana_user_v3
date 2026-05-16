@@ -64,17 +64,14 @@ class _FilterCategorySectionState extends State<FilterCategorySection> {
         const SizedBox(height: Spacing.md),
         LayoutBuilder(
           builder: (context, constraints) {
-            final width = constraints.maxWidth;
-            final childAspectRatio = width < 360 ? 0.72 : 0.86;
-
             return GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                childAspectRatio: childAspectRatio,
-                crossAxisSpacing: Spacing.sm,
-                mainAxisSpacing: Spacing.sm,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: Spacing.xs,
+                mainAxisSpacing: Spacing.xs,
               ),
               itemCount: widget.categories.length,
               itemBuilder: (context, index) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_view_model.dart';
@@ -207,6 +208,15 @@ class PaymentScreenEffectHandler {
         context,
         effect.orderId,
         isCashOnDelivery: effect.isCashOnDelivery,
+      );
+      return;
+    }
+
+    if (effect is ShowDeliveryUnavailableDialogEffect) {
+      viewModel.doIntent(const PaymentClearUiEffectEvent());
+      showDeliveryUnavailableDialog(
+        context: context,
+        message: effect.message,
       );
       return;
     }

@@ -24,6 +24,7 @@ class ProductDescriptionSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+           const SizedBox(height: Spacing.md),
           Text(
             title,
             style: AppTextStyles.labelLarge.copyWith(

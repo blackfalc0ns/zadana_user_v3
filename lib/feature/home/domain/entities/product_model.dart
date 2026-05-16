@@ -13,6 +13,13 @@ class ProductModel {
     this.unit,
     this.emoji,
     required this.isDiscounted,
+    this.packageTypeNameAr,
+    this.packageTypeNameEn,
+    this.measurementUnitNameAr,
+    this.measurementUnitNameEn,
+    this.measurementValue,
+    this.displaySizeAr,
+    this.displaySizeEn,
   });
   final String id;
   final String name;
@@ -27,6 +34,13 @@ class ProductModel {
   final String? unit;
   final String? emoji; // ← fallback لو الصورة مش شغالة
   final bool isDiscounted;
+  final String? packageTypeNameAr;
+  final String? packageTypeNameEn;
+  final String? measurementUnitNameAr;
+  final String? measurementUnitNameEn;
+  final double? measurementValue;
+  final String? displaySizeAr;
+  final String? displaySizeEn;
 
   ProductModel copyWith({
     String? id,
@@ -42,6 +56,13 @@ class ProductModel {
     String? unit,
     String? emoji,
     bool? isDiscounted,
+    String? packageTypeNameAr,
+    String? packageTypeNameEn,
+    String? measurementUnitNameAr,
+    String? measurementUnitNameEn,
+    double? measurementValue,
+    String? displaySizeAr,
+    String? displaySizeEn,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -57,6 +78,15 @@ class ProductModel {
       unit: unit ?? this.unit,
       emoji: emoji ?? this.emoji,
       isDiscounted: isDiscounted ?? this.isDiscounted,
+      packageTypeNameAr: packageTypeNameAr ?? this.packageTypeNameAr,
+      packageTypeNameEn: packageTypeNameEn ?? this.packageTypeNameEn,
+      measurementUnitNameAr:
+          measurementUnitNameAr ?? this.measurementUnitNameAr,
+      measurementUnitNameEn:
+          measurementUnitNameEn ?? this.measurementUnitNameEn,
+      measurementValue: measurementValue ?? this.measurementValue,
+      displaySizeAr: displaySizeAr ?? this.displaySizeAr,
+      displaySizeEn: displaySizeEn ?? this.displaySizeEn,
     );
   }
 

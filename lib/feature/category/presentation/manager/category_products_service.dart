@@ -113,6 +113,9 @@ class CategoryProductsService {
         partId: state.selectedPartId,
         quantityId: state.selectedQuantityId,
         brandId: state.selectedBrandId,
+        packageTypeId: state.selectedPackageTypeId,
+        measurementUnitId: state.selectedMeasurementUnitId,
+        measurementValue: state.selectedMeasurementValue,
         minPrice: state.priceRange.start,
         maxPrice: state.priceRange.end,
         sort: state.selectedSortOption.isEmpty
@@ -150,6 +153,9 @@ class CategoryProductsService {
         partId: state.selectedPartId,
         quantityId: state.selectedQuantityId,
         brandId: state.selectedBrandId,
+        packageTypeId: state.selectedPackageTypeId,
+        measurementUnitId: state.selectedMeasurementUnitId,
+        measurementValue: state.selectedMeasurementValue,
         minPrice: hasPriceFilter ? state.priceRange.start : null,
         maxPrice: hasPriceFilter ? state.priceRange.end : null,
         sort: state.selectedSortOption.isEmpty
@@ -189,6 +195,9 @@ class CategoryProductsService {
         partId: state.selectedPartId,
         quantityId: state.selectedQuantityId,
         brandId: state.selectedBrandId,
+        packageTypeId: state.selectedPackageTypeId,
+        measurementUnitId: state.selectedMeasurementUnitId,
+        measurementValue: state.selectedMeasurementValue,
         minPrice: hasPriceFilter ? state.priceRange.start : null,
         maxPrice: hasPriceFilter ? state.priceRange.end : null,
         sort: state.selectedSortOption.isEmpty

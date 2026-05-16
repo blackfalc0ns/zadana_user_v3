@@ -13,6 +13,7 @@ import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/core/widgets/product_size_summary.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
@@ -217,6 +218,11 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                   ),
                                   maxLines: allowExpandedTabletTitle ? 2 : 1,
                                   overflow: TextOverflow.ellipsis,
+                                ),
+                                ProductSizeSummary(
+                                  product: widget.product,
+                                  fontSize: spec.titleFontSize * 0.82,
+                                  compact: true,
                                 ),
                                 SizedBox(height: spec.contentSpacing),
                                 Row(

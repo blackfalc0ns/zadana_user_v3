@@ -128,6 +128,7 @@ import '../../feature/cart/data/data_source/cart_remote_data_source_impl.dart'
 import '../../feature/cart/data/repo/cart_repository_impl.dart' as _i132;
 import '../../feature/cart/domain/repo/cart_repository.dart' as _i435;
 import '../../feature/cart/domain/usecase/add_cart_item_usecase.dart' as _i448;
+import '../../feature/cart/domain/usecase/check_delivery_usecase.dart' as _i262;
 import '../../feature/cart/domain/usecase/clear_cart_usecase.dart' as _i327;
 import '../../feature/cart/domain/usecase/get_cart_usecase.dart' as _i925;
 import '../../feature/cart/domain/usecase/get_cart_vendors_usecase.dart'
@@ -209,6 +210,8 @@ import '../../feature/home/domain/usecase/get_home_recommended_usecase.dart'
     as _i394;
 import '../../feature/home/domain/usecase/get_home_special_offers_usecase.dart'
     as _i342;
+import '../../feature/home/presentation/manager/all_categories/all_categories_view_model.dart'
+    as _i305;
 import '../../feature/home/presentation/manager/home_view_model.dart' as _i495;
 import '../../feature/location/data/datasources/location_data_source.dart'
     as _i408;
@@ -629,6 +632,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i448.AddCartItemUseCase>(
       () => _i448.AddCartItemUseCase(gh<_i435.CartRepository>()),
+    );
+    gh.factory<_i262.CheckDeliveryUseCase>(
+      () => _i262.CheckDeliveryUseCase(gh<_i435.CartRepository>()),
     );
     gh.factory<_i327.ClearCartUseCase>(
       () => _i327.ClearCartUseCase(gh<_i435.CartRepository>()),
@@ -1052,6 +1058,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i227.TokenService>(),
         gh<_i823.NotificationDeviceService>(),
       ),
+    );
+    gh.factory<_i305.AllCategoriesViewModel>(
+      () => _i305.AllCategoriesViewModel(gh<_i17.GetCategoriesUseCase>()),
     );
     gh.factory<_i190.FavoritesViewModel>(
       () => _i190.FavoritesViewModel(

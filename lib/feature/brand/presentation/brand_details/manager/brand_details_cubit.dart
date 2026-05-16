@@ -19,12 +19,14 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
     @factoryParam this._brand,
   ) : super(const BrandDetailsState());
 
+  static const int _perPage = 20;
+
   final BrandModel _brand;
   final GetBrandFiltersUseCase _getBrandFiltersUseCase;
   final GetBrandProductsUseCase _getBrandProductsUseCase;
 
   Future<void> loadInitial() async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    emit(state.copyWith(isLoading: true, errorMessage: null, exception: null));
 
     final result = await _getBrandFiltersUseCase(_brand.id);
     switch (result) {
@@ -42,10 +44,14 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
             categories: filters.categories,
             subcategories: filters.subcategories,
             units: filters.units,
+            packageTypes: filters.packageTypes,
+            measurementUnits: filters.measurementUnits,
+            measurementValues: filters.measurementValues,
             sortOptions: filters.sortOptions,
             priceBounds: priceBounds,
             priceRange: priceBounds,
             errorMessage: null,
+            exception: null,
           ),
         );
         await _loadProducts();
@@ -57,8 +63,12 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
             categories: const [],
             subcategories: const [],
             units: const [],
+            packageTypes: const [],
+            measurementUnits: const [],
+            measurementValues: const [],
             sortOptions: const [],
             errorMessage: result.failure.errorMessage,
+            exception: result.failure.exception,
           ),
         );
     }
@@ -81,6 +91,9 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
         selectedCategoryId: null,
         selectedSubcategoryId: null,
         selectedUnitId: null,
+        selectedPackageTypeId: null,
+        selectedMeasurementUnitId: null,
+        selectedMeasurementValue: null,
         selectedSortValue: '',
         priceRange: state.priceBounds,
         errorMessage: null,
@@ -95,6 +108,9 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
         selectedCategoryId: null,
         selectedSubcategoryId: null,
         selectedUnitId: null,
+        selectedPackageTypeId: null,
+        selectedMeasurementUnitId: null,
+        selectedMeasurementValue: null,
         selectedSortValue: '',
         priceRange: state.priceBounds,
         errorMessage: null,
@@ -107,6 +123,9 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
     String? categoryName,
     String? subcategoryName,
     String? unitName,
+    String? packageTypeId,
+    String? measurementUnitId,
+    double? measurementValue,
     RangeValues? priceRange,
   }) async {
     emit(
@@ -114,6 +133,9 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
         selectedCategoryId: _findOptionIdByName(state.categories, categoryName),
         selectedSubcategoryId: _findSubcategoryIdByName(subcategoryName),
         selectedUnitId: _findOptionIdByName(state.units, unitName),
+        selectedPackageTypeId: packageTypeId,
+        selectedMeasurementUnitId: measurementUnitId,
+        selectedMeasurementValue: measurementValue,
         priceRange: priceRange ?? state.priceBounds,
         errorMessage: null,
       ),
@@ -132,17 +154,32 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
   }
 
   Future<void> _loadProducts() async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        errorMessage: null,
+        exception: null,
+        currentPage: 1,
+        hasMore: true,
+      ),
+    );
 
-    final result = await _getBrandProductsUseCase(_buildRequest());
+    final result = await _getBrandProductsUseCase(
+      _buildRequest(page: 1),
+    );
     switch (result) {
       case ApiSuccessResult<BrandProductsEntity>():
+        final data = result.data;
+        final hasMore = data.items.length < data.total;
         emit(
           state.copyWith(
             isLoading: false,
-            products: result.data.items,
-            totalProducts: result.data.total,
+            products: data.items,
+            totalProducts: data.total,
+            currentPage: 1,
+            hasMore: hasMore,
             errorMessage: null,
+            exception: null,
           ),
         );
       case ApiErrorResult<BrandProductsEntity>():
@@ -151,13 +188,43 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
             isLoading: false,
             products: const [],
             totalProducts: 0,
+            hasMore: false,
             errorMessage: result.failure.errorMessage,
+            exception: result.failure.exception,
           ),
         );
     }
   }
 
-  BrandProductsRequestEntity _buildRequest() {
+  Future<void> loadMore() async {
+    if (state.isLoading || state.isLoadingMore || !state.hasMore) return;
+
+    final nextPage = state.currentPage + 1;
+    emit(state.copyWith(isLoadingMore: true));
+
+    final result = await _getBrandProductsUseCase(
+      _buildRequest(page: nextPage),
+    );
+    switch (result) {
+      case ApiSuccessResult<BrandProductsEntity>():
+        final data = result.data;
+        final allProducts = [...state.products, ...data.items];
+        final hasMore = allProducts.length < data.total;
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            products: allProducts,
+            totalProducts: data.total,
+            currentPage: nextPage,
+            hasMore: hasMore,
+          ),
+        );
+      case ApiErrorResult<BrandProductsEntity>():
+        emit(state.copyWith(isLoadingMore: false));
+    }
+  }
+
+  BrandProductsRequestEntity _buildRequest({int page = 1}) {
     final hasActivePriceFilter = state.hasActivePriceFilter;
 
     return BrandProductsRequestEntity(
@@ -167,9 +234,14 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
       categoryId: state.selectedCategoryId,
       subcategoryId: state.selectedSubcategoryId,
       unitId: state.selectedUnitId,
+      packageTypeId: state.selectedPackageTypeId,
+      measurementUnitId: state.selectedMeasurementUnitId,
+      measurementValue: state.selectedMeasurementValue,
       minPrice: hasActivePriceFilter ? state.priceRange.start : null,
       maxPrice: hasActivePriceFilter ? state.priceRange.end : null,
       sort: state.selectedSortValue.isEmpty ? null : state.selectedSortValue,
+      page: page,
+      perPage: _perPage,
     );
   }
 

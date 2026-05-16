@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/utils/product_sort_options.dart';
@@ -38,6 +39,7 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
   late final ScrollController _searchScrollController;
+  late final ScrollController _productsScrollController;
   ProductSearchViewModel? _searchViewModel;
   StreamSubscription<ProductSearchState>? _searchStateSubscription;
   String? _searchScopeKey;
@@ -51,6 +53,8 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
     _searchController = TextEditingController();
     _searchFocusNode = FocusNode();
     _searchScrollController = ScrollController()..addListener(_handleScroll);
+    _productsScrollController = ScrollController()
+      ..addListener(_handleProductsScroll);
   }
 
   @override
@@ -59,6 +63,9 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
     _searchFocusNode.dispose();
     _searchScrollController
       ..removeListener(_handleScroll)
+      ..dispose();
+    _productsScrollController
+      ..removeListener(_handleProductsScroll)
       ..dispose();
     unawaited(_searchStateSubscription?.cancel());
     unawaited(_searchViewModel?.close());
@@ -75,11 +82,17 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
       categories: state.categories,
       subcategories: state.subcategories,
       units: state.unitNames,
+      packageTypes: state.packageTypes,
+      measurementUnits: state.measurementUnits,
+      measurementValues: state.measurementValues,
       currentPriceRange: state.priceRange,
       priceBounds: state.priceBounds,
       currentSelectedCategory: state.selectedCategoryName,
       currentSelectedSubcategory: state.selectedSubcategoryName,
       currentSelectedUnit: state.selectedUnitName,
+      currentSelectedPackageTypeId: state.selectedPackageTypeId,
+      currentSelectedMeasurementUnitId: state.selectedMeasurementUnitId,
+      currentSelectedMeasurementValue: state.selectedMeasurementValue,
     );
 
     if (result != null) {
@@ -87,6 +100,9 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
         categoryName: result['category'] as String?,
         subcategoryName: result['subcategory'] as String?,
         unitName: result['unit'] as String?,
+        packageTypeId: result['packageTypeId'] as String?,
+        measurementUnitId: result['measurementUnitId'] as String?,
+        measurementValue: result['measurementValue'] as double?,
         priceRange: result['priceRange'] as RangeValues? ?? state.priceBounds,
       );
     }
@@ -135,6 +151,14 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
       return;
     }
     viewModel.doIntent(const ProductSearchLoadMoreEvent());
+  }
+
+  void _handleProductsScroll() {
+    if (!_productsScrollController.hasClients) return;
+    if (_productsScrollController.position.extentAfter > _loadMoreThreshold) {
+      return;
+    }
+    context.read<BrandDetailsCubit>().loadMore();
   }
 
   String _buildSearchScopeKey(BrandDetailsState state) {
@@ -283,6 +307,7 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
 
           return Scaffold(
             body: CustomScrollView(
+              controller: _productsScrollController,
               slivers: [
                 BrandHeader(
                   brand: brand,
@@ -329,36 +354,29 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
                   SliverFillRemaining(child: _buildSearchResults())
                 else if (state.isLoading)
                   const BrandLoadingSkeleton()
-                else if (state.errorMessage != null)
+                else if (state.exception != null)
                   SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(
+                    child: ApiErrorWidget(
+                      exception: state.exception!,
+                      onRetry: cubit.loadInitial,
+                    ),
+                  )
+                else ...[
+                  BrandProductsGrid(products: state.products),
+                  if (state.isLoadingMore)
+                    const SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.error_outline, size: 48),
-                            const SizedBox(height: 12),
-                            Text(
-                              state.errorMessage!,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: cubit.loadInitial,
-                              child: const Text('إعادة المحاولة'),
-                            ),
-                          ],
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
                         ),
                       ),
                     ),
-                  )
-                else
-                  BrandProductsGrid(products: state.products),
+                ],
               ],
             ),
-            floatingActionButton: state.isLoading || state.errorMessage != null
+            floatingActionButton: state.isLoading || state.exception != null
                 ? null
                 : CustomBottomFilterButtons(
                     sortLabel: context.localization.sort_button,

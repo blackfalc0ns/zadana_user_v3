@@ -74,7 +74,7 @@ class CustomFilterChip extends StatelessWidget {
               : (backgroundColor ?? AppColors.white),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Row(
+        child: Row(spacing: 2,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (hasImage) ...[
@@ -110,8 +110,9 @@ class CustomFilterChip extends StatelessWidget {
             Flexible(
               child: Text(
                 label,
-                style: getMediumStyle(
+                style: getSemiBoldStyle(
                   fontFamily: FontConstant.cairo,
+                 fontSize: FontSize.size13,
                   color: isSelected ? color.onPrimary : color.onSurface,
                 ).merge(textStyle),
                 maxLines: 1,

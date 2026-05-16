@@ -19,6 +19,13 @@ class BrandProductModel {
     this.size,
     this.isBestSeller = false,
     this.createdAt,
+    this.packageTypeNameAr,
+    this.packageTypeNameEn,
+    this.measurementUnitNameAr,
+    this.measurementUnitNameEn,
+    this.measurementValue,
+    this.displaySizeAr,
+    this.displaySizeEn,
   });
   final String id;
   final String name;
@@ -39,6 +46,13 @@ class BrandProductModel {
   final String? size;
   final bool isBestSeller;
   final DateTime? createdAt;
+  final String? packageTypeNameAr;
+  final String? packageTypeNameEn;
+  final String? measurementUnitNameAr;
+  final String? measurementUnitNameEn;
+  final double? measurementValue;
+  final String? displaySizeAr;
+  final String? displaySizeEn;
 
   bool get hasDiscount => discount != null && discount!.isNotEmpty;
 
@@ -62,6 +76,13 @@ class BrandProductModel {
     String? size,
     bool? isBestSeller,
     DateTime? createdAt,
+    String? packageTypeNameAr,
+    String? packageTypeNameEn,
+    String? measurementUnitNameAr,
+    String? measurementUnitNameEn,
+    double? measurementValue,
+    String? displaySizeAr,
+    String? displaySizeEn,
   }) {
     return BrandProductModel(
       id: id ?? this.id,
@@ -83,6 +104,15 @@ class BrandProductModel {
       size: size ?? this.size,
       isBestSeller: isBestSeller ?? this.isBestSeller,
       createdAt: createdAt ?? this.createdAt,
+      packageTypeNameAr: packageTypeNameAr ?? this.packageTypeNameAr,
+      packageTypeNameEn: packageTypeNameEn ?? this.packageTypeNameEn,
+      measurementUnitNameAr:
+          measurementUnitNameAr ?? this.measurementUnitNameAr,
+      measurementUnitNameEn:
+          measurementUnitNameEn ?? this.measurementUnitNameEn,
+      measurementValue: measurementValue ?? this.measurementValue,
+      displaySizeAr: displaySizeAr ?? this.displaySizeAr,
+      displaySizeEn: displaySizeEn ?? this.displaySizeEn,
     );
   }
 }

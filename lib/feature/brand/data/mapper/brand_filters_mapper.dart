@@ -52,6 +52,36 @@ extension BrandFiltersResponseModelDtoMapper on BrandFiltersResponseModelDto {
             ),
           )
           .toList(growable: false),
+      packageTypes: (packageTypes ?? const [])
+          .where(
+            (item) =>
+                (item.id ?? '').isNotEmpty &&
+                (item.name ?? '').trim().isNotEmpty,
+          )
+          .map(
+            (item) => BrandFilterOptionEntity(
+              id: item.id ?? '',
+              name: item.name?.trim() ?? '',
+              imageUrl: _resolveImageUrl(item.imageUrl),
+            ),
+          )
+          .toList(growable: false),
+      measurementUnits: (measurementUnits ?? const [])
+          .where(
+            (item) =>
+                (item.id ?? '').isNotEmpty &&
+                (item.name ?? '').trim().isNotEmpty,
+          )
+          .map(
+            (item) => BrandFilterOptionEntity(
+              id: item.id ?? '',
+              name: item.name?.trim() ?? '',
+              imageUrl: _resolveImageUrl(item.imageUrl),
+            ),
+          )
+          .toList(growable: false),
+      measurementValues: (measurementValues ?? const [])
+          .toList(growable: false),
       priceRange: BrandFilterPriceRangeEntity(
         min: priceRange?.min ?? 0,
         max: priceRange?.max ?? priceRange?.min ?? 0,

@@ -20,6 +20,9 @@ class CategoryFiltersService {
       brand: result['brand'] as String?,
       productType: result['productType'] as String?,
       part: result['part'] as String?,
+      packageType: result['packageType'] as String?,
+      measurementUnit: result['measurementUnit'] as String?,
+      measurementValue: result['measurementValue'] as double?,
       priceRange: normalizePriceRange(
         result['priceRange'] as RangeValues?,
         fallback: fallbackPriceRange,
@@ -72,6 +75,18 @@ class CategoryFiltersService {
         idOf: (item) => item.id,
         nameOf: (item) => item.name,
       ),
+      packageTypeOptions: validItems(
+        filters.packageTypes ?? const [],
+        idOf: (item) => item.id,
+        nameOf: (item) => item.name,
+      ),
+      measurementUnitOptions: validItems(
+        filters.measurementUnits ?? const [],
+        idOf: (item) => item.id,
+        nameOf: (item) => item.name,
+      ),
+      measurementValueOptions: filters.measurementValues ?? const [],
+      measurementOptions: filters.measurementOptions ?? const [],
       sortOptions: (filters.sortOptions ?? const [])
           .map(
             (item) => {
@@ -117,6 +132,9 @@ class CategoryFilterSelection {
     required this.brand,
     required this.productType,
     required this.part,
+    required this.packageType,
+    required this.measurementUnit,
+    required this.measurementValue,
     required this.priceRange,
   });
 
@@ -128,6 +146,9 @@ class CategoryFilterSelection {
   final String? brand;
   final String? productType;
   final String? part;
+  final String? packageType;
+  final String? measurementUnit;
+  final double? measurementValue;
   final RangeValues priceRange;
 }
 

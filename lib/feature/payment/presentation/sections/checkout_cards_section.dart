@@ -5,7 +5,7 @@ import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_addres
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/animated_card_wrapper.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_delivery_info_card.dart';
-import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_delivery_slots_card.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_eta_card.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_order_summary_card.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_payment_method_card.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_price_breakdown_card.dart';
@@ -62,14 +62,16 @@ class CheckoutCardsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: Spacing.md),
-        AnimatedCardWrapper(
-          delay: 250,
-          child: CheckoutDeliverySlotsCard(
-            deliverySlots: checkoutSummary.deliverySlots,
-            onDeliverySlotSelected: onDeliverySlotChanged,
+        if (checkoutSummary.estimatedDeliveryWindow != null) ...[
+          AnimatedCardWrapper(
+            delay: 250,
+            child: CheckoutEtaCard(
+              estimatedDeliveryWindow:
+                  checkoutSummary.estimatedDeliveryWindow!,
+            ),
           ),
-        ),
-        const SizedBox(height: Spacing.md),
+          const SizedBox(height: Spacing.md),
+        ],
         AnimatedCardWrapper(
           delay: 300,
           child: CheckoutPaymentMethodCard(

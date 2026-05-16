@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/utils/product_sort_options.dart';
 import 'package:zadana_user_v3/core/widgets/custom_bottom_filter_buttons.dart';
-import 'package:zadana_user_v3/core/widgets/custom_filter_bottom_sheet.dart';
 import 'package:zadana_user_v3/core/widgets/custom_sort_bottom_sheet.dart';
-import 'package:zadana_user_v3/feature/category/data/mapper/category_mapper.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
-import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
-import 'package:zadana_user_v3/feature/category/data/models/category_filter_part_item_dto.dart';
-import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_measurement_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/category/presentation/widgets/category_content.dart';
-import 'package:zadana_user_v3/feature/category/presentation/widgets/category_filter_section.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/category_filter_helpers.dart';
+import 'package:zadana_user_v3/feature/category/presentation/widgets/category_filter_sheet_mixin.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
 class ReusableCategoryScreen extends StatefulWidget {
@@ -33,9 +28,16 @@ class ReusableCategoryScreen extends StatefulWidget {
     this.availableQuantities = const [],
     this.availableProductTypes = const [],
     this.availableParts = const [],
+    this.availablePackageTypes = const [],
+    this.availableMeasurementUnits = const [],
+    this.availableMeasurementValues = const [],
+    this.availableMeasurementOptions = const [],
     this.selectedQuantity,
     this.selectedProductType,
     this.selectedPart,
+    this.selectedPackageType,
+    this.selectedMeasurementUnit,
+    this.selectedMeasurementValue,
     this.filterSelectedCategory,
     this.filterSelectedQuantity,
     this.filterSelectedBrand,
@@ -96,9 +98,16 @@ class ReusableCategoryScreen extends StatefulWidget {
   final List<String> availableQuantities;
   final List<String> availableProductTypes;
   final List<String> availableParts;
+  final List<String> availablePackageTypes;
+  final List<String> availableMeasurementUnits;
+  final List<double> availableMeasurementValues;
+  final List<CategoryMeasurementOptionDto> availableMeasurementOptions;
   final String? selectedQuantity;
   final String? selectedProductType;
   final String? selectedPart;
+  final String? selectedPackageType;
+  final String? selectedMeasurementUnit;
+  final double? selectedMeasurementValue;
   final String? filterSelectedCategory;
   final String? filterSelectedQuantity;
   final String? filterSelectedBrand;
@@ -150,31 +159,12 @@ class ReusableCategoryScreen extends StatefulWidget {
   State<ReusableCategoryScreen> createState() => _ReusableCategoryScreenState();
 }
 
-class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
-  late String? _tempFilterCategory;
-  late String? _tempFilterCategoryId;
-  late String? _tempSubCategoryName;
-  late String? _tempSubCategoryId;
-  late String? _tempFilterQuantity;
-  late String? _tempFilterBrand;
-  late String? _tempFilterProductType;
-  late String? _tempFilterPart;
-  late RangeValues _tempPriceRange;
-  late RangeValues _tempPriceBounds;
-  late List<CategorySubcategoryItemDto> _tempSubCategories;
-  late List<CategoryFilterOptionDto> _tempQuantityOptions;
-  late List<CategoryFilterBrandItemDto> _tempBrandOptions;
-  late List<CategoryFilterOptionDto> _tempProductTypeOptions;
-  late List<CategoryFilterPartItemDto> _tempPartOptions;
-
-  /// Cached expanded categories list from "show more" loads.
-  List<CategoryEntity>? _cachedSheetCategories;
-  bool _cachedHasMoreCategories = true;
-
+class _ReusableCategoryScreenState extends State<ReusableCategoryScreen>
+    with CategoryFilterHelpers, CategoryFilterSheetMixin {
   @override
   void initState() {
     super.initState();
-    _resetTempFilters();
+    resetTempFilters();
   }
 
   @override
@@ -195,506 +185,14 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
         widget.availableBrands != oldWidget.availableBrands ||
         widget.availableProductTypes != oldWidget.availableProductTypes ||
         widget.availableParts != oldWidget.availableParts) {
-      _resetTempFilters();
+      resetTempFilters();
     }
-  }
-
-  void _resetTempFilters() {
-    _tempFilterCategory =
-        widget.filterSelectedCategory ??
-        (widget.showCategoryFilterSection
-            ? _resolveParentCategoryName()
-            : widget.selectedCategory);
-    _tempFilterCategoryId = widget.selectedCategoryId;
-    _tempSubCategoryName = widget.selectedSubCategory.isEmpty
-        ? null
-        : widget.selectedSubCategory;
-    _tempSubCategoryId = widget.selectedSubCategoryId;
-    _tempFilterQuantity = widget.filterSelectedQuantity;
-    _tempFilterBrand = widget.filterSelectedBrand;
-    _tempFilterProductType = widget.selectedProductType;
-    _tempFilterPart = widget.selectedPart;
-    _tempPriceRange = widget.priceRange;
-    _tempPriceBounds = widget.priceBounds;
-    _tempSubCategories = List<CategorySubcategoryItemDto>.from(
-      widget.subCategories,
-    );
-    _tempQuantityOptions = widget.availableQuantities
-        .map((item) => CategoryFilterOptionDto(name: item))
-        .toList(growable: false);
-    _tempBrandOptions = widget.brandItems.isNotEmpty
-        ? widget.brandItems
-            .where((item) => (item.name?.trim() ?? '').isNotEmpty)
-            .toList(growable: false)
-        : widget.availableBrands
-            .map((item) => CategoryFilterBrandItemDto(name: item))
-            .toList(growable: false);
-    _tempProductTypeOptions = widget.availableProductTypes
-        .map((item) => CategoryFilterOptionDto(name: item))
-        .toList(growable: false);
-    _tempPartOptions = widget.availableParts
-        .map((item) => CategoryFilterPartItemDto(name: item))
-        .toList(growable: false);
-  }
-
-  CategoryEntity? _findCategoryByName(String? categoryName) {
-    if (categoryName == null || categoryName.isEmpty) return null;
-
-    for (final category in widget.categories) {
-      if (category.name == categoryName) {
-        return category;
-      }
-    }
-
-    return null;
-  }
-
-  /// Resolves the parent category name from the selected subcategory using
-  /// the subCategoryCategoryMap or falls back to selectedCategoryId.
-  String? _resolveParentCategoryName() {
-    final subCategoryId = widget.selectedSubCategoryId;
-    if (subCategoryId == null || subCategoryId.isEmpty) return null;
-
-    final parentCategoryId =
-        widget.subCategoryCategoryMap[subCategoryId] ??
-        widget.selectedCategoryId;
-    return _findCategoryById(parentCategoryId)?.name;
-  }
-
-  CategoryEntity? _findCategoryById(String? categoryId) {
-    if (categoryId == null || categoryId.isEmpty) return null;
-
-    for (final category in widget.categories) {
-      if (category.id == categoryId) {
-        return category;
-      }
-    }
-
-    return null;
-  }
-
-  CategoryEntity? _findCategoryInList(
-    String? categoryId,
-    List<CategoryEntity> categories,
-  ) {
-    if (categoryId == null || categoryId.isEmpty) return null;
-
-    for (final category in categories) {
-      if (category.id == categoryId) {
-        return category;
-      }
-    }
-
-    return null;
-  }
-
-  String? _findCategoryNameById(String? categoryId) {
-    return _findCategoryById(categoryId)?.name;
-  }
-
-  String? _resolveTempFilterCategoryId() {
-    return _findCategoryByName(_tempFilterCategory)?.id ??
-        widget.selectedCategoryId;
-  }
-
-  String? _resolveTempFilterCategoryIdFrom(List<CategoryEntity> categories) {
-    // First try the directly stored ID
-    if (_tempFilterCategoryId != null && _tempFilterCategoryId!.isNotEmpty) {
-      return _tempFilterCategoryId;
-    }
-    // Fallback: search by name
-    if (_tempFilterCategory != null && _tempFilterCategory!.isNotEmpty) {
-      for (final category in categories) {
-        if (category.name == _tempFilterCategory) {
-          return category.id;
-        }
-      }
-    }
-    return widget.selectedCategoryId;
-  }
-
-  String? _findProductTypeIdByName(String? productTypeName) {
-    if (productTypeName == null || productTypeName.isEmpty) return null;
-
-    for (final option in _tempProductTypeOptions) {
-      if (option.name == productTypeName) {
-        return option.id;
-      }
-    }
-
-    return null;
-  }
-
-  List<String> _visibleTempParts() {
-    final selectedProductTypeId = _findProductTypeIdByName(
-      _tempFilterProductType,
-    );
-
-    return _tempPartOptions
-        .where(
-          (item) =>
-              selectedProductTypeId == null ||
-              selectedProductTypeId.isEmpty ||
-              item.productTypeId == null ||
-              item.productTypeId == selectedProductTypeId,
-        )
-        .map((item) => item.name?.trim() ?? '')
-        .where((item) => item.isNotEmpty)
-        .toList(growable: false);
-  }
-
-  List<CategorySubcategoryItemDto> _visibleTempSubCategories() {
-    final selectedCategoryId = _resolveTempFilterCategoryId();
-    if (selectedCategoryId == null || selectedCategoryId.isEmpty) {
-      return _tempSubCategories;
-    }
-
-    final filteredSubCategories = _tempSubCategories
-        .where((item) {
-          final subCategoryId = item.id;
-          if (subCategoryId == null || subCategoryId.isEmpty) {
-            return false;
-          }
-
-          return widget.subCategoryCategoryMap[subCategoryId] ==
-              selectedCategoryId;
-        })
-        .toList(growable: false);
-
-    return filteredSubCategories.isNotEmpty
-        ? filteredSubCategories
-        : _tempSubCategories;
-  }
-
-  Future<void> _loadTempCategoryFiltersFromList(
-    String? categoryId,
-    List<CategoryEntity> categories,
-    StateSetter setSheetState,
-  ) async {
-    final category = _findCategoryInList(categoryId, categories);
-
-    if (category == null) {
-      setSheetState(_resetTempFilters);
-      return;
-    }
-
-    setSheetState(() {
-      _tempSubCategoryName = null;
-      _tempSubCategoryId = null;
-      _tempFilterQuantity = null;
-      _tempFilterBrand = null;
-      _tempFilterProductType = null;
-      _tempFilterPart = null;
-    });
-
-    try {
-      final results = await Future.wait<dynamic>([
-        getIt<ApiServices>().getCategoryFilters(category.id),
-        getIt<ApiServices>().getCategorySubcategories(category.id, 5),
-      ]);
-      if (!mounted) return;
-
-      setSheetState(() {
-        _applyTempCategoryFilters(
-          results[0] as CategoryFiltersResponseModelDto,
-          subCategories: results[1] as List<CategorySubcategoryItemDto>,
-        );
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setSheetState(() {
-        _tempSubCategories = const [];
-        _tempQuantityOptions = const [];
-        _tempBrandOptions = const [];
-        _tempProductTypeOptions = const [];
-        _tempPartOptions = const [];
-        _tempPriceBounds = widget.priceBounds;
-        _tempPriceRange = widget.priceBounds;
-      });
-    }
-  }
-
-  void _applyTempCategoryFilters(
-    CategoryFiltersResponseModelDto filters, {
-    List<CategorySubcategoryItemDto>? subCategories,
-  }) {
-    _tempSubCategories = (subCategories ?? filters.subcategories ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList(growable: false);
-    _tempQuantityOptions = (filters.quantities ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList(growable: false);
-    _tempBrandOptions = (filters.brands ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList(growable: false);
-    _tempProductTypeOptions = (filters.productTypes ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList(growable: false);
-    _tempPartOptions = (filters.parts ?? const [])
-        .where(
-          (item) =>
-              (item.id ?? '').isNotEmpty && (item.name ?? '').trim().isNotEmpty,
-        )
-        .toList(growable: false);
-
-    final minPrice = filters.priceRange?.min ?? 0;
-    final maxPrice = filters.priceRange?.max ?? minPrice;
-    final normalizedMax = maxPrice >= minPrice ? maxPrice : minPrice;
-    _tempPriceBounds = RangeValues(minPrice, normalizedMax);
-    _tempPriceRange = _tempPriceBounds;
-  }
-
-  void _showBottomSheet(
-    BuildContext context,
-    WidgetBuilder sheetBuilder,
-    Function(dynamic)? onResult,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: sheetBuilder,
-    ).then((result) {
-      if (result != null && onResult != null) {
-        onResult(result);
-      }
-    });
   }
 
   List<Map<String, dynamic>> _effectiveSortOptions(BuildContext context) {
     return resolveProductSortOptions(
       context.localization,
       rawOptions: widget.sortOptions,
-    );
-  }
-
-  void _scrollSheetTo(ScrollController controller, double offset) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!controller.hasClients) return;
-      final target = (controller.offset + offset).clamp(
-        0.0,
-        controller.position.maxScrollExtent,
-      );
-      controller.animateTo(
-        target,
-        duration: const Duration(milliseconds: 260),
-        curve: Curves.easeOutCubic,
-      );
-    });
-  }
-
-  void _openFilterBottomSheet(BuildContext context) {
-    _resetTempFilters();
-    final locale = context.localization;
-    final sheetScrollController = ScrollController();
-    // Use cached categories if available, otherwise start from widget.categories
-    var sheetCategories = _cachedSheetCategories != null &&
-            _cachedSheetCategories!.length >= widget.categories.length
-        ? List<CategoryEntity>.from(_cachedSheetCategories!)
-        : List<CategoryEntity>.from(widget.categories);
-    var isLoadingMoreCats = false;
-    var hasMoreCats = _cachedHasMoreCategories;
-
-    // If the currently selected category is not in the initial list,
-    // we need to expand categories when the sheet opens.
-    final selectedCatId = widget.selectedCategoryId;
-    final needsAutoExpand = selectedCatId != null &&
-        selectedCatId.isNotEmpty &&
-        _findCategoryInList(selectedCatId, sheetCategories) == null;
-
-    _showBottomSheet(
-      context,
-      (sheetContext) => StatefulBuilder(
-        builder: (sheetContext, setSheetState) {
-          // Auto-expand categories once if selected category is not visible
-          if (needsAutoExpand &&
-              !isLoadingMoreCats &&
-              _findCategoryInList(selectedCatId, sheetCategories) == null) {
-            isLoadingMoreCats = true;
-            Future(() async {
-              try {
-                final response = await getIt<ApiServices>().getHomeCategories(
-                  take: 50,
-                );
-                if (!mounted) return;
-                final allCategories = response.toCategoryEntities();
-                setSheetState(() {
-                  hasMoreCats =
-                      allCategories.length > sheetCategories.length;
-                  sheetCategories = allCategories;
-                  isLoadingMoreCats = false;
-                });
-                // Cache for next time
-                _cachedSheetCategories = sheetCategories;
-                _cachedHasMoreCategories = hasMoreCats;
-              } catch (_) {
-                if (!mounted) return;
-                setSheetState(() => isLoadingMoreCats = false);
-              }
-            });
-          }
-
-          return CustomFilterBottomSheet(
-            title: locale.filter_title,
-            cancelLabel: locale.cancel,
-            clearAllLabel: locale.clear_all,
-            applyLabel: locale.apply,
-            scrollController: sheetScrollController,
-            children: [
-              CategoryFilterSection(
-                showCategorySection: widget.showCategoryFilterSection,
-                categories: sheetCategories,
-                subCategories: _visibleTempSubCategories(),
-                quantities: _tempQuantityOptions
-                    .map((item) => item.name?.trim() ?? '')
-                    .where((item) => item.isNotEmpty)
-                    .toList(),
-                brands: _tempBrandOptions
-                    .map((item) => item.name?.trim() ?? '')
-                    .where((item) => item.isNotEmpty)
-                    .toList(growable: false),
-                brandItems: _tempBrandOptions
-                    .where((item) =>
-                        (item.name?.trim() ?? '').isNotEmpty)
-                    .toList(growable: false),
-                productTypes: _tempProductTypeOptions
-                    .map((item) => item.name?.trim() ?? '')
-                    .where((item) => item.isNotEmpty)
-                    .toList(growable: false),
-                parts: _visibleTempParts(),
-                selectedCategoryId: _resolveTempFilterCategoryIdFrom(
-                  sheetCategories,
-                ),
-                selectedSubCategoryId: _tempSubCategoryId,
-                selectedQuantity: _tempFilterQuantity,
-                selectedBrand: _tempFilterBrand,
-                selectedProductType: _tempFilterProductType,
-                selectedPart: _tempFilterPart,
-                priceRange: _tempPriceRange,
-                priceBounds: _tempPriceBounds,
-                onLoadMoreCategories: () async {
-                  if (isLoadingMoreCats || !hasMoreCats) return;
-                  setSheetState(() => isLoadingMoreCats = true);
-                  try {
-                    final nextTake =
-                        sheetCategories.length + 8;
-                    final response = await getIt<ApiServices>()
-                        .getHomeCategories(take: nextTake);
-                    if (!mounted) return;
-                    final newItems = response.toCategoryEntities();
-                    setSheetState(() {
-                      hasMoreCats =
-                          newItems.length > sheetCategories.length;
-                      sheetCategories = newItems;
-                      isLoadingMoreCats = false;
-                    });
-                    // Cache for next time
-                    _cachedSheetCategories = sheetCategories;
-                    _cachedHasMoreCategories = hasMoreCats;
-                  } catch (_) {
-                    if (!mounted) return;
-                    setSheetState(() => isLoadingMoreCats = false);
-                  }
-                },
-                isLoadingMoreCategories: isLoadingMoreCats,
-                hasMoreCategories: hasMoreCats,
-                onCategorySelected: (categoryId) async {
-                  setSheetState(() {
-                    _tempFilterCategoryId = categoryId;
-                    _tempFilterCategory =
-                        _findCategoryInList(categoryId, sheetCategories)?.name;
-                    _tempFilterQuantity = null;
-                    _tempFilterBrand = null;
-                    _tempFilterProductType = null;
-                    _tempFilterPart = null;
-                  });
-                  await _loadTempCategoryFiltersFromList(
-                    categoryId,
-                    sheetCategories,
-                    setSheetState,
-                  );
-                  if (categoryId != null) {
-                    _scrollSheetTo(sheetScrollController, 170);
-                  }
-                },
-                onSubCategorySelected: (subCategory) {
-                  setSheetState(() {
-                    _tempSubCategoryId = subCategory?.id;
-                    _tempSubCategoryName = subCategory?.name;
-                    // Auto-select the parent category when a subcategory is chosen
-                    if (subCategory != null && subCategory.id != null) {
-                      final parentCategoryId =
-                          widget.subCategoryCategoryMap[subCategory.id!];
-                      if (parentCategoryId != null &&
-                          parentCategoryId.isNotEmpty) {
-                        _tempFilterCategory =
-                            _findCategoryNameById(parentCategoryId);
-                      }
-                    }
-                  });
-                },
-                onQuantitySelected: (quantity) {
-                  setSheetState(() => _tempFilterQuantity = quantity);
-                  if (quantity != null) {
-                    _scrollSheetTo(sheetScrollController, 120);
-                  }
-                },
-                onBrandSelected: (brand) =>
-                    setSheetState(() => _tempFilterBrand = brand),
-                onProductTypeSelected: (productType) => setSheetState(() {
-                  _tempFilterProductType = productType;
-                  _tempFilterPart = null;
-                }),
-                onPartSelected: (part) =>
-                    setSheetState(() => _tempFilterPart = part),
-                onPriceRangeChanged: (values) =>
-                    setSheetState(() => _tempPriceRange = values),
-              ),
-            ],
-            onApply: () => Navigator.pop(sheetContext, {
-              'categoryId': _resolveTempFilterCategoryId(),
-              'category': _tempFilterCategory,
-              'subCategoryId': _tempSubCategoryId,
-              'subCategoryName': _tempSubCategoryName,
-              'quantity': _tempFilterQuantity,
-              'brand': _tempFilterBrand,
-              'productType': _tempFilterProductType,
-              'part': _tempFilterPart,
-              'priceRange': _tempPriceRange,
-            }),
-            onClearAll: () {
-              setSheetState(() {
-                _tempFilterCategory = widget.showCategoryFilterSection
-                    ? null
-                    : widget.selectedCategory;
-                _tempFilterCategoryId = null;
-                _tempFilterQuantity = null;
-                _tempFilterBrand = null;
-                _tempFilterProductType = null;
-                _tempFilterPart = null;
-                _tempSubCategoryId = null;
-                _tempSubCategoryName = null;
-                _tempPriceBounds = widget.priceBounds;
-                _tempPriceRange = widget.priceBounds;
-              });
-              widget.onClearAllFilters();
-            },
-          );
-        },
-      ),
-      (result) => widget.onFilterChanged(result),
     );
   }
 
@@ -745,7 +243,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
               searchResults: widget.searchResults,
               onSearchActionTap:
                   widget.onSearchActionTap ??
-                  () => _openFilterBottomSheet(context),
+                  () => openFilterBottomSheet(context),
               searchActionIcon: widget.searchActionIcon,
               searchActionTooltip:
                   widget.searchActionTooltip ?? locale.filter_button,
@@ -767,7 +265,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                 child: CustomBottomFilterButtons(
                   sortLabel: locale.sort_button,
                   filterLabel: locale.filter_button,
-                  onSortPressed: () => _showBottomSheet(
+                  onSortPressed: () => showFilterBottomSheet(
                     context,
                     (_) => CustomSortBottomSheet(
                       selectedSortOption: widget.selectedSortOption,
@@ -778,7 +276,7 @@ class _ReusableCategoryScreenState extends State<ReusableCategoryScreen> {
                     ),
                     (result) => widget.onSortChanged(result),
                   ),
-                  onFilterPressed: () => _openFilterBottomSheet(context),
+                  onFilterPressed: () => openFilterBottomSheet(context),
                   hasActiveFilters: widget.hasActiveFilters,
                 ),
               ),

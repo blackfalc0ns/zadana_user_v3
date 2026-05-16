@@ -23,6 +23,13 @@ extension BrandProductsItemModelDtoMapper on BrandProductsItemModelDto {
       discount: discount,
       isFavorite: isFavorite ?? false,
       unit: unit,
+      packageTypeNameAr: packageTypeNameAr,
+      packageTypeNameEn: packageTypeNameEn,
+      measurementUnitNameAr: measurementUnitNameAr,
+      measurementUnitNameEn: measurementUnitNameEn,
+      measurementValue: measurementValue,
+      displaySizeAr: displaySizeAr,
+      displaySizeEn: displaySizeEn,
     );
   }
 }
@@ -50,6 +57,9 @@ extension BrandProductsAppliedFiltersDtoMapper
       categoryId: categoryId,
       subcategoryId: subcategoryId,
       unitId: unitId,
+      packageTypeId: packageTypeId,
+      measurementUnitId: measurementUnitId,
+      measurementValue: measurementValue,
       minPrice: minPrice,
       maxPrice: maxPrice,
       sort: sort,

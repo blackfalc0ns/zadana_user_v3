@@ -1358,6 +1358,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get brand_filter_screen_protectors => 'Screen Protectors';
 
   @override
+  String get brand_filter_package_type_title => 'Package Type';
+
+  @override
+  String get brand_filter_measurement_unit_title => 'Measurement Unit';
+
+  @override
+  String get brand_filter_measurement_value_title => 'Size';
+
+  @override
   String get currency => 'SAR';
 
   @override
@@ -2286,4 +2295,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_logout_subtitle => 'Sign out from this device';
+
+  @override
+  String get delivery_unavailable_title => 'Delivery Unavailable';
+
+  @override
+  String get delivery_unavailable_hint =>
+      'Please choose another store or change your delivery address';
+
+  @override
+  String get delivery_unavailable_dismiss => 'Got it';
+
+  @override
+  String get delivery_unavailable_change_address => 'Change Address';
+
+  @override
+  String get checkout_login_title => 'Sign in to continue';
+
+  @override
+  String get checkout_login_message =>
+      'To complete checkout, you need to sign in first, or finish registration if you do not have an account yet.';
+
+  @override
+  String get checkout_login_helper =>
+      'If you already have an account, you can sign in from the next screen';
+
+  @override
+  String get checkout_login_action => 'Continue';
 }

@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/feature/category/data/models/category_filter_opti
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_part_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_price_range_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_sort_option_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_measurement_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 
 part 'category_filters_response_model_dto.g.dart';
@@ -17,6 +18,10 @@ class CategoryFiltersResponseModelDto {
     this.parts,
     this.quantities,
     this.brands,
+    this.packageTypes,
+    this.measurementUnits,
+    this.measurementValues,
+    this.measurementOptions,
     this.priceRange,
     this.sortOptions,
   });
@@ -30,6 +35,10 @@ class CategoryFiltersResponseModelDto {
   final List<CategoryFilterPartItemDto>? parts;
   final List<CategoryFilterOptionDto>? quantities;
   final List<CategoryFilterBrandItemDto>? brands;
+  final List<CategoryFilterOptionDto>? packageTypes;
+  final List<CategoryFilterOptionDto>? measurementUnits;
+  final List<double>? measurementValues;
+  final List<CategoryMeasurementOptionDto>? measurementOptions;
   final CategoryFilterPriceRangeDto? priceRange;
   final List<CategoryFilterSortOptionDto>? sortOptions;
 

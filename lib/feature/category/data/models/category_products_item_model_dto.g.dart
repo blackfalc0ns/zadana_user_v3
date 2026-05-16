@@ -21,6 +21,13 @@ CategoryProductsItemModelDto _$CategoryProductsItemModelDtoFromJson(
   isFavorite: json['is_favorite'] as bool?,
   unit: json['unit'] as String?,
   isDiscounted: json['is_discounted'] as bool?,
+  packageTypeNameAr: json['package_type_name_ar'] as String?,
+  packageTypeNameEn: json['package_type_name_en'] as String?,
+  measurementUnitNameAr: json['measurement_unit_name_ar'] as String?,
+  measurementUnitNameEn: json['measurement_unit_name_en'] as String?,
+  measurementValue: (json['measurement_value'] as num?)?.toDouble(),
+  displaySizeAr: json['display_size_ar'] as String?,
+  displaySizeEn: json['display_size_en'] as String?,
 );
 
 Map<String, dynamic> _$CategoryProductsItemModelDtoToJson(
@@ -38,4 +45,11 @@ Map<String, dynamic> _$CategoryProductsItemModelDtoToJson(
   'is_favorite': instance.isFavorite,
   'unit': instance.unit,
   'is_discounted': instance.isDiscounted,
+  'package_type_name_ar': instance.packageTypeNameAr,
+  'package_type_name_en': instance.packageTypeNameEn,
+  'measurement_unit_name_ar': instance.measurementUnitNameAr,
+  'measurement_unit_name_en': instance.measurementUnitNameEn,
+  'measurement_value': instance.measurementValue,
+  'display_size_ar': instance.displaySizeAr,
+  'display_size_en': instance.displaySizeEn,
 };

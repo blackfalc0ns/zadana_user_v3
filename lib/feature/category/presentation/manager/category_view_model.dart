@@ -205,6 +205,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
         brand: selection.brand,
         productType: selection.productType,
         part: selection.part,
+        packageType: selection.packageType,
+        measurementUnit: selection.measurementUnit,
+        measurementValue: selection.measurementValue,
         priceRange: selection.priceRange,
       ),
     );
@@ -387,6 +390,14 @@ class CategoryViewModel extends Cubit<CategoryState> {
       return;
     }
 
+    // Category not in the loaded list — use it directly if available.
+    final rawRequestedCategory = _navigationHandler.requestedCategory;
+    if (rawRequestedCategory != null) {
+      await selectCategory(rawRequestedCategory, fromOutside: true);
+      _navigationHandler.clearSelectedCategory();
+      return;
+    }
+
     final requestedSubCategory = _navigationHandler
         .requestedSubCategorySelection();
     if (requestedSubCategory != null) {
@@ -444,7 +455,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
 
     if (requestedCategory == null) {
-      emit(state.missingRequestedCategory());
+      // Category not in the initially loaded list — use it directly.
+      await selectCategory(rawRequestedCategory, fromOutside: true);
+      _navigationHandler.clearSelectedCategory();
       return;
     }
 

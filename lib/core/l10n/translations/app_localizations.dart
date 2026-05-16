@@ -2600,6 +2600,24 @@ abstract class AppLocalizations {
   /// **'Screen Protectors'**
   String get brand_filter_screen_protectors;
 
+  /// No description provided for @brand_filter_package_type_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Package Type'**
+  String get brand_filter_package_type_title;
+
+  /// No description provided for @brand_filter_measurement_unit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement Unit'**
+  String get brand_filter_measurement_unit_title;
+
+  /// No description provided for @brand_filter_measurement_value_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get brand_filter_measurement_value_title;
+
   /// No description provided for @currency.
   ///
   /// In en, this message translates to:
@@ -4309,6 +4327,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out from this device'**
   String get profile_logout_subtitle;
+
+  /// No description provided for @delivery_unavailable_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Unavailable'**
+  String get delivery_unavailable_title;
+
+  /// No description provided for @delivery_unavailable_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose another store or change your delivery address'**
+  String get delivery_unavailable_hint;
+
+  /// No description provided for @delivery_unavailable_dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get delivery_unavailable_dismiss;
+
+  /// No description provided for @delivery_unavailable_change_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Address'**
+  String get delivery_unavailable_change_address;
+
+  /// No description provided for @checkout_login_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get checkout_login_title;
+
+  /// No description provided for @checkout_login_message.
+  ///
+  /// In en, this message translates to:
+  /// **'To complete checkout, you need to sign in first, or finish registration if you do not have an account yet.'**
+  String get checkout_login_message;
+
+  /// No description provided for @checkout_login_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'If you already have an account, you can sign in from the next screen'**
+  String get checkout_login_helper;
+
+  /// No description provided for @checkout_login_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get checkout_login_action;
 }
 
 class _AppLocalizationsDelegate

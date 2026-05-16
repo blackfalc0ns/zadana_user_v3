@@ -51,6 +51,13 @@ class BrandProductsGrid extends StatelessWidget {
                 isDiscounted:
                     brandProduct.hasDiscount ||
                     ((brandProduct.oldPrice ?? 0) > brandProduct.price),
+                packageTypeNameAr: brandProduct.packageTypeNameAr,
+                packageTypeNameEn: brandProduct.packageTypeNameEn,
+                measurementUnitNameAr: brandProduct.measurementUnitNameAr,
+                measurementUnitNameEn: brandProduct.measurementUnitNameEn,
+                measurementValue: brandProduct.measurementValue,
+                displaySizeAr: brandProduct.displaySizeAr,
+                displaySizeEn: brandProduct.displaySizeEn,
               );
 
               return CustomProductCard(

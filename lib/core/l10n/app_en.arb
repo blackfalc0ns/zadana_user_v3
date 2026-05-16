@@ -510,6 +510,9 @@
   "brand_filter_speakers": "Speakers",
   "brand_filter_power_banks": "Power Banks",
   "brand_filter_screen_protectors": "Screen Protectors",
+  "brand_filter_package_type_title": "Package Type",
+  "brand_filter_measurement_unit_title": "Measurement Unit",
+  "brand_filter_measurement_value_title": "Size",
   "currency": "SAR",
   "filter_type": "Type",
   "filter_part": "Part",
@@ -885,6 +888,15 @@
   "profile_faq_subtitle": "Quick questions and answers to help you",
   "profile_about_subtitle": "Learn more about the app and current version",
   "profile_privacy_subtitle": "Privacy, terms, and legal information",
-  "profile_logout_subtitle": "Sign out from this device"
-}
+  "profile_logout_subtitle": "Sign out from this device",
 
+  "delivery_unavailable_title": "Delivery Unavailable",
+  "delivery_unavailable_hint": "Please choose another store or change your delivery address",
+  "delivery_unavailable_dismiss": "Got it",
+  "delivery_unavailable_change_address": "Change Address",
+
+  "checkout_login_title": "Sign in to continue",
+  "checkout_login_message": "To complete checkout, you need to sign in first, or finish registration if you do not have an account yet.",
+  "checkout_login_helper": "If you already have an account, you can sign in from the next screen",
+  "checkout_login_action": "Continue"
+}

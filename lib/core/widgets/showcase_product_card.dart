@@ -8,6 +8,7 @@ import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/discount_badge.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/core/widgets/product_size_summary.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
@@ -152,6 +153,11 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                           fontSize: 10.4,
                           color: color.onSurface,
                         ),
+                      ),
+                      ProductSizeSummary(
+                        product: widget.product,
+                        fontSize: 8.5,
+                        compact: true,
                       ),
                       const SizedBox(height: 3),
                       PriceText(

@@ -9,6 +9,9 @@ class CategoryProductsAppliedFiltersDto {
     this.subcategoryId,
     this.quantityId,
     this.brandId,
+    this.packageTypeId,
+    this.measurementUnitId,
+    this.measurementValue,
     this.minPrice,
     this.maxPrice,
     this.sort,
@@ -22,6 +25,9 @@ class CategoryProductsAppliedFiltersDto {
   final String? subcategoryId;
   final String? quantityId;
   final String? brandId;
+  final String? packageTypeId;
+  final String? measurementUnitId;
+  final double? measurementValue;
   final double? minPrice;
   final double? maxPrice;
   final String? sort;

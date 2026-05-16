@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -48,6 +49,16 @@ Future<bool?> showCheckoutRegistrationDialog(BuildContext context) {
   );
 }
 
+void showDeliveryUnavailableDialog({
+  required BuildContext context,
+  required String message,
+}) {
+  showDialog(
+    context: context,
+    builder: (_) => _DeliveryUnavailableDialog(message: message),
+  );
+}
+
 class _CheckoutRegistrationDialog extends StatelessWidget {
   const _CheckoutRegistrationDialog();
 
@@ -55,19 +66,9 @@ class _CheckoutRegistrationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-
-    final title = isArabic ? 'سجّل الدخول للمتابعة' : 'Sign in to continue';
-    final message = isArabic
-        ? 'لإتمام الطلب، نحتاج أولًا إلى تسجيل دخولك أو إكمال التسجيل إذا لم يكن لديك حساب بعد.'
-        : 'To complete checkout, you need to sign in first, or finish registration if you do not have an account yet.';
-    final helperText = isArabic
-        ? 'إذا كان لديك حساب بالفعل، يمكنك تسجيل الدخول من الشاشة التالية'
-        : 'If you already have an account, you can sign in from the next screen';
-    final actionLabel = isArabic ? 'متابعة' : 'Continue';
 
     return Directionality(
-      textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: Directionality.of(context),
       child: Dialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 24),
         backgroundColor: Colors.transparent,
@@ -117,7 +118,7 @@ class _CheckoutRegistrationDialog extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               Text(
-                title,
+                locale.checkout_login_title,
                 textAlign: TextAlign.center,
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
@@ -127,7 +128,7 @@ class _CheckoutRegistrationDialog extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                message,
+                locale.checkout_login_message,
                 textAlign: TextAlign.center,
                 style: getRegularStyle(
                   fontFamily: FontConstant.cairo,
@@ -164,7 +165,7 @@ class _CheckoutRegistrationDialog extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        helperText,
+                        locale.checkout_login_helper,
                         style: getMediumStyle(
                           fontFamily: FontConstant.cairo,
                           fontSize: FontSize.size13,
@@ -191,7 +192,7 @@ class _CheckoutRegistrationDialog extends StatelessWidget {
                   ),
                   icon: const Icon(Icons.login_rounded, size: 20),
                   label: Text(
-                    actionLabel,
+                    locale.checkout_login_action,
                     style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: FontSize.size15,
@@ -385,6 +386,187 @@ class _CartActionDialog extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DeliveryUnavailableDialog extends StatelessWidget {
+  const _DeliveryUnavailableDialog({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+
+    return Directionality(
+      textDirection: Directionality.of(context),
+      child: Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 28),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 22),
+          decoration: BoxDecoration(
+            color: color.surface,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 40,
+                offset: const Offset(0, 16),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFFFF3E0),
+                  border: Border.all(
+                    color: const Color(0xFFFFE0B2),
+                    width: 1.5,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.location_off_rounded,
+                  size: 34,
+                  color: Color(0xFFE65100),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Title
+              Text(
+                locale.delivery_unavailable_title,
+                textAlign: TextAlign.center,
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size18,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 14),
+              // Message from backend
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF8E1),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFFFFE082),
+                    width: 0.8,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.info_outline_rounded,
+                      size: 18,
+                      color: Color(0xFFF57C00),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        message,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: getMediumStyle(
+                          fontFamily: FontConstant.cairo,
+                          fontSize: FontSize.size12,
+                          color: const Color(0xFF4E342E),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Hint text
+              Text(
+                locale.delivery_unavailable_hint,
+                textAlign: TextAlign.center,
+                style: getSemiBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size13,
+                  color: AppColors.error,
+                ).copyWith(height: 1.4),
+              ),
+              const SizedBox(height: 20),
+              // Change address button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: FilledButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.customerAddresses,
+                    );
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: color.primary,
+                    foregroundColor: color.onPrimary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(
+                    locale.delivery_unavailable_change_address,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                      color: color.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              // Dismiss button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: color.primary,
+                    elevation: 0,
+                    side: BorderSide(color: color.primary),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(
+                    locale.delivery_unavailable_dismiss,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                      color: color.primary,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

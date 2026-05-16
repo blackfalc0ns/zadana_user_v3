@@ -35,6 +35,21 @@ CategoryFiltersResponseModelDto _$CategoryFiltersResponseModelDtoFromJson(
         (e) => CategoryFilterBrandItemDto.fromJson(e as Map<String, dynamic>),
       )
       .toList(),
+  packageTypes: (json['package_types'] as List<dynamic>?)
+      ?.map((e) => CategoryFilterOptionDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  measurementUnits: (json['measurement_units'] as List<dynamic>?)
+      ?.map((e) => CategoryFilterOptionDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  measurementValues: (json['measurement_values'] as List<dynamic>?)
+      ?.map((e) => (e as num).toDouble())
+      .toList(),
+  measurementOptions: (json['measurement_options'] as List<dynamic>?)
+      ?.map(
+        (e) =>
+            CategoryMeasurementOptionDto.fromJson(e as Map<String, dynamic>),
+      )
+      .toList(),
   priceRange: json['price_range'] == null
       ? null
       : CategoryFilterPriceRangeDto.fromJson(
@@ -56,6 +71,14 @@ Map<String, dynamic> _$CategoryFiltersResponseModelDtoToJson(
   'parts': instance.parts?.map((e) => e.toJson()).toList(),
   'quantities': instance.quantities?.map((e) => e.toJson()).toList(),
   'brands': instance.brands?.map((e) => e.toJson()).toList(),
+  'package_types': instance.packageTypes?.map((e) => e.toJson()).toList(),
+  'measurement_units': instance.measurementUnits
+      ?.map((e) => e.toJson())
+      .toList(),
+  'measurement_values': instance.measurementValues,
+  'measurement_options': instance.measurementOptions
+      ?.map((e) => e.toJson())
+      .toList(),
   'price_range': instance.priceRange?.toJson(),
   'sort_options': instance.sortOptions?.map((e) => e.toJson()).toList(),
 };

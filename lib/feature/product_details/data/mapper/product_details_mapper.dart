@@ -1,10 +1,26 @@
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/product_details/data/models/product_variant_option_model_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_vendor_price_model_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/similar_product_model_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_details_entity.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/entities/product_variant_option_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
+
+extension ProductVariantOptionModelDtoMapper on ProductVariantOptionModelDto {
+  ProductVariantOptionEntity toEntity() {
+    return ProductVariantOptionEntity(
+      id: id ?? '',
+      defaultVendorProductId: defaultVendorProductId ?? '',
+      nameAr: nameAr ?? '',
+      nameEn: nameEn ?? '',
+      displaySizeAr: displaySizeAr ?? '',
+      displaySizeEn: displaySizeEn ?? '',
+      isCurrent: isCurrent ?? false,
+    );
+  }
+}
 
 extension ProductVendorPriceModelDtoMapper on ProductVendorPriceModelDto {
   ProductVendorPriceEntity toEntity() {
@@ -68,6 +84,8 @@ extension ProductDetailsResponseModelDtoMapper
       unit: unit,
       isDiscounted: isDiscounted ?? false,
       description: description ?? '',
+      variantOptions:
+          variantOptions?.map((item) => item.toEntity()).toList() ?? const [],
       vendorPrices:
           vendorPrices?.map((item) => item.toEntity()).toList() ?? const [],
       similarProducts:

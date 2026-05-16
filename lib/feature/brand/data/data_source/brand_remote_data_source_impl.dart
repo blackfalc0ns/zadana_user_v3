@@ -25,9 +25,14 @@ class BrandRemoteDataSourceImpl implements BrandRemoteDataSource {
       request.categoryId,
       request.subcategoryId,
       request.unitId,
+      request.packageTypeId,
+      request.measurementUnitId,
+      request.measurementValue,
       request.minPrice,
       request.maxPrice,
       request.sort,
+      request.page,
+      request.perPage,
     );
   }
 }

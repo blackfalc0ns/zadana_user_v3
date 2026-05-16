@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_reques
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_vendors_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/clear_cart_response_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/delivery_check_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/get_cart_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/remove_cart_item_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/update_cart_item_quantity_request_entity.dart';
@@ -23,6 +24,10 @@ abstract class CartRepository {
     required String itemId,
     String? vendorId,
     required UpdateCartItemQuantityRequestEntity request,
+  });
+  Future<ApiResult<DeliveryCheckEntity>> checkDelivery({
+    required String vendorId,
+    required String addressId,
   });
 }
 

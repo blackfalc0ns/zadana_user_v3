@@ -5,13 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_address_entity.dart';
+import 'package:zadana_user_v3/feature/addresses/domain/usecase/get_customer_addresses_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/delivery_check_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/usecase/check_delivery_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_state.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
@@ -272,6 +277,38 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       CheckoutFlowService().markPendingCheckout(vendorId: selectedVendorId);
       Navigator.pushNamed(context, AppRoutes.login);
       return;
+    }
+
+    // Pre-check delivery eligibility before entering checkout.
+    final addressResult = await getIt<GetCustomerAddressesUseCase>()();
+    if (!mounted) return;
+
+    String? defaultAddressId;
+    if (addressResult case ApiSuccessResult<List<CustomerAddressEntity>>()) {
+      final defaultAddress = addressResult.data.where((a) => a.isDefault);
+      if (defaultAddress.isNotEmpty) {
+        defaultAddressId = defaultAddress.first.id;
+      } else if (addressResult.data.isNotEmpty) {
+        defaultAddressId = addressResult.data.first.id;
+      }
+    }
+
+    if (defaultAddressId != null) {
+      final deliveryResult = await getIt<CheckDeliveryUseCase>()(
+        vendorId: selectedVendorId!,
+        addressId: defaultAddressId,
+      );
+      if (!mounted) return;
+
+      if (deliveryResult case ApiSuccessResult<DeliveryCheckEntity>()) {
+        if (!deliveryResult.data.canProceedToCheckout) {
+          final message = deliveryResult.data.messageAr.isNotEmpty
+              ? deliveryResult.data.messageAr
+              : deliveryResult.data.messageEn;
+          showDeliveryUnavailableDialog(context: context, message: message);
+          return;
+        }
+      }
     }
 
     Navigator.pushNamed(context, AppRoutes.payment, arguments: selectedVendorId);

@@ -33,121 +33,80 @@ class CustomVerticalFilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final itemWidth = constraints.maxWidth;
-        final itemHeight = constraints.maxHeight;
-        final compact = itemWidth < 84;
-        final ultraCompact = itemHeight.isFinite && itemHeight < 68;
-        final iconSize = ultraCompact ? 18.0 : (compact ? 22.0 : 26.0);
-        final imageSize = ultraCompact ? 32.0 : (compact ? 38.0 : 44.0);
-        final labelFontSize = ultraCompact
-            ? FontSize.size10
-            : (compact ? FontSize.size11 : FontSize.size12);
-        final contentPadding = EdgeInsets.symmetric(
-          horizontal: ultraCompact ? 3 : (compact ? 4 : 6),
-          vertical: ultraCompact ? 4 : (compact ? 6 : 8),
-        );
-        final spacing = ultraCompact ? 2.0 : (compact ? 4.0 : 6.0);
-        final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
-        final shouldShowFallbackImage = !hasImage && icon == null;
+    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
+    final shouldShowFallbackImage = !hasImage && icon == null;
 
-        Widget fallbackImage() {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              Assets.notFound,
-              width: imageSize,
-              height: imageSize,
-              fit: BoxFit.cover,
-            ),
-          );
-        }
-
-        return GestureDetector(
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: contentPadding,
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? (selectedColor ?? color.primary)
-                  : (backgroundColor ?? color.surfaceContainerLowest),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isSelected
-                    ? (selectedColor ?? color.primary)
-                    : color.outlineVariant,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.shadow.withValues(
-                    alpha: isSelected ? 0.12 : 0.06,
-                  ),
-                  blurRadius: isSelected ? 8 : 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (hasImage) ...[
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl!.trim(),
-                        width: imageSize,
-                        height: imageSize,
-                        fit: BoxFit.contain,
-                        placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: .5,
-                            valueColor:
-                                AlwaysStoppedAnimation(AppColors.primary),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          Assets.notFound,
-                          width: imageSize,
-                          height: imageSize,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: spacing),
-                ] else if (shouldShowFallbackImage) ...[
-                  Expanded(child: fallbackImage()),
-                  SizedBox(height: spacing),
-                ] else if (icon != null) ...[
-                  Text(
-                    icon!,
-                    style: TextStyle(
-                      fontSize: iconSize,
-                      color: isSelected ? color.onPrimary : color.primary,
-                    ),
-                  ),
-                  SizedBox(height: spacing),
-                ],
-                Text(
-                  label,
-                  style: getSemiBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: labelFontSize,
-                    color: isSelected ? color.onPrimary : color.onSurface,
-                  ).copyWith(height: ultraCompact ? 1.15 : 1.25),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (selectedColor ?? color.primary)
+              : (backgroundColor ?? color.surfaceContainerLowest),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected
+                ? (selectedColor ?? color.primary)
+                : color.outlineVariant.withValues(alpha: 0.6),
           ),
-        );
-      },
+          boxShadow: [
+            BoxShadow(
+              color: color.shadow.withValues(alpha: isSelected ? 0.1 : 0.04),
+              blurRadius: isSelected ? 6 : 3,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (hasImage) ...[
+              Expanded(
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl!.trim(),
+                  //  fit: BoxFit.contain,
+                  placeholder: (_, _) => const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 0.5,
+                      valueColor: AlwaysStoppedAnimation(AppColors.primary),
+                    ),
+                  ),
+                  errorWidget: (_, _, _) =>
+                      Image.asset(Assets.notFound, fit: BoxFit.contain),
+                ),
+              ),
+              const SizedBox(height: 4),
+            ] else if (shouldShowFallbackImage) ...[
+              Expanded(
+                child: Image.asset(Assets.notFound, fit: BoxFit.contain),
+              ),
+              const SizedBox(height: 4),
+            ] else if (icon != null) ...[
+              Text(
+                icon!,
+                style: TextStyle(
+                  fontSize: 22,
+                  color: isSelected ? color.onPrimary : color.primary,
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
+            Text(
+              label,
+              style: getSemiBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size13,
+                color: isSelected ? color.onPrimary : color.onSurface,
+              ).copyWith(height: 1.2),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

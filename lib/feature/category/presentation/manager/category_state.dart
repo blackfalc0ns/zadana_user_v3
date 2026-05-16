@@ -3,6 +3,7 @@ import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_brand_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filter_part_item_dto.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_measurement_option_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
@@ -26,6 +27,10 @@ class CategoryFiltersData {
     required this.brandOptions,
     required this.productTypeOptions,
     required this.partOptions,
+    required this.packageTypeOptions,
+    required this.measurementUnitOptions,
+    required this.measurementValueOptions,
+    required this.measurementOptions,
     required this.sortOptions,
     required this.priceBounds,
   });
@@ -35,6 +40,10 @@ class CategoryFiltersData {
   final List<CategoryFilterBrandItemDto> brandOptions;
   final List<CategoryFilterOptionDto> productTypeOptions;
   final List<CategoryFilterPartItemDto> partOptions;
+  final List<CategoryFilterOptionDto> packageTypeOptions;
+  final List<CategoryFilterOptionDto> measurementUnitOptions;
+  final List<double> measurementValueOptions;
+  final List<CategoryMeasurementOptionDto> measurementOptions;
   final List<Map<String, dynamic>> sortOptions;
   final RangeValues priceBounds;
 }
@@ -63,6 +72,16 @@ class CategoryState {
     this.selectedBrandId,
     this.selectedProductTypeId,
     this.selectedPartId,
+    this.selectedPackageTypeId,
+    this.selectedMeasurementUnitId,
+    this.selectedMeasurementValue,
+    this.packageTypeOptions = const [],
+    this.measurementUnitOptions = const [],
+    this.measurementValueOptions = const [],
+    this.measurementOptions = const [],
+    this.filterSelectedPackageType,
+    this.filterSelectedMeasurementUnit,
+    this.filterSelectedMeasurementValue,
     this.isCategoryPreselectedFromOutside = false,
     this.showAllSubCategories = false,
     this.preferCategoryIdForShoppingSelection = false,
@@ -109,6 +128,16 @@ class CategoryState {
   final String? selectedBrandId;
   final String? selectedProductTypeId;
   final String? selectedPartId;
+  final String? selectedPackageTypeId;
+  final String? selectedMeasurementUnitId;
+  final double? selectedMeasurementValue;
+  final List<CategoryFilterOptionDto> packageTypeOptions;
+  final List<CategoryFilterOptionDto> measurementUnitOptions;
+  final List<double> measurementValueOptions;
+  final List<CategoryMeasurementOptionDto> measurementOptions;
+  final String? filterSelectedPackageType;
+  final String? filterSelectedMeasurementUnit;
+  final double? filterSelectedMeasurementValue;
   final bool isCategoryPreselectedFromOutside;
   final bool showAllSubCategories;
   final bool preferCategoryIdForShoppingSelection;
@@ -164,6 +193,16 @@ class CategoryState {
       .where((item) => item.isNotEmpty)
       .toList(growable: false);
 
+  List<String> get availablePackageTypes => packageTypeOptions
+      .map((item) => item.name?.trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList(growable: false);
+
+  List<String> get availableMeasurementUnits => measurementUnitOptions
+      .map((item) => item.name?.trim() ?? '')
+      .where((item) => item.isNotEmpty)
+      .toList(growable: false);
+
   bool get hasActivePriceFilter =>
       priceRange.start != priceBounds.start ||
       priceRange.end != priceBounds.end;
@@ -180,6 +219,9 @@ class CategoryState {
       filterSelectedBrand != null ||
       filterSelectedProductType != null ||
       filterSelectedPart != null ||
+      filterSelectedPackageType != null ||
+      filterSelectedMeasurementUnit != null ||
+      filterSelectedMeasurementValue != null ||
       hasActivePriceFilter;
 
   bool get hasActiveFilters =>
@@ -210,6 +252,16 @@ class CategoryState {
     Object? selectedBrandId = _unset,
     Object? selectedProductTypeId = _unset,
     Object? selectedPartId = _unset,
+    Object? selectedPackageTypeId = _unset,
+    Object? selectedMeasurementUnitId = _unset,
+    Object? selectedMeasurementValue = _unset,
+    List<CategoryFilterOptionDto>? packageTypeOptions,
+    List<CategoryFilterOptionDto>? measurementUnitOptions,
+    List<double>? measurementValueOptions,
+    List<CategoryMeasurementOptionDto>? measurementOptions,
+    Object? filterSelectedPackageType = _unset,
+    Object? filterSelectedMeasurementUnit = _unset,
+    Object? filterSelectedMeasurementValue = _unset,
     bool? isCategoryPreselectedFromOutside,
     bool? showAllSubCategories,
     bool? preferCategoryIdForShoppingSelection,
@@ -278,6 +330,36 @@ class CategoryState {
       selectedPartId: identical(selectedPartId, _unset)
           ? this.selectedPartId
           : selectedPartId as String?,
+      selectedPackageTypeId: identical(selectedPackageTypeId, _unset)
+          ? this.selectedPackageTypeId
+          : selectedPackageTypeId as String?,
+      selectedMeasurementUnitId: identical(selectedMeasurementUnitId, _unset)
+          ? this.selectedMeasurementUnitId
+          : selectedMeasurementUnitId as String?,
+      selectedMeasurementValue: identical(selectedMeasurementValue, _unset)
+          ? this.selectedMeasurementValue
+          : selectedMeasurementValue as double?,
+      packageTypeOptions: packageTypeOptions ?? this.packageTypeOptions,
+      measurementUnitOptions:
+          measurementUnitOptions ?? this.measurementUnitOptions,
+      measurementValueOptions:
+          measurementValueOptions ?? this.measurementValueOptions,
+      measurementOptions: measurementOptions ?? this.measurementOptions,
+      filterSelectedPackageType: identical(filterSelectedPackageType, _unset)
+          ? this.filterSelectedPackageType
+          : filterSelectedPackageType as String?,
+      filterSelectedMeasurementUnit: identical(
+            filterSelectedMeasurementUnit,
+            _unset,
+          )
+          ? this.filterSelectedMeasurementUnit
+          : filterSelectedMeasurementUnit as String?,
+      filterSelectedMeasurementValue: identical(
+            filterSelectedMeasurementValue,
+            _unset,
+          )
+          ? this.filterSelectedMeasurementValue
+          : filterSelectedMeasurementValue as double?,
       isCategoryPreselectedFromOutside:
           isCategoryPreselectedFromOutside ??
           this.isCategoryPreselectedFromOutside,
@@ -356,6 +438,9 @@ class CategoryState {
     brandOptions: const [],
     productTypeOptions: const [],
     partOptions: const [],
+    packageTypeOptions: const [],
+    measurementUnitOptions: const [],
+    measurementValueOptions: const [],
     sortOptions: const [],
     selectedSortOption: '',
     filterSelectedCategory: category.name,
@@ -363,10 +448,16 @@ class CategoryState {
     filterSelectedBrand: null,
     filterSelectedProductType: null,
     filterSelectedPart: null,
+    filterSelectedPackageType: null,
+    filterSelectedMeasurementUnit: null,
+    filterSelectedMeasurementValue: null,
     selectedQuantityId: null,
     selectedBrandId: null,
     selectedProductTypeId: null,
     selectedPartId: null,
+    selectedPackageTypeId: null,
+    selectedMeasurementUnitId: null,
+    selectedMeasurementValue: null,
     priceBounds: const RangeValues(0, 1000),
     priceRange: const RangeValues(0, 1000),
     isCategoryPreselectedFromOutside: fromOutside,
@@ -453,6 +544,9 @@ class CategoryState {
     required String? brand,
     required String? productType,
     required String? part,
+    required String? packageType,
+    required String? measurementUnit,
+    required double? measurementValue,
     required RangeValues priceRange,
   }) => copyWith(
     filterSelectedCategory: categoryName ?? filterSelectedCategory,
@@ -460,12 +554,21 @@ class CategoryState {
     filterSelectedBrand: brand,
     filterSelectedProductType: productType,
     filterSelectedPart: part,
+    filterSelectedPackageType: packageType,
+    filterSelectedMeasurementUnit: measurementUnit,
+    filterSelectedMeasurementValue: measurementValue,
     selectedSubCategoryId: subCategoryId,
     selectedSubCategory: subCategoryName,
     selectedQuantityId: _findOptionId(quantityOptions, quantity),
     selectedBrandId: _findBrandId(brandOptions, brand),
     selectedProductTypeId: _findOptionId(productTypeOptions, productType),
     selectedPartId: _findPartId(partOptions, part),
+    selectedPackageTypeId: _findOptionId(packageTypeOptions, packageType),
+    selectedMeasurementUnitId: _findOptionId(
+      measurementUnitOptions,
+      measurementUnit,
+    ),
+    selectedMeasurementValue: measurementValue,
     priceRange: priceRange,
   );
 
@@ -478,10 +581,16 @@ class CategoryState {
     filterSelectedBrand: null,
     filterSelectedProductType: null,
     filterSelectedPart: null,
+    filterSelectedPackageType: null,
+    filterSelectedMeasurementUnit: null,
+    filterSelectedMeasurementValue: null,
     selectedQuantityId: null,
     selectedBrandId: null,
     selectedProductTypeId: null,
     selectedPartId: null,
+    selectedPackageTypeId: null,
+    selectedMeasurementUnitId: null,
+    selectedMeasurementValue: null,
     priceRange: priceBounds,
   );
 
@@ -494,12 +603,17 @@ class CategoryState {
     brandOptions: data.brandOptions,
     productTypeOptions: data.productTypeOptions,
     partOptions: data.partOptions,
+    packageTypeOptions: data.packageTypeOptions,
+    measurementUnitOptions: data.measurementUnitOptions,
+    measurementValueOptions: data.measurementValueOptions,
+    measurementOptions: data.measurementOptions,
     sortOptions: data.sortOptions,
     priceBounds: data.priceBounds,
     priceRange: data.priceBounds,
     subCategoryCategoryMap:
         subCategoryCategoryMap ?? this.subCategoryCategoryMap,
     isSubCategoriesLoading: false,
+    hasMoreSubCategories: false,
   );
 
   CategoryState selectShoppingSubCategory({
@@ -518,10 +632,16 @@ class CategoryState {
     filterSelectedBrand: null,
     filterSelectedProductType: null,
     filterSelectedPart: null,
+    filterSelectedPackageType: null,
+    filterSelectedMeasurementUnit: null,
+    filterSelectedMeasurementValue: null,
     selectedQuantityId: null,
     selectedBrandId: null,
     selectedProductTypeId: null,
     selectedPartId: null,
+    selectedPackageTypeId: null,
+    selectedMeasurementUnitId: null,
+    selectedMeasurementValue: null,
     isLoading: true,
     errorMessage: null,
     failure: null,
@@ -544,16 +664,25 @@ class CategoryState {
         brandOptions: const [],
         productTypeOptions: const [],
         partOptions: const [],
+        packageTypeOptions: const [],
+        measurementUnitOptions: const [],
+        measurementValueOptions: const [],
         sortOptions: const [],
         filterSelectedCategory: null,
         filterSelectedQuantity: null,
         filterSelectedBrand: null,
         filterSelectedProductType: null,
         filterSelectedPart: null,
+        filterSelectedPackageType: null,
+        filterSelectedMeasurementUnit: null,
+        filterSelectedMeasurementValue: null,
         selectedQuantityId: null,
         selectedBrandId: null,
         selectedProductTypeId: null,
         selectedPartId: null,
+        selectedPackageTypeId: null,
+        selectedMeasurementUnitId: null,
+        selectedMeasurementValue: null,
         isCategoryPreselectedFromOutside: false,
         showAllSubCategories: true,
         preferCategoryIdForShoppingSelection: false,
@@ -571,6 +700,7 @@ class CategoryState {
         subCategories: data.subCategories,
         subCategoryCategoryMap: data.categoryMap,
         isSubCategoriesLoading: false,
+        hasMoreSubCategories: data.subCategories.length >= 10,
       );
 
   CategoryState filtersReloadFailed(Failure value) => copyWith(
@@ -601,6 +731,9 @@ class CategoryState {
     brandOptions: const [],
     productTypeOptions: const [],
     partOptions: const [],
+    packageTypeOptions: const [],
+    measurementUnitOptions: const [],
+    measurementValueOptions: const [],
     sortOptions: const [],
     selectedSubCategory: null,
     selectedSubCategoryId: null,

@@ -8,6 +8,9 @@ class BrandFiltersEntity {
     this.categories = const [],
     this.subcategories = const [],
     this.units = const [],
+    this.packageTypes = const [],
+    this.measurementUnits = const [],
+    this.measurementValues = const [],
     this.priceRange = const BrandFilterPriceRangeEntity(min: 0, max: 0),
     this.sortOptions = const [],
   });
@@ -15,6 +18,9 @@ class BrandFiltersEntity {
   final List<BrandFilterOptionEntity> categories;
   final List<BrandFilterSubcategoryEntity> subcategories;
   final List<BrandFilterOptionEntity> units;
+  final List<BrandFilterOptionEntity> packageTypes;
+  final List<BrandFilterOptionEntity> measurementUnits;
+  final List<double> measurementValues;
   final BrandFilterPriceRangeEntity priceRange;
   final List<BrandFilterSortOptionEntity> sortOptions;
 }

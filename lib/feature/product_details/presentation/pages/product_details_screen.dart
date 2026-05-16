@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/extensions/product_display_size_extension.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
@@ -18,6 +19,7 @@ import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cu
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/entities/product_variant_option_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_cubit.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_event.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/manager/product_details_state.dart';
@@ -94,9 +96,9 @@ class _ProductDetailsView extends StatelessWidget {
         final productId = productDetails?.id ?? product.id;
 
         if (state.isInitialLoading) {
-          return Scaffold(
-            backgroundColor: color.surface,
-            body: const SafeArea(child: ProductDetailsLoadingView()),
+          return const Scaffold(
+          
+            body: SafeArea(child: ProductDetailsLoadingView()),
           );
         }
 
@@ -106,6 +108,7 @@ class _ProductDetailsView extends StatelessWidget {
               productId: productId,
               productName: title,
               unit: productDetails.unit,
+              displaySize: _resolveDisplaySize(context, product, productDetails.variantOptions),
               emoji: product.emoji ?? '',
               imageUrl: imageUrl,
               quantity: state.quantity,
@@ -118,6 +121,7 @@ class _ProductDetailsView extends StatelessWidget {
               basePrice: productDetails.price,
               oldPrice: productDetails.oldPrice,
               currency: l10n.currency,
+              variantOptions: productDetails.variantOptions,
               vendorPrices: productDetails.vendorPrices,
               similarProducts: productDetails.similarProducts,
               onSimilarProductTap: (similarProduct) async {
@@ -182,31 +186,28 @@ class _ProductDetailsView extends StatelessWidget {
         }
 
         if (state.loadFailure != null) {
-          return Padding(
-            padding: const EdgeInsets.all(Spacing.base),
-            child: Scaffold(
+          return Scaffold(
+            backgroundColor: color.surface,
+            appBar: CustomAppBar(
+              title: title,
               backgroundColor: color.surface,
-              appBar: CustomAppBar(
-                title: title,
-                backgroundColor: color.surface,
-                titleColor: color.onSurface,
-                showShadow: false,
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: color.onSurface,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                  splashRadius: 20,
+              titleColor: color.onSurface,
+              showShadow: false,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: color.onSurface,
                 ),
+                onPressed: () => Navigator.of(context).pop(),
+                splashRadius: 20,
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(Spacing.md),
-                child: ApiErrorWidget(
-                  exception: state.loadFailure!.exception,
-                  onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
-                  onGoBack: () => Navigator.of(context).maybePop(),
-                ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(Spacing.md),
+              child: ApiErrorWidget(
+                exception: state.loadFailure!.exception,
+                onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
+                onGoBack: () => Navigator.of(context).maybePop(),
               ),
             ),
           );
@@ -238,4 +239,25 @@ class _ProductDetailsView extends StatelessWidget {
       mainShellKey.currentState?.jumpToTab(2);
     });
   }
+}
+
+String? _resolveDisplaySize(
+  BuildContext context,
+  ProductModel product,
+  List<ProductVariantOptionEntity> variantOptions,
+) {
+  final isArabic =
+      Localizations.localeOf(context).languageCode.startsWith('ar');
+
+  // Prefer the current variant's display size
+  final currentVariant = variantOptions.where((v) => v.isCurrent).firstOrNull;
+  if (currentVariant != null) {
+    final variantSize =
+        isArabic ? currentVariant.displaySizeAr : currentVariant.displaySizeEn;
+    if (variantSize.isNotEmpty) return variantSize;
+  }
+
+  return isArabic
+      ? product.resolvedDisplaySizeAr
+      : product.resolvedDisplaySizeEn;
 }

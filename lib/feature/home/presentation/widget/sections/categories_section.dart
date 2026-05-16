@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
@@ -9,7 +9,6 @@ import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/services/category_navigation_service.dart';
-import 'package:zadana_user_v3/core/utils/main_shell_navigation.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_category_item_entity.dart';
@@ -53,7 +52,9 @@ class CategoriesSection extends StatelessWidget {
             SectionHeader(
               title: locale.categ,
               actionLabel: locale.see_all,
-              onActionTap: openShoppingTab,
+              onActionTap: () {
+                Navigator.of(context).pushNamed(AppRoutes.allCategories);
+              },
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(

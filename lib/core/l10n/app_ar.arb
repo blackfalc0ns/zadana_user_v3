@@ -676,6 +676,9 @@
   "brand_filter_speakers": "السماعات",
   "brand_filter_power_banks": "الباور بانك",
   "brand_filter_screen_protectors": "حمايات الشاشة",
+  "brand_filter_package_type_title": "نوع العبوة",
+  "brand_filter_measurement_unit_title": "وحدة القياس",
+  "brand_filter_measurement_value_title": "الحجم",
   "product": "منتج",
   "redirecting_to_checkout": "جاري تحويلك لإتمام الطلب...",
   "save_amount": "وفّر",
@@ -887,5 +890,15 @@
   "profile_faq_subtitle": "أسئلة وإجابات سريعة تساعدك",
   "profile_about_subtitle": "اعرف أكثر عن التطبيق والإصدار الحالي",
   "profile_privacy_subtitle": "الخصوصية والشروط والأحكام",
-  "profile_logout_subtitle": "تسجيل الخروج من هذا الجهاز"
+  "profile_logout_subtitle": "تسجيل الخروج من هذا الجهاز",
+
+  "delivery_unavailable_title": "التوصيل غير متاح",
+  "delivery_unavailable_hint": "برجاء اختيار متجر آخر أو تغيير عنوان التوصيل",
+  "delivery_unavailable_dismiss": "فهمت",
+  "delivery_unavailable_change_address": "تغيير العنوان",
+
+  "checkout_login_title": "سجّل الدخول للمتابعة",
+  "checkout_login_message": "لإتمام الطلب، نحتاج أولًا إلى تسجيل دخولك أو إكمال التسجيل إذا لم يكن لديك حساب بعد.",
+  "checkout_login_helper": "إذا كان لديك حساب بالفعل، يمكنك تسجيل الدخول من الشاشة التالية",
+  "checkout_login_action": "متابعة"
 }

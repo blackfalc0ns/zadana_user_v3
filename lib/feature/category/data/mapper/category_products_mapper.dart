@@ -16,6 +16,13 @@ extension CategoryProductsItemModelDtoMapper on CategoryProductsItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      packageTypeNameAr: packageTypeNameAr,
+      packageTypeNameEn: packageTypeNameEn,
+      measurementUnitNameAr: measurementUnitNameAr,
+      measurementUnitNameEn: measurementUnitNameEn,
+      measurementValue: measurementValue,
+      displaySizeAr: displaySizeAr,
+      displaySizeEn: displaySizeEn,
     );
   }
 }

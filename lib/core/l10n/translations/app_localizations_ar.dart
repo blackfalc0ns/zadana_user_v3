@@ -1333,6 +1333,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get brand_filter_screen_protectors => 'حمايات الشاشة';
 
   @override
+  String get brand_filter_package_type_title => 'نوع العبوة';
+
+  @override
+  String get brand_filter_measurement_unit_title => 'وحدة القياس';
+
+  @override
+  String get brand_filter_measurement_value_title => 'الحجم';
+
+  @override
   String get currency => 'ريال';
 
   @override
@@ -2239,4 +2248,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profile_logout_subtitle => 'تسجيل الخروج من هذا الجهاز';
+
+  @override
+  String get delivery_unavailable_title => 'التوصيل غير متاح';
+
+  @override
+  String get delivery_unavailable_hint =>
+      'برجاء اختيار متجر آخر أو تغيير عنوان التوصيل';
+
+  @override
+  String get delivery_unavailable_dismiss => 'فهمت';
+
+  @override
+  String get delivery_unavailable_change_address => 'تغيير العنوان';
+
+  @override
+  String get checkout_login_title => 'سجّل الدخول للمتابعة';
+
+  @override
+  String get checkout_login_message =>
+      'لإتمام الطلب، نحتاج أولًا إلى تسجيل دخولك أو إكمال التسجيل إذا لم يكن لديك حساب بعد.';
+
+  @override
+  String get checkout_login_helper =>
+      'إذا كان لديك حساب بالفعل، يمكنك تسجيل الدخول من الشاشة التالية';
+
+  @override
+  String get checkout_login_action => 'متابعة';
 }

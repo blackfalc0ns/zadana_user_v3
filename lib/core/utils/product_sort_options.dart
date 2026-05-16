@@ -5,65 +5,32 @@ List<Map<String, dynamic>> resolveProductSortOptions(
   Iterable<Map<String, dynamic>>? rawOptions,
 }) {
   final options = rawOptions?.toList(growable: false) ?? const [];
-  final localizedOptions = <String, Map<String, dynamic>>{
-    'newest': {'value': 'newest', 'title': l10n.sort_newest, 'subtitle': null},
-    'price_low': {
-      'value': 'price_low',
-      'title': l10n.sort_price_low,
-      'subtitle': null,
-    },
-    'price_high': {
-      'value': 'price_high',
-      'title': l10n.sort_price_high,
-      'subtitle': null,
-    },
-    'best_selling': {
-      'value': 'best_selling',
-      'title': l10n.sort_best_selling,
-      'subtitle': null,
-    },
-    'highest_rated': {
-      'value': 'highest_rated',
-      'title': l10n.sort_highest_rated,
-      'subtitle': null,
-    },
-    'alphabetical': {
-      'value': 'alphabetical',
-      'title': l10n.sort_alphabetical,
-      'subtitle': null,
-    },
-  };
 
-  if (options.isEmpty) {
-    return localizedOptions.values.toList(growable: false);
+  // If server provides sort options, use them directly with their labels.
+  if (options.isNotEmpty) {
+    return options
+        .where((option) => (option['value'] as String?)?.trim().isNotEmpty ?? false)
+        .map((option) {
+          final value = (option['value'] as String?)?.trim() ?? '';
+          final title = (option['title'] as String?)?.trim() ??
+              (option['label'] as String?)?.trim() ??
+              value;
+          return <String, dynamic>{
+            'value': value,
+            'title': title,
+            'subtitle': null,
+          };
+        })
+        .toList(growable: false);
   }
 
-  final optionsByValue = <String, Map<String, dynamic>>{};
-  final unknownOptions = <Map<String, dynamic>>[];
-
-  for (final option in options) {
-    final value = (option['value'] as String?)?.trim() ?? '';
-    if (value.isEmpty) {
-      continue;
-    }
-
-    if (localizedOptions.containsKey(value)) {
-      optionsByValue[value] = option;
-      continue;
-    }
-
-    unknownOptions.add({
-      'value': value,
-      'title': ((option['title'] as String?) ?? value).trim(),
-      'subtitle': null,
-    });
-  }
-
-  final orderedOptions = localizedOptions.entries
-      .where((entry) => optionsByValue.containsKey(entry.key))
-      .map((entry) => entry.value)
-      .toList(growable: true);
-
-  orderedOptions.addAll(unknownOptions);
-  return orderedOptions;
+  // Fallback: static localized options when server provides nothing.
+  return [
+    {'value': 'newest', 'title': l10n.sort_newest, 'subtitle': null},
+    {'value': 'price_low_high', 'title': l10n.sort_price_low, 'subtitle': null},
+    {'value': 'price_high_low', 'title': l10n.sort_price_high, 'subtitle': null},
+    {'value': 'best_selling', 'title': l10n.sort_best_selling, 'subtitle': null},
+    {'value': 'highest_rated', 'title': l10n.sort_highest_rated, 'subtitle': null},
+    {'value': 'alphabetical', 'title': l10n.sort_alphabetical, 'subtitle': null},
+  ];
 }

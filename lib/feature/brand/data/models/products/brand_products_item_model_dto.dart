@@ -17,6 +17,13 @@ class BrandProductsItemModelDto {
     this.isFavorite,
     this.unit,
     this.isDiscounted,
+    this.packageTypeNameAr,
+    this.packageTypeNameEn,
+    this.measurementUnitNameAr,
+    this.measurementUnitNameEn,
+    this.measurementValue,
+    this.displaySizeAr,
+    this.displaySizeEn,
   });
 
   factory BrandProductsItemModelDto.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +41,13 @@ class BrandProductsItemModelDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+  final String? packageTypeNameAr;
+  final String? packageTypeNameEn;
+  final String? measurementUnitNameAr;
+  final String? measurementUnitNameEn;
+  final double? measurementValue;
+  final String? displaySizeAr;
+  final String? displaySizeEn;
 
   Map<String, dynamic> toJson() => _$BrandProductsItemModelDtoToJson(this);
 }

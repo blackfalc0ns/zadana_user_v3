@@ -35,4 +35,5 @@ abstract class AppRoutes {
   static const String termsConditions = '/terms-conditions';
   static const String deliveryOtp = '/delivery-otp';
   static const String successOrder = '/success-order';
+  static const String allCategories = '/all-categories';
 }

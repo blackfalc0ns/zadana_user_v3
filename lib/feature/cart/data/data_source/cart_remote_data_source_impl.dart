@@ -13,6 +13,7 @@ import 'package:zadana_user_v3/feature/cart/data/models/request/add_cart_item_re
 import 'package:zadana_user_v3/feature/cart/data/models/request/update_cart_item_quantity_request_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/add_cart_item_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/clear_cart_response_dto.dart';
+import 'package:zadana_user_v3/feature/cart/data/models/response/delivery_check_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/get_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/remove_cart_item_response_dto.dart';
 
@@ -221,5 +222,27 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
     await _clearCartReadCache();
     await _clearCheckoutSummaryCache();
     return response;
+  }
+
+  @override
+  Future<DeliveryCheckResponseDto> checkDelivery({
+    required String vendorId,
+    required String addressId,
+  }) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/cart/delivery-check',
+      queryParameters: {
+        'vendor_id': vendorId,
+        'address_id': addressId,
+      },
+      options: _noCacheOptions(),
+    );
+    final data = response.data ?? <String, dynamic>{};
+    // The API returns { delivery_check: {...}, ... } — extract the nested object.
+    final deliveryCheck = data['delivery_check'];
+    if (deliveryCheck is Map<String, dynamic>) {
+      return DeliveryCheckResponseDto.fromJson(deliveryCheck);
+    }
+    return DeliveryCheckResponseDto.fromJson(data);
   }
 }

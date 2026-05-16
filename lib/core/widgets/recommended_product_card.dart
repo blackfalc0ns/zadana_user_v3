@@ -8,6 +8,7 @@ import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/home_product_favorites_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/core/widgets/product_image.dart';
+import 'package:zadana_user_v3/core/widgets/product_size_summary.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_cubit.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 import 'package:zadana_user_v3/feature/home/presentation/widget/price_text.dart';
@@ -163,6 +164,11 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                      ProductSizeSummary(
+                        product: widget.product,
+                        fontSize: 9,
+                        compact: true,
                       ),
                       const SizedBox(height: Spacing.xs),
                       Row(

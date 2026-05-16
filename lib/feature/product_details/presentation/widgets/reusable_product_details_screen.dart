@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
+import 'package:zadana_user_v3/feature/product_details/domain/entities/product_variant_option_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/domain/entities/product_vendor_price_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_bottom_actions.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/widgets/product_details_content.dart';
@@ -15,6 +16,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
     required this.productId,
     required this.productName,
     this.unit,
+    this.displaySize,
     required this.emoji,
     required this.imageUrl,
     required this.quantity,
@@ -25,8 +27,10 @@ class ReusableProductDetailsScreen extends StatelessWidget {
     required this.basePrice,
     this.oldPrice,
     required this.currency,
+    required this.variantOptions,
     required this.vendorPrices,
     required this.similarProducts,
+    this.onVariantSelected,
     this.onSimilarProductTap,
     this.onSimilarProductAddToCart,
     this.onAddToCart,
@@ -46,6 +50,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   final String productId;
   final String productName;
   final String? unit;
+  final String? displaySize;
   final String emoji;
   final String imageUrl;
   final int quantity;
@@ -56,8 +61,10 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   final double basePrice;
   final double? oldPrice;
   final String currency;
+  final List<ProductVariantOptionEntity> variantOptions;
   final List<ProductVendorPriceEntity> vendorPrices;
   final List<ProductModel> similarProducts;
+  final ValueChanged<ProductVariantOptionEntity>? onVariantSelected;
   final Function(ProductModel)? onSimilarProductTap;
   final Future<void> Function(ProductModel)? onSimilarProductAddToCart;
   final VoidCallback? onAddToCart;
@@ -100,6 +107,7 @@ class ReusableProductDetailsScreen extends StatelessWidget {
               ProductDetailsContent(
                 productName: productName,
                 unit: unit,
+                displaySize: displaySize,
                 quantity: quantity,
                 onIncrease: onIncrease,
                 onDecrease: onDecrease,
@@ -108,8 +116,10 @@ class ReusableProductDetailsScreen extends StatelessWidget {
                 basePrice: basePrice,
                 oldPrice: oldPrice,
                 currency: currency,
+                variantOptions: variantOptions,
                 vendorPrices: vendorPrices,
                 similarProducts: similarProducts,
+                onVariantSelected: onVariantSelected,
                 onSimilarProductTap: onSimilarProductTap,
                 onSimilarProductAddToCart: onSimilarProductAddToCart,
                 activeProductId: activeProductId,

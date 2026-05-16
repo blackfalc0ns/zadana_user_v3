@@ -49,6 +49,12 @@ class ShowPaymentInfoEffect extends PaymentUiEffect {
   final String message;
 }
 
+class ShowDeliveryUnavailableDialogEffect extends PaymentUiEffect {
+  const ShowDeliveryUnavailableDialogEffect(this.message);
+
+  final String message;
+}
+
 class PaymentState {
   const PaymentState({
     this.vendorId,
@@ -137,7 +143,8 @@ class PaymentState {
       selectedAddressId != null &&
       selectedDeliverySlotId != null &&
       selectedPaymentMethodCode != null &&
-      !isPlacingOrder;
+      !isPlacingOrder &&
+      (checkoutSummary!.isDeliveryValid);
 
   PaymentState copyWith({
     String? vendorId,

@@ -1,3 +1,5 @@
+import 'package:zadana_user_v3/feature/payment/data/models/checkout_delivery_check_dto.dart';
+import 'package:zadana_user_v3/feature/payment/data/models/estimated_delivery_window_dto.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
 
 class CheckoutSummaryDto {
@@ -12,6 +14,8 @@ class CheckoutSummaryDto {
     this.promoCode,
     this.deliveryQuote,
     this.pricingMode,
+    this.deliveryCheck,
+    this.estimatedDeliveryWindow,
   });
 
   factory CheckoutSummaryDto.fromJson(Map<String, dynamic> json) {
@@ -40,6 +44,15 @@ class CheckoutSummaryDto {
           .toList(),
       pricingMode: json['pricing_mode']?.toString(),
       summary: CheckoutTotalsDto.fromJson(_asMap(json['summary'])),
+      deliveryCheck: _nullableMap(json['delivery_check']) == null
+          ? null
+          : CheckoutDeliveryCheckDto.fromJson(_asMap(json['delivery_check'])),
+      estimatedDeliveryWindow:
+          _nullableMap(json['estimated_delivery_window']) == null
+              ? null
+              : EstimatedDeliveryWindowDto.fromJson(
+                  _asMap(json['estimated_delivery_window']),
+                ),
     );
   }
 
@@ -53,6 +66,8 @@ class CheckoutSummaryDto {
   final List<CheckoutShippingLineDto> shippingBreakdown;
   final String? pricingMode;
   final CheckoutTotalsDto summary;
+  final CheckoutDeliveryCheckDto? deliveryCheck;
+  final EstimatedDeliveryWindowDto? estimatedDeliveryWindow;
 
   CheckoutSummaryEntity toEntity() {
     return CheckoutSummaryEntity(
@@ -68,6 +83,8 @@ class CheckoutSummaryDto {
       shippingBreakdown: shippingBreakdown.map((item) => item.toEntity()).toList(),
       pricingMode: pricingMode,
       summary: summary.toEntity(),
+      deliveryCheck: deliveryCheck?.toEntity(),
+      estimatedDeliveryWindow: estimatedDeliveryWindow?.toEntity(),
     );
   }
 }
