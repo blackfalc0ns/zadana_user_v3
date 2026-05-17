@@ -62,18 +62,25 @@ class ProductDetailsContent extends StatelessWidget {
           onIncrease: onIncrease,
           onDecrease: onDecrease,
         ),
+        // Size selector directly after product name
         if (variantOptions.isNotEmpty) ...[
+          const SizedBox(height: Spacing.md),
           ProductVariantOptionsSection(
             variantOptions: variantOptions,
             onVariantSelected: onVariantSelected,
           ),
         ],
+        // Store price directly after size selector
+        if (vendorPrices.isNotEmpty) ...[
+          const SizedBox(height: Spacing.md),
+          PriceComparisonSection(vendorPrices: vendorPrices),
+        ],
+        // Description moved below the key purchase info
+        const SizedBox(height: Spacing.base),
         ProductDescriptionSection(
           title: descriptionTitle,
           description: description,
         ),
-        const SizedBox(height: Spacing.base),
-        PriceComparisonSection(vendorPrices: vendorPrices),
         const SizedBox(height: Spacing.base),
         SimilarProductsSection(
           similarProducts: similarProducts,

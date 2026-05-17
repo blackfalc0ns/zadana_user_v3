@@ -57,6 +57,8 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
         _decreaseQuantity();
       case SetActiveProductDetailsEvent():
         _setActiveProduct(event.productId);
+      case SelectVariantEvent():
+        _selectVariant(event.variantId);
       case AddProductToCartEvent():
         await _addToCart();
       case ClearProductDetailsFeedbackEvent():
@@ -134,11 +136,16 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     emit(state.copyWith(activeProductId: productId));
   }
 
+  void _selectVariant(String variantId) {
+    emit(state.copyWith(selectedVariantId: variantId));
+  }
+
   Future<void> _addToCart() async {
     final productDetails = state.productDetails;
     if (state.isAddingToCart || productDetails == null) return;
 
-    if (productDetails.masterProductId.isEmpty) {
+    final productId = state.effectiveProductIdForCart;
+    if (productId.isEmpty) {
       emit(
         state.copyWith(
           addToCartFailure: Failure(
@@ -158,7 +165,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     );
 
     final request = AddCartItemRequestEntity(
-      productId: productDetails.masterProductId,
+      productId: productId,
       quantity: state.quantity,
     );
 

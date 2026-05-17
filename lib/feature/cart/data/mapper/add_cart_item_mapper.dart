@@ -48,7 +48,9 @@ extension CartItemResponseDtoMapper on CartItemResponseDto {
       productId: productId,
       name: name,
       imageUrl: imageUrl,
-      unit: unit,
+      unit: (variantDisplaySize != null && variantDisplaySize!.isNotEmpty)
+          ? variantDisplaySize!
+          : unit,
       quantity: quantity,
       vendorPrices: vendorPrices.map((price) => price.toEntity()).toList(),
     );

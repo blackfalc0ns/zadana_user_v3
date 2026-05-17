@@ -114,6 +114,8 @@ class OrderDetailsBodyView extends StatelessWidget {
                       name: item.name,
                       quantity: item.quantity,
                       price: money(item.price),
+                      imageUrl: item.imageUrl,
+                      unit: item.unit,
                     ),
                   ),
                 )

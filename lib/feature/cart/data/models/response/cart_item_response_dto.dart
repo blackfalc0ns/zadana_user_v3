@@ -15,6 +15,7 @@ class CartItemResponseDto {
     required this.unit,
     required this.quantity,
     required this.vendorPrices,
+    this.variantDisplaySize,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class CartItemResponseDto {
   final String unit;
   final int quantity;
   final List<VendorPriceResponseDto> vendorPrices;
+  final String? variantDisplaySize;
 
   Map<String, dynamic> toJson() => _$CartItemResponseDtoToJson(this);
 }

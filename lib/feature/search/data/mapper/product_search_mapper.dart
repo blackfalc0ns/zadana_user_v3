@@ -18,6 +18,7 @@ extension ProductSearchItemDtoMapper on ProductSearchItemDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      variantCount: variantCount,
     );
   }
 }

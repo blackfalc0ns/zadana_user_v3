@@ -1,3 +1,5 @@
+import 'package:zadana_user_v3/feature/product_details/data/models/product_vendor_price_model_dto.dart';
+
 class ProductVariantOptionModelDto {
   const ProductVariantOptionModelDto({
     this.id,
@@ -7,6 +9,18 @@ class ProductVariantOptionModelDto {
     this.displaySizeAr,
     this.displaySizeEn,
     this.isCurrent,
+    this.imageUrl,
+    this.images,
+    this.packageTypeNameAr,
+    this.packageTypeNameEn,
+    this.measurementValue,
+    this.measurementUnitNameAr,
+    this.measurementUnitNameEn,
+    this.unit,
+    this.price,
+    this.oldPrice,
+    this.isDiscounted,
+    this.vendorPrices,
   });
 
   factory ProductVariantOptionModelDto.fromJson(Map<String, dynamic> json) {
@@ -18,6 +32,24 @@ class ProductVariantOptionModelDto {
       displaySizeAr: json['display_size_ar'] as String?,
       displaySizeEn: json['display_size_en'] as String?,
       isCurrent: json['is_current'] as bool?,
+      imageUrl: json['image_url'] as String?,
+      images: (json['images'] as List<dynamic>?)?.cast<String>(),
+      packageTypeNameAr: json['package_type_name_ar'] as String?,
+      packageTypeNameEn: json['package_type_name_en'] as String?,
+      measurementValue: (json['measurement_value'] as num?)?.toDouble(),
+      measurementUnitNameAr: json['measurement_unit_name_ar'] as String?,
+      measurementUnitNameEn: json['measurement_unit_name_en'] as String?,
+      unit: json['unit'] as String?,
+      price: (json['price'] as num?)?.toDouble(),
+      oldPrice: (json['old_price'] as num?)?.toDouble(),
+      isDiscounted: json['is_discounted'] as bool?,
+      vendorPrices: (json['vendor_prices'] as List<dynamic>?)
+          ?.map(
+            (item) => ProductVendorPriceModelDto.fromJson(
+              item as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -28,4 +60,16 @@ class ProductVariantOptionModelDto {
   final String? displaySizeAr;
   final String? displaySizeEn;
   final bool? isCurrent;
+  final String? imageUrl;
+  final List<String>? images;
+  final String? packageTypeNameAr;
+  final String? packageTypeNameEn;
+  final double? measurementValue;
+  final String? measurementUnitNameAr;
+  final String? measurementUnitNameEn;
+  final String? unit;
+  final double? price;
+  final double? oldPrice;
+  final bool? isDiscounted;
+  final List<ProductVendorPriceModelDto>? vendorPrices;
 }

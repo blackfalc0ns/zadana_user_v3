@@ -92,7 +92,9 @@ class _ProductDetailsView extends StatelessWidget {
         final cubit = context.read<ProductDetailsCubit>();
         final productDetails = state.productDetails;
         final title = productDetails?.name ?? product.name;
-        final imageUrl = productDetails?.imageUrl ?? product.imageUrl;
+        final imageUrl = state.effectiveImageUrl.isNotEmpty
+            ? state.effectiveImageUrl
+            : (productDetails?.imageUrl ?? product.imageUrl);
         final productId = productDetails?.id ?? product.id;
 
         if (state.isInitialLoading) {
@@ -107,8 +109,8 @@ class _ProductDetailsView extends StatelessWidget {
             return ReusableProductDetailsScreen(
               productId: productId,
               productName: title,
-              unit: productDetails.unit,
-              displaySize: _resolveDisplaySize(context, product, productDetails.variantOptions),
+              unit: state.effectiveUnit ?? productDetails.unit,
+              displaySize: _resolveDisplaySize(context, product, state.resolvedVariantOptions),
               emoji: product.emoji ?? '',
               imageUrl: imageUrl,
               quantity: state.quantity,
@@ -118,12 +120,15 @@ class _ProductDetailsView extends StatelessWidget {
                   cubit.doIntent(const DecreaseProductQuantityEvent()),
               descriptionTitle: l10n.product_description,
               description: productDetails.description,
-              basePrice: productDetails.price,
-              oldPrice: productDetails.oldPrice,
+              basePrice: state.effectivePrice,
+              oldPrice: state.effectiveOldPrice,
               currency: l10n.currency,
-              variantOptions: productDetails.variantOptions,
-              vendorPrices: productDetails.vendorPrices,
+              variantOptions: state.resolvedVariantOptions,
+              vendorPrices: state.effectiveVendorPrices,
               similarProducts: productDetails.similarProducts,
+              onVariantSelected: (variant) {
+                cubit.doIntent(SelectVariantEvent(variant.id));
+              },
               onSimilarProductTap: (similarProduct) async {
                 cubit.doIntent(SetActiveProductDetailsEvent(similarProduct.id));
                 await WidgetsBinding.instance.endOfFrame;

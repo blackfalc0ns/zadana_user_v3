@@ -10,6 +10,12 @@ import 'package:zadana_user_v3/feature/product_details/domain/entities/product_v
 
 extension ProductVariantOptionModelDtoMapper on ProductVariantOptionModelDto {
   ProductVariantOptionEntity toEntity() {
+    final resolvedImageUrl = _resolveImageUrl(imageUrl);
+    final galleryImages = (images ?? const <String>[])
+        .map(_resolveImageUrl)
+        .where((item) => item.isNotEmpty)
+        .toList();
+
     return ProductVariantOptionEntity(
       id: id ?? '',
       defaultVendorProductId: defaultVendorProductId ?? '',
@@ -18,6 +24,19 @@ extension ProductVariantOptionModelDtoMapper on ProductVariantOptionModelDto {
       displaySizeAr: displaySizeAr ?? '',
       displaySizeEn: displaySizeEn ?? '',
       isCurrent: isCurrent ?? false,
+      imageUrl: resolvedImageUrl.isNotEmpty ? resolvedImageUrl : null,
+      images: galleryImages,
+      packageTypeNameAr: packageTypeNameAr,
+      packageTypeNameEn: packageTypeNameEn,
+      measurementValue: measurementValue,
+      measurementUnitNameAr: measurementUnitNameAr,
+      measurementUnitNameEn: measurementUnitNameEn,
+      unit: unit,
+      price: price,
+      oldPrice: oldPrice,
+      isDiscounted: isDiscounted ?? false,
+      vendorPrices:
+          vendorPrices?.map((item) => item.toEntity()).toList() ?? const [],
     );
   }
 }

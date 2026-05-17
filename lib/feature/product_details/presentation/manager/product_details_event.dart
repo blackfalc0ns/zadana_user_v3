@@ -30,6 +30,12 @@ class SetActiveProductDetailsEvent extends ProductDetailsEvent {
   final String? productId;
 }
 
+class SelectVariantEvent extends ProductDetailsEvent {
+  const SelectVariantEvent(this.variantId);
+
+  final String variantId;
+}
+
 class AddProductToCartEvent extends ProductDetailsEvent {
   const AddProductToCartEvent();
 }

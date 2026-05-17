@@ -12,6 +12,7 @@ class ProductSearchItemDto {
     this.isFavorite,
     this.unit,
     this.isDiscounted,
+    this.variantCount,
   });
 
   factory ProductSearchItemDto.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class ProductSearchItemDto {
       isFavorite: json['is_favorite'] as bool?,
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
+      variantCount: (json['variant_count'] as num?)?.toInt(),
     );
   }
 
@@ -43,4 +45,5 @@ class ProductSearchItemDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+  final int? variantCount;
 }

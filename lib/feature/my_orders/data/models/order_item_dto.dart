@@ -10,6 +10,8 @@ class OrderItemDto {
     required this.name,
     required this.quantity,
     required this.price,
+    this.imageUrl,
+    this.unit,
   });
 
   factory OrderItemDto.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,8 @@ class OrderItemDto {
       name: json['name']?.toString() ?? '',
       quantity: (json['quantity'] as num?)?.toInt() ?? 0,
       price: (json['price'] as num?)?.toDouble() ?? 0,
+      imageUrl: json['image_url']?.toString(),
+      unit: json['unit']?.toString(),
     );
   }
 
@@ -25,6 +29,8 @@ class OrderItemDto {
   final String name;
   final int quantity;
   final double price;
+  final String? imageUrl;
+  final String? unit;
 
   Map<String, dynamic> toJson() => _$OrderItemDtoToJson(this);
 
@@ -34,6 +40,8 @@ class OrderItemDto {
       name: name,
       quantity: quantity,
       price: price,
+      imageUrl: imageUrl,
+      unit: unit,
     );
   }
 }

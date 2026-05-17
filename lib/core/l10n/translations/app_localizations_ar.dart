@@ -695,6 +695,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add_to_cart => 'أضف للسلة';
 
   @override
+  String get select_size => 'اختر الحجم:';
+
+  @override
+  String variant_sizes_count(Object count) {
+    return '$count أحجام';
+  }
+
+  @override
   String get nav_home => 'الرئيسية';
 
   @override

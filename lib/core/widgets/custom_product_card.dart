@@ -224,6 +224,11 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                   fontSize: spec.titleFontSize * 0.82,
                                   compact: true,
                                 ),
+                                if (widget.product.hasMultipleVariants)
+                                  _VariantCountBadge(
+                                    count: widget.product.variantCount!,
+                                    fontSize: spec.titleFontSize * 0.78,
+                                  ),
                                 SizedBox(height: spec.contentSpacing),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -444,6 +449,32 @@ class _CardLayoutSpec {
       buttonRadius: 6.0,
       minContentHeight: 57.0,
       imageBottomInset: 6.0,
+    );
+  }
+}
+
+class _VariantCountBadge extends StatelessWidget {
+  const _VariantCountBadge({required this.count, required this.fontSize});
+
+  final int count;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.localization;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Text(
+        l10n.variant_sizes_count(count),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: fontSize,
+          color: AppColors.primary,
+        ),
+      ),
     );
   }
 }

@@ -1388,6 +1388,18 @@ abstract class AppLocalizations {
   /// **'Add to Cart'**
   String get add_to_cart;
 
+  /// No description provided for @select_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Select size:'**
+  String get select_size;
+
+  /// No description provided for @variant_sizes_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sizes'**
+  String variant_sizes_count(Object count);
+
   /// No description provided for @nav_home.
   ///
   /// In en, this message translates to:

@@ -20,6 +20,7 @@ class ProductModel {
     this.measurementValue,
     this.displaySizeAr,
     this.displaySizeEn,
+    this.variantCount,
   });
   final String id;
   final String name;
@@ -41,6 +42,7 @@ class ProductModel {
   final double? measurementValue;
   final String? displaySizeAr;
   final String? displaySizeEn;
+  final int? variantCount;
 
   ProductModel copyWith({
     String? id,
@@ -63,6 +65,7 @@ class ProductModel {
     double? measurementValue,
     String? displaySizeAr,
     String? displaySizeEn,
+    int? variantCount,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -87,8 +90,12 @@ class ProductModel {
       measurementValue: measurementValue ?? this.measurementValue,
       displaySizeAr: displaySizeAr ?? this.displaySizeAr,
       displaySizeEn: displaySizeEn ?? this.displaySizeEn,
+      variantCount: variantCount ?? this.variantCount,
     );
   }
+
+  /// Whether this product has multiple size variants.
+  bool get hasMultipleVariants => (variantCount ?? 1) > 1;
 
   int get discountPercentage {
     if (discount != null && discount!.trim().isNotEmpty) {

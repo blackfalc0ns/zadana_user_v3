@@ -181,7 +181,20 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
 
     switch (detailsResult) {
       case ApiSuccessResult<ProductDetailsEntity>():
-        final productId = detailsResult.data.masterProductId;
+        final details = detailsResult.data;
+
+        // If multiple variants exist, return a special result so the UI can
+        // show a variant selection bottom sheet.
+        if (details.variantOptions.length > 1) {
+          return CartActionResult(
+            isSuccess: false,
+            message: '',
+            requiresVariantSelection: true,
+            productDetails: details,
+          );
+        }
+
+        final productId = details.masterProductId;
         if (productId.isEmpty) {
           return const CartActionResult(
             isSuccess: false,
@@ -210,6 +223,34 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         return CartActionResult(
           isSuccess: false,
           message: detailsResult.failure.errorMessage,
+        );
+    }
+  }
+
+  /// Adds a specific variant to cart (called after user selects from bottom sheet).
+  Future<CartActionResult> addVariantToCart(String variantId) async {
+    if (variantId.isEmpty) {
+      return const CartActionResult(
+        isSuccess: false,
+        message: 'Product id is unavailable for this item.',
+      );
+    }
+
+    final request = AddCartItemRequestEntity(
+      productId: variantId,
+      quantity: 1,
+    );
+    final addResult = await _addCartItemUseCase.call(request);
+    switch (addResult) {
+      case ApiSuccessResult():
+        return CartActionResult(
+          isSuccess: true,
+          message: addResult.data.message,
+        );
+      case ApiErrorResult():
+        return CartActionResult(
+          isSuccess: false,
+          message: addResult.failure.errorMessage,
         );
     }
   }
@@ -335,8 +376,15 @@ class FavoriteActionResult {
 }
 
 class CartActionResult {
-  const CartActionResult({required this.isSuccess, required this.message});
+  const CartActionResult({
+    required this.isSuccess,
+    required this.message,
+    this.requiresVariantSelection = false,
+    this.productDetails,
+  });
 
   final bool isSuccess;
   final String message;
+  final bool requiresVariantSelection;
+  final ProductDetailsEntity? productDetails;
 }

@@ -712,6 +712,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add_to_cart => 'Add to Cart';
 
   @override
+  String get select_size => 'Select size:';
+
+  @override
+  String variant_sizes_count(Object count) {
+    return '$count sizes';
+  }
+
+  @override
   String get nav_home => 'Home';
 
   @override

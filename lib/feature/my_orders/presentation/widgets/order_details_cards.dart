@@ -149,30 +149,71 @@ class OrderItemTile extends StatelessWidget {
     required this.name,
     required this.quantity,
     required this.price,
+    this.imageUrl,
+    this.unit,
   });
 
   final String name;
   final int quantity;
   final String price;
+  final String? imageUrl;
+  final String? unit;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
 
     return DecoratedBlock(
       child: Row(
         children: [
-          LeadingQuantityBadge(quantity: quantity),
-          const SizedBox(width: Spacing.sm),
+          if (imageUrl != null && imageUrl!.isNotEmpty) ...[
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: colors.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(Spacing.xs + 2),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(Spacing.xs + 2),
+                child: Image.network(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+            const SizedBox(width: Spacing.sm),
+          ] else ...[
+            LeadingQuantityBadge(quantity: quantity),
+            const SizedBox(width: Spacing.sm),
+          ],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: const TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 4),
-                SecondaryText(
-                  '${l10n.my_orders_unit_price}: $price',
-                  maxLines: 1,
+                Row(
+                  children: [
+                    if (imageUrl != null && imageUrl!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(end: Spacing.xs),
+                        child: SecondaryText('x$quantity', maxLines: 1),
+                      ),
+                    if (unit != null && unit!.isNotEmpty)
+                      Flexible(
+                        child: SecondaryText(unit!, maxLines: 1),
+                      )
+                    else
+                      Flexible(
+                        child: SecondaryText(
+                          '${l10n.my_orders_unit_price}: $price',
+                          maxLines: 1,
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),

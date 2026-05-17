@@ -256,6 +256,8 @@
 "see_all"                 : "See All",
 "refresh"                 : "Refresh",
 "add_to_cart"             : "Add to Cart",
+"select_size"             : "Select size:",
+"variant_sizes_count"     : "{count} sizes",
 
 
 "nav_home"                : "Home",

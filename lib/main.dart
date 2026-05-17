@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,12 +22,10 @@ void main() async {
   unawaited(
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
   );
-  // const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
+//  const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
   runApp(
-    // kReleaseMode || !enableDevicePreview
-    //     ? const AppBootstrapper()
-    //     :
-    DevicePreview(builder: (context) => const AppBootstrapper(), enabled: true),
+   // kReleaseMode || !enableDevicePreview? const AppBootstrapper():
+    DevicePreview(builder: (context) => const AppBootstrapper()),
   );
 }
 
