@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
+import 'package:zadana_user_v3/feature/home/presentation/widget/home_loading_skeleton.dart';
 
 class BannerImage extends StatelessWidget {
   const BannerImage({
@@ -22,6 +23,8 @@ class BannerImage extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: imageUrl,
       fit: fit,
+      width: double.infinity,
+      height: double.infinity,
       placeholder: (_, _) => const _BannerImageLoading(),
       errorWidget: (_, _, _) =>
           _BannerImageFallback(iconSize: fallbackIconSize),
@@ -34,16 +37,9 @@ class _BannerImageLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.primary,
-      alignment: Alignment.center,
-      child: const SizedBox(
-        width: 28,
-        height: 28,
-        child: CircularProgressIndicator(
-          strokeWidth: 2.5,
-          color: AppColors.white,
-        ),
+    return ShimmerEffect(
+      child: Container(
+        color: AppColors.primary.withValues(alpha: 0.15),
       ),
     );
   }

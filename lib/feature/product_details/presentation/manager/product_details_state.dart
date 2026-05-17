@@ -68,6 +68,7 @@ class ProductDetailsState {
   bool get isInitialLoading => isLoading && !hasLoadedProduct;
 
   /// Returns the currently selected variant, or the one marked as `isCurrent`.
+  /// Falls back to the first variant if none is marked as current.
   ProductVariantOptionEntity? get selectedVariant {
     final options = productDetails?.variantOptions;
     if (options == null || options.isEmpty) return null;
@@ -77,7 +78,7 @@ class ProductDetailsState {
       if (match != null) return match;
     }
 
-    return options.where((v) => v.isCurrent).firstOrNull;
+    return options.where((v) => v.isCurrent).firstOrNull ?? options.first;
   }
 
   /// The product ID to use when adding to cart.
@@ -153,10 +154,20 @@ class ProductDetailsState {
   List<ProductVariantOptionEntity> get resolvedVariantOptions {
     final options = productDetails?.variantOptions;
     if (options == null || options.isEmpty) return const [];
-    if (selectedVariantId == null) return options;
+
+    if (selectedVariantId != null) {
+      return options
+          .map((v) => v.copyWith(isCurrent: v.id == selectedVariantId))
+          .toList();
+    }
+
+    // If no variant is explicitly selected, respect API's isCurrent.
+    // If none is marked, mark the first one as current.
+    final hasAnyCurrent = options.any((v) => v.isCurrent);
+    if (hasAnyCurrent) return options;
 
     return options
-        .map((v) => v.copyWith(isCurrent: v.id == selectedVariantId))
+        .map((v) => v.copyWith(isCurrent: v == options.first))
         .toList();
   }
 

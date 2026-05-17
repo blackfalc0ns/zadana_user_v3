@@ -58,7 +58,7 @@ class CategoriesSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(
-              height: 126,
+              height: 115,
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.screenH,

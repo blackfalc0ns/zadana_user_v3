@@ -6,7 +6,7 @@ class BannerContainer extends StatelessWidget {
   const BannerContainer({
     super.key,
     required this.child,
-    this.height = 140, // تقليل الطول من 180 إلى 140
+    this.height = 170,
     this.margin,
   });
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
-import 'package:zadana_user_v3/config/theme/spacing.dart';
 
 class BannerDotsIndicator extends StatelessWidget {
   const BannerDotsIndicator({
@@ -22,22 +21,17 @@ class BannerDotsIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: Spacing.sm,
-      left: 0,
-      right: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(
-          itemCount,
-          (index) => _BannerDot(
-            isActive: currentPage == index,
-            activeColor: activeColor ?? AppColors.white,
-            inactiveColor:
-                inactiveColor ?? AppColors.white.withValues(alpha: 0.5),
-            dotSize: dotSize,
-            activeDotWidth: activeDotWidth,
-          ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        itemCount,
+        (index) => _BannerDot(
+          isActive: currentPage == index,
+          activeColor: activeColor ?? AppColors.primary,
+          inactiveColor:
+              inactiveColor ?? AppColors.primary.withValues(alpha: 0.25),
+          dotSize: dotSize,
+          activeDotWidth: activeDotWidth,
         ),
       ),
     );

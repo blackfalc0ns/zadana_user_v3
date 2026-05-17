@@ -6,6 +6,7 @@ import 'package:zadana_user_v3/core/widgets/banner/banner_container.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_data.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_dots_indicator.dart';
 import 'package:zadana_user_v3/core/widgets/banner/banner_page_view.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/home_banner_item_entity.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_state.dart';
 import 'package:zadana_user_v3/feature/home/presentation/manager/home_view_model.dart';
@@ -108,20 +109,23 @@ class _PromoBannerState extends State<PromoBanner> {
           }
         });
 
-        return BannerContainer(
-          child: Stack(
-            children: [
-              BannerPageView(
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BannerContainer(
+              child: BannerPageView(
                 controller: _pageController,
                 banners: banners,
                 onPageChanged: _onPageChanged,
+                onBannerTap: (_) => mainShellKey.currentState?.jumpToTab(1),
               ),
-              BannerDotsIndicator(
-                itemCount: banners.length,
-                currentPage: _currentPage,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 8),
+            BannerDotsIndicator(
+              itemCount: banners.length,
+              currentPage: _currentPage,
+            ),
+          ],
         );
       },
     );

@@ -38,7 +38,7 @@ class HomeBannerSection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             PromoBanner(),
-            SizedBox(height: Spacing.lg),
+          
           ],
         );
       },
@@ -55,7 +55,7 @@ class _HomeBannerLoadingSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ShimmerEffect(child: BannerSkeleton()),
-        SizedBox(height: Spacing.lg),
+        SizedBox(height: Spacing.sm,)
       ],
     );
   }

@@ -8,11 +8,13 @@ class BannerPageView extends StatelessWidget {
     required this.controller,
     required this.banners,
     required this.onPageChanged,
+    this.onBannerTap,
   });
 
   final PageController controller;
   final List<BannerData> banners;
   final ValueChanged<int> onPageChanged;
+  final ValueChanged<int>? onBannerTap;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,10 @@ class BannerPageView extends StatelessWidget {
       onPageChanged: onPageChanged,
       itemCount: banners.length,
       itemBuilder: (context, index) {
-        return BannerItem(banner: banners[index]);
+        return BannerItem(
+          banner: banners[index],
+          onTap: onBannerTap != null ? () => onBannerTap!(index) : null,
+        );
       },
     );
   }
