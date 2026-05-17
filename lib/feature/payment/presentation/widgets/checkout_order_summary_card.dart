@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
@@ -68,6 +69,7 @@ class _OrderItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final imageUrl = item.displayImageUrl;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.xs + 2),
@@ -87,14 +89,21 @@ class _OrderItemTile extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(Spacing.xs + 2),
-              child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      item.imageUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => Icon(
+              child: imageUrl != null && imageUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: imageUrl,
+                    
+                      errorWidget: (_, _, _) => Icon(
                         Icons.shopping_bag_outlined,
                         color: colors.onSurfaceVariant,
                         size: 18,
+                      ),
+                      placeholder: (_, _) => const Center(
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
                       ),
                     )
                   : Icon(
@@ -139,7 +148,29 @@ class _OrderItemTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (item.unit != null && item.unit!.isNotEmpty) ...[
+                    if (item.variantDisplaySize != null &&
+                        item.variantDisplaySize!.isNotEmpty) ...[
+                      const SizedBox(width: Spacing.xs),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Spacing.xs + 2,
+                          vertical: 1,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colors.primary.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          item.variantDisplaySize!,
+                          style: getRegularStyle(
+                            fontSize: FontSize.size10,
+                            fontFamily: FontConstant.cairo,
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ] else if (item.unit != null &&
+                        item.unit!.isNotEmpty) ...[
                       const SizedBox(width: Spacing.xs),
                       Text(
                         item.unit!,

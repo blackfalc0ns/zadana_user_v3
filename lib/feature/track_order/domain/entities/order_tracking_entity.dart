@@ -94,6 +94,8 @@ class OrderEstimatedDeliveryEntity {
     this.confidence,
     this.source,
     this.isApproximate,
+    this.calculationMode,
+    this.explanation,
   });
 
   final DateTime? dateTime;
@@ -104,6 +106,8 @@ class OrderEstimatedDeliveryEntity {
   final String? confidence;
   final String? source;
   final bool? isApproximate;
+  final String? calculationMode;
+  final String? explanation;
 
   /// Returns the best display label for the ETA.
   /// Prefers the window-based [label] if available, falls back to [formatted].
@@ -125,6 +129,8 @@ class OrderEstimatedDeliveryEntity {
     String? confidence,
     String? source,
     bool? isApproximate,
+    String? calculationMode,
+    String? explanation,
   }) {
     return OrderEstimatedDeliveryEntity(
       dateTime: dateTime ?? this.dateTime,
@@ -135,6 +141,8 @@ class OrderEstimatedDeliveryEntity {
       confidence: confidence ?? this.confidence,
       source: source ?? this.source,
       isApproximate: isApproximate ?? this.isApproximate,
+      calculationMode: calculationMode ?? this.calculationMode,
+      explanation: explanation ?? this.explanation,
     );
   }
 }

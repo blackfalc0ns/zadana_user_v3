@@ -159,4 +159,27 @@ class ProductDetailsState {
         .map((v) => v.copyWith(isCurrent: v.id == selectedVariantId))
         .toList();
   }
+
+  /// Whether the product is available for purchase.
+  bool get isAvailableForPurchase =>
+      productDetails?.isAvailableForPurchase ?? true;
+
+  /// The reason the product is unavailable (if any).
+  String? get unavailableReason => productDetails?.unavailableReason;
+
+  /// Returns a user-facing message for the unavailability reason.
+  String get unavailableMessage {
+    switch (unavailableReason) {
+      case 'vendor_offline':
+        return 'المتجر غير متاح حاليًا';
+      case 'outside_working_hours':
+        return 'المتجر مغلق الآن خارج ساعات العمل';
+      case 'accept_orders_disabled':
+        return 'المتجر لا يستقبل طلبات الآن';
+      case 'vendor_inactive':
+        return 'هذا المتجر غير متاح حاليًا';
+      default:
+        return 'هذا المنتج غير متاح للشراء حاليًا';
+    }
+  }
 }

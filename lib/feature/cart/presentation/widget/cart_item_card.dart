@@ -103,19 +103,7 @@ class CartItemCard extends StatelessWidget {
                             color: color.onSurface,
                           ),
                         ),
-                        if (item.unit.isNotEmpty) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            item.unit,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: getRegularStyle(
-                              fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size11,
-                              color: color.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
+                      
                         const SizedBox(height: 3),
                         _buildPrice(locale, color),
                         const SizedBox(height: 6),

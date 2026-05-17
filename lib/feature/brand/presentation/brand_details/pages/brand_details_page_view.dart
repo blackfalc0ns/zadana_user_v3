@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/errors/error_widgets/base_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/utils/product_sort_options.dart';
@@ -363,7 +364,19 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
                     ),
                   )
                 else ...[
-                  BrandProductsGrid(products: state.products),
+                  if (state.products.isEmpty)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: BaseErrorWidget(
+                        icon: Icons.search_off_rounded,
+                        title: 'لا توجد منتجات',
+                        description:
+                            'لا تتوفر منتجات في هذا القسم في الوقت الحالي.\nيمكنك تجربة تغيير فلاتر البحث أو العودة لاحقاً.',
+                        primaryColor: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  else
+                    BrandProductsGrid(products: state.products),
                   if (state.isLoadingMore)
                     const SliverToBoxAdapter(
                       child: Padding(

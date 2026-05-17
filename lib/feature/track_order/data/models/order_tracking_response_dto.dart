@@ -132,6 +132,8 @@ class OrderEstimatedDeliveryDto {
     this.confidence,
     this.source,
     this.isApproximate,
+    this.calculationMode,
+    this.explanation,
   });
 
   factory OrderEstimatedDeliveryDto.fromJson(Map<String, dynamic> json) {
@@ -144,6 +146,8 @@ class OrderEstimatedDeliveryDto {
       confidence: json['confidence']?.toString(),
       source: json['source']?.toString(),
       isApproximate: json['is_approximate'] as bool?,
+      calculationMode: json['calculation_mode']?.toString(),
+      explanation: json['explanation']?.toString(),
     );
   }
 
@@ -155,6 +159,8 @@ class OrderEstimatedDeliveryDto {
   final String? confidence;
   final String? source;
   final bool? isApproximate;
+  final String? calculationMode;
+  final String? explanation;
 
   OrderEstimatedDeliveryEntity toEntity() {
     return OrderEstimatedDeliveryEntity(
@@ -166,6 +172,8 @@ class OrderEstimatedDeliveryDto {
       confidence: confidence,
       source: source,
       isApproximate: isApproximate,
+      calculationMode: calculationMode,
+      explanation: explanation,
     );
   }
 }

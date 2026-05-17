@@ -23,6 +23,9 @@ class ProductDetailsEntity {
     required this.variantOptions,
     required this.vendorPrices,
     required this.similarProducts,
+    this.isOnlineNow = true,
+    this.isAvailableForPurchase = true,
+    this.unavailableReason,
   });
   final String id;
   final String masterProductId;
@@ -43,4 +46,7 @@ class ProductDetailsEntity {
   final List<ProductVariantOptionEntity> variantOptions;
   final List<ProductVendorPriceEntity> vendorPrices;
   final List<ProductModel> similarProducts;
+  final bool isOnlineNow;
+  final bool isAvailableForPurchase;
+  final String? unavailableReason;
 }

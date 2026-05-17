@@ -33,31 +33,54 @@ class ProductHeaderSection extends StatelessWidget {
     return Container(
       
       color: color.surface,
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
                   productName,
                   style: AppTextStyles.h3.copyWith(color: color.onSurface),
                 ),
-              ],
+              ),
+              const SizedBox(width: Spacing.sm),
+              _QuantitySelector(
+                quantity: quantity,
+                onIncrease: onIncrease,
+                onDecrease: onDecrease,
+                quantityBackground: quantityBackground,
+                quantityBorderColor: color.outlineVariant,
+                quantityTextColor: color.onSurface,
+                disabledButtonColor: color.surfaceContainerHighest,
+                disabledIconColor: color.onSurfaceVariant,
+              ),
+            ],
+          ),
+          if (displaySize != null && displaySize!.isNotEmpty) ...[
+            const SizedBox(height: Spacing.xs),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 3,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Text(
+                displaySize!,
+                style: AppTextStyles.labelSmall.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: Spacing.sm),
-          _QuantitySelector(
-            quantity: quantity,
-            onIncrease: onIncrease,
-            onDecrease: onDecrease,
-            quantityBackground: quantityBackground,
-            quantityBorderColor: color.outlineVariant,
-            quantityTextColor: color.onSurface,
-            disabledButtonColor: color.surfaceContainerHighest,
-            disabledIconColor: color.onSurfaceVariant,
-          ),
+          ],
         ],
       ),
     );

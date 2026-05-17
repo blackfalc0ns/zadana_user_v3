@@ -109,6 +109,9 @@ extension ProductDetailsResponseModelDtoMapper
           vendorPrices?.map((item) => item.toEntity()).toList() ?? const [],
       similarProducts:
           similarProducts?.map((item) => item.toEntity()).toList() ?? const [],
+      isOnlineNow: isOnlineNow ?? true,
+      isAvailableForPurchase: isAvailableForPurchase ?? true,
+      unavailableReason: unavailableReason,
     );
   }
 }

@@ -12,12 +12,16 @@ class ProductBottomActions extends StatelessWidget {
     this.onGoToCart,
     this.cartCount = 0,
     this.isAddingToCart = false,
+    this.isAvailableForPurchase = true,
+    this.unavailableMessage,
   });
 
   final VoidCallback? onAddToCart;
   final VoidCallback? onGoToCart;
   final int cartCount;
   final bool isAddingToCart;
+  final bool isAvailableForPurchase;
+  final String? unavailableMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +31,47 @@ class ProductBottomActions extends StatelessWidget {
       color.primary.withValues(alpha: 0.06),
       color.surface,
     );
+
+    if (!isAvailableForPurchase) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
+        decoration: BoxDecoration(color: color.surface),
+        child: SafeArea(
+          top: false,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.md,
+              vertical: Spacing.sm + 2,
+            ),
+            decoration: BoxDecoration(
+              color: color.error.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: color.error.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.store_outlined, size: 18, color: color.error),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    unavailableMessage ?? 'هذا المنتج غير متاح للشراء حاليًا',
+                    style: TextStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: color.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(

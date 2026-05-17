@@ -129,6 +129,12 @@ class CheckoutCartItemDto {
     required this.totalPrice,
     this.imageUrl,
     this.unit,
+    this.variantDisplaySize,
+    this.packageTypeName,
+    this.measurementValue,
+    this.measurementUnitName,
+    this.variantImageUrl,
+    this.variantImages = const [],
   });
 
   factory CheckoutCartItemDto.fromJson(Map<String, dynamic> json) {
@@ -141,6 +147,15 @@ class CheckoutCartItemDto {
       quantity: _asInt(json['quantity']),
       price: _asDouble(json['price']),
       totalPrice: _asDouble(json['total_price']),
+      variantDisplaySize: json['variant_display_size']?.toString(),
+      packageTypeName: json['package_type_name']?.toString(),
+      measurementValue: json['measurement_value']?.toString(),
+      measurementUnitName: json['measurement_unit_name']?.toString(),
+      variantImageUrl: json['variant_image_url']?.toString(),
+      variantImages: _asList(json['variant_images'])
+          .map((e) => e?.toString() ?? '')
+          .where((e) => e.isNotEmpty)
+          .toList(),
     );
   }
 
@@ -152,6 +167,12 @@ class CheckoutCartItemDto {
   final int quantity;
   final double price;
   final double totalPrice;
+  final String? variantDisplaySize;
+  final String? packageTypeName;
+  final String? measurementValue;
+  final String? measurementUnitName;
+  final String? variantImageUrl;
+  final List<String> variantImages;
 
   CheckoutCartItemEntity toEntity() {
     return CheckoutCartItemEntity(
@@ -163,6 +184,12 @@ class CheckoutCartItemDto {
       quantity: quantity,
       price: price,
       totalPrice: totalPrice,
+      variantDisplaySize: variantDisplaySize,
+      packageTypeName: packageTypeName,
+      measurementValue: measurementValue,
+      measurementUnitName: measurementUnitName,
+      variantImageUrl: variantImageUrl,
+      variantImages: variantImages,
     );
   }
 }

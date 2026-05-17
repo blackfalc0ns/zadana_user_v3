@@ -12,6 +12,8 @@ class EstimatedDeliveryWindowEntity {
     required this.confidence,
     required this.source,
     required this.isApproximate,
+    this.calculationMode,
+    this.explanation,
   });
 
   final int minMinutes;
@@ -29,4 +31,10 @@ class EstimatedDeliveryWindowEntity {
   final String confidence;
   final String source;
   final bool isApproximate;
+
+  /// Internal calculation mode used by the backend.
+  final String? calculationMode;
+
+  /// Short explanation of why this estimate was produced.
+  final String? explanation;
 }

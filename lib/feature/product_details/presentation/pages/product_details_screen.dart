@@ -176,6 +176,10 @@ class _ProductDetailsView extends StatelessWidget {
               ),
               cartCount: cartCount,
               isAddingToCart: state.isAddingToCart,
+              isAvailableForPurchase: state.isAvailableForPurchase,
+              unavailableMessage: state.isAvailableForPurchase
+                  ? null
+                  : state.unavailableMessage,
             );
           }
 

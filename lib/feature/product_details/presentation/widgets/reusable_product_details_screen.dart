@@ -45,6 +45,8 @@ class ReusableProductDetailsScreen extends StatelessWidget {
     this.appBarSystemOverlayStyle,
     this.cartCount = 0,
     this.isAddingToCart = false,
+    this.isAvailableForPurchase = true,
+    this.unavailableMessage,
   });
 
   final String productId;
@@ -79,6 +81,8 @@ class ReusableProductDetailsScreen extends StatelessWidget {
   final SystemUiOverlayStyle? appBarSystemOverlayStyle;
   final int cartCount;
   final bool isAddingToCart;
+  final bool isAvailableForPurchase;
+  final String? unavailableMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +137,8 @@ class ReusableProductDetailsScreen extends StatelessWidget {
         onGoToCart: onGoToCart,
         cartCount: cartCount,
         isAddingToCart: isAddingToCart,
+        isAvailableForPurchase: isAvailableForPurchase,
+        unavailableMessage: unavailableMessage,
       ),
       
     );

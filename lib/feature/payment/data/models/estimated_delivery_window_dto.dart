@@ -10,6 +10,8 @@ class EstimatedDeliveryWindowDto {
     required this.confidence,
     required this.source,
     required this.isApproximate,
+    this.calculationMode,
+    this.explanation,
   });
 
   factory EstimatedDeliveryWindowDto.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,8 @@ class EstimatedDeliveryWindowDto {
       confidence: json['confidence']?.toString() ?? '',
       source: json['source']?.toString() ?? '',
       isApproximate: json['is_approximate'] == true,
+      calculationMode: json['calculation_mode']?.toString(),
+      explanation: json['explanation']?.toString(),
     );
   }
 
@@ -33,6 +37,8 @@ class EstimatedDeliveryWindowDto {
   final String confidence;
   final String source;
   final bool isApproximate;
+  final String? calculationMode;
+  final String? explanation;
 
   EstimatedDeliveryWindowEntity toEntity() {
     return EstimatedDeliveryWindowEntity(
@@ -44,6 +50,8 @@ class EstimatedDeliveryWindowDto {
       confidence: confidence,
       source: source,
       isApproximate: isApproximate,
+      calculationMode: calculationMode,
+      explanation: explanation,
     );
   }
 }

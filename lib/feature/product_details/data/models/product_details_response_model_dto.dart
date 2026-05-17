@@ -23,6 +23,9 @@ class ProductDetailsResponseModelDto {
     this.variantOptions,
     this.vendorPrices,
     this.similarProducts,
+    this.isOnlineNow,
+    this.isAvailableForPurchase,
+    this.unavailableReason,
   });
 
   factory ProductDetailsResponseModelDto.fromJson(Map<String, dynamic> json) {
@@ -63,6 +66,9 @@ class ProductDetailsResponseModelDto {
                 SimilarProductModelDto.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
+      isOnlineNow: json['is_online_now'] as bool?,
+      isAvailableForPurchase: json['is_available_for_purchase'] as bool?,
+      unavailableReason: json['unavailable_reason'] as String?,
     );
   }
   final String? id;
@@ -84,4 +90,7 @@ class ProductDetailsResponseModelDto {
   final List<ProductVariantOptionModelDto>? variantOptions;
   final List<ProductVendorPriceModelDto>? vendorPrices;
   final List<SimilarProductModelDto>? similarProducts;
+  final bool? isOnlineNow;
+  final bool? isAvailableForPurchase;
+  final String? unavailableReason;
 }

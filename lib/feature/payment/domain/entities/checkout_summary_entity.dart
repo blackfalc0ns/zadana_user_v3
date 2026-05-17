@@ -102,6 +102,12 @@ class CheckoutCartItemEntity {
     required this.totalPrice,
     this.imageUrl,
     this.unit,
+    this.variantDisplaySize,
+    this.packageTypeName,
+    this.measurementValue,
+    this.measurementUnitName,
+    this.variantImageUrl,
+    this.variantImages = const [],
   });
 
   final String id;
@@ -112,6 +118,19 @@ class CheckoutCartItemEntity {
   final int quantity;
   final double price;
   final double totalPrice;
+  final String? variantDisplaySize;
+  final String? packageTypeName;
+  final String? measurementValue;
+  final String? measurementUnitName;
+  final String? variantImageUrl;
+  final List<String> variantImages;
+
+  /// Returns the best available image URL for this item.
+  /// Priority: variantImageUrl → first of variantImages → imageUrl
+  String? get displayImageUrl =>
+      variantImageUrl ??
+      (variantImages.isNotEmpty ? variantImages.first : null) ??
+      imageUrl;
 }
 
 class CheckoutAddressEntity {
