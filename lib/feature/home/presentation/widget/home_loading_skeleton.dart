@@ -84,7 +84,6 @@ class ProductCardSkeleton extends StatelessWidget {
         border: Border.all(color: skeletonBorderColor),
       ),
       child: const Stack(
-        clipBehavior: Clip.hardEdge,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

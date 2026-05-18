@@ -712,6 +712,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add_to_cart => 'Add to Cart';
 
   @override
+  String get add_button => 'Add';
+
+  @override
   String get select_size => 'Select size:';
 
   @override

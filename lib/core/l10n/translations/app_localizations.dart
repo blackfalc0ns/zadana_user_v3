@@ -1388,6 +1388,12 @@ abstract class AppLocalizations {
   /// **'Add to Cart'**
   String get add_to_cart;
 
+  /// No description provided for @add_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add_button;
+
   /// No description provided for @select_size.
   ///
   /// In en, this message translates to:

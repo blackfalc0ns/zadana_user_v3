@@ -265,7 +265,7 @@ class _ShowcaseSectionSkeleton extends StatelessWidget {
             (_) => SizedBox(
               width: itemWidth,
               child: Container(
-                height: 82,
+                height: 100,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),

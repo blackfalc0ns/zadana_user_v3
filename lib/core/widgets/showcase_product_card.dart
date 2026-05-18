@@ -115,8 +115,8 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
         clipBehavior: Clip.none,
         children: [
           Container(
-            height: 82,
-            padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 6, 4),
+            height: 100,
+            padding: const EdgeInsetsDirectional.fromSTEB(4, 6, 8, 6),
             decoration: BoxDecoration(
               color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(12),
@@ -139,6 +139,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                   isLoading: _isSubmittingFavorite,
                   onFavoriteTap: _handleFavoriteTap,
                 ),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -150,23 +151,24 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                         overflow: TextOverflow.ellipsis,
                         style: getBoldStyle(
                           fontFamily: FontConstant.cairo,
-                          fontSize: 10.4,
+                          fontSize: 11,
                           color: color.onSurface,
                         ),
                       ),
+                      const SizedBox(height: 2),
                       ProductSizeSummary(
                         product: widget.product,
-                        fontSize: 8.5,
+                        fontSize: 9,
                         compact: true,
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 4),
                       PriceText(
                         price: widget.product.price,
                         oldPrice: widget.product.oldPrice,
                         compact: true,
-                        fontScale: 0.72,
+                        fontScale: 0.82,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 5),
                       _AddButton(
                         onTap: _handleAddTap,
                         isLoading: _isSubmittingCart,
@@ -328,10 +330,10 @@ class _AddButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 20,
+        height: 22,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: color.primaryContainer.withValues(alpha: 0.5),
+          color: color.primaryContainer.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(6),
           border: Border.all(color: color.primary.withValues(alpha: 0.2)),
         ),
@@ -352,15 +354,15 @@ class _AddButton extends StatelessWidget {
                     children: [
                       FaIcon(
                         FontAwesomeIcons.cartPlus,
-                        size: 7.5,
+                        size: 8,
                         color: color.primary,
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'إضافة',
+                        context.localization.add_button,
                         style: getBoldStyle(
                           fontFamily: FontConstant.cairo,
-                          fontSize: 8.2,
+                          fontSize: 9,
                           color: color.primary,
                         ),
                       ),

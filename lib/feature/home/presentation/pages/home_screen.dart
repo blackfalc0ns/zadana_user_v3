@@ -120,7 +120,6 @@ class _HomeScreenView extends StatelessWidget {
                   const SliverToBoxAdapter(child: BestSellingSection()),
                   const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
                   const SliverToBoxAdapter(child: BrandsSection()),
-                  const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
                   const SliverToBoxAdapter(child: FeaturedProductsSection()),
                   const SliverToBoxAdapter(child: DynamicHomePreviewSection()),
                   SliverToBoxAdapter(

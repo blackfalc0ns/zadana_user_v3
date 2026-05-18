@@ -695,6 +695,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add_to_cart => 'أضف للسلة';
 
   @override
+  String get add_button => 'إضافة';
+
+  @override
   String get select_size => 'اختر الحجم:';
 
   @override

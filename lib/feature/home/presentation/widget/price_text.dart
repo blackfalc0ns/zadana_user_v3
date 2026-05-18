@@ -31,12 +31,12 @@ class PriceText extends StatelessWidget {
         style ??
         getBoldStyle(
           fontFamily: FontConstant.cairo,
-          fontSize: (compact ? FontSize.size13 : FontSize.size14) * fontScale,
+          fontSize: (compact ? FontSize.size14 : FontSize.size14) * fontScale,
           color: AppColors.primary,
         );
     final currencyStyle = getBoldStyle(
       fontFamily: FontConstant.cairo,
-      fontSize: (compact ? FontSize.size9 : FontSize.size10) * fontScale,
+      fontSize: (compact ? FontSize.size10 : FontSize.size10) * fontScale,
       color: AppColors.primary,
     );
     final oldPriceStyle = AppTextStyles.bodyLarge.copyWith(
