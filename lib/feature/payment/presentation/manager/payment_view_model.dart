@@ -391,7 +391,14 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
         PaymentUiEffect? uiEffect;
         if (payment != null) {
-          if (payment.isMoyasarForm && payment.providerConfig != null) {
+          if (payment.isBankTransfer) {
+            // Bank transfer: order created but NOT paid. Show pending screen.
+            uiEffect = NavigateToBankTransferPendingEffect(
+              orderId: result.data.order.id,
+              bankTransferConfig: payment.bankTransferConfig,
+              providerReference: payment.providerReference,
+            );
+          } else if (payment.isMoyasarForm && payment.providerConfig != null) {
             uiEffect = OpenMoyasarPaymentEffect(
               payment.providerConfig!,
               orderId: result.data.order.id,

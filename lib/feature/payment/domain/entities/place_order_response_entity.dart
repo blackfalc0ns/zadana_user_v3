@@ -36,6 +36,12 @@ class OrderPaymentEntity {
     required this.iframeUrl,
     required this.providerReference,
     this.providerConfig,
+    this.paymentFlow,
+    this.isPaid,
+    this.requiresCustomerAction,
+    this.customerAction,
+    this.confirmationMode,
+    this.bankTransferConfig,
   });
 
   final String id;
@@ -45,9 +51,27 @@ class OrderPaymentEntity {
   final String providerReference;
   final MoyasarProviderConfigEntity? providerConfig;
 
+  /// New fields from backend payment response.
+  final String? paymentFlow;
+  final bool? isPaid;
+  final bool? requiresCustomerAction;
+  final String? customerAction;
+  final String? confirmationMode;
+  final BankTransferConfigEntity? bankTransferConfig;
+
   bool get isMoyasarForm =>
       provider == 'moyasar' &&
       iframeUrl.trim().toLowerCase() == 'rendermoyasarform';
+
+  /// Returns true when the payment flow is manual bank transfer.
+  bool get isBankTransfer =>
+      paymentFlow == 'manual_bank_transfer' ||
+      provider == 'banktransfer';
+
+  /// Returns true when the payment flow is online gateway (card/Moyasar).
+  bool get isOnlineGateway =>
+      paymentFlow == 'online_gateway' ||
+      (paymentFlow == null && provider == 'moyasar');
 }
 
 class MoyasarProviderConfigEntity {
@@ -70,4 +94,33 @@ class MoyasarProviderConfigEntity {
   final List<String> methods;
   final List<String> supportedNetworks;
   final Map<String, String> metadata;
+}
+
+/// Bank transfer provider config returned when payment_flow == "manual_bank_transfer".
+class BankTransferConfigEntity {
+  const BankTransferConfigEntity({
+    required this.bankName,
+    required this.accountHolderName,
+    required this.iban,
+    required this.accountNumber,
+    required this.countryCode,
+    required this.city,
+    required this.reference,
+    required this.amount,
+    required this.currency,
+    this.expiresAtUtc,
+    this.webhookDriven = true,
+  });
+
+  final String bankName;
+  final String accountHolderName;
+  final String iban;
+  final String accountNumber;
+  final String countryCode;
+  final String city;
+  final String reference;
+  final double amount;
+  final String currency;
+  final String? expiresAtUtc;
+  final bool webhookDriven;
 }

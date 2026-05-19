@@ -251,6 +251,22 @@ class PaymentScreenEffectHandler {
       return;
     }
 
+    if (effect is NavigateToBankTransferPendingEffect) {
+      viewModel.doIntent(const PaymentClearPlacedOrderEvent());
+      viewModel.doIntent(const PaymentClearUiEffectEvent());
+      if (!context.mounted) return;
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.bankTransferPending,
+        (route) => route.isFirst,
+        arguments: {
+          'orderId': effect.orderId,
+          'bankTransferConfig': effect.bankTransferConfig,
+          'providerReference': effect.providerReference,
+        },
+      );
+      return;
+    }
+
     if (effect is ShowDeliveryUnavailableDialogEffect) {
       viewModel.doIntent(const PaymentClearUiEffectEvent());
       showDeliveryUnavailableDialog(

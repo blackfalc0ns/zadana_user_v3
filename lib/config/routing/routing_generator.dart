@@ -29,9 +29,11 @@ import 'package:zadana_user_v3/feature/notifications/data/services/notifications
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/bank_transfer_pending_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_failed_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
@@ -191,6 +193,30 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) =>
               PaymentFailedScreen(orderId: orderId, message: message),
+        );
+      case AppRoutes.bankTransferPending:
+        final arguments = settings.arguments;
+        final btOrderId = switch (arguments) {
+          final String id => id,
+          final Map<dynamic, dynamic> map => map['orderId']?.toString() ?? '',
+          _ => '',
+        };
+        final btConfig = switch (arguments) {
+          final Map<dynamic, dynamic> map =>
+            map['bankTransferConfig'] as BankTransferConfigEntity?,
+          _ => null,
+        };
+        final btReference = switch (arguments) {
+          final Map<dynamic, dynamic> map =>
+            map['providerReference']?.toString(),
+          _ => null,
+        };
+        return MaterialPageRoute(
+          builder: (_) => BankTransferPendingScreen(
+            orderId: btOrderId,
+            bankTransferConfig: btConfig,
+            providerReference: btReference,
+          ),
         );
       case AppRoutes.orders:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());

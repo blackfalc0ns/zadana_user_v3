@@ -15,7 +15,7 @@ class ContactButton extends StatelessWidget {
     required this.onTap,
     required this.iconColor,
   });
-  final IconData icon;
+  final FaIconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;

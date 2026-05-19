@@ -32,6 +32,18 @@ class NavigateToPaymentSuccessEffect extends PaymentUiEffect {
   final bool isCashOnDelivery;
 }
 
+class NavigateToBankTransferPendingEffect extends PaymentUiEffect {
+  const NavigateToBankTransferPendingEffect({
+    required this.orderId,
+    this.bankTransferConfig,
+    this.providerReference,
+  });
+
+  final String orderId;
+  final BankTransferConfigEntity? bankTransferConfig;
+  final String? providerReference;
+}
+
 class ShowPaymentSuccessEffect extends PaymentUiEffect {
   const ShowPaymentSuccessEffect(this.message);
 

@@ -1,6 +1,6 @@
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/retry_order_payment_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/place_order_response_dto.dart'
-    show MoyasarProviderConfigDto;
+    show MoyasarProviderConfigDto, BankTransferConfigDto;
 
 class RetryOrderPaymentResponseDto {
   const RetryOrderPaymentResponseDto({
@@ -34,17 +34,36 @@ class RetryOrderPaymentDto {
     required this.iframeUrl,
     required this.providerReference,
     this.providerConfig,
+    this.paymentFlow,
+    this.isPaid,
+    this.requiresCustomerAction,
+    this.customerAction,
+    this.confirmationMode,
+    this.bankTransferConfig,
   });
 
   factory RetryOrderPaymentDto.fromJson(Map<String, dynamic> json) {
+    final provider = json['provider']?.toString() ?? '';
+    final paymentFlow = json['payment_flow']?.toString();
+    final isBankTransfer = paymentFlow == 'manual_bank_transfer' ||
+        provider == 'banktransfer';
+
     return RetryOrderPaymentDto(
       id: json['id']?.toString() ?? '',
-      provider: json['provider']?.toString() ?? '',
+      provider: provider,
       status: json['status']?.toString() ?? '',
       iframeUrl: json['iframe_url']?.toString() ?? '',
       providerReference: json['provider_reference']?.toString() ?? '',
-      providerConfig: _nullableMap(json['provider_config']) != null
+      providerConfig: (!isBankTransfer && _nullableMap(json['provider_config']) != null)
           ? MoyasarProviderConfigDto.fromJson(_asMap(json['provider_config']))
+          : null,
+      paymentFlow: paymentFlow,
+      isPaid: json['is_paid'] as bool?,
+      requiresCustomerAction: json['requires_customer_action'] as bool?,
+      customerAction: json['customer_action']?.toString(),
+      confirmationMode: json['confirmation_mode']?.toString(),
+      bankTransferConfig: (isBankTransfer && _nullableMap(json['provider_config']) != null)
+          ? BankTransferConfigDto.fromJson(_asMap(json['provider_config']))
           : null,
     );
   }
@@ -55,6 +74,12 @@ class RetryOrderPaymentDto {
   final String iframeUrl;
   final String providerReference;
   final MoyasarProviderConfigDto? providerConfig;
+  final String? paymentFlow;
+  final bool? isPaid;
+  final bool? requiresCustomerAction;
+  final String? customerAction;
+  final String? confirmationMode;
+  final BankTransferConfigDto? bankTransferConfig;
 
   RetryOrderPaymentEntity toEntity() {
     return RetryOrderPaymentEntity(
@@ -64,6 +89,12 @@ class RetryOrderPaymentDto {
       iframeUrl: iframeUrl,
       providerReference: providerReference,
       providerConfig: providerConfig?.toEntity(),
+      paymentFlow: paymentFlow,
+      isPaid: isPaid,
+      requiresCustomerAction: requiresCustomerAction,
+      customerAction: customerAction,
+      confirmationMode: confirmationMode,
+      bankTransferConfig: bankTransferConfig?.toEntity(),
     );
   }
 }

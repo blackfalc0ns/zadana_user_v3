@@ -40,7 +40,7 @@ class TabConfigBuilder {
       ),
       _buildTab(
         const CartScreen(),
-        const Icon(FontAwesomeIcons.cartPlus),
+        const FaIcon(FontAwesomeIcons.cartPlus),
         locale.nav_cart,
         color,
       ),

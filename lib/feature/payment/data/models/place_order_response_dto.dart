@@ -81,17 +81,38 @@ class OrderPaymentDto {
     required this.iframeUrl,
     required this.providerReference,
     this.providerConfig,
+    this.paymentFlow,
+    this.isPaid,
+    this.requiresCustomerAction,
+    this.customerAction,
+    this.confirmationMode,
+    this.bankTransferConfig,
   });
 
   factory OrderPaymentDto.fromJson(Map<String, dynamic> json) {
+    final provider = json['provider']?.toString() ?? '';
+    final paymentFlow = json['payment_flow']?.toString();
+
+    // Determine if this is a bank transfer to parse provider_config correctly.
+    final isBankTransfer = paymentFlow == 'manual_bank_transfer' ||
+        provider == 'banktransfer';
+
     return OrderPaymentDto(
       id: json['id']?.toString() ?? '',
-      provider: json['provider']?.toString() ?? '',
+      provider: provider,
       status: json['status']?.toString() ?? '',
       iframeUrl: json['iframe_url']?.toString() ?? '',
       providerReference: json['provider_reference']?.toString() ?? '',
-      providerConfig: _nullableMap(json['provider_config']) != null
+      providerConfig: (!isBankTransfer && _nullableMap(json['provider_config']) != null)
           ? MoyasarProviderConfigDto.fromJson(_asMap(json['provider_config']))
+          : null,
+      paymentFlow: paymentFlow,
+      isPaid: json['is_paid'] as bool?,
+      requiresCustomerAction: json['requires_customer_action'] as bool?,
+      customerAction: json['customer_action']?.toString(),
+      confirmationMode: json['confirmation_mode']?.toString(),
+      bankTransferConfig: (isBankTransfer && _nullableMap(json['provider_config']) != null)
+          ? BankTransferConfigDto.fromJson(_asMap(json['provider_config']))
           : null,
     );
   }
@@ -102,6 +123,12 @@ class OrderPaymentDto {
   final String iframeUrl;
   final String providerReference;
   final MoyasarProviderConfigDto? providerConfig;
+  final String? paymentFlow;
+  final bool? isPaid;
+  final bool? requiresCustomerAction;
+  final String? customerAction;
+  final String? confirmationMode;
+  final BankTransferConfigDto? bankTransferConfig;
 
   OrderPaymentEntity toEntity() {
     return OrderPaymentEntity(
@@ -111,6 +138,72 @@ class OrderPaymentDto {
       iframeUrl: iframeUrl,
       providerReference: providerReference,
       providerConfig: providerConfig?.toEntity(),
+      paymentFlow: paymentFlow,
+      isPaid: isPaid,
+      requiresCustomerAction: requiresCustomerAction,
+      customerAction: customerAction,
+      confirmationMode: confirmationMode,
+      bankTransferConfig: bankTransferConfig?.toEntity(),
+    );
+  }
+}
+
+class BankTransferConfigDto {
+  const BankTransferConfigDto({
+    required this.bankName,
+    required this.accountHolderName,
+    required this.iban,
+    required this.accountNumber,
+    required this.countryCode,
+    required this.city,
+    required this.reference,
+    required this.amount,
+    required this.currency,
+    this.expiresAtUtc,
+    this.webhookDriven = true,
+  });
+
+  factory BankTransferConfigDto.fromJson(Map<String, dynamic> json) {
+    return BankTransferConfigDto(
+      bankName: json['bankName']?.toString() ?? '',
+      accountHolderName: json['accountHolderName']?.toString() ?? '',
+      iban: json['iban']?.toString() ?? '',
+      accountNumber: json['accountNumber']?.toString() ?? '',
+      countryCode: json['countryCode']?.toString() ?? '',
+      city: json['city']?.toString() ?? '',
+      reference: json['reference']?.toString() ?? '',
+      amount: _asDouble(json['amount']),
+      currency: json['currency']?.toString() ?? 'SAR',
+      expiresAtUtc: json['expiresAtUtc']?.toString(),
+      webhookDriven: json['webhookDriven'] as bool? ?? true,
+    );
+  }
+
+  final String bankName;
+  final String accountHolderName;
+  final String iban;
+  final String accountNumber;
+  final String countryCode;
+  final String city;
+  final String reference;
+  final double amount;
+  final String currency;
+  final String? expiresAtUtc;
+  final bool webhookDriven;
+
+  BankTransferConfigEntity toEntity() {
+    return BankTransferConfigEntity(
+      bankName: bankName,
+      accountHolderName: accountHolderName,
+      iban: iban,
+      accountNumber: accountNumber,
+      countryCode: countryCode,
+      city: city,
+      reference: reference,
+      amount: amount,
+      currency: currency,
+      expiresAtUtc: expiresAtUtc,
+      webhookDriven: webhookDriven,
     );
   }
 }

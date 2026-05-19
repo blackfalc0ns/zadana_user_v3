@@ -23,6 +23,7 @@ abstract class AppRoutes {
   static const String payment = '/payment';
   static const String paymentSuccess = '/payment-success';
   static const String paymentFailed = '/payment-failed';
+  static const String bankTransferPending = '/bank-transfer-pending';
   static const String orders = '/orders';
   static const String trackOrder = '/track-order';
   static const String myOrdersPage = '/my-orders';

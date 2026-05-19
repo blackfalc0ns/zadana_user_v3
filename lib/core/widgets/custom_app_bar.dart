@@ -169,7 +169,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool useGradient;
   final List<Color>? gradientColors;
   final bool showShadow;
-  final IconData? backIcon;
+  final FaIconData? backIcon;
   final double? titleFontSize;
   final String? subtitle;
   final Color? subtitleColor;

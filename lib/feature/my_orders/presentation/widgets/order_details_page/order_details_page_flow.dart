@@ -30,6 +30,19 @@ class OrderDetailsPageFlow {
       return;
     }
 
+    // Handle bank transfer retry — navigate to pending screen.
+    if (payment.isBankTransfer) {
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.bankTransferPending,
+        arguments: {
+          'orderId': targetOrderId,
+          'bankTransferConfig': payment.bankTransferConfig,
+          'providerReference': payment.providerReference,
+        },
+      );
+      return;
+    }
+
     if (!payment.isMoyasarForm || payment.providerConfig == null) {
       CustomSnackbar.showError(
         context: context,
