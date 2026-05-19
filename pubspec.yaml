@@ -32,7 +32,7 @@ dependencies:
   flutter_signin_button: ^2.1.1
   flutter_svg: ^2.2.4
   fluttertoast: ^9.0.0
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   geocoding: ^2.1.1
   geolocator: ^10.1.0
   get_it: ^9.2.1
