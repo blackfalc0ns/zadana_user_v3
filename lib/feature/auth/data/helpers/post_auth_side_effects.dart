@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
@@ -15,21 +16,29 @@ void runPostAuthSideEffects({
   required NotificationDeviceService notificationDeviceService,
   String? customerId,
 }) {
-  unawaited(
-    _runPostAuthSideEffects(
-      logName: logName,
-      cartRepository: cartRepository,
-      favoritesRepository: favoritesRepository,
-      notificationsSignalRService: notificationsSignalRService,
-      notificationDeviceService: notificationDeviceService,
-      customerId: customerId,
-    ),
+  // Only store the cart sync future for the checkout flow — other tasks
+  // (SignalR, OneSignal, etc.) should not block the payment screen.
+  final cartSyncFuture = _runTaskSafely(
+    logName,
+    'guest cart sync',
+    cartRepository.syncGuestCartIfAuthenticated,
   );
+  CheckoutFlowService().setCartSyncFuture(cartSyncFuture);
+
+  final future = _runPostAuthSideEffects(
+    logName: logName,
+    cartSyncFuture: cartSyncFuture,
+    favoritesRepository: favoritesRepository,
+    notificationsSignalRService: notificationsSignalRService,
+    notificationDeviceService: notificationDeviceService,
+    customerId: customerId,
+  );
+  unawaited(future);
 }
 
 Future<void> _runPostAuthSideEffects({
   required String logName,
-  required CartRepository cartRepository,
+  required Future<void> cartSyncFuture,
   required FavoritesRepository favoritesRepository,
   required NotificationsSignalRService notificationsSignalRService,
   required NotificationDeviceService notificationDeviceService,
@@ -49,11 +58,7 @@ Future<void> _runPostAuthSideEffects({
         'OneSignal login',
         () => PushNotificationService.loginCustomer(normalizedCustomerId),
       ),
-    _runTaskSafely(
-      logName,
-      'guest cart sync',
-      cartRepository.syncGuestCartIfAuthenticated,
-    ),
+    cartSyncFuture,
     _runTaskSafely(
       logName,
       'guest favorites sync',

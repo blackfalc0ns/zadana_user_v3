@@ -34,7 +34,7 @@ class StartPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: Spacing.lg,
-                vertical: Spacing.lg,
+       // vertical: Spacing.lg,
               ),
               child: Column(
                 children: [
@@ -55,7 +55,7 @@ class StartPage extends StatelessWidget {
                     child: Center(
                       child: Image.asset(
                         Assets.onboarding,
-                        height: 300,
+                        height: 350,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -117,7 +117,7 @@ class StartPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: Spacing.lg),
+                
                 ],
               ),
             ),

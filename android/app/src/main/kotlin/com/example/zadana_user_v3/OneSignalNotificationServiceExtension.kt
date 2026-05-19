@@ -46,6 +46,8 @@ class OneSignalNotificationServiceExtension : INotificationServiceExtension {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setColor(NOTIFICATION_ACCENT_COLOR)
+                .setSmallIcon(R.drawable.ic_stat_onesignal_default)
         }
     }
 
@@ -80,6 +82,9 @@ class OneSignalNotificationServiceExtension : INotificationServiceExtension {
     }
 
     companion object {
+        // #007A92 - app primary color
+        private const val NOTIFICATION_ACCENT_COLOR = 0xFF007A92.toInt()
+
         private val passThroughTypes = setOf(
             "order_status_changed",
             "order_cancelled",

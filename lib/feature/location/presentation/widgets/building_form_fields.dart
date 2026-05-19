@@ -23,18 +23,15 @@ class BuildingFormFields extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.colorScheme;
     final iconColor = color.onSurfaceVariant.withValues(alpha: 0.7);
-    final hintStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-      color: color.onSurfaceVariant.withValues(alpha: 0.8),
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildBuildingField(context, iconColor, hintStyle),
+        _buildBuildingField(context, iconColor),
         const SizedBox(height: Spacing.lg),
-        _buildFloorField(context, iconColor, hintStyle),
+        _buildFloorField(context, iconColor),
         const SizedBox(height: Spacing.lg),
-        _buildApartmentField(context, iconColor, hintStyle),
+        _buildApartmentField(context, iconColor),
       ],
     );
   }
@@ -42,7 +39,6 @@ class BuildingFormFields extends StatelessWidget {
   Widget _buildBuildingField(
     BuildContext context,
     Color iconColor,
-    TextStyle? hintStyle,
   ) {
     final l10n = context.localization;
 
@@ -56,8 +52,9 @@ class BuildingFormFields extends StatelessWidget {
         AppTextField(
           controller: buildingController,
           hint: l10n.location_building_number_hint,
-          hintStyle: hintStyle,
           prefixIcon: Icon(Iconsax.building, color: iconColor, size: 24),
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
           validator: (value) => value?.trim().isEmpty == true
               ? l10n.location_building_number_required
               : null,
@@ -72,7 +69,6 @@ class BuildingFormFields extends StatelessWidget {
   Widget _buildFloorField(
     BuildContext context,
     Color iconColor,
-    TextStyle? hintStyle,
   ) {
     final l10n = context.localization;
 
@@ -86,9 +82,9 @@ class BuildingFormFields extends StatelessWidget {
         AppTextField(
           controller: floorController,
           hint: l10n.location_floor_number_hint,
-          hintStyle: hintStyle,
           prefixIcon: Icon(Iconsax.buildings, color: iconColor, size: 24),
           keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(
             UpdateFloorNoEvent(value),
           ),
@@ -100,7 +96,6 @@ class BuildingFormFields extends StatelessWidget {
   Widget _buildApartmentField(
     BuildContext context,
     Color iconColor,
-    TextStyle? hintStyle,
   ) {
     final l10n = context.localization;
 
@@ -114,9 +109,9 @@ class BuildingFormFields extends StatelessWidget {
         AppTextField(
           controller: apartmentController,
           hint: l10n.location_apartment_number_hint,
-          hintStyle: hintStyle,
           prefixIcon: Icon(Iconsax.home, color: iconColor, size: 24),
           keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.done,
           onChanged: (value) => context.read<LocationViewModel>().doIntent(
             UpdateApartmentNoEvent(value),
           ),

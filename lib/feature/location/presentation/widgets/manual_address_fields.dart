@@ -46,6 +46,7 @@ class ManualAddressFields extends StatelessWidget {
           controller: addressController,
           hint: l10n.location_address_details_hint,
           keyboardType: TextInputType.streetAddress,
+          textInputAction: TextInputAction.next,
           validator: (value) => value?.trim().isEmpty == true
               ? l10n.location_address_details_required
               : null,
@@ -67,6 +68,7 @@ class ManualAddressFields extends StatelessWidget {
         AppTextField(
           controller: cityController,
           hint: l10n.location_city_hint,
+          textInputAction: TextInputAction.next,
           validator: (value) => value?.trim().isEmpty == true
               ? l10n.location_city_required
               : null,
@@ -88,6 +90,7 @@ class ManualAddressFields extends StatelessWidget {
         AppTextField(
           controller: areaController,
           hint: l10n.location_area_hint,
+          textInputAction: TextInputAction.next,
           validator: (value) => value?.trim().isEmpty == true
               ? l10n.location_area_required
               : null,

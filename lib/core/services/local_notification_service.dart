@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/services/app_navigator_service.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/push_notification_service.dart';
@@ -28,7 +29,7 @@ class LocalNotificationService {
     if (_isInitialized) return;
 
     const initializationSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      android: AndroidInitializationSettings('@drawable/ic_stat_onesignal_default'),
       iOS: DarwinInitializationSettings(),
     );
 
@@ -89,10 +90,8 @@ class LocalNotificationService {
           channelDescription: androidChannelDescription ?? _channelDescription,
           importance: Importance.max,
           priority: Priority.max,
-          icon: '@mipmap/ic_launcher',
-          largeIcon: const DrawableResourceAndroidBitmap(
-            'ic_notification_large',
-          ),
+          icon: '@drawable/ic_stat_onesignal_default',
+          color: AppColors.primary,
           category: AndroidNotificationCategory.message,
           ticker: 'zadana_realtime_notification',
           visibility: NotificationVisibility.public,

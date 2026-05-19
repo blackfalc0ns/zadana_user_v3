@@ -4115,7 +4115,7 @@ abstract class AppLocalizations {
   /// No description provided for @location_address_details_hint.
   ///
   /// In en, this message translates to:
-  /// **'Example: Al Gomhoria Street, next to Al Noor Mosque'**
+  /// **'Example: Street 28, central Dammam'**
   String get location_address_details_hint;
 
   /// No description provided for @location_address_details_required.
@@ -4133,7 +4133,7 @@ abstract class AppLocalizations {
   /// No description provided for @location_city_hint.
   ///
   /// In en, this message translates to:
-  /// **'Example: Cairo'**
+  /// **'Example: Dammam'**
   String get location_city_hint;
 
   /// No description provided for @location_city_required.
@@ -4151,7 +4151,7 @@ abstract class AppLocalizations {
   /// No description provided for @location_area_hint.
   ///
   /// In en, this message translates to:
-  /// **'Example: Maadi'**
+  /// **'Example: Al Aziziyah'**
   String get location_area_hint;
 
   /// No description provided for @location_area_required.

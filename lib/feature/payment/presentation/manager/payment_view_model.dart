@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_address_entity.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/usecase/get_customer_addresses_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
@@ -87,6 +88,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
         clearFeedbackMessage: true,
       ),
     );
+
+    // Wait for any pending cart sync (e.g. guest cart → authenticated cart)
+    // to complete before fetching the checkout summary.
+    await CheckoutFlowService().awaitCartSyncIfPending();
 
     developer.log('Loading checkout summary', name: 'PaymentViewModel');
 

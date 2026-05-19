@@ -6,10 +6,30 @@ class CheckoutFlowService {
 
   bool _pendingCheckout = false;
   String? _pendingVendorId;
+  Future<void>? _cartSyncFuture;
 
   void markPendingCheckout({String? vendorId}) {
     _pendingCheckout = true;
     _pendingVendorId = vendorId;
+  }
+
+  /// Stores the cart sync future so the payment screen can await it.
+  void setCartSyncFuture(Future<void> future) {
+    _cartSyncFuture = future;
+  }
+
+  /// Waits for the cart sync to complete (if any), then clears the reference.
+  /// Times out after 10 seconds to prevent the payment screen from hanging
+  /// indefinitely if a side-effect task is slow.
+  Future<void> awaitCartSyncIfPending() async {
+    final future = _cartSyncFuture;
+    _cartSyncFuture = null;
+    if (future != null) {
+      await future.timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {},
+      );
+    }
   }
 
   PendingCheckoutData consumePendingCheckout() {

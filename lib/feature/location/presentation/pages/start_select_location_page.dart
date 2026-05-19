@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_event.dart';
 import 'package:zadana_user_v3/feature/location/presentation/manager/location_state.dart';
@@ -43,6 +44,22 @@ class _StartSelectLocationView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: Spacing.screenH),
           child: BlocConsumer<LocationViewModel, LocationState>(
             listener: (context, state) {
+              if (state.isAddressSaved && !state.isLoading) {
+                if (mainShellKey.currentState != null) {
+                  Navigator.of(context).popUntil((route) {
+                    return route.settings.name == AppRoutes.mainShell ||
+                        route.isFirst;
+                  });
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.mainShell,
+                    (route) => false,
+                  );
+                }
+                return;
+              }
+
               if (state.isSuccess &&
                   state.selectedLocation != null &&
                   !state.isLoading &&
@@ -159,13 +176,7 @@ class _StartSelectLocationView extends StatelessWidget {
                         );
 
                         if (result is LocationEntity && context.mounted) {
-                          vm.doIntent(SetSelectedLocationEvent(result));
-
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.buildingDetails,
-                            arguments: result,
-                          );
+                          vm.doIntent(SaveSelectedAddressEvent(result));
                         }
                       },
                     ),

@@ -2167,7 +2167,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get location_address_details_hint =>
-      'Example: Al Gomhoria Street, next to Al Noor Mosque';
+      'Example: Street 28, central Dammam';
 
   @override
   String get location_address_details_required =>
@@ -2177,7 +2177,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get location_city_label => 'City *';
 
   @override
-  String get location_city_hint => 'Example: Cairo';
+  String get location_city_hint => 'Example: Dammam';
 
   @override
   String get location_city_required => 'City is required';
@@ -2186,7 +2186,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get location_area_label => 'Area *';
 
   @override
-  String get location_area_hint => 'Example: Maadi';
+  String get location_area_hint => 'Example: Al Aziziyah';
 
   @override
   String get location_area_required => 'Area is required';

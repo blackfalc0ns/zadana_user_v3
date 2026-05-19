@@ -83,66 +83,69 @@ class FeaturedProductsSection extends StatelessWidget {
             ? sectionHeight
             : sectionHeight / 2;
 
-        return Column(
-          children: [
-            SectionHeader(
-              title: locale.section_featured,
-              actionLabel: locale.see_all,
-              onActionTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => BlocProvider.value(
-                      value: globalCubit,
-                      child: FeaturedProductsPage(
-                        title: locale.section_featured,
+        return Padding(
+          padding: const EdgeInsets.only(top:  Spacing.lg),
+          child: Column(
+            children: [
+              SectionHeader(
+                title: locale.section_featured,
+                actionLabel: locale.see_all,
+                onActionTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: globalCubit,
+                        child: FeaturedProductsPage(
+                          title: locale.section_featured,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: Spacing.md),
-            SizedBox(
-              height: dynamicHeight,
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Spacing.screenH,
-                ),
-                scrollDirection: Axis.horizontal,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: Spacing.sm,
-                  mainAxisSpacing: Spacing.sm,
-                  childAspectRatio: 1.1,
-                ),
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final product = items[index];
-                  final heroTag = productHeroTag(
-                    product.id,
-                    source: 'home-featured',
-                  );
-                  return CustomProductCard(
-                    discountPercentage: product.discountPercentage,
-                    isDiscounted: product.isDiscounted,
-                    product: product,
-                    heroTag: heroTag,
-                    showFavorite: true,
-                    onAddTap: () => HomeProductCartHelper.addProductToCart(
-                      context,
-                      product,
-                    ),
-                    onCardTap: () =>
-                        ProductNavigationHelper.navigateToProductDetails(
-                          context,
-                          product,
-                          heroTag: heroTag,
-                        ),
                   );
                 },
               ),
-            ),
-          ],
+              const SizedBox(height: Spacing.md),
+              SizedBox(
+                height: dynamicHeight,
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.screenH,
+                  ),
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: Spacing.sm,
+                    mainAxisSpacing: Spacing.sm,
+                    childAspectRatio: 1.1,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final product = items[index];
+                    final heroTag = productHeroTag(
+                      product.id,
+                      source: 'home-featured',
+                    );
+                    return CustomProductCard(
+                      discountPercentage: product.discountPercentage,
+                      isDiscounted: product.isDiscounted,
+                      product: product,
+                      heroTag: heroTag,
+                      showFavorite: true,
+                      onAddTap: () => HomeProductCartHelper.addProductToCart(
+                        context,
+                        product,
+                      ),
+                      onCardTap: () =>
+                          ProductNavigationHelper.navigateToProductDetails(
+                            context,
+                            product,
+                            heroTag: heroTag,
+                          ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

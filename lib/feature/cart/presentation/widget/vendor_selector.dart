@@ -110,14 +110,18 @@ class _VendorChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: SizedBox(
-                width: 36,
-                height: 36,
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
                 child: CachedNetworkImage(
                   imageUrl: vendor.logoUrl ?? '',
-                 // fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   placeholder: (_, _) =>
                       ColoredBox(color: color.surfaceContainerHighest),
                   errorWidget: (_, _, _) => Image.asset(

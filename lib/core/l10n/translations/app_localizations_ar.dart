@@ -2126,8 +2126,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_address_details_label => 'العنوان التفصيلي *';
 
   @override
-  String get location_address_details_hint =>
-      'مثال: شارع الجمهورية، بجوار مسجد النور';
+  String get location_address_details_hint => 'مثال: شارع ٢٨ وسط الدمام';
 
   @override
   String get location_address_details_required => 'العنوان التفصيلي مطلوب';
@@ -2136,7 +2135,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_city_label => 'المدينة *';
 
   @override
-  String get location_city_hint => 'مثال: القاهرة';
+  String get location_city_hint => 'مثال: الدمام';
 
   @override
   String get location_city_required => 'المدينة مطلوبة';
@@ -2145,7 +2144,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_area_label => 'المنطقة *';
 
   @override
-  String get location_area_hint => 'مثال: المعادي';
+  String get location_area_hint => 'مثال: العزيزية';
 
   @override
   String get location_area_required => 'المنطقة مطلوبة';

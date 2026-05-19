@@ -53,6 +53,9 @@ class CategoryViewModel extends Cubit<CategoryState> {
 
   void initialize({List<CategoryEntity>? preloadedCategories}) {
     if (_isInitialized) {
+      // Already initialized — check if there's a pending external selection
+      // that arrived after the listener was added (e.g. from home tap).
+      _checkSelectedCategory();
       return;
     }
     _isInitialized = true;

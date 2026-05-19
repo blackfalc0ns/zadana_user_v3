@@ -20,6 +20,20 @@ class PaymentScreenEffectHandler {
   static const String _paymentStatusFailed = 'failed';
   static const String _paymentStatusPending = 'pending';
 
+  static void _showConfirmingOverlay(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black54,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
   static Future<void> _navigateToPaymentSuccess(
     BuildContext context,
     String orderId, {
@@ -200,11 +214,19 @@ class PaymentScreenEffectHandler {
 
       if (!context.mounted) return;
 
+      // Show loading overlay while confirming payment with backend.
+      _showConfirmingOverlay(context);
+
       // Confirm with backend before deciding navigation.
       final confirmer = MoyasarPaymentConfirmer(
         getIt<ConfirmMoyasarPaymentUseCase>(),
       );
       final paymentResult = await confirmer.confirmAndResolve(sdkResult);
+
+      if (!context.mounted) return;
+
+      // Dismiss loading overlay.
+      Navigator.of(context, rootNavigator: true).pop();
 
       if (!context.mounted) return;
       await _handlePaymentCallbackResult(

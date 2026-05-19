@@ -62,7 +62,10 @@ class PaymentFailedScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
     final resolvedTitle = l10n.payment_confirmation_failed;
-    final resolvedMessage = l10n.payment_confirmation_failed_message;
+    final resolvedMessage =
+        (message != null && message!.isNotEmpty)
+            ? message!
+            : l10n.payment_confirmation_failed_message;
 
     return PopScope(
       canPop: false,
@@ -80,14 +83,14 @@ class PaymentFailedScreen extends StatelessWidget {
                 children: [
                   Lottie.asset(
                     Assets.errorPayment,
-                    width: 260,
-                    height: 260,
+                    width: 300,
+                    height: 300,
                     repeat: true,
                   ),
                   const SizedBox(height: 28),
                   Text(
                     resolvedTitle,
-                    style: getBoldStyle(
+                    style: getSemiBoldStyle(
                       fontSize: FontSize.size24,
                       fontFamily: FontConstant.cairo,
                       color: colors.onSurface,

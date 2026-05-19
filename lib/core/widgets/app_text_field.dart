@@ -91,7 +91,7 @@ class AppTextField extends StatelessWidget {
             contentPadding ??
             const EdgeInsets.symmetric(
               horizontal: Spacing.base,
-              vertical: Spacing.md,
+              vertical: Spacing.sm,
             ),
       ),
     );

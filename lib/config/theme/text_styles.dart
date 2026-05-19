@@ -123,7 +123,7 @@ class AppTextStyles {
 
   static const TextStyle inputHint = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: FontWeight.w400,
     color: AppColors.textHint,
   );
