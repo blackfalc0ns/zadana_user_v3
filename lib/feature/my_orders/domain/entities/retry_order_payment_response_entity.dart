@@ -1,3 +1,5 @@
+import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
+
 class RetryOrderPaymentResponseEntity {
   const RetryOrderPaymentResponseEntity({
     required this.message,
@@ -15,6 +17,7 @@ class RetryOrderPaymentEntity {
     required this.status,
     required this.iframeUrl,
     required this.providerReference,
+    this.providerConfig,
   });
 
   final String id;
@@ -22,4 +25,9 @@ class RetryOrderPaymentEntity {
   final String status;
   final String iframeUrl;
   final String providerReference;
+  final MoyasarProviderConfigEntity? providerConfig;
+
+  bool get isMoyasarForm =>
+      provider == 'moyasar' &&
+      iframeUrl.trim().toLowerCase() == 'rendermoyasarform';
 }

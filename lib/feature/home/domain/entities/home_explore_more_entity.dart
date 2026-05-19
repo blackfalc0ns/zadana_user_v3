@@ -4,6 +4,7 @@ class HomeExploreMoreEntity {
   const HomeExploreMoreEntity({
     required this.key,
     required this.title,
+    required this.subcategoryId,
     required this.isActive,
     required this.theme,
     required this.itemsCount,
@@ -11,6 +12,7 @@ class HomeExploreMoreEntity {
   });
   final String key;
   final String title;
+  final String? subcategoryId;
   final bool isActive;
   final dynamic theme;
   final int itemsCount;

@@ -89,6 +89,10 @@ class LocalNotificationService {
           channelDescription: androidChannelDescription ?? _channelDescription,
           importance: Importance.max,
           priority: Priority.max,
+          icon: '@mipmap/ic_launcher',
+          largeIcon: const DrawableResourceAndroidBitmap(
+            'ic_notification_large',
+          ),
           category: AndroidNotificationCategory.message,
           ticker: 'zadana_realtime_notification',
           visibility: NotificationVisibility.public,

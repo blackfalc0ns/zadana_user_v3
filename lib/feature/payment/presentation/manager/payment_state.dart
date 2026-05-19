@@ -15,10 +15,11 @@ class OpenAddAddressEffect extends PaymentUiEffect {
   const OpenAddAddressEffect();
 }
 
-class OpenPaymentWebViewEffect extends PaymentUiEffect {
-  const OpenPaymentWebViewEffect(this.paymentUrl);
+class OpenMoyasarPaymentEffect extends PaymentUiEffect {
+  const OpenMoyasarPaymentEffect(this.providerConfig, {this.orderId});
 
-  final String paymentUrl;
+  final MoyasarProviderConfigEntity providerConfig;
+  final String? orderId;
 }
 
 class NavigateToPaymentSuccessEffect extends PaymentUiEffect {

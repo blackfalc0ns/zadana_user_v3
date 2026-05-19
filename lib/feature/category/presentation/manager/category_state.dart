@@ -477,6 +477,27 @@ class CategoryState {
     retryAction: CategoryRetryAction.loadProducts,
   );
 
+  /// Apply category/subcategory selection from a breadcrumb response.
+  /// Used for fast navigation from dynamic home sections.
+  CategoryState applyBreadcrumbSelection({
+    required String categoryId,
+    required String categoryName,
+    required String subCategoryId,
+    required String subCategoryName,
+  }) => copyWith(
+    selectedCategoryId: categoryId,
+    selectedCategory: categoryName,
+    selectedSubCategoryId: subCategoryId,
+    selectedSubCategory: subCategoryName,
+    filterSelectedCategory: categoryName,
+    isCategoryPreselectedFromOutside: true,
+    showAllSubCategories: false,
+    isLoading: false,
+    isSubCategoriesLoading: false,
+    errorMessage: null,
+    failure: null,
+  );
+
   CategoryState productsLoaded(List<ProductModel> value) => copyWith(
     products: value,
     isLoading: false,

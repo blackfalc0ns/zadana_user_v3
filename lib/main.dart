@@ -21,9 +21,9 @@ void main() async {
   unawaited(
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
   );
-//  const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
+  //  const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
   runApp(
-   // kReleaseMode || !enableDevicePreview? const AppBootstrapper():
+    // kReleaseMode || !enableDevicePreview? const AppBootstrapper():
     DevicePreview(builder: (context) => const AppBootstrapper()),
   );
 }

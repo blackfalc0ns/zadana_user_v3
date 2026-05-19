@@ -19,8 +19,8 @@ CustomerAddressItemDto _$CustomerAddressItemDtoFromJson(
   apartmentNo: json['apartmentNo'] as String?,
   city: json['city'] as String,
   area: json['area'] as String? ?? '',
-  latitude: (json['latitude'] as num).toDouble(),
-  longitude: (json['longitude'] as num).toDouble(),
+  latitude: (json['latitude'] as num?)?.toDouble(),
+  longitude: (json['longitude'] as num?)?.toDouble(),
   isDefault: json['isDefault'] as bool,
 );
 

@@ -25,7 +25,7 @@ class CustomerAddressEntity {
   final String? apartmentNo;
   final String city;
   final String area;
-  final double latitude;
-  final double longitude;
+  final double? latitude;
+  final double? longitude;
   final bool isDefault;
 }

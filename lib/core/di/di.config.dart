@@ -296,6 +296,8 @@ import '../../feature/payment/data/repo/payment_repository_impl.dart' as _i562;
 import '../../feature/payment/domain/repo/payment_repository.dart' as _i420;
 import '../../feature/payment/domain/usecase/apply_checkout_promo_code_usecase.dart'
     as _i492;
+import '../../feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart'
+    as _i450;
 import '../../feature/payment/domain/usecase/get_checkout_summary_usecase.dart'
     as _i867;
 import '../../feature/payment/domain/usecase/place_order_usecase.dart' as _i859;
@@ -608,6 +610,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i492.ApplyCheckoutPromoCodeUseCase>(
       () => _i492.ApplyCheckoutPromoCodeUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i450.ConfirmMoyasarPaymentUseCase>(
+      () => _i450.ConfirmMoyasarPaymentUseCase(gh<_i420.PaymentRepository>()),
     );
     gh.factory<_i867.GetCheckoutSummaryUseCase>(
       () => _i867.GetCheckoutSummaryUseCase(gh<_i420.PaymentRepository>()),

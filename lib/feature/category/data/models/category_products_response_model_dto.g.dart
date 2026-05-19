@@ -9,6 +9,11 @@ part of 'category_products_response_model_dto.dart';
 CategoryProductsResponseModelDto _$CategoryProductsResponseModelDtoFromJson(
   Map<String, dynamic> json,
 ) => CategoryProductsResponseModelDto(
+  breadcrumb: json['breadcrumb'] == null
+      ? null
+      : CategoryBreadcrumbDto.fromJson(
+          json['breadcrumb'] as Map<String, dynamic>,
+        ),
   appliedFilters: json['applied_filters'] == null
       ? null
       : CategoryProductsAppliedFiltersDto.fromJson(
@@ -27,6 +32,7 @@ CategoryProductsResponseModelDto _$CategoryProductsResponseModelDtoFromJson(
 Map<String, dynamic> _$CategoryProductsResponseModelDtoToJson(
   CategoryProductsResponseModelDto instance,
 ) => <String, dynamic>{
+  'breadcrumb': instance.breadcrumb?.toJson(),
   'applied_filters': instance.appliedFilters?.toJson(),
   'total': instance.total,
   'page': instance.page,

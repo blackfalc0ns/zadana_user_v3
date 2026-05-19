@@ -80,6 +80,7 @@ class OrderPaymentDto {
     required this.status,
     required this.iframeUrl,
     required this.providerReference,
+    this.providerConfig,
   });
 
   factory OrderPaymentDto.fromJson(Map<String, dynamic> json) {
@@ -89,6 +90,9 @@ class OrderPaymentDto {
       status: json['status']?.toString() ?? '',
       iframeUrl: json['iframe_url']?.toString() ?? '',
       providerReference: json['provider_reference']?.toString() ?? '',
+      providerConfig: _nullableMap(json['provider_config']) != null
+          ? MoyasarProviderConfigDto.fromJson(_asMap(json['provider_config']))
+          : null,
     );
   }
 
@@ -97,6 +101,7 @@ class OrderPaymentDto {
   final String status;
   final String iframeUrl;
   final String providerReference;
+  final MoyasarProviderConfigDto? providerConfig;
 
   OrderPaymentEntity toEntity() {
     return OrderPaymentEntity(
@@ -105,6 +110,55 @@ class OrderPaymentDto {
       status: status,
       iframeUrl: iframeUrl,
       providerReference: providerReference,
+      providerConfig: providerConfig?.toEntity(),
+    );
+  }
+}
+
+class MoyasarProviderConfigDto {
+  const MoyasarProviderConfigDto({
+    required this.publishableKey,
+    required this.amount,
+    required this.currency,
+    required this.description,
+    required this.callbackUrl,
+    required this.methods,
+    required this.supportedNetworks,
+    required this.metadata,
+  });
+
+  factory MoyasarProviderConfigDto.fromJson(Map<String, dynamic> json) {
+    return MoyasarProviderConfigDto(
+      publishableKey: json['publishableKey']?.toString() ?? '',
+      amount: _asInt(json['amount']),
+      currency: json['currency']?.toString() ?? 'SAR',
+      description: json['description']?.toString() ?? '',
+      callbackUrl: json['callbackUrl']?.toString() ?? '',
+      methods: _asStringList(json['methods']),
+      supportedNetworks: _asStringList(json['supportedNetworks']),
+      metadata: _asStringMap(json['metadata']),
+    );
+  }
+
+  final String publishableKey;
+  final int amount;
+  final String currency;
+  final String description;
+  final String callbackUrl;
+  final List<String> methods;
+  final List<String> supportedNetworks;
+  final Map<String, String> metadata;
+
+  MoyasarProviderConfigEntity toEntity() {
+    return MoyasarProviderConfigEntity(
+      publishableKey: publishableKey,
+      amount: amount,
+      currency: currency,
+      description: description,
+      callbackUrl: callbackUrl,
+      methods: methods,
+      supportedNetworks: supportedNetworks,
+      metadata: metadata,
     );
   }
 }
@@ -120,4 +174,24 @@ Map<String, dynamic>? _nullableMap(dynamic value) {
 double _asDouble(dynamic value) {
   if (value is num) return value.toDouble();
   return double.tryParse(value?.toString() ?? '') ?? 0;
+}
+
+int _asInt(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value?.toString() ?? '') ?? 0;
+}
+
+List<String> _asStringList(dynamic value) {
+  if (value is List) {
+    return value.map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList();
+  }
+  return const [];
+}
+
+Map<String, String> _asStringMap(dynamic value) {
+  if (value is Map) {
+    return value.map((key, val) => MapEntry(key.toString(), val?.toString() ?? ''));
+  }
+  return const {};
 }

@@ -662,6 +662,7 @@ class HomeViewModel extends Cubit<HomeState> {
           (section) => HomeExploreMoreEntity(
             key: section.key,
             title: section.title,
+            subcategoryId: section.subcategoryId,
             isActive: section.isActive,
             theme: section.theme,
             itemsCount: section.itemsCount,

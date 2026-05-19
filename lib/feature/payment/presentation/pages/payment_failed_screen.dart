@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_button.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_details_page.dart';
 
 class PaymentFailedScreen extends StatelessWidget {
   const PaymentFailedScreen({super.key, this.orderId, this.message});
 
   final String? orderId;
   final String? message;
+
+  void _navigateToRetryPayment(BuildContext context) {
+    if (orderId == null || orderId!.isEmpty) return;
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<OrderDetailsViewModel>()..load(orderId!),
+          child: OrderDetailsPage(orderId: orderId),
+        ),
+      ),
+    );
+  }
 
   void _navigateBackToHome(BuildContext context) {
     var foundMainShell = false;
@@ -45,9 +62,7 @@ class PaymentFailedScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
     final resolvedTitle = l10n.payment_confirmation_failed;
-    final resolvedMessage = message?.trim().isNotEmpty == true
-        ? message!.trim()
-        : l10n.payment_confirmation_failed_message;
+    final resolvedMessage = l10n.payment_confirmation_failed_message;
 
     return PopScope(
       canPop: false,
@@ -62,12 +77,11 @@ class PaymentFailedScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Lottie.asset(
                     Assets.errorPayment,
-                    width: 190,
-                    height: 190,
+                    width: 260,
+                    height: 260,
                     repeat: true,
                   ),
                   const SizedBox(height: 28),
@@ -92,17 +106,13 @@ class PaymentFailedScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 40),
                   AppButton(
-                    text: l10n.track_order,
-                    icon: Icons.location_on_outlined,
+                    text: l10n.my_orders_retry_payment,
+                    icon: Icons.refresh_rounded,
                     onPressed: orderId == null || orderId!.isEmpty
                         ? null
-                        : () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.trackOrder,
-                            arguments: orderId,
-                          ),
-                    color: colors.error,
-                    textColor: colors.onError,
+                        : () => _navigateToRetryPayment(context),
+                    color: colors.primary,
+                    textColor: colors.onPrimary,
                     height: Spacing.buttonHeight,
                     borderRadius: 18,
                     padding: const EdgeInsets.symmetric(

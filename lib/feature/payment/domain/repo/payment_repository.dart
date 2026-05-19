@@ -1,6 +1,7 @@
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_promo_result_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/confirm_payment_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_request_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 
@@ -26,5 +27,10 @@ abstract class PaymentRepository {
 
   Future<ApiResult<PlaceOrderResponseEntity>> placeOrder(
     PlaceOrderRequestEntity request,
+  );
+
+  /// Confirms a Moyasar payment with the backend.
+  Future<ApiResult<ConfirmPaymentResponseEntity>> confirmMoyasarPayment(
+    String moyasarPaymentId,
   );
 }

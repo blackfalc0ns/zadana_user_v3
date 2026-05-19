@@ -172,14 +172,14 @@ class OrderItemTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: colors.surfaceContainerHighest,
+              
                 borderRadius: BorderRadius.circular(Spacing.xs + 2),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(Spacing.xs + 2),
                 child: Image.network(
                   imageUrl!,
-                  fit: BoxFit.cover,
+                 
                   errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
               ),

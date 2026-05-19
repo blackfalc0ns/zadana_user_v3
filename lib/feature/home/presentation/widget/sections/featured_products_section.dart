@@ -76,6 +76,13 @@ class FeaturedProductsSection extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
+        // Calculate dynamic cross axis count based on item count
+        final needsTwoRows = items.length > 2;
+        final crossAxisCount = needsTwoRows ? 2 : 1;
+        final dynamicHeight = needsTwoRows
+            ? sectionHeight
+            : sectionHeight / 2;
+
         return Column(
           children: [
             SectionHeader(
@@ -96,14 +103,14 @@ class FeaturedProductsSection extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.md),
             SizedBox(
-              height: sectionHeight,
+              height: dynamicHeight,
               child: GridView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.screenH,
                 ),
                 scrollDirection: Axis.horizontal,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
                   crossAxisSpacing: Spacing.sm,
                   mainAxisSpacing: Spacing.sm,
                   childAspectRatio: 1.1,

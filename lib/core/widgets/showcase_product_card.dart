@@ -121,13 +121,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
               color: color.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: color.primary.withValues(alpha: 0.12)),
-              boxShadow: [
-                BoxShadow(
-                  color: color.shadow.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+            
             ),
             child: Row(
               children: [

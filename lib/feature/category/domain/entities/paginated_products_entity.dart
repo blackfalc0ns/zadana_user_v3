@@ -6,12 +6,23 @@ class PaginatedProductsEntity {
     required this.total,
     required this.page,
     required this.perPage,
+    this.breadcrumbCategoryId,
+    this.breadcrumbCategoryName,
+    this.breadcrumbSubCategoryId,
+    this.breadcrumbSubCategoryName,
   });
 
   final List<ProductModel> items;
   final int total;
   final int page;
   final int perPage;
+  final String? breadcrumbCategoryId;
+  final String? breadcrumbCategoryName;
+  final String? breadcrumbSubCategoryId;
+  final String? breadcrumbSubCategoryName;
 
   bool get hasMore => items.length >= perPage && (page * perPage) < total;
+
+  bool get hasBreadcrumb =>
+      breadcrumbCategoryId != null && breadcrumbCategoryId!.isNotEmpty;
 }

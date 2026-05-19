@@ -35,8 +35,8 @@ class CustomerAddressItemDto {
   final String city;
   @JsonKey(defaultValue: '')
   final String area;
-  final double latitude;
-  final double longitude;
+  final double? latitude;
+  final double? longitude;
   final bool isDefault;
 
   Map<String, dynamic> toJson() => _$CustomerAddressItemDtoToJson(this);

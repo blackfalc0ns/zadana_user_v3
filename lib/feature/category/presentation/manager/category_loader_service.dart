@@ -40,9 +40,13 @@ class CategoryLoaderService {
   }
 
   Future<ApiResult<List<CategorySubcategoryItemDto>>> loadSubCategories({
+    String? categoryId,
     int? limit,
   }) {
-    return _getCategorySubcategoriesUseCase(limit: limit);
+    return _getCategorySubcategoriesUseCase(
+      categoryId: categoryId,
+      limit: limit,
+    );
   }
 
   Future<CategorySelectionLoadResult> loadCategorySelection({
@@ -186,11 +190,15 @@ class CategoryLoaderService {
   Future<CategorySelectionLoadResult> _loadSingleCategorySelection(
     CategoryEntity category,
   ) async {
-    final filtersResult = await _getCategoryFiltersUseCase(category.id);
-    final subCategoriesResult = await _getCategorySubcategoriesUseCase(
-      categoryId: category.id,
-      limit: 5,
-    );
+    final results = await Future.wait([
+      _getCategoryFiltersUseCase(category.id),
+      _getCategorySubcategoriesUseCase(categoryId: category.id, limit: 5),
+    ]);
+
+    final filtersResult =
+        results[0] as ApiResult<CategoryFiltersResponseModelDto>;
+    final subCategoriesResult =
+        results[1] as ApiResult<List<CategorySubcategoryItemDto>>;
 
     if (filtersResult case ApiErrorResult<CategoryFiltersResponseModelDto>()) {
       return CategorySelectionLoadFailure(filtersResult.failure);

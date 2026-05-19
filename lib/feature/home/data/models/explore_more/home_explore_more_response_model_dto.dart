@@ -4,6 +4,7 @@ class HomeExploreMoreResponseModelDto {
   const HomeExploreMoreResponseModelDto({
     this.key,
     this.title,
+    this.subcategoryId,
     this.isActive,
     this.theme,
     this.itemsCount,
@@ -14,6 +15,7 @@ class HomeExploreMoreResponseModelDto {
     return HomeExploreMoreResponseModelDto(
       key: json['key'] as String?,
       title: json['title'] as String?,
+      subcategoryId: json['subcategory_id'] as String?,
       isActive: json['is_active'] as bool?,
       theme: json['theme'],
       itemsCount: json['items_count'] as int?,
@@ -28,6 +30,7 @@ class HomeExploreMoreResponseModelDto {
   }
   final String? key;
   final String? title;
+  final String? subcategoryId;
   final bool? isActive;
   final dynamic theme;
   final int? itemsCount;

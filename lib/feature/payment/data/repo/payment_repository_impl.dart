@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/feature/payment/data/data_source/payment_remote_d
 import 'package:zadana_user_v3/feature/payment/data/models/place_order_request_dto.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_promo_result_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/confirm_payment_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_request_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/repo/payment_repository.dart';
@@ -70,6 +71,18 @@ class PaymentRepositoryImpl implements PaymentRepository {
   ) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.placeOrder(request.toDto());
+      return response.toEntity();
+    });
+  }
+
+  @override
+  Future<ApiResult<ConfirmPaymentResponseEntity>> confirmMoyasarPayment(
+    String moyasarPaymentId,
+  ) async {
+    return safeApiCall(() async {
+      final response = await _remoteDataSource.confirmMoyasarPayment(
+        moyasarPaymentId,
+      );
       return response.toEntity();
     });
   }

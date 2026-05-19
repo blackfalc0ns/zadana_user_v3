@@ -83,6 +83,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
         total: response.total ?? items.length,
         page: response.page ?? request.page,
         perPage: response.perPage ?? request.perPage,
+        breadcrumbCategoryId: response.breadcrumb?.category?.id,
+        breadcrumbCategoryName: response.breadcrumb?.category?.name,
+        breadcrumbSubCategoryId: response.breadcrumb?.subcategory?.id,
+        breadcrumbSubCategoryName: response.breadcrumb?.subcategory?.name,
       );
     });
   }

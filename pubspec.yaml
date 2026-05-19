@@ -59,7 +59,7 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   signalr_netcore: ^1.4.4
   url_launcher: ^6.3.2
-  webview_flutter: ^4.13.0
+  moyasar: ^3.0.2
 dev_dependencies:
   build_runner: ^2.11.1
   flutter_lints: ^6.0.0

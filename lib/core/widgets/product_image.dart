@@ -32,13 +32,10 @@ class ProductImage extends StatelessWidget {
     final imageShell = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: ColoredBox(
-        color: backgroundColor ??
+        color:
+            backgroundColor ??
             (whiteBackground ? Colors.white : Colors.transparent),
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: _buildImage(),
-        ),
+        child: SizedBox(width: width, height: height, child: _buildImage()),
       ),
     );
 
@@ -70,16 +67,12 @@ class ProductImage extends StatelessWidget {
     );
   }
 
- 
-
   Widget _buildImage() {
-    
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return CachedNetworkImage(
           imageUrl: url ?? '',
-       
+
           placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(
               strokeWidth: .5,

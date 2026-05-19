@@ -432,8 +432,8 @@ class _CardLayoutSpec {
     }
 
     return _CardLayoutSpec(
-      imageHeight: (cardHeight * 0.45).clamp(50.0, 76.0).toDouble(),
-      imageSectionHeight: (cardHeight * 0.58).clamp(62.0, 92.0).toDouble(),
+      imageHeight: (cardHeight * 0.43).clamp(50.0, 72.0).toDouble(),
+      imageSectionHeight: (cardHeight * 0.54).clamp(60.0, 88.0).toDouble(),
       horizontalPadding: (cardWidth * 0.06).clamp(4.0, 8.0).toDouble(),
       verticalPadding: (cardHeight * 0.042).clamp(3.0, 6.0).toDouble(),
       bottomPadding: (cardHeight * 0.02).clamp(1.0, 3.0).toDouble(),
@@ -447,7 +447,7 @@ class _CardLayoutSpec {
       badgeFontSize: (cardWidth * 0.11).clamp(9.0, 13.0).toDouble(),
       actionSpacing: (cardWidth * 0.035).clamp(3.0, 6.0).toDouble(),
       buttonRadius: 6.0,
-      minContentHeight: 57.0,
+      minContentHeight: 60.0,
       imageBottomInset: 6.0,
     );
   }

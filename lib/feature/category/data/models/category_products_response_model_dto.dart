@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:zadana_user_v3/feature/category/data/models/category_breadcrumb_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_products_applied_filters_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_products_item_model_dto.dart';
 
@@ -7,6 +8,7 @@ part 'category_products_response_model_dto.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class CategoryProductsResponseModelDto {
   const CategoryProductsResponseModelDto({
+    this.breadcrumb,
     this.appliedFilters,
     this.total,
     this.page,
@@ -18,6 +20,7 @@ class CategoryProductsResponseModelDto {
     Map<String, dynamic> json,
   ) => _$CategoryProductsResponseModelDtoFromJson(json);
 
+  final CategoryBreadcrumbDto? breadcrumb;
   final CategoryProductsAppliedFiltersDto? appliedFilters;
   final int? total;
   final int? page;

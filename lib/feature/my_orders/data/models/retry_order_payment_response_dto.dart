@@ -1,4 +1,6 @@
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/retry_order_payment_response_entity.dart';
+import 'package:zadana_user_v3/feature/payment/data/models/place_order_response_dto.dart'
+    show MoyasarProviderConfigDto;
 
 class RetryOrderPaymentResponseDto {
   const RetryOrderPaymentResponseDto({
@@ -31,6 +33,7 @@ class RetryOrderPaymentDto {
     required this.status,
     required this.iframeUrl,
     required this.providerReference,
+    this.providerConfig,
   });
 
   factory RetryOrderPaymentDto.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,9 @@ class RetryOrderPaymentDto {
       status: json['status']?.toString() ?? '',
       iframeUrl: json['iframe_url']?.toString() ?? '',
       providerReference: json['provider_reference']?.toString() ?? '',
+      providerConfig: _nullableMap(json['provider_config']) != null
+          ? MoyasarProviderConfigDto.fromJson(_asMap(json['provider_config']))
+          : null,
     );
   }
 
@@ -48,6 +54,7 @@ class RetryOrderPaymentDto {
   final String status;
   final String iframeUrl;
   final String providerReference;
+  final MoyasarProviderConfigDto? providerConfig;
 
   RetryOrderPaymentEntity toEntity() {
     return RetryOrderPaymentEntity(
@@ -56,10 +63,15 @@ class RetryOrderPaymentDto {
       status: status,
       iframeUrl: iframeUrl,
       providerReference: providerReference,
+      providerConfig: providerConfig?.toEntity(),
     );
   }
 }
 
 Map<String, dynamic> _asMap(dynamic value) {
   return value is Map<String, dynamic> ? value : <String, dynamic>{};
+}
+
+Map<String, dynamic>? _nullableMap(dynamic value) {
+  return value is Map<String, dynamic> ? value : null;
 }

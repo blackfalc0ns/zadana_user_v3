@@ -276,6 +276,7 @@ extension HomeExploreMoreResponseModelDtoMapper
     return HomeExploreMoreEntity(
       key: key ?? '',
       title: title ?? '',
+      subcategoryId: subcategoryId,
       isActive: isActive ?? false,
       theme: theme,
       itemsCount: itemsCount ?? 0,

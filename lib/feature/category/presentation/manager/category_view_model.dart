@@ -346,6 +346,19 @@ class CategoryViewModel extends Cubit<CategoryState> {
     }
   }
 
+  /// Loads subcategories without loading products.
+  /// Used when we have a pending external subcategory selection by name
+  /// and need the subcategory list to resolve it.
+  Future<void> _loadShoppingSubCategoriesOnly() async {
+    final result = await _loaderService.loadDefaultShoppingData();
+    switch (result) {
+      case DefaultShoppingLoadSuccess():
+        emit(state.loadedShoppingSubCategories(result.data));
+      case DefaultShoppingLoadFailure():
+        emit(state.defaultShoppingLoadFailed(result.failure));
+    }
+  }
+
   void syncFavorite({required String productId, required bool isFavorite}) {
     emit(state.syncFavoriteState(productId: productId, isFavorite: isFavorite));
   }
@@ -440,17 +453,19 @@ class CategoryViewModel extends Cubit<CategoryState> {
     final rawRequestedCategory = _navigationHandler.requestedCategory;
 
     if (rawRequestedCategory == null) {
-      await loadDefaultShoppingView(categories: categories);
-      if (requestedSubCategory == null) {
+      // If there's a pending subcategory selection, skip the default shopping
+      // load since _applyExternalSubCategorySelection will load what's needed.
+      if (requestedSubCategory != null) {
+        await _applyExternalSubCategorySelection(
+          subCategoryId: requestedSubCategory.subCategoryId,
+          subCategoryName: requestedSubCategory.subCategoryName,
+          preferCategoryId: requestedSubCategory.preferCategoryId,
+        );
+        _navigationHandler.clearSelectedCategory();
         return;
       }
 
-      await _applyExternalSubCategorySelection(
-        subCategoryId: requestedSubCategory.subCategoryId,
-        subCategoryName: requestedSubCategory.subCategoryName,
-        preferCategoryId: requestedSubCategory.preferCategoryId,
-      );
-      _navigationHandler.clearSelectedCategory();
+      await loadDefaultShoppingView(categories: categories);
       return;
     }
 
@@ -499,8 +514,40 @@ class CategoryViewModel extends Cubit<CategoryState> {
       return;
     }
 
-    if (!state.showAllSubCategories || state.isCategoryPreselectedFromOutside) {
-      await loadDefaultShoppingView(categories: state.categories);
+    // Show loading immediately so the user sees a shimmer while we resolve
+    // the subcategory and load products.
+    emit(state.startProductsLoad().copyWith(isSubCategoriesLoading: true));
+
+    // When preferCategoryId is true, the id is actually a category ID.
+    // Directly select that category instead of searching through subcategories.
+    if (preferCategoryId && subCategoryId != null && subCategoryId.isNotEmpty) {
+      final category = findCategoryById(state.categories, subCategoryId);
+      if (category != null) {
+        await selectCategory(category, fromOutside: true);
+        return;
+      }
+    }
+
+    // Fast path: if we have a subcategory ID, call the products endpoint
+    // directly. The API returns a breadcrumb with category/subcategory info,
+    // so we don't need to load subcategories or search through categories.
+    if (subCategoryId != null && subCategoryId.isNotEmpty) {
+      await _loadProductsWithBreadcrumb(
+        subCategoryId: subCategoryId,
+        subCategoryName: subCategoryName,
+      );
+      return;
+    }
+
+    if (!state.showAllSubCategories ||
+        state.isCategoryPreselectedFromOutside ||
+        state.subCategories.isEmpty) {
+      // Load subcategories only (skip loading products) since we'll load
+      // the correct products after resolving the subcategory by name.
+      await _loadShoppingSubCategoriesOnly();
+    } else {
+      // Subcategories already loaded, stop the subcategories shimmer.
+      emit(state.copyWith(isSubCategoriesLoading: false));
     }
 
     final requestedSubCategory = _navigationHandler.resolveRequestedSubCategory(
@@ -553,6 +600,159 @@ class CategoryViewModel extends Cubit<CategoryState> {
         emit(state.filtersReloadFailed(result.failure));
       case ExternalSubCategoryNotFound():
         return;
+    }
+  }
+
+  /// Fast path for dynamic section navigation.
+  /// Calls the products endpoint directly with subcategory_id and uses the
+  /// breadcrumb in the response to set category/subcategory state.
+  /// This avoids loading subcategories, searching through categories, and
+  /// loading filters — all in a single API call.
+  Future<void> _loadProductsWithBreadcrumb({
+    required String subCategoryId,
+    required String? subCategoryName,
+  }) async {
+    emit(state.startProductsLoad().copyWith(isSubCategoriesLoading: true));
+
+    // Resolve the parent category from the subcategory map if available.
+    // If not found, pass only the subcategory_id without a categoryId
+    // to avoid sending a wrong/stale categoryId to the API.
+    final parentCategoryId =
+        state.subCategoryCategoryMap[subCategoryId];
+
+    // Load products and subcategories in parallel to avoid delay.
+    final results = await Future.wait([
+      _productsService.loadProductsForSubCategoryOnly(
+        state: state,
+        page: 1,
+        subCategoryId: subCategoryId,
+        categoryId: parentCategoryId,
+      ),
+      _loaderService.loadSubCategories(
+        categoryId: parentCategoryId,
+        limit: 10,
+      ),
+    ]);
+
+    final productsResult = results[0] as ApiResult<PaginatedProductsEntity>;
+    final subCategoriesResult =
+        results[1] as ApiResult<List<CategorySubcategoryItemDto>>;
+
+    switch (productsResult) {
+      case ApiSuccessResult<PaginatedProductsEntity>():
+        final data = productsResult.data;
+
+        // Use breadcrumb to set category/subcategory context.
+        String? resolvedCategoryId;
+        if (data.hasBreadcrumb) {
+          resolvedCategoryId = data.breadcrumbCategoryId!;
+          final category = findCategoryById(
+            state.categories,
+            resolvedCategoryId,
+          );
+          emit(
+            state.applyBreadcrumbSelection(
+              categoryId: resolvedCategoryId,
+              categoryName: category?.name ?? data.breadcrumbCategoryName ?? '',
+              subCategoryId: data.breadcrumbSubCategoryId ?? subCategoryId,
+              subCategoryName:
+                  data.breadcrumbSubCategoryName ?? subCategoryName ?? '',
+            ),
+          );
+        } else {
+          emit(
+            state.selectSubCategory(
+              subCategoryId: subCategoryId,
+              subCategoryName: subCategoryName,
+            ),
+          );
+        }
+
+        emit(
+          state.paginatedProductsLoaded(
+            items: data.items,
+            total: data.total,
+            page: data.page,
+            hasMore: data.hasMore,
+          ),
+        );
+
+        // Apply subcategories if loaded successfully.
+        _applyLoadedSubCategories(
+          subCategoriesResult: subCategoriesResult,
+          resolvedCategoryId: resolvedCategoryId,
+        );
+
+        // If the breadcrumb revealed a different category than what we used
+        // to load subcategories, reload them for the correct category.
+        if (resolvedCategoryId != null &&
+            resolvedCategoryId != parentCategoryId) {
+          final reloadResult = await _loaderService.loadSubCategories(
+            categoryId: resolvedCategoryId,
+            limit: 10,
+          );
+          _applyLoadedSubCategories(
+            subCategoriesResult: reloadResult,
+            resolvedCategoryId: resolvedCategoryId,
+          );
+        }
+
+        // Load filters (brands, etc.) for the resolved category.
+        final filtersCategoryId =
+            resolvedCategoryId ?? parentCategoryId;
+        if (filtersCategoryId != null && filtersCategoryId.isNotEmpty) {
+          final filtersResult = await _loaderService.loadFiltersForCategory(
+            categoryId: filtersCategoryId,
+            subCategories: state.subCategories,
+            subCategoryCategoryMap: state.subCategoryCategoryMap,
+          );
+          switch (filtersResult) {
+            case CategoryFiltersReloadSuccess():
+              _emitCategoryFilters(
+                filtersResult.data.filters,
+                subCategories: filtersResult.data.subCategories,
+                subCategoryCategoryMap:
+                    filtersResult.data.subCategoryCategoryMap,
+              );
+            case CategoryFiltersReloadFailure():
+              break;
+          }
+        }
+      case ApiErrorResult<PaginatedProductsEntity>():
+        emit(state.productsLoadFailed(productsResult.failure));
+    }
+  }
+
+  /// Applies loaded subcategories to state and resolves the selected chip.
+  void _applyLoadedSubCategories({
+    required ApiResult<List<CategorySubcategoryItemDto>> subCategoriesResult,
+    String? resolvedCategoryId,
+  }) {
+    switch (subCategoriesResult) {
+      case ApiSuccessResult<List<CategorySubcategoryItemDto>>():
+        final data = buildShoppingSubCategoriesFromFlatList(
+          subCategoriesResult.data,
+        );
+        emit(state.loadedShoppingSubCategories(data));
+
+        // If the selected subcategory ID doesn't match any loaded chip,
+        // try to resolve by name so the correct chip is highlighted.
+        final currentId = state.selectedSubCategoryId;
+        final alreadyMatched = currentId != null &&
+            currentId.isNotEmpty &&
+            data.subCategories.any((s) => s.id == currentId);
+        if (!alreadyMatched) {
+          final currentName = state.selectedSubCategory;
+          final match = resolveRequestedSubCategory(
+            data.subCategories,
+            subCategoryName: currentName,
+          );
+          if (match != null && match.id != null && match.id!.isNotEmpty) {
+            emit(state.copyWith(selectedSubCategoryId: match.id));
+          }
+        }
+      case ApiErrorResult<List<CategorySubcategoryItemDto>>():
+        emit(state.copyWith(isSubCategoriesLoading: false));
     }
   }
 

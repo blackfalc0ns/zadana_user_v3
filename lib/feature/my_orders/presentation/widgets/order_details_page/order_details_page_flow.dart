@@ -9,7 +9,10 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_deta
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_support_case_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
-import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_webview_screen.dart';
+import 'package:zadana_user_v3/feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callback_result.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_payment_screen.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/moyasar_payment_confirmer.dart';
 
 class OrderDetailsPageFlow {
   const OrderDetailsPageFlow();
@@ -27,8 +30,7 @@ class OrderDetailsPageFlow {
       return;
     }
 
-    final paymentUrl = payment.iframeUrl.trim();
-    if (paymentUrl.isEmpty) {
+    if (!payment.isMoyasarForm || payment.providerConfig == null) {
       CustomSnackbar.showError(
         context: context,
         message: l10n.error_other_desc,
@@ -36,12 +38,23 @@ class OrderDetailsPageFlow {
       return;
     }
 
-    final paymentResult = await Navigator.push<PaymentCallbackResult>(
+    final sdkResult = await Navigator.push<PaymentCallbackResult>(
       context,
       MaterialPageRoute(
-        builder: (_) => PaymentWebViewScreen(paymentUrl: paymentUrl),
+        builder: (_) => MoyasarPaymentScreen(
+          config: payment.providerConfig!,
+          orderId: targetOrderId,
+        ),
       ),
     );
+
+    if (!context.mounted) return;
+
+    // Confirm with backend before deciding navigation.
+    final confirmer = MoyasarPaymentConfirmer(
+      getIt<ConfirmMoyasarPaymentUseCase>(),
+    );
+    final paymentResult = await confirmer.confirmAndResolve(sdkResult);
 
     if (!context.mounted) return;
     await _handlePaymentCallbackResult(

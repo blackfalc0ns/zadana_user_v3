@@ -380,26 +380,36 @@ class PaymentViewModel extends Cubit<PaymentState> {
     switch (result) {
       case ApiSuccessResult():
         final payment = result.data.payment;
-        final iframeUrl = payment?.iframeUrl.trim() ?? '';
         final isCashOnDelivery = _isCashOnDeliveryMethod(
           result.data.order.paymentMethod,
         );
+
+        PaymentUiEffect? uiEffect;
+        if (payment != null) {
+          if (payment.isMoyasarForm && payment.providerConfig != null) {
+            uiEffect = OpenMoyasarPaymentEffect(
+              payment.providerConfig!,
+              orderId: result.data.order.id,
+            );
+          } else {
+            uiEffect = ShowPaymentErrorEffect(
+              result.data.message.isNotEmpty
+                  ? result.data.message
+                  : 'Unable to start the payment session.',
+            );
+          }
+        } else {
+          uiEffect = NavigateToPaymentSuccessEffect(
+            result.data.order.id,
+            isCashOnDelivery: isCashOnDelivery,
+          );
+        }
+
         emit(
           state.copyWith(
             isPlacingOrder: false,
             placedOrder: result.data,
-            uiEffect: payment != null
-                ? (iframeUrl.isNotEmpty
-                      ? OpenPaymentWebViewEffect(iframeUrl)
-                      : ShowPaymentErrorEffect(
-                          result.data.message.isNotEmpty
-                              ? result.data.message
-                              : 'Unable to start the payment session.',
-                        ))
-                : NavigateToPaymentSuccessEffect(
-                    result.data.order.id,
-                    isCashOnDelivery: isCashOnDelivery,
-                  ),
+            uiEffect: uiEffect,
             clearActionFailure: true,
           ),
         );

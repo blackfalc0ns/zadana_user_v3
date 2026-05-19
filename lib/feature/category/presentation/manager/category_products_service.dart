@@ -165,6 +165,35 @@ class CategoryProductsService {
     );
   }
 
+  Future<ApiResult<PaginatedProductsEntity>> loadProductsForSubCategoryOnly({
+    required CategoryState state,
+    required int page,
+    required String subCategoryId,
+    String? categoryId,
+    int perPage = 20,
+  }) {
+    final hasPriceFilter = state.priceRange != state.priceBounds;
+
+    return _getShoppingProductsUseCase.callPaginated(
+      ShoppingProductsRequestEntity(
+        categoryId: categoryId,
+        subCategoryId: subCategoryId,
+        productTypeId: null,
+        partId: null,
+        quantityId: null,
+        brandId: null,
+        packageTypeId: null,
+        measurementUnitId: null,
+        measurementValue: null,
+        minPrice: hasPriceFilter ? state.priceRange.start : null,
+        maxPrice: hasPriceFilter ? state.priceRange.end : null,
+        sort: null,
+        page: page,
+        perPage: perPage,
+      ),
+    );
+  }
+
   Future<ApiResult<PaginatedProductsEntity>> _loadShoppingProductsPaginated(
     CategoryState state, {
     String? categoryId,

@@ -46,8 +46,7 @@ CategoryFiltersResponseModelDto _$CategoryFiltersResponseModelDtoFromJson(
       .toList(),
   measurementOptions: (json['measurement_options'] as List<dynamic>?)
       ?.map(
-        (e) =>
-            CategoryMeasurementOptionDto.fromJson(e as Map<String, dynamic>),
+        (e) => CategoryMeasurementOptionDto.fromJson(e as Map<String, dynamic>),
       )
       .toList(),
   priceRange: json['price_range'] == null

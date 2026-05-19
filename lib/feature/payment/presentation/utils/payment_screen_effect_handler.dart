@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
+import 'package:zadana_user_v3/feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_view_model.dart';
-import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_webview_screen.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callback_result.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_payment_screen.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/moyasar_payment_confirmer.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_address_selector_bottom_sheet.dart';
 
 class PaymentScreenEffectHandler {
@@ -23,8 +27,9 @@ class PaymentScreenEffectHandler {
   }) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
-      Navigator.of(context).pushReplacementNamed(
+      Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.paymentSuccess,
+        (route) => route.isFirst,
         arguments: {'orderId': orderId, 'isCashOnDelivery': isCashOnDelivery},
       );
     });
@@ -37,8 +42,9 @@ class PaymentScreenEffectHandler {
   }) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
-      Navigator.of(context).pushReplacementNamed(
+      Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.paymentFailed,
+        (route) => route.isFirst,
         arguments: {'orderId': orderId, 'message': message},
       );
     });
@@ -178,16 +184,27 @@ class PaymentScreenEffectHandler {
       return;
     }
 
-    if (effect is OpenPaymentWebViewEffect) {
+    if (effect is OpenMoyasarPaymentEffect) {
       final placedOrderId = state.placedOrder?.order.id;
       viewModel.doIntent(const PaymentClearPlacedOrderEvent());
       viewModel.doIntent(const PaymentClearUiEffectEvent());
-      final paymentResult = await Navigator.push<PaymentCallbackResult>(
+      final sdkResult = await Navigator.push<PaymentCallbackResult>(
         context,
         MaterialPageRoute(
-          builder: (_) => PaymentWebViewScreen(paymentUrl: effect.paymentUrl),
+          builder: (_) => MoyasarPaymentScreen(
+            config: effect.providerConfig,
+            orderId: effect.orderId ?? placedOrderId,
+          ),
         ),
       );
+
+      if (!context.mounted) return;
+
+      // Confirm with backend before deciding navigation.
+      final confirmer = MoyasarPaymentConfirmer(
+        getIt<ConfirmMoyasarPaymentUseCase>(),
+      );
+      final paymentResult = await confirmer.confirmAndResolve(sdkResult);
 
       if (!context.mounted) return;
       await _handlePaymentCallbackResult(

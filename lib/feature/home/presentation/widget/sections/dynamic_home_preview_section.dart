@@ -114,9 +114,8 @@ class _DynamicSectionBlock extends StatelessWidget {
           actionLabel: locale.see_all,
           onActionTap: () {
             CategoryNavigationService().setSelectedSubCategory(
-              id: section.key,
+              id: section.subcategoryId,
               name: section.title,
-              preferCategoryId: true,
             );
             openShoppingTab();
           },
