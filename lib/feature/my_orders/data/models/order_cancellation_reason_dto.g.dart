@@ -10,6 +10,7 @@ OrderCancellationReasonDto _$OrderCancellationReasonDtoFromJson(
   Map<String, dynamic> json,
 ) => OrderCancellationReasonDto(
   code: json['code'] as String? ?? '',
+  label: json['label'] as String? ?? '',
   labelAr: json['label_ar'] as String? ?? '',
   labelEn: json['label_en'] as String? ?? '',
   requiresNote: json['requires_note'] as bool? ?? false,
@@ -19,6 +20,7 @@ Map<String, dynamic> _$OrderCancellationReasonDtoToJson(
   OrderCancellationReasonDto instance,
 ) => <String, dynamic>{
   'code': instance.code,
+  'label': instance.label,
   'label_ar': instance.labelAr,
   'label_en': instance.labelEn,
   'requires_note': instance.requiresNote,

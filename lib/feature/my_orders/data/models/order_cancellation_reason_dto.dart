@@ -7,6 +7,7 @@ part 'order_cancellation_reason_dto.g.dart';
 class OrderCancellationReasonDto {
   const OrderCancellationReasonDto({
     required this.code,
+    required this.label,
     required this.labelAr,
     required this.labelEn,
     required this.requiresNote,
@@ -18,6 +19,8 @@ class OrderCancellationReasonDto {
   @JsonKey(defaultValue: '')
   final String code;
   @JsonKey(defaultValue: '')
+  final String label;
+  @JsonKey(defaultValue: '')
   final String labelAr;
   @JsonKey(defaultValue: '')
   final String labelEn;
@@ -27,10 +30,12 @@ class OrderCancellationReasonDto {
   Map<String, dynamic> toJson() => _$OrderCancellationReasonDtoToJson(this);
 
   OrderCancellationReasonEntity toEntity() {
+    final resolvedLabelAr = labelAr.isNotEmpty ? labelAr : label;
+    final resolvedLabelEn = labelEn.isNotEmpty ? labelEn : label;
     return OrderCancellationReasonEntity(
       code: code,
-      labelAr: labelAr,
-      labelEn: labelEn,
+      labelAr: resolvedLabelAr,
+      labelEn: resolvedLabelEn,
       requiresNote: requiresNote,
     );
   }
