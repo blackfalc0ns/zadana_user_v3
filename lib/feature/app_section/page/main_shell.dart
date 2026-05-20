@@ -211,11 +211,13 @@ class MainShellState extends State<MainShell> {
         listenWhen: (previous, current) =>
             previous.locale.languageCode != current.locale.languageCode,
         listener: (context, state) => _refreshLocalizedContent(),
-        child: Scaffold(
-          key: _scaffoldKey,
-          drawer: const AppDrawer(),
-          drawerEdgeDragWidth: 20,
-          body: Stack(
+        child: PopScope(
+          canPop: false,
+          child: Scaffold(
+            key: _scaffoldKey,
+            drawer: const AppDrawer(),
+            drawerEdgeDragWidth: 20,
+            body: Stack(
             children: [
               ...List.generate(_loadedScreens.length, _buildScreenForIndex),
               if (!isKeyboardVisible)
@@ -238,6 +240,7 @@ class MainShellState extends State<MainShell> {
                 ),
             ],
           ),
+        ),
         ),
       ),
     );
