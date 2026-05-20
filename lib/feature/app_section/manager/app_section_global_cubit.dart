@@ -116,8 +116,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         isGuest: isGuest,
       ),
     );
-
-    await _loadGlobalCounts();
   }
 
   Future<void> refreshProfileAuthState() async {

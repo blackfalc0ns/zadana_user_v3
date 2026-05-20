@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
+import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/location/domain/entities/location_entity.dart';
@@ -78,10 +80,18 @@ class _StartSelectLocationView extends StatelessWidget {
             },
             builder: (context, state) {
               final vm = context.read<LocationViewModel>();
+              final isLocationPermissionError =
+                  state.failure?.exception.errorType ==
+                      ApiErrorType.locationPermissionDenied ||
+                  state.failure?.exception.errorType ==
+                      ApiErrorType.locationPermissionDeniedForever ||
+                  state.failure?.exception.errorType ==
+                      ApiErrorType.locationServiceDisabled;
               final showGlobalError =
                   !state.isLoading &&
                   state.failure != null &&
-                  state.selectedLocation == null;
+                  state.selectedLocation == null &&
+                  !isLocationPermissionError;
 
               if (showGlobalError) {
                 return Center(
@@ -149,9 +159,22 @@ class _StartSelectLocationView extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: state.isLoading
                           ? null
-                          : () => context.read<LocationViewModel>().doIntent(
-                              const GetCurrentLocationEvent(),
-                            ),
+                          : () async {
+                              final isDeniedForever =
+                                  state.failure?.exception.errorType ==
+                                      ApiErrorType
+                                          .locationPermissionDeniedForever;
+                              if (isDeniedForever) {
+                                await Geolocator.openAppSettings();
+                                if (!context.mounted) return;
+                                // Clear old failure and retry after returning
+                                // from settings.
+                                vm.clearFeedback();
+                                vm.doIntent(const GetCurrentLocationEvent());
+                              } else {
+                                vm.doIntent(const GetCurrentLocationEvent());
+                              }
+                            },
                       child: state.isLoading
                           ? SizedBox(
                               height: 20,

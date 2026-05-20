@@ -1032,7 +1032,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get available_vendors => 'المتاجر';
 
   @override
-  String get sar => 'ر.س';
+  String get sar => 'ريال';
 
   @override
   String get free => 'مجاني';
