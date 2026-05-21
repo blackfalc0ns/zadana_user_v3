@@ -13,6 +13,7 @@ class HomeExploreMoreItemModelDto {
     this.isFeatured,
     this.unit,
     this.isDiscounted,
+    this.showPriceOnCard = true,
   });
 
   factory HomeExploreMoreItemModelDto.fromJson(Map<String, dynamic> json) {
@@ -30,6 +31,7 @@ class HomeExploreMoreItemModelDto {
       isFeatured: json['is_featured'] as bool?,
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
+      showPriceOnCard: json['show_price_on_card'] as bool? ?? true,
     );
   }
   final String? id;
@@ -45,4 +47,5 @@ class HomeExploreMoreItemModelDto {
   final bool? isFeatured;
   final String? unit;
   final bool? isDiscounted;
+  final bool showPriceOnCard;
 }

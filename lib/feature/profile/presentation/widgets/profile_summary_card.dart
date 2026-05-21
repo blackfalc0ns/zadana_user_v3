@@ -70,13 +70,10 @@ class ProfileSummaryCard extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: Text(
-              name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : 'Z',
-              style: AppTextStyles.h1.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 34,
-              ),
+            child: const Icon(
+              Icons.person,
+              color: Colors.white,
+              size: 44,
             ),
           ),
           const SizedBox(height: Spacing.sm),

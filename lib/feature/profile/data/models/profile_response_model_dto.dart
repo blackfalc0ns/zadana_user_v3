@@ -14,6 +14,7 @@ class ProfileResponseModelDto {
     required this.phone,
     required this.role,
     required this.favoritesCount,
+    this.profilePhotoUrl,
   });
 
   factory ProfileResponseModelDto.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +25,7 @@ class ProfileResponseModelDto {
   final String phone;
   final String role;
   final int favoritesCount;
+  final String? profilePhotoUrl;
 
   Map<String, dynamic> toJson() => _$ProfileResponseModelDtoToJson(this);
 
@@ -36,6 +38,7 @@ class ProfileResponseModelDto {
       phone: phone,
       role: role,
       favoritesCount: favoritesCount,
+      profilePhotoUrl: profilePhotoUrl,
     );
   }
 }

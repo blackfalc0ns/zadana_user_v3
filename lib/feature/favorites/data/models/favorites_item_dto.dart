@@ -17,6 +17,7 @@ class FavoritesItemDto {
     this.isFavorite,
     this.unit,
     this.isDiscounted,
+    this.showPriceOnCard = true,
   });
 
   factory FavoritesItemDto.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +35,7 @@ class FavoritesItemDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+  final bool showPriceOnCard;
 
   Map<String, dynamic> toJson() => _$FavoritesItemDtoToJson(this);
 }

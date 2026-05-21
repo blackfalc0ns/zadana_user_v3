@@ -34,6 +34,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   late final TextEditingController _phoneController;
 
   bool _isSaving = false;
+  bool _hasChanges = false;
 
   @override
   void initState() {
@@ -41,14 +42,32 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     _nameController = TextEditingController(text: widget.profile.fullName);
     _emailController = TextEditingController(text: widget.profile.email);
     _phoneController = TextEditingController(text: widget.profile.phone);
+
+    _nameController.addListener(_checkForChanges);
+    _emailController.addListener(_checkForChanges);
+    _phoneController.addListener(_checkForChanges);
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(_checkForChanges);
+    _emailController.removeListener(_checkForChanges);
+    _phoneController.removeListener(_checkForChanges);
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
+  }
+
+  void _checkForChanges() {
+    final changed =
+        _nameController.text.trim() != widget.profile.fullName ||
+        _emailController.text.trim() != widget.profile.email ||
+        _phoneController.text.trim() != widget.profile.phone;
+
+    if (changed != _hasChanges) {
+      setState(() => _hasChanges = changed);
+    }
   }
 
   Future<void> _onSave() async {
@@ -165,7 +184,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                         const SizedBox(height: Spacing.xl),
                         AppButtonSwitch(
                           label: _updateButtonLabel(context),
-                          onPressed: _onSave,
+                          onPressed: _hasChanges ? _onSave : null,
                         ),
                       ],
                     ),
@@ -211,10 +230,6 @@ class _ProfileDetailsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    final initial = profile.fullName.trim().isNotEmpty
-        ? profile.fullName.trim()[0].toUpperCase()
-        : 'Z';
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(Spacing.lg),
@@ -243,13 +258,10 @@ class _ProfileDetailsHeader extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: Text(
-              initial,
-              style: AppTextStyles.h1.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 32,
-              ),
+            child: const Icon(
+              Icons.person,
+              color: Colors.white,
+              size: 42,
             ),
           ),
           const SizedBox(height: Spacing.md),

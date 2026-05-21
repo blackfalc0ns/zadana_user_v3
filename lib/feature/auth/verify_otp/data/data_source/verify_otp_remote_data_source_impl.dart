@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
+import '../models/resend_otp_request_model_dto.dart';
 import '../models/verify_otp_request_model_dto.dart';
 import '../models/verify_otp_response_model_dto.dart';
 import 'verify_otp_remote_data_source.dart';
@@ -16,5 +17,10 @@ class VerifyOtpRemoteDataSourceImpl implements VerifyOtpRemoteDataSource {
     VerifyOtpRequestModelDto request,
   ) {
     return _apiServices.verifyOtp(request);
+  }
+
+  @override
+  Future<void> resendOtp(ResendOtpRequestModelDto request) {
+    return _apiServices.resendOtp(request);
   }
 }

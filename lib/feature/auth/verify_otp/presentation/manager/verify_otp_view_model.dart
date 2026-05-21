@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import '../../domain/entities/verify_otp_request_entity.dart';
+import '../../domain/usecase/resend_otp_usecase.dart';
 import '../../domain/usecase/verify_otp_usecase.dart';
 import 'verify_otp_event.dart';
 import 'verify_otp_state.dart';
@@ -12,8 +13,10 @@ import 'verify_otp_state.dart';
 /// Handles verify OTP logic using intent/event pattern
 @injectable
 class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
-  VerifyOtpViewModel(this._verifyOtpUseCase) : super(const VerifyOtpState());
+  VerifyOtpViewModel(this._verifyOtpUseCase, this._resendOtpUseCase)
+    : super(const VerifyOtpState());
   final VerifyOtpUseCase _verifyOtpUseCase;
+  final ResendOtpUseCase _resendOtpUseCase;
 
   /// Main intent handler
   /// Dispatches events to appropriate handlers
@@ -21,6 +24,8 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
     switch (event) {
       case VerifyOtpSubmitEvent():
         _verifyOtp(event.requestEntity);
+      case ResendOtpCodeEvent():
+        _resendOtp(event.identifier);
     }
   }
 
@@ -66,7 +71,41 @@ class VerifyOtpViewModel extends Cubit<VerifyOtpState> {
     }
   }
 
+  /// Resend OTP
+  Future<void> _resendOtp(String identifier) async {
+    emit(state.copyWith(isResending: true, resendSuccess: false));
+
+    developer.log(
+      'Resending OTP for: $identifier',
+      name: 'VerifyOtpViewModel',
+    );
+
+    final result = await _resendOtpUseCase.call(identifier);
+
+    switch (result) {
+      case ApiSuccessResult():
+        developer.log(
+          'OTP resent successfully',
+          name: 'VerifyOtpViewModel',
+        );
+        emit(state.copyWith(isResending: false, resendSuccess: true));
+
+      case ApiErrorResult():
+        developer.log(
+          'Resend OTP failed: ${result.failure.errorMessage}',
+          name: 'VerifyOtpViewModel',
+        );
+        emit(
+          state.copyWith(
+            isResending: false,
+            resendSuccess: false,
+            resendError: result.failure.errorMessage,
+          ),
+        );
+    }
+  }
+
   void clearFeedback() {
-    emit(state.copyWith(isSuccess: false));
+    emit(state.copyWith(isSuccess: false, resendSuccess: false));
   }
 }

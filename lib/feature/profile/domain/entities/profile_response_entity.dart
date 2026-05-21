@@ -8,6 +8,7 @@ class ProfileResponseEntity {
     required this.phone,
     required this.role,
     required this.favoritesCount,
+    this.profilePhotoUrl,
   });
   final String id;
   final String fullName;
@@ -15,4 +16,5 @@ class ProfileResponseEntity {
   final String phone;
   final String role;
   final int favoritesCount;
+  final String? profilePhotoUrl;
 }

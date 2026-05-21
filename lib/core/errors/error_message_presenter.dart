@@ -81,9 +81,22 @@ class ErrorMessagePresenter {
       'c:\\',
       'd:\\',
       'stacktrace',
+      'api key',
+      'api_key',
+      'statuscode',
+      'validation_error',
+      'traceid',
+      'trace_id',
+      'errorcode',
+      'error_code',
     ];
 
     if (technicalFragments.any(lower.contains)) {
+      return true;
+    }
+
+    // Detect embedded JSON objects
+    if (message.contains('{') && message.contains('}')) {
       return true;
     }
 

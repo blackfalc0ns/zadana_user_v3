@@ -69,6 +69,7 @@ extension SimilarProductModelDtoMapper on SimilarProductModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }

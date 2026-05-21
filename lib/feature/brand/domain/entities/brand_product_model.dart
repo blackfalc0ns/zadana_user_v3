@@ -19,6 +19,7 @@ class BrandProductModel {
     this.size,
     this.isBestSeller = false,
     this.createdAt,
+    this.showPriceOnCard = true,
     this.packageTypeNameAr,
     this.packageTypeNameEn,
     this.measurementUnitNameAr,
@@ -46,6 +47,7 @@ class BrandProductModel {
   final String? size;
   final bool isBestSeller;
   final DateTime? createdAt;
+  final bool showPriceOnCard;
   final String? packageTypeNameAr;
   final String? packageTypeNameEn;
   final String? measurementUnitNameAr;
@@ -76,6 +78,7 @@ class BrandProductModel {
     String? size,
     bool? isBestSeller,
     DateTime? createdAt,
+    bool? showPriceOnCard,
     String? packageTypeNameAr,
     String? packageTypeNameEn,
     String? measurementUnitNameAr,
@@ -104,6 +107,7 @@ class BrandProductModel {
       size: size ?? this.size,
       isBestSeller: isBestSeller ?? this.isBestSeller,
       createdAt: createdAt ?? this.createdAt,
+      showPriceOnCard: showPriceOnCard ?? this.showPriceOnCard,
       packageTypeNameAr: packageTypeNameAr ?? this.packageTypeNameAr,
       packageTypeNameEn: packageTypeNameEn ?? this.packageTypeNameEn,
       measurementUnitNameAr:

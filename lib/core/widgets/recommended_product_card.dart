@@ -162,7 +162,7 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                           color: color.onSurface,
                           fontSize: titleFontSize,
                         ),
-                        maxLines: 1,
+                        maxLines: widget.product.showPriceOnCard ? 1 : 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       ProductSizeSummary(
@@ -174,13 +174,16 @@ class _RecommendedProductCardState extends State<RecommendedProductCard> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Expanded(
-                            child: PriceText(
-                              price: widget.product.price,
-                              oldPrice: widget.product.oldPrice,
-                              compact: true,
-                            ),
-                          ),
+                          if (widget.product.showPriceOnCard)
+                            Expanded(
+                              child: PriceText(
+                                price: widget.product.price,
+                                oldPrice: widget.product.oldPrice,
+                                compact: true,
+                              ),
+                            )
+                          else
+                            const Spacer(),
                           const SizedBox(width: Spacing.sm),
                           GestureDetector(
                             onTap: _handleAddTap,

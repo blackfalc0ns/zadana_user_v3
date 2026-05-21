@@ -23,6 +23,7 @@ extension BrandProductsItemModelDtoMapper on BrandProductsItemModelDto {
       discount: discount,
       isFavorite: isFavorite ?? false,
       unit: unit,
+      showPriceOnCard: showPriceOnCard,
       packageTypeNameAr: packageTypeNameAr,
       packageTypeNameEn: packageTypeNameEn,
       measurementUnitNameAr: measurementUnitNameAr,

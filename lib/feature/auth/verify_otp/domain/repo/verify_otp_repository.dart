@@ -8,4 +8,6 @@ abstract class VerifyOtpRepository {
   Future<ApiResult<VerifyOtpResponseEntity>> verifyOtp(
     VerifyOtpRequestEntity request,
   );
+
+  Future<ApiResult<void>> resendOtp(String identifier);
 }

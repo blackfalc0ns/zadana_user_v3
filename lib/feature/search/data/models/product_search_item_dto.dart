@@ -13,6 +13,7 @@ class ProductSearchItemDto {
     this.unit,
     this.isDiscounted,
     this.variantCount,
+    this.showPriceOnCard = true,
   });
 
   factory ProductSearchItemDto.fromJson(Map<String, dynamic> json) {
@@ -30,6 +31,7 @@ class ProductSearchItemDto {
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
       variantCount: (json['variant_count'] as num?)?.toInt(),
+      showPriceOnCard: json['show_price_on_card'] as bool? ?? true,
     );
   }
 
@@ -46,4 +48,5 @@ class ProductSearchItemDto {
   final String? unit;
   final bool? isDiscounted;
   final int? variantCount;
+  final bool showPriceOnCard;
 }

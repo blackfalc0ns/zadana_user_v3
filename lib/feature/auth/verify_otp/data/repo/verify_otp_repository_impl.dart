@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/auth/data/helpers/post_auth_side_effects.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/mapper/mapper_verify_otp.dart';
+import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/resend_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/favorites/data/repo/favorites_repository.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
@@ -59,6 +60,14 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
       }
 
       return result.toEntity();
+    });
+  }
+
+  @override
+  Future<ApiResult<void>> resendOtp(String identifier) async {
+    return safeApiCall(() async {
+      final dto = ResendOtpRequestModelDto(identifier: identifier);
+      await _remoteDataSource.resendOtp(dto);
     });
   }
 }

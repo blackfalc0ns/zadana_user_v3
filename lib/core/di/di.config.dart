@@ -100,6 +100,8 @@ import '../../feature/auth/verify_otp/data/repo/verify_otp_repository_impl.dart'
     as _i548;
 import '../../feature/auth/verify_otp/domain/repo/verify_otp_repository.dart'
     as _i415;
+import '../../feature/auth/verify_otp/domain/usecase/resend_otp_usecase.dart'
+    as _i62;
 import '../../feature/auth/verify_otp/domain/usecase/verify_otp_usecase.dart'
     as _i851;
 import '../../feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart'
@@ -323,7 +325,11 @@ import '../../feature/profile/data/data_source/profile_remote_data_source_impl.d
     as _i544;
 import '../../feature/profile/data/repo/profile_repository_impl.dart' as _i771;
 import '../../feature/profile/domain/repo/profile_repository.dart' as _i1006;
+import '../../feature/profile/domain/usecase/delete_profile_photo_usecase.dart'
+    as _i601;
 import '../../feature/profile/domain/usecase/profile_usecase.dart' as _i766;
+import '../../feature/profile/domain/usecase/update_profile_photo_usecase.dart'
+    as _i698;
 import '../../feature/profile/domain/usecase/update_profile_usecase.dart'
     as _i477;
 import '../../feature/profile/presentation/manager/profile_view_model.dart'
@@ -375,6 +381,7 @@ import '../services/language_service.dart' as _i819;
 import '../services/local_notification_service.dart' as _i762;
 import '../services/notification_device_service.dart' as _i823;
 import '../services/push_token_service.dart' as _i92;
+import '../services/session_expiry_service.dart' as _i486;
 import '../services/token_interceptor.dart' as _i1056;
 import '../services/token_service.dart' as _i227;
 
@@ -442,6 +449,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1072.LocationDataSourceImpl(
         gh<_i777.OsmApiServices>(),
         gh<_i367.LocationPermissionService>(),
+      ),
+    );
+    gh.lazySingleton<_i486.SessionExpiryService>(
+      () => _i486.SessionExpiryService(
+        gh<_i227.TokenService>(),
+        gh<_i179.AppNavigatorService>(),
       ),
     );
     gh.factory<_i930.DeviceIdInterceptor>(
@@ -830,8 +843,14 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i881.ForgetPasswordRepository>(),
       ),
     );
+    gh.factory<_i601.DeleteProfilePhotoUseCase>(
+      () => _i601.DeleteProfilePhotoUseCase(gh<_i1006.ProfileRepository>()),
+    );
     gh.factory<_i766.ProfileUseCase>(
       () => _i766.ProfileUseCase(gh<_i1006.ProfileRepository>()),
+    );
+    gh.factory<_i698.UpdateProfilePhotoUseCase>(
+      () => _i698.UpdateProfilePhotoUseCase(gh<_i1006.ProfileRepository>()),
     );
     gh.factory<_i477.UpdateProfileUseCase>(
       () => _i477.UpdateProfileUseCase(gh<_i1006.ProfileRepository>()),
@@ -941,6 +960,14 @@ extension GetItInjectableX on _i174.GetIt {
         title,
       ),
     );
+    gh.factory<_i701.ProfileViewModel>(
+      () => _i701.ProfileViewModel(
+        gh<_i766.ProfileUseCase>(),
+        gh<_i477.UpdateProfileUseCase>(),
+        gh<_i698.UpdateProfilePhotoUseCase>(),
+        gh<_i601.DeleteProfilePhotoUseCase>(),
+      ),
+    );
     gh.factory<_i495.HomeViewModel>(
       () => _i495.HomeViewModel(
         gh<_i699.GetHomeAppBarUseCase>(),
@@ -1023,12 +1050,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i882.ResendDeliveryOtpUseCase>(),
       ),
     );
-    gh.factory<_i701.ProfileViewModel>(
-      () => _i701.ProfileViewModel(
-        gh<_i766.ProfileUseCase>(),
-        gh<_i477.UpdateProfileUseCase>(),
-      ),
-    );
     gh.factory<_i954.ClearFavoritesUseCase>(
       () => _i954.ClearFavoritesUseCase(gh<_i140.FavoritesRepository>()),
     );
@@ -1077,11 +1098,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i330.RegisterViewModel>(
       () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
     );
+    gh.factory<_i62.ResendOtpUseCase>(
+      () => _i62.ResendOtpUseCase(gh<_i415.VerifyOtpRepository>()),
+    );
     gh.factory<_i851.VerifyOtpUseCase>(
       () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
+    );
+    gh.factory<_i718.VerifyOtpViewModel>(
+      () => _i718.VerifyOtpViewModel(
+        gh<_i851.VerifyOtpUseCase>(),
+        gh<_i62.ResendOtpUseCase>(),
+      ),
     );
     gh.factory<_i162.AppSectionGlobalCubit>(
       () => _i162.AppSectionGlobalCubit(
@@ -1097,9 +1127,6 @@ extension GetItInjectableX on _i174.GetIt {
         productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
         addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
       ),
-    );
-    gh.factory<_i718.VerifyOtpViewModel>(
-      () => _i718.VerifyOtpViewModel(gh<_i851.VerifyOtpUseCase>()),
     );
     return this;
   }

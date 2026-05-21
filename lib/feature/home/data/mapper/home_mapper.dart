@@ -108,6 +108,7 @@ extension HomeBestSellingItemModelDtoMapper on HomeBestSellingItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }
@@ -168,6 +169,7 @@ extension HomeRecommendedItemModelDtoMapper on HomeRecommendedItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }
@@ -201,6 +203,7 @@ extension HomeFeaturedItemModelDtoMapper on HomeFeaturedItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }
@@ -233,6 +236,7 @@ extension HomeSpecialOfferItemModelDtoMapper on HomeSpecialOfferItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }
@@ -266,6 +270,7 @@ extension HomeExploreMoreItemModelDtoMapper on HomeExploreMoreItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }

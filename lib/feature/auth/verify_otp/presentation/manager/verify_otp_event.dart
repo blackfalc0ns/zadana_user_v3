@@ -9,3 +9,9 @@ class VerifyOtpSubmitEvent extends VerifyOtpEvent {
   VerifyOtpSubmitEvent({required this.requestEntity});
   final VerifyOtpRequestEntity requestEntity;
 }
+
+/// Event to resend OTP code
+class ResendOtpCodeEvent extends VerifyOtpEvent {
+  ResendOtpCodeEvent({required this.identifier});
+  final String identifier;
+}

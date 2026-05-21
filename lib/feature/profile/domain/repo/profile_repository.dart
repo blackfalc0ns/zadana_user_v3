@@ -10,4 +10,10 @@ abstract class ProfileRepository {
   Future<ApiResult<ProfileResponseEntity>> updateProfile(
     UpdateProfileRequestEntity request,
   );
+
+  Future<ApiResult<ProfileResponseEntity>> updateProfilePhoto(
+    String filePath,
+  );
+
+  Future<ApiResult<void>> deleteProfilePhoto();
 }

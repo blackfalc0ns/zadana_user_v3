@@ -13,6 +13,7 @@ class UserModelDto {
     required this.email,
     required this.phone,
     required this.role,
+    this.profilePhotoUrl,
   });
 
   factory UserModelDto.fromJson(Map<String, dynamic> json) =>
@@ -22,6 +23,7 @@ class UserModelDto {
   final String email;
   final String phone;
   final String role;
+  final String? profilePhotoUrl;
 
   Map<String, dynamic> toJson() => _$UserModelDtoToJson(this);
 
@@ -33,6 +35,7 @@ class UserModelDto {
       email: email,
       phone: phone,
       role: role,
+      profilePhotoUrl: profilePhotoUrl,
     );
   }
 }

@@ -140,7 +140,6 @@ class _CustomProductCardState extends State<CustomProductCard> {
             ? constraints.maxHeight
             : 140.0;
         final useTabletLayout = screenSize.shortestSide >= 600;
-        final allowExpandedTabletTitle = useTabletLayout && cardWidth >= 150;
         final spec = _CardLayoutSpec.resolve(
           cardWidth: cardWidth,
           cardHeight: cardHeight,
@@ -216,7 +215,9 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                     fontFamily: FontConstant.cairo,
                                     fontSize: spec.titleFontSize,
                                   ),
-                                  maxLines: allowExpandedTabletTitle ? 2 : 1,
+                                  maxLines: widget.product.showPriceOnCard
+                                      ? 1
+                                      : 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 ProductSizeSummary(
@@ -233,20 +234,23 @@ class _CustomProductCardState extends State<CustomProductCard> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Expanded(
-                                      child: PriceText(
-                                        price: widget.product.price,
-                                        oldPrice: widget.product.oldPrice,
-                                        compact:
-                                            (!useTabletLayout &&
-                                                (scale < 1.04 ||
-                                                    cardHeight < 142)) ||
-                                            widget.product.oldPrice != null,
-                                        fontScale: useTabletLayout
-                                            ? (scale * 1.06)
-                                            : scale,
-                                      ),
-                                    ),
+                                    if (widget.product.showPriceOnCard)
+                                      Expanded(
+                                        child: PriceText(
+                                          price: widget.product.price,
+                                          oldPrice: widget.product.oldPrice,
+                                          compact:
+                                              (!useTabletLayout &&
+                                                  (scale < 1.04 ||
+                                                      cardHeight < 142)) ||
+                                              widget.product.oldPrice != null,
+                                          fontScale: useTabletLayout
+                                              ? (scale * 1.06)
+                                              : scale,
+                                        ),
+                                      )
+                                    else
+                                      const Spacer(),
                                     SizedBox(width: spec.actionSpacing),
                                     GestureDetector(
                                       behavior: HitTestBehavior.opaque,
@@ -344,7 +348,7 @@ class _CustomProductCardState extends State<CustomProductCard> {
                   ],
                 ),
               ),
-              if (widget.isDiscounted)
+              if (widget.isDiscounted && widget.product.showPriceOnCard)
                 Positioned(
                   left: 0,
                   top: 0,
@@ -432,8 +436,8 @@ class _CardLayoutSpec {
     }
 
     return _CardLayoutSpec(
-      imageHeight: (cardHeight * 0.43).clamp(50.0, 72.0).toDouble(),
-      imageSectionHeight: (cardHeight * 0.54).clamp(60.0, 88.0).toDouble(),
+      imageHeight: (cardHeight * 0.38).clamp(44.0, 66.0).toDouble(),
+      imageSectionHeight: (cardHeight * 0.46).clamp(54.0, 80.0).toDouble(),
       horizontalPadding: (cardWidth * 0.06).clamp(4.0, 8.0).toDouble(),
       verticalPadding: (cardHeight * 0.042).clamp(3.0, 6.0).toDouble(),
       bottomPadding: (cardHeight * 0.02).clamp(1.0, 3.0).toDouble(),

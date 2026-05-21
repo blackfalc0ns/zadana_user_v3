@@ -21,3 +21,15 @@ class ProfileSetLocalDataEvent extends ProfileEvent {
 
   final ProfileResponseEntity profile;
 }
+
+/// Event to update profile photo (upload + set)
+class ProfileUpdatePhotoEvent extends ProfileEvent {
+  ProfileUpdatePhotoEvent(this.filePath);
+
+  final String filePath;
+}
+
+/// Event to delete profile photo
+class ProfileDeletePhotoEvent extends ProfileEvent {
+  ProfileDeletePhotoEvent();
+}

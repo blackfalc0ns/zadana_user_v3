@@ -25,6 +25,7 @@ extension FavoritesItemDtoMapper on FavoritesItemDto {
       unit: unit,
       emoji: '',
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }

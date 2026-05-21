@@ -6,33 +6,38 @@ class AppButtonSwitch extends StatelessWidget {
   const AppButtonSwitch({
     super.key,
     required this.label,
-    required this.onPressed,
+    this.onPressed,
     this.isLoading = false,
   });
 
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
+    final isDisabled = onPressed == null || isLoading;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color.primary, color.primary.withValues(alpha: 0.82)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: color.primary.withValues(alpha: 0.20),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
+    return Opacity(
+      opacity: isDisabled ? 0.5 : 1.0,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [color.primary, color.primary.withValues(alpha: 0.82)],
           ),
-        ],
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            if (!isDisabled)
+              BoxShadow(
+                color: color.primary.withValues(alpha: 0.20),
+                blurRadius: 24,
+                offset: const Offset(0, 12),
+              ),
+          ],
+        ),
+        child: AppButton(onPressed: isDisabled ? null : onPressed, text: label),
       ),
-      child: AppButton(onPressed: isLoading ? null : onPressed, text: label),
     );
   }
 }

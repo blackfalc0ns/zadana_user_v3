@@ -97,6 +97,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .saveNotificationsEnabledLocally(previousValue);
         if (!mounted) return;
         _notificationsEnabled = previousValue;
+        CustomSnackbar.showError(
+          context: context,
+          message: context.localization.error_other_desc,
+        );
         break;
     }
 
@@ -202,8 +206,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
           onNotificationsChanged: _handleNotificationsChanged,
-          onNotificationsTap: () =>
-              Navigator.of(context).pushNamed(AppRoutes.notifications),
           onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),
           onLogout: () => _showLogoutDialog(context, l10n),
         );

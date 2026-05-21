@@ -156,6 +156,30 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
               onPressed: _isOtpComplete ? () => _submitOtp(context) : () {},
               isLoading: state.isLoading,
             ),
+            const SizedBox(height: Spacing.lg),
+            Center(
+              child: state.isResending
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : TextButton(
+                      onPressed: () {
+                        context.read<VerifyOtpViewModel>().doIntent(
+                          ResendOtpCodeEvent(identifier: widget.identifier),
+                        );
+                      },
+                      child: Text(
+                        locale.otp_resend_code,
+                        style: getMediumStyle(
+                          fontSize: FontSize.size14,
+                          fontFamily: FontConstant.cairo,
+                          color: color.primary,
+                        ),
+                      ),
+                    ),
+            ),
           ],
         );
       },

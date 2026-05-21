@@ -13,6 +13,7 @@ class ProductModel {
     this.unit,
     this.emoji,
     required this.isDiscounted,
+    this.showPriceOnCard = true,
     this.packageTypeNameAr,
     this.packageTypeNameEn,
     this.measurementUnitNameAr,
@@ -35,6 +36,7 @@ class ProductModel {
   final String? unit;
   final String? emoji; // ← fallback لو الصورة مش شغالة
   final bool isDiscounted;
+  final bool showPriceOnCard;
   final String? packageTypeNameAr;
   final String? packageTypeNameEn;
   final String? measurementUnitNameAr;
@@ -58,6 +60,7 @@ class ProductModel {
     String? unit,
     String? emoji,
     bool? isDiscounted,
+    bool? showPriceOnCard,
     String? packageTypeNameAr,
     String? packageTypeNameEn,
     String? measurementUnitNameAr,
@@ -81,6 +84,7 @@ class ProductModel {
       unit: unit ?? this.unit,
       emoji: emoji ?? this.emoji,
       isDiscounted: isDiscounted ?? this.isDiscounted,
+      showPriceOnCard: showPriceOnCard ?? this.showPriceOnCard,
       packageTypeNameAr: packageTypeNameAr ?? this.packageTypeNameAr,
       packageTypeNameEn: packageTypeNameEn ?? this.packageTypeNameEn,
       measurementUnitNameAr:

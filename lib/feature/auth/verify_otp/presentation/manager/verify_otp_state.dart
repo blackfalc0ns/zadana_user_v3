@@ -10,12 +10,18 @@ class VerifyOtpState {
     this.isSuccess = false,
     this.verifyOtpResponse,
     this.failure,
+    this.isResending = false,
+    this.resendSuccess = false,
+    this.resendError,
   });
   final bool isLoading;
   final String? errorMessage;
   final bool isSuccess;
   final VerifyOtpResponseEntity? verifyOtpResponse;
   final Failure? failure;
+  final bool isResending;
+  final bool resendSuccess;
+  final String? resendError;
 
   VerifyOtpState copyWith({
     bool? isLoading,
@@ -23,6 +29,9 @@ class VerifyOtpState {
     bool? isSuccess,
     VerifyOtpResponseEntity? verifyOtpResponse,
     Failure? failure,
+    bool? isResending,
+    bool? resendSuccess,
+    String? resendError,
   }) {
     return VerifyOtpState(
       isLoading: isLoading ?? this.isLoading,
@@ -30,6 +39,9 @@ class VerifyOtpState {
       isSuccess: isSuccess ?? this.isSuccess,
       verifyOtpResponse: verifyOtpResponse ?? this.verifyOtpResponse,
       failure: failure,
+      isResending: isResending ?? this.isResending,
+      resendSuccess: resendSuccess ?? this.resendSuccess,
+      resendError: resendError,
     );
   }
 
@@ -41,7 +53,10 @@ class VerifyOtpState {
         other.errorMessage == errorMessage &&
         other.isSuccess == isSuccess &&
         other.verifyOtpResponse == verifyOtpResponse &&
-        other.failure == failure;
+        other.failure == failure &&
+        other.isResending == isResending &&
+        other.resendSuccess == resendSuccess &&
+        other.resendError == resendError;
   }
 
   @override
@@ -51,5 +66,8 @@ class VerifyOtpState {
     isSuccess,
     verifyOtpResponse,
     failure,
+    isResending,
+    resendSuccess,
+    resendError,
   );
 }

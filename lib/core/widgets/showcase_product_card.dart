@@ -141,7 +141,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                     children: [
                       Text(
                         widget.product.name,
-                        maxLines: 1,
+                        maxLines: widget.product.showPriceOnCard ? 1 : 2,
                         overflow: TextOverflow.ellipsis,
                         style: getBoldStyle(
                           fontFamily: FontConstant.cairo,
@@ -155,14 +155,16 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                         fontSize: 9,
                         compact: true,
                       ),
-                      const SizedBox(height: 4),
-                      PriceText(
-                        price: widget.product.price,
-                        oldPrice: widget.product.oldPrice,
-                        compact: true,
-                        fontScale: 0.82,
-                      ),
-                      const SizedBox(height: 5),
+                      if (widget.product.showPriceOnCard) ...[
+                        const SizedBox(height: 4),
+                        PriceText(
+                          price: widget.product.price,
+                          oldPrice: widget.product.oldPrice,
+                          compact: true,
+                          fontScale: 0.82,
+                        ),
+                      ],
+                      const Spacer(),
                       _AddButton(
                         onTap: _handleAddTap,
                         isLoading: _isSubmittingCart,
@@ -173,7 +175,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
               ],
             ),
           ),
-          if (discount > 0)
+          if (discount > 0 && widget.product.showPriceOnCard)
             Positioned(
               top: 0,
               left: 0,

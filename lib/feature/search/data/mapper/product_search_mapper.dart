@@ -19,6 +19,7 @@ extension ProductSearchItemDtoMapper on ProductSearchItemDto {
       unit: unit,
       isDiscounted: isDiscounted ?? false,
       variantCount: variantCount,
+      showPriceOnCard: showPriceOnCard,
     );
   }
 }

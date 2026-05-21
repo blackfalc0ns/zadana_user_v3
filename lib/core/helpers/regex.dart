@@ -1,6 +1,6 @@
 abstract class AppRegExp {
   static bool isNameValid(String name) {
-    return RegExp(r"^[A-Za-z]{2,}$").hasMatch(name);
+    return RegExp(r"^[\p{L}\s]{2,}$", unicode: true).hasMatch(name);
   }
 
   static bool isEmailValid(String email) {

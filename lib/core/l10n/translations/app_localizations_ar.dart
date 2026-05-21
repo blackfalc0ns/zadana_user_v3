@@ -51,11 +51,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'واجه الخادم خطأ داخلي. يرجى المحاولة لاحقاً';
 
   @override
-  String get error_bad_gateway => 'بوابة سيئة';
+  String get error_bad_gateway => 'حدث خطأ مؤقت';
 
   @override
   String get error_bad_gateway_desc =>
-      'تلقى الخادم استجابة غير صالحة. يرجى المحاولة لاحقاً';
+      'حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مرة أخرى';
 
   @override
   String get error_service_unavailable => 'الخدمة غير متاحة';
@@ -519,6 +519,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get otp_success_message => 'تم تفعيل الحساب';
+
+  @override
+  String get otp_resend_code => 'إعادة إرسال الرمز';
+
+  @override
+  String get otp_resend_success => 'تم إعادة إرسال رمز التحقق بنجاح';
 
   @override
   String get otp_hero_badge => 'تأكيد الحساب';

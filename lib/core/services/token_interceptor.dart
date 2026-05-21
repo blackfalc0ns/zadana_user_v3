@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/services/auth_refresh_service.dart';
+import 'package:zadana_user_v3/core/services/session_expiry_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import '../di/di.dart';
 import '../network/network_constants.dart';
@@ -12,6 +13,8 @@ class TokenInterceptor extends QueuedInterceptor {
 
   final TokenService tokenService = getIt.get<TokenService>();
   final AuthRefreshService _authRefreshService = AuthRefreshService();
+  final SessionExpiryService _sessionExpiryService =
+      getIt.get<SessionExpiryService>();
 
   @override
   void onRequest(
@@ -46,7 +49,7 @@ class TokenInterceptor extends QueuedInterceptor {
     try {
       final newAccessToken = await _authRefreshService.refreshAccessToken();
       if (newAccessToken == null || newAccessToken.isEmpty) {
-        await tokenService.clearTokens();
+        await _sessionExpiryService.handleSessionExpired();
         handler.next(err);
         return;
       }
@@ -57,10 +60,10 @@ class TokenInterceptor extends QueuedInterceptor {
       );
       handler.resolve(response);
     } on DioException catch (refreshError) {
-      await tokenService.clearTokens();
+      await _sessionExpiryService.handleSessionExpired();
       handler.next(refreshError);
     } catch (_) {
-      await tokenService.clearTokens();
+      await _sessionExpiryService.handleSessionExpired();
       handler.next(err);
     }
   }
@@ -75,6 +78,7 @@ class TokenInterceptor extends QueuedInterceptor {
         !path.contains('/customers/auth/login') &&
         !path.contains('/customers/auth/register') &&
         !path.contains('/customers/auth/verify-otp') &&
+        !path.contains('/customers/auth/resend-otp') &&
         !path.contains('/customers/auth/refresh');
   }
 

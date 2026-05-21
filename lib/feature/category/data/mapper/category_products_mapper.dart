@@ -16,6 +16,7 @@ extension CategoryProductsItemModelDtoMapper on CategoryProductsItemModelDto {
       isFavorite: isFavorite ?? false,
       unit: unit,
       isDiscounted: isDiscounted ?? false,
+      showPriceOnCard: showPriceOnCard,
       packageTypeNameAr: packageTypeNameAr,
       packageTypeNameEn: packageTypeNameEn,
       measurementUnitNameAr: measurementUnitNameAr,

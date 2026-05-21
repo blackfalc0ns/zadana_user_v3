@@ -3,9 +3,12 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/update_profile_request_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_state.dart';
+import '../../domain/usecase/delete_profile_photo_usecase.dart';
 import '../../domain/usecase/profile_usecase.dart';
+import '../../domain/usecase/update_profile_photo_usecase.dart';
 import '../../domain/usecase/update_profile_usecase.dart';
 import 'profile_event.dart';
 
@@ -13,10 +16,16 @@ import 'profile_event.dart';
 /// Handles profile logic using intent/event pattern
 @injectable
 class ProfileViewModel extends Cubit<ProfileState> {
-  ProfileViewModel(this._profileUseCase, this._updateProfileUseCase)
-    : super(const ProfileState());
+  ProfileViewModel(
+    this._profileUseCase,
+    this._updateProfileUseCase,
+    this._updateProfilePhotoUseCase,
+    this._deleteProfilePhotoUseCase,
+  ) : super(const ProfileState());
   final ProfileUseCase _profileUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
+  final UpdateProfilePhotoUseCase _updateProfilePhotoUseCase;
+  final DeleteProfilePhotoUseCase _deleteProfilePhotoUseCase;
 
   /// Main intent handler
   /// Dispatches events to appropriate handlers
@@ -33,6 +42,10 @@ class ProfileViewModel extends Cubit<ProfileState> {
             isUpdateSuccess: false,
           ),
         );
+      case ProfileUpdatePhotoEvent():
+        _updateProfilePhoto(event.filePath);
+      case ProfileDeletePhotoEvent():
+        _deleteProfilePhoto();
     }
   }
 
@@ -99,6 +112,95 @@ class ProfileViewModel extends Cubit<ProfileState> {
             isUpdating: false,
             isUpdateSuccess: false,
             updateFailure: result.failure,
+          ),
+        );
+    }
+  }
+
+  /// Upload and update profile photo
+  Future<void> _updateProfilePhoto(String filePath) async {
+    emit(state.copyWith(
+      isPhotoUploading: true,
+      isPhotoUpdateSuccess: false,
+    ));
+
+    developer.log('Updating profile photo', name: 'ProfileViewModel');
+
+    final result = await _updateProfilePhotoUseCase.call(filePath);
+
+    switch (result) {
+      case ApiSuccessResult():
+        developer.log(
+          'Profile photo updated successfully',
+          name: 'ProfileViewModel',
+        );
+        emit(
+          state.copyWith(
+            isPhotoUploading: false,
+            isPhotoUpdateSuccess: true,
+            profileResponse: result.data,
+          ),
+        );
+      case ApiErrorResult():
+        developer.log(
+          'Profile photo update failed: ${result.failure.errorMessage}',
+          name: 'ProfileViewModel',
+        );
+        emit(
+          state.copyWith(
+            isPhotoUploading: false,
+            isPhotoUpdateSuccess: false,
+            photoFailure: result.failure,
+          ),
+        );
+    }
+  }
+
+  /// Delete profile photo
+  Future<void> _deleteProfilePhoto() async {
+    emit(state.copyWith(
+      isPhotoDeleting: true,
+      isPhotoDeleteSuccess: false,
+    ));
+
+    developer.log('Deleting profile photo', name: 'ProfileViewModel');
+
+    final result = await _deleteProfilePhotoUseCase.call();
+
+    switch (result) {
+      case ApiSuccessResult():
+        developer.log(
+          'Profile photo deleted successfully',
+          name: 'ProfileViewModel',
+        );
+        final currentProfile = state.profileResponse;
+        emit(
+          state.copyWith(
+            isPhotoDeleting: false,
+            isPhotoDeleteSuccess: true,
+            profileResponse: currentProfile != null
+                ? ProfileResponseEntity(
+                    id: currentProfile.id,
+                    fullName: currentProfile.fullName,
+                    email: currentProfile.email,
+                    phone: currentProfile.phone,
+                    role: currentProfile.role,
+                    favoritesCount: currentProfile.favoritesCount,
+                    profilePhotoUrl: null,
+                  )
+                : null,
+          ),
+        );
+      case ApiErrorResult():
+        developer.log(
+          'Profile photo delete failed: ${result.failure.errorMessage}',
+          name: 'ProfileViewModel',
+        );
+        emit(
+          state.copyWith(
+            isPhotoDeleting: false,
+            isPhotoDeleteSuccess: false,
+            photoFailure: result.failure,
           ),
         );
     }

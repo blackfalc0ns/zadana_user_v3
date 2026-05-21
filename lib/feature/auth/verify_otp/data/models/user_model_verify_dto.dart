@@ -11,6 +11,7 @@ class UserModelVerifyDto {
     required this.email,
     required this.phone,
     required this.role,
+    this.profilePhotoUrl,
   });
 
   factory UserModelVerifyDto.fromJson(Map<String, dynamic> json) =>
@@ -20,6 +21,7 @@ class UserModelVerifyDto {
   final String? email;
   final String? phone;
   final String? role;
+  final String? profilePhotoUrl;
 
   Map<String, dynamic> toJson() => _$UserModelVerifyDtoToJson(this);
 
@@ -30,6 +32,7 @@ class UserModelVerifyDto {
       email: email ?? '',
       phone: phone ?? '',
       role: role ?? '',
+      profilePhotoUrl: profilePhotoUrl,
     );
   }
 }

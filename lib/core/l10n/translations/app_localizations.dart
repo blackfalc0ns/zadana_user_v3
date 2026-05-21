@@ -173,13 +173,13 @@ abstract class AppLocalizations {
   /// No description provided for @error_bad_gateway.
   ///
   /// In en, this message translates to:
-  /// **'Bad gateway'**
+  /// **'Temporary error'**
   String get error_bad_gateway;
 
   /// No description provided for @error_bad_gateway_desc.
   ///
   /// In en, this message translates to:
-  /// **'The server received an invalid response. Please try again later'**
+  /// **'Something went wrong while connecting to the server. Please try again'**
   String get error_bad_gateway_desc;
 
   /// No description provided for @error_service_unavailable.
@@ -1057,6 +1057,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account verified successfully'**
   String get otp_success_message;
+
+  /// No description provided for @otp_resend_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Code'**
+  String get otp_resend_code;
+
+  /// No description provided for @otp_resend_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code resent successfully'**
+  String get otp_resend_success;
 
   /// No description provided for @otp_hero_badge.
   ///

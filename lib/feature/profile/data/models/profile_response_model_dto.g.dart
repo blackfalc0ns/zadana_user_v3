@@ -15,6 +15,7 @@ ProfileResponseModelDto _$ProfileResponseModelDtoFromJson(
   phone: json['phone'] as String,
   role: json['role'] as String,
   favoritesCount: (json['favoritesCount'] as num).toInt(),
+  profilePhotoUrl: json['profilePhotoUrl'] as String?,
 );
 
 Map<String, dynamic> _$ProfileResponseModelDtoToJson(
@@ -26,4 +27,5 @@ Map<String, dynamic> _$ProfileResponseModelDtoToJson(
   'phone': instance.phone,
   'role': instance.role,
   'favoritesCount': instance.favoritesCount,
+  'profilePhotoUrl': instance.profilePhotoUrl,
 };

@@ -14,6 +14,7 @@ import 'package:zadana_user_v3/feature/auth/register/data/models/request/registe
 import 'package:zadana_user_v3/feature/auth/register/data/models/response/register_response_dto.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/data/models/request/reset_password_request_dto.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/reset_password_response_dto.dart';
+import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/resend_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/brand/data/models/filters/brand_filters_response_model_dto.dart';
@@ -63,7 +64,9 @@ import 'package:zadana_user_v3/feature/notifications/data/models/register_notifi
 import 'package:zadana_user_v3/feature/notifications/data/models/unregister_notification_device_request_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/profile/data/models/update_profile_photo_request_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
+import 'package:zadana_user_v3/feature/profile/data/models/file_upload_response_dto.dart';
 import 'package:zadana_user_v3/feature/search/data/models/product_search_response_dto.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_tracking_response_dto.dart';
 
@@ -219,12 +222,30 @@ abstract class ApiServices {
     @Body() VerifyOtpRequestModelDto request,
   );
 
+  @POST(EndPoints.resendOtp)
+  Future<void> resendOtp(@Body() ResendOtpRequestModelDto request);
+
   @GET(EndPoints.getProfile)
   Future<ProfileResponseModelDto> getProfile();
 
   @PUT(EndPoints.updateProfile)
   Future<ProfileResponseModelDto> updateProfile(
     @Body() UpdateProfileRequestDto request,
+  );
+
+  @PUT(EndPoints.profilePhoto)
+  Future<ProfileResponseModelDto> updateProfilePhoto(
+    @Body() UpdateProfilePhotoRequestDto request,
+  );
+
+  @DELETE(EndPoints.profilePhoto)
+  Future<void> deleteProfilePhoto();
+
+  @MultiPart()
+  @POST(EndPoints.fileUpload)
+  Future<FileUploadResponseDto> uploadFile(
+    @Part(name: 'file') MultipartFile file,
+    @Part(name: 'directory') String directory,
   );
 
   @GET(EndPoints.customerAddresses)

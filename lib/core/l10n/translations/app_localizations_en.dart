@@ -51,11 +51,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'The server encountered an internal error. Please try again later';
 
   @override
-  String get error_bad_gateway => 'Bad gateway';
+  String get error_bad_gateway => 'Temporary error';
 
   @override
   String get error_bad_gateway_desc =>
-      'The server received an invalid response. Please try again later';
+      'Something went wrong while connecting to the server. Please try again';
 
   @override
   String get error_service_unavailable => 'Service unavailable';
@@ -533,6 +533,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get otp_success_message => 'Account verified successfully';
+
+  @override
+  String get otp_resend_code => 'Resend Code';
+
+  @override
+  String get otp_resend_success => 'Verification code resent successfully';
 
   @override
   String get otp_hero_badge => 'Account verification';

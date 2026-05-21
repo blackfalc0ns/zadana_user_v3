@@ -12,6 +12,7 @@ class SimilarProductModelDto {
     this.isFavorite,
     this.unit,
     this.isDiscounted,
+    this.showPriceOnCard = true,
   });
 
   factory SimilarProductModelDto.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class SimilarProductModelDto {
       isFavorite: json['is_favorite'] as bool?,
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
+      showPriceOnCard: json['show_price_on_card'] as bool? ?? true,
     );
   }
   final String? id;
@@ -42,4 +44,5 @@ class SimilarProductModelDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+  final bool showPriceOnCard;
 }

@@ -27,6 +27,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -117,10 +118,22 @@ class _SignUpFormState extends State<SignUpForm> {
               CustomTextField(
                 controller: _passwordController,
                 hint: locale.hint_password,
+                obscureText: _obscurePassword,
                 validator: (v) => Validations.validatePassword(context, v),
                 prefix: Icon(
                   Icons.lock_outline_rounded,
                   color: color.onSurfaceVariant,
+                ),
+                suffix: IconButton(
+                  icon: Icon(
+                    _obscurePassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: color.onSurfaceVariant,
+                  ),
+                  onPressed: () {
+                    setState(() => _obscurePassword = !_obscurePassword);
+                  },
                 ),
               ),
               const SizedBox(height: Spacing.xxl),

@@ -7,10 +7,12 @@ class UserModelVerifyEntity {
     required this.email,
     required this.phone,
     required this.role,
+    this.profilePhotoUrl,
   });
   final String id;
   final String fullName;
   final String email;
   final String phone;
   final String role;
+  final String? profilePhotoUrl;
 }

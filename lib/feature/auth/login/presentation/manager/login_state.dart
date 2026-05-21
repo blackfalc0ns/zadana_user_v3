@@ -10,12 +10,16 @@ class LoginState {
     this.isSuccess = false,
     this.loginResponse,
     this.failure,
+    this.identifier,
+    this.isEmailNotVerified = false,
   });
   final bool isLoading;
   final String? errorMessage;
   final bool isSuccess;
   final LoginResponseEntity? loginResponse;
   final Failure? failure;
+  final String? identifier;
+  final bool isEmailNotVerified;
 
   LoginState copyWith({
     bool? isLoading,
@@ -23,6 +27,8 @@ class LoginState {
     bool? isSuccess,
     LoginResponseEntity? loginResponse,
     Failure? failure,
+    String? identifier,
+    bool? isEmailNotVerified,
   }) {
     return LoginState(
       isLoading: isLoading ?? this.isLoading,
@@ -30,6 +36,8 @@ class LoginState {
       isSuccess: isSuccess ?? this.isSuccess,
       loginResponse: loginResponse ?? this.loginResponse,
       failure: failure,
+      identifier: identifier ?? this.identifier,
+      isEmailNotVerified: isEmailNotVerified ?? this.isEmailNotVerified,
     );
   }
 
@@ -41,10 +49,19 @@ class LoginState {
         other.errorMessage == errorMessage &&
         other.isSuccess == isSuccess &&
         other.loginResponse == loginResponse &&
-        other.failure == failure;
+        other.failure == failure &&
+        other.identifier == identifier &&
+        other.isEmailNotVerified == isEmailNotVerified;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(isLoading, errorMessage, isSuccess, loginResponse, failure);
+  int get hashCode => Object.hash(
+    isLoading,
+    errorMessage,
+    isSuccess,
+    loginResponse,
+    failure,
+    identifier,
+    isEmailNotVerified,
+  );
 }

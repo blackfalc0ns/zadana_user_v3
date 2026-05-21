@@ -27,6 +27,7 @@ class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   final _phoneControllerOrEmail = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -53,10 +54,10 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
-    final color = context.colorScheme;
 
     return BlocBuilder<LoginViewModel, LoginState>(
       builder: (context, state) {
+        final color = context.colorScheme;
         return Form(
           key: _formKey,
           child: Column(
@@ -64,9 +65,9 @@ class _LoginFormState extends State<LoginForm> {
             children: [
               FieldLabel(locale.label_email_or_phone),
               CustomTextField(
-                prefix: IconButton(
-                  icon: Icon(Icons.email, color: color.onSurfaceVariant),
-                  onPressed: () {},
+                prefix: Icon(
+                  Icons.email_outlined,
+                  color: color.onSurfaceVariant,
                 ),
                 controller: _phoneControllerOrEmail,
                 hint: locale.hint_email_or_phone,
@@ -75,21 +76,24 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(height: Spacing.base),
               FieldLabel(locale.label_password),
               CustomTextField(
-                prefix: IconButton(
-                  icon: Icon(Icons.lock, color: color.onSurfaceVariant),
-                  onPressed: () {},
+                prefix: Icon(
+                  Icons.lock_outline_rounded,
+                  color: color.onSurfaceVariant,
                 ),
                 suffix: IconButton(
-                  icon: const Icon(Icons.visibility),
+                  icon: Icon(
+                    _obscurePassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: color.onSurfaceVariant,
+                  ),
                   onPressed: () {
-                    _passwordController.text = _passwordController.text
-                        .split('')
-                        .reversed
-                        .join();
+                    setState(() => _obscurePassword = !_obscurePassword);
                   },
                 ),
                 controller: _passwordController,
                 hint: locale.hint_password,
+                obscureText: _obscurePassword,
                 validator: (v) => Validations.validatePassword(context, v),
               ),
               Align(

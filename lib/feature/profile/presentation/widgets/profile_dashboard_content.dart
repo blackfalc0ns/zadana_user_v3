@@ -17,7 +17,6 @@ class ProfileDashboardContent extends StatelessWidget {
     required this.notificationsEnabled,
     required this.notificationsUpdating,
     required this.onNotificationsChanged,
-    required this.onNotificationsTap,
     required this.onLanguageTap,
     required this.onLogout,
     required this.onEditTap,
@@ -28,7 +27,6 @@ class ProfileDashboardContent extends StatelessWidget {
   final bool notificationsEnabled;
   final bool notificationsUpdating;
   final ValueChanged<bool> onNotificationsChanged;
-  final VoidCallback onNotificationsTap;
   final VoidCallback onLanguageTap;
   final VoidCallback onLogout;
   final Future<void> Function() onEditTap;
@@ -92,7 +90,11 @@ class ProfileDashboardContent extends StatelessWidget {
                     ? null
                     : onNotificationsChanged,
               ),
-              onTap: onNotificationsTap,
+              onTap: () {
+                if (!notificationsUpdating) {
+                  onNotificationsChanged(!notificationsEnabled);
+                }
+              },
             ),
             _ProfileActionItem(
               icon: Icons.lock_outline_rounded,

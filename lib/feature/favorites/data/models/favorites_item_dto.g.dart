@@ -20,6 +20,7 @@ FavoritesItemDto _$FavoritesItemDtoFromJson(Map<String, dynamic> json) =>
       isFavorite: json['is_favorite'] as bool?,
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
+      showPriceOnCard: json['show_price_on_card'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$FavoritesItemDtoToJson(FavoritesItemDto instance) =>
@@ -36,4 +37,5 @@ Map<String, dynamic> _$FavoritesItemDtoToJson(FavoritesItemDto instance) =>
       'is_favorite': instance.isFavorite,
       'unit': instance.unit,
       'is_discounted': instance.isDiscounted,
+      'show_price_on_card': instance.showPriceOnCard,
     };

@@ -18,6 +18,12 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   void _handleStateChanges(BuildContext context, LoginState state) {
+    if (state.isEmailNotVerified && state.identifier != null) {
+      context.read<LoginViewModel>().clearFeedback();
+      context.pushNamed(AppRoutes.verifyOtp, arguments: state.identifier);
+      return;
+    }
+
     if (state.isSuccess && state.loginResponse != null) {
       context.read<LoginViewModel>().clearFeedback();
       final pendingCheckout = CheckoutFlowService().consumePendingCheckout();
@@ -43,9 +49,13 @@ class LoginScreen extends StatelessWidget {
     return BlocConsumer<LoginViewModel, LoginState>(
       listenWhen: (previous, current) =>
           previous.isSuccess != current.isSuccess ||
-          previous.failure != current.failure,
+          previous.failure != current.failure ||
+          previous.isEmailNotVerified != current.isEmailNotVerified,
       listener: (context, state) {
         _handleStateChanges(context, state);
+
+        // Don't show error snackbar if we're redirecting to OTP
+        if (state.isEmailNotVerified) return;
 
         final failure = state.failure;
         if (failure == null || !failure.exception.errorType.showSnackBar) {

@@ -30,4 +30,24 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return result.toEntity();
     });
   }
+
+  @override
+  Future<ApiResult<ProfileResponseEntity>> updateProfilePhoto(
+    String filePath,
+  ) async {
+    return safeApiCall(() async {
+      // Step 1: Upload the file
+      final photoUrl = await _remoteDataSource.uploadFile(filePath);
+      // Step 2: Update profile photo URL
+      final result = await _remoteDataSource.updateProfilePhoto(photoUrl);
+      return result.toEntity();
+    });
+  }
+
+  @override
+  Future<ApiResult<void>> deleteProfilePhoto() async {
+    return safeApiCall(() async {
+      await _remoteDataSource.deleteProfilePhoto();
+    });
+  }
 }

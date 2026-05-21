@@ -102,9 +102,44 @@ abstract class Validations {
     final normalizedPassword = password?.trim() ?? '';
     if (normalizedPassword.isEmpty) {
       return AppLocalizations.of(context)!.password_is_required;
-    } else if (!AppRegExp.isPasswordValid(normalizedPassword)) {
-      return AppLocalizations.of(context)!.password_is_not_valid;
     }
+
+    if (normalizedPassword.length < 8) {
+      return _localizedMessage(
+        context,
+        ar: 'كلمة المرور لازم تكون 8 أحرف على الأقل',
+        en: 'Password must be at least 8 characters',
+      );
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(normalizedPassword)) {
+      return _localizedMessage(
+        context,
+        ar: 'كلمة المرور لازم تحتوي حرف كبير',
+        en: 'Password must contain an uppercase letter',
+      );
+    }
+    if (!RegExp(r'[a-z]').hasMatch(normalizedPassword)) {
+      return _localizedMessage(
+        context,
+        ar: 'كلمة المرور لازم تحتوي حرف صغير',
+        en: 'Password must contain a lowercase letter',
+      );
+    }
+    if (!RegExp(r'[0-9]').hasMatch(normalizedPassword)) {
+      return _localizedMessage(
+        context,
+        ar: 'كلمة المرور لازم تحتوي رقم',
+        en: 'Password must contain a number',
+      );
+    }
+    if (!RegExp(r'[#?!@$%^&*-]').hasMatch(normalizedPassword)) {
+      return _localizedMessage(
+        context,
+        ar: 'كلمة المرور لازم تحتوي رمز خاص مثل #?!@\$%^&*-',
+        en: 'Password must contain a special character like #?!@\$%^&*-',
+      );
+    }
+
     return null;
   }
 

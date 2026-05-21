@@ -30,9 +30,26 @@ class VerifyOtpScreen extends StatelessWidget {
       child: BlocConsumer<VerifyOtpViewModel, VerifyOtpState>(
         listenWhen: (previous, current) =>
             previous.isSuccess != current.isSuccess ||
-            previous.failure != current.failure,
+            previous.failure != current.failure ||
+            previous.resendSuccess != current.resendSuccess ||
+            previous.resendError != current.resendError,
         listener: (context, state) {
           _handleStateChanges(context, state);
+
+          if (state.resendSuccess) {
+            context.read<VerifyOtpViewModel>().clearFeedback();
+            CustomSnackbar.showSuccess(
+              context: context,
+              message: locale.otp_resend_success,
+            );
+          }
+
+          if (state.resendError != null) {
+            CustomSnackbar.showError(
+              context: context,
+              message: state.resendError!,
+            );
+          }
 
           final failure = state.failure;
           if (failure == null || !failure.exception.errorType.showSnackBar) {

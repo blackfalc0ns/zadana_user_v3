@@ -51,6 +51,7 @@ class BrandProductsGrid extends StatelessWidget {
                 isDiscounted:
                     brandProduct.hasDiscount ||
                     ((brandProduct.oldPrice ?? 0) > brandProduct.price),
+                showPriceOnCard: brandProduct.showPriceOnCard,
                 packageTypeNameAr: brandProduct.packageTypeNameAr,
                 packageTypeNameEn: brandProduct.packageTypeNameEn,
                 measurementUnitNameAr: brandProduct.measurementUnitNameAr,

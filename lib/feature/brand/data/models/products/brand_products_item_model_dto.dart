@@ -17,6 +17,7 @@ class BrandProductsItemModelDto {
     this.isFavorite,
     this.unit,
     this.isDiscounted,
+    this.showPriceOnCard = true,
     this.packageTypeNameAr,
     this.packageTypeNameEn,
     this.measurementUnitNameAr,
@@ -41,6 +42,7 @@ class BrandProductsItemModelDto {
   final bool? isFavorite;
   final String? unit;
   final bool? isDiscounted;
+  final bool showPriceOnCard;
   final String? packageTypeNameAr;
   final String? packageTypeNameEn;
   final String? measurementUnitNameAr;

@@ -13,6 +13,7 @@ UserModelVerifyDto _$UserModelVerifyDtoFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String?,
       phone: json['phone'] as String?,
       role: json['role'] as String?,
+      profilePhotoUrl: json['profilePhotoUrl'] as String?,
     );
 
 Map<String, dynamic> _$UserModelVerifyDtoToJson(UserModelVerifyDto instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$UserModelVerifyDtoToJson(UserModelVerifyDto instance) =>
       'email': instance.email,
       'phone': instance.phone,
       'role': instance.role,
+      'profilePhotoUrl': instance.profilePhotoUrl,
     };

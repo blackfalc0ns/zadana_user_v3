@@ -13,6 +13,7 @@ class HomeSpecialOfferItemModelDto {
     this.isFeatured,
     this.unit,
     this.isDiscounted,
+    this.showPriceOnCard = true,
   });
 
   factory HomeSpecialOfferItemModelDto.fromJson(Map<String, dynamic> json) {
@@ -30,6 +31,7 @@ class HomeSpecialOfferItemModelDto {
       isFeatured: json['is_featured'] as bool?,
       unit: json['unit'] as String?,
       isDiscounted: json['is_discounted'] as bool?,
+      showPriceOnCard: json['show_price_on_card'] as bool? ?? true,
     );
   }
   final String? id;
@@ -45,4 +47,5 @@ class HomeSpecialOfferItemModelDto {
   final bool? isFeatured;
   final String? unit;
   final bool? isDiscounted;
+  final bool showPriceOnCard;
 }
