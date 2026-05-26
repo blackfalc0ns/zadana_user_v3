@@ -195,6 +195,7 @@ class _ProductDetailsView extends StatelessWidget {
         }
 
         if (state.loadFailure != null) {
+          final is404 = state.loadFailure!.exception.statusCode == 404;
           return Scaffold(
             backgroundColor: color.surface,
             appBar: CustomAppBar(
@@ -213,11 +214,16 @@ class _ProductDetailsView extends StatelessWidget {
             ),
             body: Padding(
               padding: const EdgeInsets.all(Spacing.md),
-              child: ApiErrorWidget(
-                exception: state.loadFailure!.exception,
-                onRetry: () => cubit.doIntent(const LoadProductDetailsEvent()),
-                onGoBack: () => Navigator.of(context).maybePop(),
-              ),
+              child: is404
+                  ? _ProductNotAvailableView(
+                      onGoBack: () => Navigator.of(context).maybePop(),
+                    )
+                  : ApiErrorWidget(
+                      exception: state.loadFailure!.exception,
+                      onRetry: () =>
+                          cubit.doIntent(const LoadProductDetailsEvent()),
+                      onGoBack: () => Navigator.of(context).maybePop(),
+                    ),
             ),
           );
         }
@@ -269,4 +275,69 @@ String? _resolveDisplaySize(
   return isArabic
       ? product.resolvedDisplaySizeAr
       : product.resolvedDisplaySizeEn;
+}
+
+/// Shown when a product returns 404 (soft-deleted or no longer available).
+/// Provides a friendly message instead of a generic "not found" error.
+class _ProductNotAvailableView extends StatelessWidget {
+  const _ProductNotAvailableView({this.onGoBack});
+
+  final VoidCallback? onGoBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final isArabic =
+        Localizations.localeOf(context).languageCode.startsWith('ar');
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: colors.errorContainer.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.remove_shopping_cart_outlined,
+                size: 40,
+                color: colors.error,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              isArabic ? 'هذا المنتج لم يعد متاحاً' : 'Product no longer available',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: colors.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              isArabic
+                  ? 'هذا المنتج غير متوفر حالياً. يمكنك تصفح منتجات أخرى.'
+                  : 'This product is currently unavailable. You can browse other products.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 32),
+            if (onGoBack != null)
+              FilledButton.icon(
+                onPressed: onGoBack,
+                icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                label: Text(isArabic ? 'رجوع' : 'Go back'),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }

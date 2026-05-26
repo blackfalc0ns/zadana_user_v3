@@ -4,8 +4,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zadana_user_v3/core/services/captcha_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
+import 'package:zadana_user_v3/core/services/guest_cart_signature_interceptor.dart';
 import 'package:zadana_user_v3/core/services/language_interceptor.dart';
+import 'package:zadana_user_v3/core/services/retry_interceptor.dart';
 
 import '../services/token_interceptor.dart';
 import 'network_constants.dart';
@@ -24,6 +27,9 @@ abstract class ExternalModules {
     TokenInterceptor tokenInterceptor,
     DeviceIdInterceptor deviceIdInterceptor,
     LanguageInterceptor languageInterceptor,
+    GuestCartSignatureInterceptor guestCartSignatureInterceptor,
+    CaptchaInterceptor captchaInterceptor,
+    RetryInterceptor retryInterceptor,
     CacheStore _,
   ) {
     final dio = Dio(
@@ -40,8 +46,11 @@ abstract class ExternalModules {
     );
 
     dio.interceptors.add(languageInterceptor);
+    dio.interceptors.add(captchaInterceptor);
     dio.interceptors.add(tokenInterceptor);
     dio.interceptors.add(deviceIdInterceptor);
+    dio.interceptors.add(guestCartSignatureInterceptor);
+    dio.interceptors.add(retryInterceptor);
     dio.interceptors.add(prettyDioLogger);
 
     return dio;

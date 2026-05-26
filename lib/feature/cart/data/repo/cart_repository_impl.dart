@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
+import 'package:zadana_user_v3/core/services/guest_cart_signature_service.dart';
 import 'package:zadana_user_v3/core/services/token_interceptor.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/cart/data/data_source/cart_remote_data_source.dart';
@@ -163,14 +164,31 @@ class CartRepositoryImpl implements CartRepository {
   Future<void> _deleteGuestCartItem(String itemId) async {
     await _dio.delete<void>(
       '${EndPoints.cartItems}/$itemId',
-      options: await _guestOptions(),
+      options: await _guestOptions(isMutation: true),
     );
   }
 
-  Future<Options> _guestOptions() async {
+  Future<Options> _guestOptions({bool isMutation = false}) async {
     final deviceId = await _deviceIdService.getOrCreateDeviceId();
+    final headers = <String, dynamic>{
+      NetworkConstants.deviceIdHeader: deviceId,
+    };
+
+    if (isMutation) {
+      try {
+        final signatureService =
+            GetIt.instance<GuestCartSignatureService>();
+        final signature = await signatureService.getOrFetchSignature();
+        if (signature != null && signature.isNotEmpty) {
+          headers[NetworkConstants.deviceSignatureHeader] = signature;
+        }
+      } catch (_) {
+        // Signature service not registered or failed — proceed without.
+      }
+    }
+
     return Options(
-      headers: {NetworkConstants.deviceIdHeader: deviceId},
+      headers: headers,
       extra: {
         TokenInterceptor.skipAuthKey: true,
         DeviceIdInterceptor.forceDeviceIdKey: true,

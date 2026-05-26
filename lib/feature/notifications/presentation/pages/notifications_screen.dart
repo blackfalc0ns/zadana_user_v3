@@ -83,49 +83,61 @@ class _NotificationsView extends StatelessWidget {
                 final canMarkAll =
                     state.unreadCount > 0 && !state.isMarkingAllRead;
 
-                if (state.unreadCount <= 0 && !state.isMarkingAllRead) {
-                  return const SizedBox.shrink();
-                }
-
-                return Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: Spacing.sm,
-                    end: Spacing.sm,
-                  ),
-                  child: TextButton.icon(
-                    onPressed: canMarkAll
-                        ? () => _confirmMarkAllAsRead(context)
-                        : null,
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.sm,
-                        vertical: 8,
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (state.items.isNotEmpty)
+                      IconButton(
+                        onPressed: () => _confirmDeleteAll(context),
+                        icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                        tooltip: l10n.localeName.startsWith('ar')
+                            ? 'حذف الكل'
+                            : 'Delete all',
+                        splashRadius: 20,
                       ),
-                      minimumSize: const Size(0, 36),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      foregroundColor: colors.primary,
-                    ),
-                    icon: state.isMarkingAllRead
-                        ? SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: colors.primary,
+                    if (state.unreadCount > 0 || state.isMarkingAllRead)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          start: Spacing.sm,
+                          end: Spacing.sm,
+                        ),
+                        child: TextButton.icon(
+                          onPressed: canMarkAll
+                              ? () => _confirmMarkAllAsRead(context)
+                              : null,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Spacing.sm,
+                              vertical: 8,
                             ),
-                          )
-                        : const Icon(Icons.done_all_rounded, size: 16),
-                    label: Text(
-                      l10n.notifications_mark_all_read,
-                      style: getMediumStyle(
-                        fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size13,
-                        color: canMarkAll
-                            ? colors.primary
-                            : colors.onSurfaceVariant.withValues(alpha: 0.7),
+                            minimumSize: const Size(0, 36),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            foregroundColor: colors.primary,
+                          ),
+                          icon: state.isMarkingAllRead
+                              ? SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: colors.primary,
+                                  ),
+                                )
+                              : const Icon(Icons.done_all_rounded, size: 16),
+                          label: Text(
+                            l10n.notifications_mark_all_read,
+                            style: getMediumStyle(
+                              fontFamily: FontConstant.cairo,
+                              fontSize: FontSize.size13,
+                              color: canMarkAll
+                                  ? colors.primary
+                                  : colors.onSurfaceVariant
+                                        .withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                  ],
                 );
               },
             ),
@@ -198,11 +210,34 @@ class _NotificationsView extends StatelessWidget {
                               }
 
                               final notification = state.items[index];
-                              return NotificationListItem(
-                                notification: notification,
-                                onTap: () => _handleNotificationTap(
-                                  context,
-                                  notification,
+                              return Dismissible(
+                                key: ValueKey(notification.id),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  padding: const EdgeInsetsDirectional.only(
+                                    end: Spacing.lg,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: colors.error.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: colors.error,
+                                  ),
+                                ),
+                                onDismissed: (_) {
+                                  context
+                                      .read<NotificationsViewModel>()
+                                      .deleteNotification(notification.id);
+                                },
+                                child: NotificationListItem(
+                                  notification: notification,
+                                  onTap: () => _handleNotificationTap(
+                                    context,
+                                    notification,
+                                  ),
                                 ),
                               );
                             },
@@ -280,6 +315,28 @@ class _NotificationsView extends StatelessWidget {
     if (!confirmed || !context.mounted) return;
 
     context.read<NotificationsViewModel>().markAllAsRead();
+  }
+
+  Future<void> _confirmDeleteAll(BuildContext context) async {
+    final l10n = context.localization;
+    final colors = context.colorScheme;
+    final isArabic = l10n.localeName.startsWith('ar');
+
+    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
+      context: context,
+      title: isArabic ? 'حذف جميع الإشعارات' : 'Delete all notifications',
+      message: isArabic
+          ? 'هل تريد حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا الإجراء.'
+          : 'Delete all notifications? This cannot be undone.',
+      confirmLabel: isArabic ? 'حذف' : 'Delete',
+      cancelLabel: l10n.cancel,
+      icon: Icons.delete_outline_rounded,
+      accentColor: colors.error,
+    );
+
+    if (!confirmed || !context.mounted) return;
+
+    context.read<NotificationsViewModel>().deleteAllNotifications();
   }
 }
 

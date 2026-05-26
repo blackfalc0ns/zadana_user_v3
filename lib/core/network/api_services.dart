@@ -58,15 +58,16 @@ import 'package:zadana_user_v3/feature/my_orders/data/models/retry_order_payment
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_action_response_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_device_preferences_request_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_devices_response_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notification_preferences_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_unread_count_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notifications_page_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/register_notification_device_request_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/unregister_notification_device_request_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
+import 'package:zadana_user_v3/feature/profile/data/models/file_upload_response_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_photo_request_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
-import 'package:zadana_user_v3/feature/profile/data/models/file_upload_response_dto.dart';
 import 'package:zadana_user_v3/feature/search/data/models/product_search_response_dto.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_tracking_response_dto.dart';
 
@@ -435,6 +436,22 @@ abstract class ApiServices {
 
   @POST(EndPoints.notificationsReadAll)
   Future<NotificationActionResponseDto> markAllNotificationsAsRead();
+
+  @DELETE('${EndPoints.notifications}/{notificationId}')
+  Future<void> deleteNotification(
+    @Path('notificationId') String notificationId,
+  );
+
+  @DELETE(EndPoints.notifications)
+  Future<NotificationActionResponseDto> deleteAllNotifications();
+
+  @GET(EndPoints.notificationPreferences)
+  Future<NotificationPreferencesDto> getNotificationPreferences();
+
+  @PUT(EndPoints.notificationPreferences)
+  Future<void> updateNotificationPreferences(
+    @Body() Map<String, dynamic> body,
+  );
 
   @GET(EndPoints.notificationDevices)
   Future<NotificationDevicesResponseDto> getNotificationDevices();

@@ -812,8 +812,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Do you want to mark all current notifications as read?';
 
   @override
-  String get notifications_preferences_saved =>
-      'Notification preferences saved';
+  String get notifications_preferences_saved => 'Preferences saved';
 
   @override
   String notifications_unread_count(int count) {
@@ -2339,4 +2338,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get checkout_login_action => 'Continue';
+
+  @override
+  String get error_max_open_cases_exceeded =>
+      'You have reached the maximum number of open requests';
+
+  @override
+  String get error_duplicate_return_request =>
+      'A return request already exists for this order';
+
+  @override
+  String get error_return_window_expired => 'The return window has expired';
+
+  @override
+  String get refund_lifecycle_pending => 'Processing';
+
+  @override
+  String get refund_lifecycle_processed => 'Refunded';
+
+  @override
+  String get refund_lifecycle_failed => 'Refund failed';
+
+  @override
+  String get refund_lifecycle_not_applicable => 'Not applicable';
+
+  @override
+  String get refund_lifecycle_title => 'Refund Status';
+
+  @override
+  String get refund_lifecycle_step_approved => 'Approved';
+
+  @override
+  String get refund_lifecycle_step_processing => 'Processing';
+
+  @override
+  String get refund_lifecycle_step_done => 'Completed';
+
+  @override
+  String get notifications_delete_all_title => 'Delete all notifications';
+
+  @override
+  String get notifications_delete_all_message =>
+      'Delete all notifications? This cannot be undone.';
+
+  @override
+  String get notifications_delete_all_confirm => 'Delete';
+
+  @override
+  String get notifications_preferences_title => 'Notification Settings';
+
+  @override
+  String get notifications_push_enabled => 'Push Notifications';
+
+  @override
+  String get notifications_push_enabled_subtitle =>
+      'Receive push notifications on this device';
+
+  @override
+  String get notifications_sound_title => 'Notification Sound';
+
+  @override
+  String get notifications_sound_default => 'Default';
+
+  @override
+  String get notifications_sound_silent => 'Silent';
+
+  @override
+  String get notifications_sound_chime => 'Chime';
+
+  @override
+  String get notifications_sound_alert => 'Alert';
+
+  @override
+  String get product_not_available_title => 'Product no longer available';
+
+  @override
+  String get product_not_available_description =>
+      'This product is currently unavailable. You can browse other products.';
 }

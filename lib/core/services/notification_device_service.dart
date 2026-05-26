@@ -176,11 +176,11 @@ class NotificationDeviceService {
   }
 
   String _resolvePlatform() {
-    if (kIsWeb) return 'fcm';
+    if (kIsWeb) return 'Fcm';
     if (Platform.isIOS || Platform.isMacOS) {
-      return 'apns';
+      return 'Apns';
     }
-    return 'fcm';
+    return 'Fcm';
   }
 
   String _resolveDeviceName() {

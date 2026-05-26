@@ -25,6 +25,7 @@ import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_detail
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/get_order_support_reasons_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/usecase/retry_order_payment_usecase.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_state.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/utils/support_case_error_mapper.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_sheets.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 
@@ -354,10 +355,15 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
         );
         return createResult.data.id;
       case ApiErrorResult():
+        final errorMessage = SupportCaseErrorMapper.isKnownDisputeError(
+              createResult.failure,
+            )
+            ? SupportCaseErrorMapper.resolveMessage(context, createResult.failure)
+            : createResult.failure.errorMessage;
         emit(
           state.copyWith(
             isSubmittingSupportCase: false,
-            feedbackMessage: createResult.failure.errorMessage,
+            feedbackMessage: errorMessage,
             isFeedbackError: true,
           ),
         );

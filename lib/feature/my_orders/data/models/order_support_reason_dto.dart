@@ -12,8 +12,17 @@ class OrderSupportReasonDto {
     required this.requiresNote,
   });
 
-  factory OrderSupportReasonDto.fromJson(Map<String, dynamic> json) =>
-      _$OrderSupportReasonDtoFromJson(json);
+  factory OrderSupportReasonDto.fromJson(Map<String, dynamic> json) {
+    // The API may return a single 'label' field (already localized)
+    // instead of separate 'label_ar' / 'label_en' fields.
+    final label = json['label']?.toString() ?? '';
+    return OrderSupportReasonDto(
+      code: json['code']?.toString() ?? '',
+      labelAr: json['label_ar']?.toString() ?? label,
+      labelEn: json['label_en']?.toString() ?? label,
+      requiresNote: json['requires_note'] as bool? ?? false,
+    );
+  }
 
   @JsonKey(defaultValue: '')
   final String code;

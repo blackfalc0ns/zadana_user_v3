@@ -18,8 +18,9 @@ abstract class AppRegExp {
   }
 
   static bool isPasswordValid(String password) {
+    // Backend requires: 8+ chars, at least one lowercase letter, at least one digit.
     return RegExp(
-      r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+      r"^(?=.*[a-z])(?=.*\d).{8,}$",
     ).hasMatch(password);
   }
 }

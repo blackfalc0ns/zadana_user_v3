@@ -272,10 +272,22 @@ class _RefundStatusCard extends StatelessWidget {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final couponCode = refundStatus.couponCode?.trim() ?? '';
     final note = refundStatus.customerNote?.trim() ?? '';
+    final showLifecycleProgress =
+        refundStatus.refundLifecycleStatus !=
+            OrderRefundLifecycleStatus.notApplicable &&
+        refundStatus.refundLifecycleStatus !=
+            OrderRefundLifecycleStatus.unknown;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (showLifecycleProgress) ...[
+          _RefundLifecycleProgressBar(
+            status: refundStatus.refundLifecycleStatus,
+            failureMessage: refundStatus.refundFailureMessage,
+          ),
+          const SizedBox(height: Spacing.base),
+        ],
         SummaryRow(
           label: isArabic ? 'النتيجة' : 'Result',
           value: _settlementLabel(refundStatus.settlementStatus, isArabic),
@@ -392,5 +404,190 @@ class _RefundStatusCard extends StatelessWidget {
     final minute = local.minute.toString().padLeft(2, '0');
     final value = '${local.year}-$month-$day $hour:$minute';
     return isArabic ? value : value;
+  }
+}
+
+/// A 3-step progress bar showing the refund lifecycle:
+/// Approved → Processing → Completed (or Failed).
+///
+/// Uses [OrderRefundLifecycleStatus] to determine the current step.
+class _RefundLifecycleProgressBar extends StatelessWidget {
+  const _RefundLifecycleProgressBar({
+    required this.status,
+    this.failureMessage,
+  });
+
+  final OrderRefundLifecycleStatus status;
+  final String? failureMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final isFailed = status == OrderRefundLifecycleStatus.failed;
+
+    final stepIndex = _resolveStepIndex(status);
+    final steps = _buildSteps(isArabic);
+
+    return DecoratedBlock(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'تقدّم الاسترجاع' : 'Refund Progress',
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: colors.onSurface,
+            ),
+          ),
+          const SizedBox(height: Spacing.md),
+          Row(
+            children: List.generate(steps.length * 2 - 1, (index) {
+              if (index.isOdd) {
+                // Connector line between steps
+                final connectorStepIndex = index ~/ 2;
+                final isActive = stepIndex > connectorStepIndex;
+                return Expanded(
+                  child: Container(
+                    height: 3,
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? (isFailed ? colors.error : colors.primary)
+                          : colors.outlineVariant.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                );
+              }
+
+              // Step circle
+              final currentStepIndex = index ~/ 2;
+              final isActive = stepIndex >= currentStepIndex;
+              final isCurrentStep = stepIndex == currentStepIndex;
+
+              return _StepCircle(
+                isActive: isActive,
+                isCurrent: isCurrentStep,
+                isFailed: isFailed && isCurrentStep,
+                stepNumber: currentStepIndex + 1,
+              );
+            }),
+          ),
+          const SizedBox(height: Spacing.sm),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: steps.map((label) {
+              return Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                    fontSize: 11,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          if (isFailed && (failureMessage?.trim().isNotEmpty ?? false)) ...[
+            const SizedBox(height: Spacing.sm),
+            Container(
+              padding: const EdgeInsets.all(Spacing.sm),
+              decoration: BoxDecoration(
+                color: colors.errorContainer.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 16,
+                    color: colors.error,
+                  ),
+                  const SizedBox(width: Spacing.xs),
+                  Expanded(
+                    child: Text(
+                      failureMessage!.trim(),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.error,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  int _resolveStepIndex(OrderRefundLifecycleStatus status) {
+    switch (status) {
+      case OrderRefundLifecycleStatus.pending:
+        return 1; // Processing step
+      case OrderRefundLifecycleStatus.processed:
+        return 2; // Completed step
+      case OrderRefundLifecycleStatus.failed:
+        return 2; // Failed at final step
+      case OrderRefundLifecycleStatus.notApplicable:
+      case OrderRefundLifecycleStatus.unknown:
+        return 0; // Approved step
+    }
+  }
+
+  List<String> _buildSteps(bool isArabic) {
+    if (isArabic) {
+      return ['تمت الموافقة', 'جاري المعالجة', 'مكتمل'];
+    }
+    return ['Approved', 'Processing', 'Completed'];
+  }
+}
+
+class _StepCircle extends StatelessWidget {
+  const _StepCircle({
+    required this.isActive,
+    required this.isCurrent,
+    required this.isFailed,
+    required this.stepNumber,
+  });
+
+  final bool isActive;
+  final bool isCurrent;
+  final bool isFailed;
+  final int stepNumber;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final activeColor = isFailed ? colors.error : colors.primary;
+    final inactiveColor = colors.outlineVariant.withValues(alpha: 0.3);
+
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isActive ? activeColor : inactiveColor,
+        border: isCurrent
+            ? Border.all(color: activeColor.withValues(alpha: 0.4), width: 3)
+            : null,
+      ),
+      child: Center(
+        child: isActive
+            ? Icon(
+                isFailed ? Icons.close_rounded : Icons.check_rounded,
+                size: 16,
+                color: colors.onPrimary,
+              )
+            : Text(
+                '$stepNumber',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: colors.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+      ),
+    );
   }
 }

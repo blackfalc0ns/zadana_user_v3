@@ -92,6 +92,14 @@ abstract class Validations {
       );
     }
 
+    if (!normalizedEmail.endsWith('.com')) {
+      return _localizedMessage(
+        context,
+        ar: 'الإيميل لازم ينتهي بـ .com',
+        en: 'Email must end with .com',
+      );
+    }
+
     if (!AppRegExp.isEmailValid(normalizedEmail)) {
       return localized.email_is_not_valid;
     }

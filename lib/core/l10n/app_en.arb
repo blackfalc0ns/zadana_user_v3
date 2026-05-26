@@ -903,5 +903,33 @@
   "checkout_login_title": "Sign in to continue",
   "checkout_login_message": "To complete checkout, you need to sign in first, or finish registration if you do not have an account yet.",
   "checkout_login_helper": "If you already have an account, you can sign in from the next screen",
-  "checkout_login_action": "Continue"
+  "checkout_login_action": "Continue",
+
+  "error_max_open_cases_exceeded": "You have reached the maximum number of open requests",
+  "error_duplicate_return_request": "A return request already exists for this order",
+  "error_return_window_expired": "The return window has expired",
+
+  "refund_lifecycle_pending": "Processing",
+  "refund_lifecycle_processed": "Refunded",
+  "refund_lifecycle_failed": "Refund failed",
+  "refund_lifecycle_not_applicable": "Not applicable",
+  "refund_lifecycle_title": "Refund Status",
+  "refund_lifecycle_step_approved": "Approved",
+  "refund_lifecycle_step_processing": "Processing",
+  "refund_lifecycle_step_done": "Completed",
+
+  "notifications_delete_all_title": "Delete all notifications",
+  "notifications_delete_all_message": "Delete all notifications? This cannot be undone.",
+  "notifications_delete_all_confirm": "Delete",
+  "notifications_preferences_title": "Notification Settings",
+  "notifications_preferences_saved": "Preferences saved",
+  "notifications_push_enabled": "Push Notifications",
+  "notifications_push_enabled_subtitle": "Receive push notifications on this device",
+  "notifications_sound_title": "Notification Sound",
+  "notifications_sound_default": "Default",
+  "notifications_sound_silent": "Silent",
+  "notifications_sound_chime": "Chime",
+  "notifications_sound_alert": "Alert",
+  "product_not_available_title": "Product no longer available",
+  "product_not_available_description": "This product is currently unavailable. You can browse other products."
 }

@@ -170,9 +170,11 @@ class ApiExceptionMapper {
 
   static String? _extractBackendErrorCode(dynamic data) {
     if (data is Map) {
-      final value = data['errorCode'];
-      if (value is String && value.trim().isNotEmpty) {
-        return value.trim();
+      for (final key in const ['errorCode', 'code', 'error_code']) {
+        final value = data[key];
+        if (value is String && value.trim().isNotEmpty) {
+          return value.trim();
+        }
       }
     }
 

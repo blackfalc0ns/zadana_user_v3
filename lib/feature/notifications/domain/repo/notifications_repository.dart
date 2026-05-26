@@ -20,6 +20,16 @@ abstract class NotificationsRepository {
 
   Future<ApiResult<void>> markAllAsRead();
 
+  Future<ApiResult<void>> deleteNotification(String notificationId);
+
+  Future<ApiResult<void>> deleteAllNotifications();
+
+  Future<ApiResult<Map<String, dynamic>>> getNotificationPreferences();
+
+  Future<ApiResult<void>> updateNotificationPreferences(
+    Map<String, dynamic> body,
+  );
+
   Future<ApiResult<List<NotificationDeviceEntity>>> getDevices();
 
   Future<ApiResult<void>> registerDevice(

@@ -905,5 +905,33 @@
   "checkout_login_title": "سجّل الدخول للمتابعة",
   "checkout_login_message": "لإتمام الطلب، نحتاج أولًا إلى تسجيل دخولك أو إكمال التسجيل إذا لم يكن لديك حساب بعد.",
   "checkout_login_helper": "إذا كان لديك حساب بالفعل، يمكنك تسجيل الدخول من الشاشة التالية",
-  "checkout_login_action": "متابعة"
+  "checkout_login_action": "متابعة",
+
+  "error_max_open_cases_exceeded": "وصلت للحد الأقصى من الطلبات المفتوحة",
+  "error_duplicate_return_request": "يوجد طلب استرجاع مفتوح لهذا الطلب بالفعل",
+  "error_return_window_expired": "انتهت فترة الاسترجاع",
+
+  "refund_lifecycle_pending": "قيد المعالجة",
+  "refund_lifecycle_processed": "تم الاسترجاع",
+  "refund_lifecycle_failed": "فشل الاسترجاع",
+  "refund_lifecycle_not_applicable": "لا ينطبق",
+  "refund_lifecycle_title": "حالة الاسترجاع",
+  "refund_lifecycle_step_approved": "تمت الموافقة",
+  "refund_lifecycle_step_processing": "جاري المعالجة",
+  "refund_lifecycle_step_done": "مكتمل",
+
+  "notifications_delete_all_title": "حذف جميع الإشعارات",
+  "notifications_delete_all_message": "هل تريد حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا الإجراء.",
+  "notifications_delete_all_confirm": "حذف",
+  "notifications_preferences_title": "إعدادات الإشعارات",
+  "notifications_preferences_saved": "تم حفظ الإعدادات",
+  "notifications_push_enabled": "الإشعارات",
+  "notifications_push_enabled_subtitle": "استقبال إشعارات على الجهاز",
+  "notifications_sound_title": "صوت الإشعار",
+  "notifications_sound_default": "الافتراضي",
+  "notifications_sound_silent": "صامت",
+  "notifications_sound_chime": "رنين",
+  "notifications_sound_alert": "تنبيه",
+  "product_not_available_title": "هذا المنتج لم يعد متاحاً",
+  "product_not_available_description": "هذا المنتج غير متوفر حالياً. يمكنك تصفح منتجات أخرى."
 }

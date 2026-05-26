@@ -27,6 +27,7 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_pa
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
+import 'package:zadana_user_v3/feature/notifications/presentation/pages/notification_preferences_screen.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/bank_transfer_pending_screen.dart';
@@ -291,6 +292,10 @@ class RouteGenerator {
       case AppRoutes.allCategories:
         return MaterialPageRoute(
           builder: (_) => const AllCategoriesPage(),
+        );
+      case AppRoutes.notificationPreferences:
+        return MaterialPageRoute(
+          builder: (_) => const NotificationPreferencesScreen(),
         );
       default:
         return unDefinedRoute();

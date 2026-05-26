@@ -40,6 +40,11 @@ class TokenInterceptor extends QueuedInterceptor {
     final requestOptions = err.requestOptions;
 
     if (!_shouldRefresh(err)) {
+      // If it's a 401 with TOKEN_REVOKED or USER_TOKENS_REVOKED, go straight
+      // to session expiry without attempting refresh.
+      if (_isTokenRevoked(err)) {
+        await _sessionExpiryService.handleSessionExpired();
+      }
       handler.next(err);
       return;
     }
@@ -68,11 +73,22 @@ class TokenInterceptor extends QueuedInterceptor {
     }
   }
 
+  bool _isTokenRevoked(DioException err) {
+    if (err.response?.statusCode != 401) return false;
+    final data = err.response?.data;
+    if (data is Map) {
+      final code = data['code']?.toString() ?? data['errorCode']?.toString();
+      return code == 'TOKEN_REVOKED' || code == 'USER_TOKENS_REVOKED';
+    }
+    return false;
+  }
+
   bool _shouldRefresh(DioException err) {
     final requestOptions = err.requestOptions;
     final path = requestOptions.path;
 
     return err.response?.statusCode == 401 &&
+        !_isTokenRevoked(err) &&
         requestOptions.extra[skipAuthKey] != true &&
         requestOptions.extra[retryAttemptedKey] != true &&
         !path.contains('/customers/auth/login') &&

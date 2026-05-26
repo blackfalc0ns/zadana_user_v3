@@ -50,6 +50,7 @@ String _normalizePaymentMethod(String value) {
       return 'cash';
     case 'credit_card':
     case 'debit_card':
+    case 'mada':
       return 'card';
     default:
       return normalized;

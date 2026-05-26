@@ -4,6 +4,7 @@ import 'package:zadana_user_v3/feature/notifications/data/data_source/notificati
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_action_response_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_device_preferences_request_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_devices_response_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/models/notification_preferences_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notification_unread_count_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/notifications_page_dto.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/register_notification_device_request_dto.dart';
@@ -41,6 +42,26 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
   @override
   Future<NotificationActionResponseDto> markAllAsRead() {
     return _apiServices.markAllNotificationsAsRead();
+  }
+
+  @override
+  Future<void> deleteNotification(String notificationId) async {
+    await _apiServices.deleteNotification(notificationId);
+  }
+
+  @override
+  Future<NotificationActionResponseDto> deleteAllNotifications() {
+    return _apiServices.deleteAllNotifications();
+  }
+
+  @override
+  Future<NotificationPreferencesDto> getNotificationPreferences() async {
+    return _apiServices.getNotificationPreferences();
+  }
+
+  @override
+  Future<void> updateNotificationPreferences(Map<String, dynamic> body) {
+    return _apiServices.updateNotificationPreferences(body);
   }
 
   @override

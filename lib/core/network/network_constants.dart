@@ -22,6 +22,7 @@ abstract class NetworkConstants {
   static const String authorization = 'Authorization';
   static const String bearer = "Bearer";
   static const String deviceIdHeader = 'X-Device-Id';
+  static const String deviceSignatureHeader = 'X-Device-Signature';
 }
 
 abstract class EndPoints {
@@ -92,4 +93,8 @@ abstract class EndPoints {
       '/notifications/devices/preferences';
   static const String notificationDevicesUnregister =
       '/notifications/devices/unregister';
+  static const String notificationPreferences = '/notifications/preferences';
+  static const String bankTransferProof =
+      '/orders/{orderId}/bank-transfer-proof';
+  static const String cartGuestToken = '/cart/guest-token';
 }

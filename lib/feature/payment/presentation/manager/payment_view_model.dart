@@ -426,9 +426,26 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
       case ApiErrorResult():
+        final isPaymentMethodNotSupported =
+            result.failure.code == 'PAYMENT_METHOD_NOT_SUPPORTED' ||
+            result.failure.code == 'payment_method_not_supported';
+
         emit(
-          state.copyWith(isPlacingOrder: false, actionFailure: result.failure),
+          state.copyWith(
+            isPlacingOrder: false,
+            actionFailure: result.failure,
+          ),
         );
+
+        if (isPaymentMethodNotSupported) {
+          // Reload checkout summary to get updated payment methods.
+          _refreshSummary(
+            addressId: state.selectedAddressId,
+            deliverySlotId: state.selectedDeliverySlotId,
+            paymentMethod: null,
+            promoCode: state.appliedPromoCode,
+          );
+        }
     }
   }
 

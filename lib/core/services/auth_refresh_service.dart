@@ -24,12 +24,32 @@ class AuthRefreshService {
   final LanguageService _languageService;
   final DeviceIdService _deviceIdService;
 
+  /// Mutex: ensures only one refresh call is in-flight at a time.
+  /// Concurrent callers await the same future instead of issuing
+  /// duplicate refresh requests (which would trigger reuse detection).
+  Future<String?>? _inFlightRefresh;
+
   static const List<String> _refreshEndpoints = <String>[
     '/customers/auth/refresh-token',
     '/customers/auth/refresh',
   ];
 
   Future<String?> refreshAccessToken() async {
+    // If a refresh is already in progress, await it instead of starting
+    // a new one. This prevents refresh token reuse detection on the backend.
+    if (_inFlightRefresh != null) {
+      return _inFlightRefresh!;
+    }
+
+    _inFlightRefresh = _doRefresh();
+    try {
+      return await _inFlightRefresh!;
+    } finally {
+      _inFlightRefresh = null;
+    }
+  }
+
+  Future<String?> _doRefresh() async {
     final refreshToken = await _tokenService.getRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
       return null;

@@ -429,6 +429,9 @@ class OrderRefundStatusDto {
     required this.couponRedeemed,
     required this.refundStatus,
     required this.customerNote,
+    required this.refundLifecycleStatus,
+    required this.refundProvider,
+    required this.refundFailureMessage,
   });
 
   factory OrderRefundStatusDto.fromJson(Map<String, dynamic> json) {
@@ -448,6 +451,9 @@ class OrderRefundStatusDto {
       couponRedeemed: json['coupon_redeemed'] as bool? ?? false,
       refundStatus: json['refund_status']?.toString(),
       customerNote: json['customer_note']?.toString(),
+      refundLifecycleStatus: json['refund_lifecycle_status']?.toString(),
+      refundProvider: json['refund_provider']?.toString(),
+      refundFailureMessage: json['refund_failure_message']?.toString(),
     );
   }
 
@@ -464,6 +470,9 @@ class OrderRefundStatusDto {
   final bool couponRedeemed;
   final String? refundStatus;
   final String? customerNote;
+  final String? refundLifecycleStatus;
+  final String? refundProvider;
+  final String? refundFailureMessage;
 
   OrderRefundStatusEntity toEntity() {
     return OrderRefundStatusEntity(
@@ -484,6 +493,11 @@ class OrderRefundStatusDto {
       couponRedeemed: couponRedeemed,
       refundStatus: refundStatus,
       customerNote: customerNote,
+      refundLifecycleStatus: OrderRefundLifecycleStatus.fromApi(
+        refundLifecycleStatus,
+      ),
+      refundProvider: refundProvider,
+      refundFailureMessage: refundFailureMessage,
     );
   }
 }

@@ -6,14 +6,15 @@ enum OrderSupportCaseType {
   unknown;
 
   static OrderSupportCaseType fromApi(String? value) {
-    switch (value?.trim().toLowerCase()) {
+    final normalized = value?.trim().toLowerCase().replaceAll('_', '') ?? '';
+    switch (normalized) {
       case 'complaint':
         return OrderSupportCaseType.complaint;
-      case 'return_request':
+      case 'returnrequest':
         return OrderSupportCaseType.returnRequest;
-      case 'driver_report':
+      case 'driverreport':
         return OrderSupportCaseType.driverReport;
-      case 'driver_dispute':
+      case 'driverdispute':
         return OrderSupportCaseType.driverDispute;
       default:
         return OrderSupportCaseType.unknown;
@@ -46,12 +47,13 @@ enum OrderSupportCaseStatus {
   unknown;
 
   static OrderSupportCaseStatus fromApi(String? value) {
-    switch (value?.trim().toLowerCase()) {
+    final normalized = value?.trim().toLowerCase().replaceAll('_', '') ?? '';
+    switch (normalized) {
       case 'submitted':
         return OrderSupportCaseStatus.submitted;
-      case 'in_review':
+      case 'inreview':
         return OrderSupportCaseStatus.inReview;
-      case 'awaiting_customer_evidence':
+      case 'awaitingcustomerevidence':
         return OrderSupportCaseStatus.awaitingCustomerEvidence;
       case 'approved':
         return OrderSupportCaseStatus.approved;
@@ -97,14 +99,15 @@ enum OrderSupportSettlementStatus {
   unknown;
 
   static OrderSupportSettlementStatus fromApi(String? value) {
-    switch (value?.trim().toLowerCase()) {
-      case 'pending_review':
+    final normalized = value?.trim().toLowerCase().replaceAll('_', '') ?? '';
+    switch (normalized) {
+      case 'pendingreview':
         return OrderSupportSettlementStatus.pendingReview;
-      case 'cash_refunded':
+      case 'cashrefunded':
         return OrderSupportSettlementStatus.cashRefunded;
-      case 'coupon_issued':
+      case 'couponissued':
         return OrderSupportSettlementStatus.couponIssued;
-      case 'coupon_redeemed':
+      case 'couponredeemed':
         return OrderSupportSettlementStatus.couponRedeemed;
       case 'rejected':
         return OrderSupportSettlementStatus.rejected;
@@ -271,6 +274,9 @@ class OrderRefundStatusEntity {
     required this.couponRedeemed,
     required this.refundStatus,
     required this.customerNote,
+    required this.refundLifecycleStatus,
+    required this.refundProvider,
+    required this.refundFailureMessage,
   });
 
   final bool hasActiveCase;
@@ -286,6 +292,34 @@ class OrderRefundStatusEntity {
   final bool couponRedeemed;
   final String? refundStatus;
   final String? customerNote;
+  final OrderRefundLifecycleStatus refundLifecycleStatus;
+  final String? refundProvider;
+  final String? refundFailureMessage;
+}
+
+/// Lifecycle status of the actual refund transaction.
+enum OrderRefundLifecycleStatus {
+  notApplicable,
+  pending,
+  processed,
+  failed,
+  unknown;
+
+  static OrderRefundLifecycleStatus fromApi(String? value) {
+    final normalized = value?.trim().toLowerCase().replaceAll('_', '') ?? '';
+    switch (normalized) {
+      case 'notapplicable':
+        return OrderRefundLifecycleStatus.notApplicable;
+      case 'pending':
+        return OrderRefundLifecycleStatus.pending;
+      case 'processed':
+        return OrderRefundLifecycleStatus.processed;
+      case 'failed':
+        return OrderRefundLifecycleStatus.failed;
+      default:
+        return OrderRefundLifecycleStatus.unknown;
+    }
+  }
 }
 
 class OrderSupportCaseEntity {
@@ -368,7 +402,10 @@ class OrderSupportCaseEntity {
   }
 
   bool get canSendMessage =>
-      allowedActions.any((action) => action.trim().toLowerCase() == 'message');
+      allowedActions.any((action) {
+        final normalized = action.trim().toLowerCase();
+        return normalized == 'reply' || normalized == 'message';
+      });
 
   bool get isWaitingOnCustomer =>
       waitingOnRole?.trim().toLowerCase() == 'customer';

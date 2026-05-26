@@ -7,10 +7,14 @@ import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_page_entity.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/notifications_query_entity.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/usecase/delete_all_notifications_usecase.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/usecase/delete_notification_usecase.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notification_preferences_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notification_unread_count_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/get_notifications_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/mark_all_notifications_as_read_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/mark_notification_as_read_usecase.dart';
+import 'package:zadana_user_v3/feature/notifications/domain/usecase/update_notification_preferences_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/usecase/watch_realtime_notifications_usecase.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/manager/notifications_state.dart';
 
@@ -22,6 +26,10 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
     this._markNotificationAsReadUseCase,
     this._markAllNotificationsAsReadUseCase,
     this._watchRealtimeNotificationsUseCase,
+    this._deleteNotificationUseCase,
+    this._deleteAllNotificationsUseCase,
+    this._getNotificationPreferencesUseCase,
+    this._updateNotificationPreferencesUseCase,
   ) : super(const NotificationsState());
 
   static const double loadMoreThreshold = 320;
@@ -31,6 +39,11 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
   final MarkNotificationAsReadUseCase _markNotificationAsReadUseCase;
   final MarkAllNotificationsAsReadUseCase _markAllNotificationsAsReadUseCase;
   final WatchRealtimeNotificationsUseCase _watchRealtimeNotificationsUseCase;
+  final DeleteNotificationUseCase _deleteNotificationUseCase;
+  final DeleteAllNotificationsUseCase _deleteAllNotificationsUseCase;
+  final GetNotificationPreferencesUseCase _getNotificationPreferencesUseCase;
+  final UpdateNotificationPreferencesUseCase
+      _updateNotificationPreferencesUseCase;
   StreamSubscription<AppNotificationEntity>? _realtimeSubscription;
 
   Future<void> loadInitial() async {
@@ -118,6 +131,74 @@ class NotificationsViewModel extends Cubit<NotificationsState> {
   void clearFeedback() {
     if (state.feedbackMessage == null) return;
     emit(state.copyWith(feedbackMessage: null));
+  }
+
+  /// Deletes a single notification by ID.
+  Future<void> deleteNotification(String notificationId) async {
+    final result = await _deleteNotificationUseCase(notificationId);
+    switch (result) {
+      case ApiSuccessResult<void>():
+        final wasUnread = state.items
+            .where((item) => item.id == notificationId)
+            .any((item) => !item.isRead);
+        final updatedItems =
+            state.items.where((item) => item.id != notificationId).toList();
+        emit(
+          state.copyWith(
+            items: updatedItems,
+            total: state.total > 0 ? state.total - 1 : 0,
+            unreadCount: wasUnread && state.unreadCount > 0
+                ? state.unreadCount - 1
+                : state.unreadCount,
+          ),
+        );
+      case ApiErrorResult<void>():
+        emit(state.copyWith(feedbackMessage: result.failure.errorMessage));
+    }
+  }
+
+  /// Deletes all notifications.
+  Future<void> deleteAllNotifications() async {
+    emit(state.copyWith(feedbackMessage: null, clearFailure: true));
+
+    final result = await _deleteAllNotificationsUseCase();
+    switch (result) {
+      case ApiSuccessResult<void>():
+        emit(
+          state.copyWith(
+            items: const [],
+            total: 0,
+            unreadCount: 0,
+            hasMore: false,
+          ),
+        );
+      case ApiErrorResult<void>():
+        emit(state.copyWith(feedbackMessage: result.failure.errorMessage));
+    }
+  }
+
+  /// Loads notification preferences from the server.
+  Future<Map<String, dynamic>?> loadPreferences() async {
+    final result = await _getNotificationPreferencesUseCase();
+    switch (result) {
+      case ApiSuccessResult<Map<String, dynamic>>():
+        return result.data;
+      case ApiErrorResult<Map<String, dynamic>>():
+        emit(state.copyWith(feedbackMessage: result.failure.errorMessage));
+        return null;
+    }
+  }
+
+  /// Updates notification preferences on the server.
+  Future<bool> updatePreferences(Map<String, dynamic> body) async {
+    final result = await _updateNotificationPreferencesUseCase(body);
+    switch (result) {
+      case ApiSuccessResult<void>():
+        return true;
+      case ApiErrorResult<void>():
+        emit(state.copyWith(feedbackMessage: result.failure.errorMessage));
+        return false;
+    }
   }
 
   @override

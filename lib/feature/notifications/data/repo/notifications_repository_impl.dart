@@ -62,6 +62,37 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   }
 
   @override
+  Future<ApiResult<void>> deleteNotification(String notificationId) async {
+    return safeApiCall(() async {
+      await _remoteDataSource.deleteNotification(notificationId);
+    });
+  }
+
+  @override
+  Future<ApiResult<void>> deleteAllNotifications() async {
+    return safeApiCall(() async {
+      await _remoteDataSource.deleteAllNotifications();
+    });
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getNotificationPreferences() async {
+    return safeApiCall(() async {
+      final response = await _remoteDataSource.getNotificationPreferences();
+      return response.toMap();
+    });
+  }
+
+  @override
+  Future<ApiResult<void>> updateNotificationPreferences(
+    Map<String, dynamic> body,
+  ) async {
+    return safeApiCall(() async {
+      await _remoteDataSource.updateNotificationPreferences(body);
+    });
+  }
+
+  @override
   Future<ApiResult<List<NotificationDeviceEntity>>> getDevices() async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getDevices();

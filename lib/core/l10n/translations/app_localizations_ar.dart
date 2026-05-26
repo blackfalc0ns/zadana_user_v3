@@ -795,7 +795,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'هل تريد تحديد كل الإشعارات الحالية كمقروءة؟';
 
   @override
-  String get notifications_preferences_saved => 'تم حفظ تفضيلات الإشعارات';
+  String get notifications_preferences_saved => 'تم حفظ الإعدادات';
 
   @override
   String notifications_unread_count(int count) {
@@ -2291,4 +2291,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get checkout_login_action => 'متابعة';
+
+  @override
+  String get error_max_open_cases_exceeded =>
+      'وصلت للحد الأقصى من الطلبات المفتوحة';
+
+  @override
+  String get error_duplicate_return_request =>
+      'يوجد طلب استرجاع مفتوح لهذا الطلب بالفعل';
+
+  @override
+  String get error_return_window_expired => 'انتهت فترة الاسترجاع';
+
+  @override
+  String get refund_lifecycle_pending => 'قيد المعالجة';
+
+  @override
+  String get refund_lifecycle_processed => 'تم الاسترجاع';
+
+  @override
+  String get refund_lifecycle_failed => 'فشل الاسترجاع';
+
+  @override
+  String get refund_lifecycle_not_applicable => 'لا ينطبق';
+
+  @override
+  String get refund_lifecycle_title => 'حالة الاسترجاع';
+
+  @override
+  String get refund_lifecycle_step_approved => 'تمت الموافقة';
+
+  @override
+  String get refund_lifecycle_step_processing => 'جاري المعالجة';
+
+  @override
+  String get refund_lifecycle_step_done => 'مكتمل';
+
+  @override
+  String get notifications_delete_all_title => 'حذف جميع الإشعارات';
+
+  @override
+  String get notifications_delete_all_message =>
+      'هل تريد حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get notifications_delete_all_confirm => 'حذف';
+
+  @override
+  String get notifications_preferences_title => 'إعدادات الإشعارات';
+
+  @override
+  String get notifications_push_enabled => 'الإشعارات';
+
+  @override
+  String get notifications_push_enabled_subtitle =>
+      'استقبال إشعارات على الجهاز';
+
+  @override
+  String get notifications_sound_title => 'صوت الإشعار';
+
+  @override
+  String get notifications_sound_default => 'الافتراضي';
+
+  @override
+  String get notifications_sound_silent => 'صامت';
+
+  @override
+  String get notifications_sound_chime => 'رنين';
+
+  @override
+  String get notifications_sound_alert => 'تنبيه';
+
+  @override
+  String get product_not_available_title => 'هذا المنتج لم يعد متاحاً';
+
+  @override
+  String get product_not_available_description =>
+      'هذا المنتج غير متوفر حالياً. يمكنك تصفح منتجات أخرى.';
 }

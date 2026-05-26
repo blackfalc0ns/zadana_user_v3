@@ -1583,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifications_preferences_saved.
   ///
   /// In en, this message translates to:
-  /// **'Notification preferences saved'**
+  /// **'Preferences saved'**
   String get notifications_preferences_saved;
 
   /// No description provided for @notifications_unread_count.
@@ -4405,6 +4405,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get checkout_login_action;
+
+  /// No description provided for @error_max_open_cases_exceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached the maximum number of open requests'**
+  String get error_max_open_cases_exceeded;
+
+  /// No description provided for @error_duplicate_return_request.
+  ///
+  /// In en, this message translates to:
+  /// **'A return request already exists for this order'**
+  String get error_duplicate_return_request;
+
+  /// No description provided for @error_return_window_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'The return window has expired'**
+  String get error_return_window_expired;
+
+  /// No description provided for @refund_lifecycle_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get refund_lifecycle_pending;
+
+  /// No description provided for @refund_lifecycle_processed.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunded'**
+  String get refund_lifecycle_processed;
+
+  /// No description provided for @refund_lifecycle_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund failed'**
+  String get refund_lifecycle_failed;
+
+  /// No description provided for @refund_lifecycle_not_applicable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not applicable'**
+  String get refund_lifecycle_not_applicable;
+
+  /// No description provided for @refund_lifecycle_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund Status'**
+  String get refund_lifecycle_title;
+
+  /// No description provided for @refund_lifecycle_step_approved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get refund_lifecycle_step_approved;
+
+  /// No description provided for @refund_lifecycle_step_processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get refund_lifecycle_step_processing;
+
+  /// No description provided for @refund_lifecycle_step_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get refund_lifecycle_step_done;
+
+  /// No description provided for @notifications_delete_all_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all notifications'**
+  String get notifications_delete_all_title;
+
+  /// No description provided for @notifications_delete_all_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all notifications? This cannot be undone.'**
+  String get notifications_delete_all_message;
+
+  /// No description provided for @notifications_delete_all_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get notifications_delete_all_confirm;
+
+  /// No description provided for @notifications_preferences_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notifications_preferences_title;
+
+  /// No description provided for @notifications_push_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Notifications'**
+  String get notifications_push_enabled;
+
+  /// No description provided for @notifications_push_enabled_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive push notifications on this device'**
+  String get notifications_push_enabled_subtitle;
+
+  /// No description provided for @notifications_sound_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Sound'**
+  String get notifications_sound_title;
+
+  /// No description provided for @notifications_sound_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get notifications_sound_default;
+
+  /// No description provided for @notifications_sound_silent.
+  ///
+  /// In en, this message translates to:
+  /// **'Silent'**
+  String get notifications_sound_silent;
+
+  /// No description provided for @notifications_sound_chime.
+  ///
+  /// In en, this message translates to:
+  /// **'Chime'**
+  String get notifications_sound_chime;
+
+  /// No description provided for @notifications_sound_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert'**
+  String get notifications_sound_alert;
+
+  /// No description provided for @product_not_available_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Product no longer available'**
+  String get product_not_available_title;
+
+  /// No description provided for @product_not_available_description.
+  ///
+  /// In en, this message translates to:
+  /// **'This product is currently unavailable. You can browse other products.'**
+  String get product_not_available_description;
 }
 
 class _AppLocalizationsDelegate
