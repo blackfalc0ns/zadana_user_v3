@@ -65,8 +65,13 @@ class GuestCartSignatureService {
         );
         return signature;
       }
-    } catch (_) {
-      // Signature fetch failed — caller should handle gracefully.
+    } catch (e) {
+      // Log the error in debug mode for easier diagnosis on real devices.
+      assert(() {
+        // ignore: avoid_print
+        print('[GuestCartSignatureService] Failed to fetch signature: $e');
+        return true;
+      }());
     }
     return null;
   }

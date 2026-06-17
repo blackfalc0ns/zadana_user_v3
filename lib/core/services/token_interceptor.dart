@@ -49,6 +49,15 @@ class TokenInterceptor extends QueuedInterceptor {
       return;
     }
 
+    // Only attempt refresh if there is (or was) a valid session.
+    // If the user is a guest (no token ever stored), let the error propagate
+    // so callers can handle guest fallback logic.
+    final currentToken = await tokenService.getToken();
+    if (currentToken == null || currentToken.isEmpty) {
+      handler.next(err);
+      return;
+    }
+
     requestOptions.extra[retryAttemptedKey] = true;
 
     try {
@@ -86,15 +95,13 @@ class TokenInterceptor extends QueuedInterceptor {
   bool _shouldRefresh(DioException err) {
     final requestOptions = err.requestOptions;
     final path = requestOptions.path;
-    final statusCode = err.response?.statusCode;
 
-    // Treat both 401 and 403 as potentially needing a token refresh.
-    // Some backends return 403 for expired tokens instead of 401.
-    final isAuthFailure = statusCode == 401 || statusCode == 403;
+    // Never attempt token refresh for requests that explicitly skip auth
+    // (e.g. guest cart operations that use device id instead).
+    if (requestOptions.extra[skipAuthKey] == true) return false;
 
-    return isAuthFailure &&
+    return err.response?.statusCode == 401 &&
         !_isTokenRevoked(err) &&
-        requestOptions.extra[skipAuthKey] != true &&
         requestOptions.extra[retryAttemptedKey] != true &&
         !path.contains('/customers/auth/login') &&
         !path.contains('/customers/auth/register') &&

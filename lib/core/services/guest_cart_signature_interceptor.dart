@@ -39,12 +39,31 @@ class GuestCartSignatureInterceptor extends Interceptor {
       return;
     }
 
-    final signature = await _guestCartSignatureService.getOrFetchSignature();
-    if (signature != null && signature.isNotEmpty) {
-      options.headers[GuestCartSignatureService.signatureHeader] = signature;
+    // Guest user — must attach device signature.
+    // Try fetching the signature, with one retry if the first attempt fails.
+    String? signature = await _guestCartSignatureService.getOrFetchSignature();
+    if (signature == null || signature.isEmpty) {
+      // Retry once — could be a transient network issue.
+      signature = await _guestCartSignatureService.refreshSignature();
     }
 
-    handler.next(options);
+    if (signature != null && signature.isNotEmpty) {
+      options.headers[GuestCartSignatureService.signatureHeader] = signature;
+      handler.next(options);
+    } else {
+      // Cannot proceed without a valid signature — reject the request
+      // locally to avoid sending a request that will definitely fail.
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          type: DioExceptionType.unknown,
+          error:
+              'Unable to obtain guest cart signature. '
+              'Please check your internet connection and try again.',
+        ),
+        true,
+      );
+    }
   }
 
   bool _isGuestCartMutation(RequestOptions options) {
@@ -52,8 +71,6 @@ class GuestCartSignatureInterceptor extends Interceptor {
     if (method == 'GET') return false;
 
     final path = options.path.toLowerCase();
-    return _cartMutationPaths.any(
-      (cartPath) => path.contains(cartPath),
-    );
+    return _cartMutationPaths.any(path.contains);
   }
 }
