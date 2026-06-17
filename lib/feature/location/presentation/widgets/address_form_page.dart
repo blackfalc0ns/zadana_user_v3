@@ -24,39 +24,42 @@ class AddressFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: title),
-      body: BlocBuilder<LocationViewModel, LocationState>(
-        builder: (context, state) {
-          final showGlobalError = !state.isLoading && state.failure != null;
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: CustomAppBar(title: title),
+        body: BlocBuilder<LocationViewModel, LocationState>(
+          builder: (context, state) {
+            final showGlobalError = !state.isLoading && state.failure != null;
 
-          if (showGlobalError) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(Spacing.screenH),
-                child: ApiErrorWidget(
-                    exception: state.failure!.exception,
-                    onRetry: context.read<LocationViewModel>().clearFeedback,
-                    onGoBack: () => Navigator.pop(context),
+            if (showGlobalError) {
+              return SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.screenH),
+                  child: ApiErrorWidget(
+                      exception: state.failure!.exception,
+                      onRetry: context.read<LocationViewModel>().clearFeedback,
+                      onGoBack: () => Navigator.pop(context),
+                  ),
                 ),
+              );
+            }
+
+            return SafeArea(
+              child: Column(
+                children: [
+                  Expanded(child: formContent),
+                  AddressFormWidgets.buildConfirmButton(
+                    isLoading: state.isLoading,
+                    onPressed: onConfirm,
+                    text: confirmButtonText,
+                    context: context,
+                  ),
+                ],
               ),
             );
-          }
-
-          return SafeArea(
-            child: Column(
-              children: [
-                Expanded(child: formContent),
-                AddressFormWidgets.buildConfirmButton(
-                  isLoading: state.isLoading,
-                  onPressed: onConfirm,
-                  text: confirmButtonText,
-                  context: context,
-                ),
-              ],
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
