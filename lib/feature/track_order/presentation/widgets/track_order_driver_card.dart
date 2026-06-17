@@ -67,8 +67,8 @@ class TrackOrderDriverCard extends StatelessWidget {
         children: [
           if (_hasPhoneNumber) ...[
             Container(
-              width: 52,
-              height: 52,
+              width: 45,
+              height: 45,
               decoration: BoxDecoration(
                 color: const Color(0xFFF7EBDD),
                 borderRadius: BorderRadius.circular(999),
@@ -127,24 +127,24 @@ class TrackOrderDriverCard extends StatelessWidget {
                 ),
                 if (arrivalStateLabel.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: color.secondary.withValues(alpha: .12),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      arrivalStateLabel,
-                      textAlign: TextAlign.end,
-                      style: getMediumStyle(
-                        fontFamily: FontConstant.cairo,
-                        color: color.secondary,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.symmetric(
+                  //     horizontal: 10,
+                  //     vertical: 6,
+                  //   ),
+                  //   decoration: BoxDecoration(
+                  //     color: color.secondary.withValues(alpha: .12),
+                  //     borderRadius: BorderRadius.circular(999),
+                  //   ),
+                  //   child: Text(
+                  //     arrivalStateLabel,
+                  //     textAlign: TextAlign.end,
+                  //     style: getMediumStyle(
+                  //       fontFamily: FontConstant.cairo,
+                  //       color: color.secondary,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ],
             ),

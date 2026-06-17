@@ -12,6 +12,10 @@ class CartSummaryResponseDto {
     this.subtotal,
     this.discountAmount,
     this.totalAmount,
+    this.hasUnavailableItems,
+    this.unavailableItemsCount,
+    this.canCheckout,
+    this.checkoutBlockReason,
   });
 
   final int itemsCount;
@@ -19,6 +23,14 @@ class CartSummaryResponseDto {
   final double? subtotal;
   final double? discountAmount;
   final double? totalAmount;
+  @JsonKey(name: 'has_unavailable_items')
+  final bool? hasUnavailableItems;
+  @JsonKey(name: 'unavailable_items_count')
+  final int? unavailableItemsCount;
+  @JsonKey(name: 'can_checkout')
+  final bool? canCheckout;
+  @JsonKey(name: 'checkout_block_reason')
+  final String? checkoutBlockReason;
 
   Map<String, dynamic> toJson() => _$CartSummaryResponseDtoToJson(this);
 }

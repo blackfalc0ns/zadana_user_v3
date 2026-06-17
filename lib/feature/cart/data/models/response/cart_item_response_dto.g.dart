@@ -20,6 +20,7 @@ CartItemResponseDto _$CartItemResponseDtoFromJson(Map<String, dynamic> json) =>
           )
           .toList(),
       variantDisplaySize: json['variantDisplaySize'] as String?,
+      isAvailable: json['is_available'] as bool?,
     );
 
 Map<String, dynamic> _$CartItemResponseDtoToJson(
@@ -33,4 +34,5 @@ Map<String, dynamic> _$CartItemResponseDtoToJson(
   'quantity': instance.quantity,
   'vendorPrices': instance.vendorPrices,
   'variantDisplaySize': instance.variantDisplaySize,
+  'is_available': instance.isAvailable,
 };

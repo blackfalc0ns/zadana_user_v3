@@ -5,6 +5,10 @@ class CartSummaryEntity {
     this.subtotal,
     this.discountAmount,
     this.totalAmount,
+    this.hasUnavailableItems,
+    this.unavailableItemsCount,
+    this.canCheckout,
+    this.checkoutBlockReason,
   });
 
   final int itemsCount;
@@ -12,4 +16,8 @@ class CartSummaryEntity {
   final double? subtotal;
   final double? discountAmount;
   final double? totalAmount;
+  final bool? hasUnavailableItems;
+  final int? unavailableItemsCount;
+  final bool? canCheckout;
+  final String? checkoutBlockReason;
 }

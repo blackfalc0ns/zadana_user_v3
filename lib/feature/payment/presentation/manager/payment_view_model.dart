@@ -430,10 +430,19 @@ class PaymentViewModel extends Cubit<PaymentState> {
             result.failure.code == 'PAYMENT_METHOD_NOT_SUPPORTED' ||
             result.failure.code == 'payment_method_not_supported';
 
+        final isCartItemsUnavailable =
+            result.failure.code == 'CART_ITEMS_UNAVAILABLE_AT_ADDRESS_BRANCH' ||
+            result.failure.code == 'cart_items_unavailable_at_address_branch';
+
         emit(
           state.copyWith(
             isPlacingOrder: false,
             actionFailure: result.failure,
+            uiEffect: isCartItemsUnavailable
+                ? ShowCartItemsUnavailableAtBranchEffect(
+                    result.failure.errorMessage,
+                  )
+                : null,
           ),
         );
 

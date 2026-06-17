@@ -276,6 +276,17 @@ class PaymentScreenEffectHandler {
       return;
     }
 
+    if (effect is ShowCartItemsUnavailableAtBranchEffect) {
+      viewModel.doIntent(const PaymentClearUiEffectEvent());
+      showDeliveryUnavailableDialog(
+        context: context,
+        message: effect.message.isNotEmpty
+            ? effect.message
+            : 'بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.',
+      );
+      return;
+    }
+
     if (effect is ShowPaymentErrorEffect) {
       CustomSnackbar.showError(context: context, message: effect.message);
       viewModel.doIntent(const PaymentClearUiEffectEvent());

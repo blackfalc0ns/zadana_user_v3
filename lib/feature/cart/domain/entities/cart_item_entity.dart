@@ -22,6 +22,7 @@ class CartItemModel {
     required this.unit,
     required this.vendorPrices,
     this.quantity = 1,
+    this.isAvailableAtBranch,
   });
   final String id;
   final String productId;
@@ -31,6 +32,11 @@ class CartItemModel {
   final List<VendorPrice> vendorPrices;
   int quantity;
 
+  /// Explicit availability flag from the server based on the customer's
+  /// default address branch. When non-null, takes priority over
+  /// vendor-price-based availability inference.
+  final bool? isAvailableAtBranch;
+
   CartItemModel copyWith({
     String? id,
     String? productId,
@@ -39,6 +45,7 @@ class CartItemModel {
     String? unit,
     List<VendorPrice>? vendorPrices,
     int? quantity,
+    bool? isAvailableAtBranch,
   }) {
     return CartItemModel(
       id: id ?? this.id,
@@ -48,14 +55,22 @@ class CartItemModel {
       unit: unit ?? this.unit,
       vendorPrices: vendorPrices ?? this.vendorPrices,
       quantity: quantity ?? this.quantity,
+      isAvailableAtBranch: isAvailableAtBranch ?? this.isAvailableAtBranch,
     );
   }
 
   VendorPrice get cheapest =>
       vendorPrices.reduce((a, b) => a.price < b.price ? a : b);
 
-  /// Check if this item is available at a specific vendor
+  /// Check if this item is available at a specific vendor.
+  /// Uses the server-provided [isAvailableAtBranch] flag when available,
+  /// otherwise falls back to vendor-price-based inference.
   bool isAvailableAt(String vendorId, {String? loadedVendorId}) {
+    // When the server explicitly returns availability for the customer's
+    // address branch, honour it directly.
+    if (isAvailableAtBranch != null) {
+      return isAvailableAtBranch!;
+    }
     return getPriceForVendor(vendorId, loadedVendorId: loadedVendorId) != null;
   }
 

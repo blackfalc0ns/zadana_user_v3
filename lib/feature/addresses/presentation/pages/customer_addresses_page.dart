@@ -8,6 +8,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_address_entity.dart';
@@ -118,6 +119,13 @@ class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
         context: context,
         message: _resolveActionMessage(l10n, state),
       );
+
+      // Refresh cart data when the default address changes so that
+      // branch-based availability is re-evaluated.
+      if (state.actionType == CustomerAddressesActionType.setDefaultSuccess) {
+        CartNavigationService().notifyTabChanged(reload: true);
+      }
+
       viewModel.clearActionFeedback();
       return;
     }

@@ -12,6 +12,8 @@ class CartScreenViewData {
     required this.isEmpty,
     required this.isLoadingSelectedVendorPrices,
     required this.unavailableCount,
+    required this.canCheckout,
+    this.checkoutBlockReason,
     required this.selectedVendorName,
     required this.totalPrice,
     required this.totalOldPrice,
@@ -38,17 +40,32 @@ class CartScreenViewData {
         : 0.0;
     final effectiveHasDiscounts =
         hasLoadedSelectedVendor && (summary?.discountAmount ?? 0.0) > 0;
-    final unavailableCount =
-        selectedVendorId == null || isRefreshingSelectedVendorPrices
-        ? 0
-        : items
-              .where(
-                (item) => !item.isAvailableAt(
-                  selectedVendorId,
-                  loadedVendorId: loadedVendorId,
-                ),
-              )
-              .length;
+
+    // Use server-provided unavailable count when available, otherwise
+    // fall back to local vendor-price-based inference.
+    final int unavailableCount;
+    if (selectedVendorId == null || isRefreshingSelectedVendorPrices) {
+      unavailableCount = 0;
+    } else if (summary?.unavailableItemsCount != null) {
+      unavailableCount = summary!.unavailableItemsCount!;
+    } else {
+      unavailableCount = items
+          .where(
+            (item) => !item.isAvailableAt(
+              selectedVendorId,
+              loadedVendorId: loadedVendorId,
+            ),
+          )
+          .length;
+    }
+
+    // Use server-provided canCheckout when available.
+    final bool canCheckout;
+    if (summary?.canCheckout != null) {
+      canCheckout = summary!.canCheckout!;
+    } else {
+      canCheckout = unavailableCount == 0;
+    }
 
     return CartScreenViewData(
       vendors: vendors,
@@ -59,6 +76,8 @@ class CartScreenViewData {
       isLoadingSelectedVendorPrices:
           selectedVendorId != null && isRefreshingSelectedVendorPrices,
       unavailableCount: unavailableCount,
+      canCheckout: canCheckout,
+      checkoutBlockReason: summary?.checkoutBlockReason,
       selectedVendorName: _selectedVendorName(
         vendors: vendors,
         localization: localization,
@@ -77,6 +96,8 @@ class CartScreenViewData {
   final bool isEmpty;
   final bool isLoadingSelectedVendorPrices;
   final int unavailableCount;
+  final bool canCheckout;
+  final String? checkoutBlockReason;
   final String selectedVendorName;
   final double totalPrice;
   final double totalOldPrice;

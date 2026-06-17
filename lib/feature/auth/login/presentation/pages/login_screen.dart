@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/errors/error_message_presenter.dart';
 import 'package:zadana_user_v3/core/errors/error_presentation.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_state.dart';
@@ -28,9 +29,12 @@ class LoginScreen extends StatelessWidget {
       context.read<LoginViewModel>().clearFeedback();
       final pendingCheckout = CheckoutFlowService().consumePendingCheckout();
       if (pendingCheckout.shouldResumeCheckout) {
+        // Navigate to mainShell with cart tab (index 2) so the user
+        // sees their synced cart and can proceed to checkout from there.
+        CartNavigationService().notifyTabChanged(reload: true);
         context.pushNamedAndRemoveUntil(
-          AppRoutes.payment,
-          arguments: pendingCheckout.vendorId,
+          AppRoutes.mainShell,
+          arguments: 2, // Cart tab index
           predicate: (Route<dynamic> route) => false,
         );
         return;

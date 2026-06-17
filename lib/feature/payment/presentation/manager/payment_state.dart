@@ -68,6 +68,12 @@ class ShowDeliveryUnavailableDialogEffect extends PaymentUiEffect {
   final String message;
 }
 
+class ShowCartItemsUnavailableAtBranchEffect extends PaymentUiEffect {
+  const ShowCartItemsUnavailableAtBranchEffect(this.message);
+
+  final String message;
+}
+
 class PaymentState {
   const PaymentState({
     this.vendorId,

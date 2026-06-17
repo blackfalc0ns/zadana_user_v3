@@ -266,6 +266,16 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       return;
     }
 
+    // Block checkout if server indicates items are unavailable at branch.
+    final summary = cartState.summary;
+    if (summary?.canCheckout == false || (summary?.hasUnavailableItems == true)) {
+      _showSnackBar(
+        summary?.checkoutBlockReason ??
+            context.localization.cart_checkout_blocked_unavailable_products,
+      );
+      return;
+    }
+
     final token = await getIt<TokenService>().getToken();
     if (!mounted) return;
 

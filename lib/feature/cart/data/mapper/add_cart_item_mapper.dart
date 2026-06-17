@@ -53,6 +53,7 @@ extension CartItemResponseDtoMapper on CartItemResponseDto {
           : unit,
       quantity: quantity,
       vendorPrices: vendorPrices.map((price) => price.toEntity()).toList(),
+      isAvailableAtBranch: isAvailable,
     );
   }
 }
@@ -65,6 +66,10 @@ extension CartSummaryResponseDtoMapper on CartSummaryResponseDto {
       subtotal: subtotal,
       discountAmount: discountAmount,
       totalAmount: totalAmount,
+      hasUnavailableItems: hasUnavailableItems,
+      unavailableItemsCount: unavailableItemsCount,
+      canCheckout: canCheckout,
+      checkoutBlockReason: checkoutBlockReason,
     );
   }
 }

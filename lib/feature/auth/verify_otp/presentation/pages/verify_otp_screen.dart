@@ -8,13 +8,13 @@ import 'package:zadana_user_v3/core/errors/error_message_presenter.dart';
 import 'package:zadana_user_v3/core/errors/error_presentation.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/verify_otp_state.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/widget/verify_otp_form.dart';
-import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 
 class VerifyOtpScreen extends StatelessWidget {
   const VerifyOtpScreen({super.key, this.identifier});
@@ -111,11 +111,13 @@ class VerifyOtpScreen extends StatelessWidget {
       );
       final pendingCheckout = CheckoutFlowService().consumePendingCheckout();
       if (pendingCheckout.shouldResumeCheckout) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (_) => PaymentScreen(vendorId: pendingCheckout.vendorId),
-          ),
-          (route) => false,
+        // Navigate to mainShell with cart tab (index 2) so the user
+        // sees their synced cart and can proceed to checkout from there.
+        CartNavigationService().notifyTabChanged(reload: true);
+        context.pushNamedAndRemoveUntil(
+          AppRoutes.mainShell,
+          arguments: 2, // Cart tab index
+          predicate: (Route<dynamic> route) => false,
         );
         return;
       }

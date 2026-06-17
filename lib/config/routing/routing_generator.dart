@@ -269,14 +269,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const TermsConditionsScreen());
       case AppRoutes.deliveryOtp:
         final arguments = settings.arguments as Map<dynamic, dynamic>?;
-        final orderId = arguments?['orderId']?.toString() ?? '';
-        final phoneNumber = arguments?['phoneNumber']?.toString() ?? '';
         final courierName = arguments?['courierName']?.toString();
         final otpCode = arguments?['otpCode']?.toString();
         return MaterialPageRoute(
           builder: (_) => DeliveryOtpScreen(
-            orderId: orderId,
-            phoneNumber: phoneNumber,
             courierName: courierName,
             otpCode: otpCode,
           ),

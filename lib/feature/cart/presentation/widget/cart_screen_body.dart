@@ -109,7 +109,7 @@ class CartScreenBody extends StatelessWidget {
       totalOldPrice: viewData.totalOldPrice,
       hasDiscounts: viewData.hasDiscounts,
       selectedVendorName: viewData.selectedVendorName,
-      hasUnavailableItems: viewData.unavailableCount > 0,
+      hasUnavailableItems: !viewData.canCheckout || viewData.unavailableCount > 0,
       animations: animations,
       onVendorSelected: onVendorSelected,
       onItemTap: onItemTap,
