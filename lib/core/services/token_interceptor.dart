@@ -86,8 +86,13 @@ class TokenInterceptor extends QueuedInterceptor {
   bool _shouldRefresh(DioException err) {
     final requestOptions = err.requestOptions;
     final path = requestOptions.path;
+    final statusCode = err.response?.statusCode;
 
-    return err.response?.statusCode == 401 &&
+    // Treat both 401 and 403 as potentially needing a token refresh.
+    // Some backends return 403 for expired tokens instead of 401.
+    final isAuthFailure = statusCode == 401 || statusCode == 403;
+
+    return isAuthFailure &&
         !_isTokenRevoked(err) &&
         requestOptions.extra[skipAuthKey] != true &&
         requestOptions.extra[retryAttemptedKey] != true &&
