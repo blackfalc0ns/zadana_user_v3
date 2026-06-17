@@ -144,6 +144,15 @@ class NotificationDeviceService {
     final deviceId = await _deviceIdService.getOrCreateDeviceId();
     final deviceToken = _pushTokenService.getToken();
 
+    // On iOS (APNS), the push token may not be available yet if the user
+    // hasn't granted notification permission or the token hasn't been
+    // delivered. In that case, save the preference locally and attempt a
+    // full device sync instead of calling the preferences endpoint which
+    // requires a device token to identify the device on the server.
+    if (deviceToken == null || deviceToken.isEmpty) {
+      return syncCurrentDeviceIfAuthenticated(force: true);
+    }
+
     return _updateNotificationDevicePreferencesUseCase(
       NotificationDevicePreferencesRequestEntity(
         deviceId: deviceId,
