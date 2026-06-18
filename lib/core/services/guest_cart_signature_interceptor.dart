@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/services/guest_cart_signature_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 
@@ -72,5 +73,63 @@ class GuestCartSignatureInterceptor extends Interceptor {
 
     final path = options.path.toLowerCase();
     return _cartMutationPaths.any(path.contains);
+  }
+
+  static const String _signatureRetryAttemptedKey =
+      '_guestSignatureRetryAttempted';
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    // If the backend rejects the request due to a stale/invalid signature,
+    // refresh the signature and retry once.
+    if (!_isSignatureRejection(err)) {
+      handler.next(err);
+      return;
+    }
+
+    final options = err.requestOptions;
+    if (options.extra[_signatureRetryAttemptedKey] == true) {
+      handler.next(err);
+      return;
+    }
+
+    final freshSignature = await _guestCartSignatureService.refreshSignature();
+    if (freshSignature == null || freshSignature.isEmpty) {
+      handler.next(err);
+      return;
+    }
+
+    options.headers[GuestCartSignatureService.signatureHeader] =
+        freshSignature;
+    options.extra[_signatureRetryAttemptedKey] = true;
+
+    try {
+      final response = await getIt<Dio>().fetch<dynamic>(options);
+      handler.resolve(response);
+    } on DioException catch (retryErr) {
+      handler.next(retryErr);
+    }
+  }
+
+  bool _isSignatureRejection(DioException err) {
+    final statusCode = err.response?.statusCode;
+    if (statusCode != 400 && statusCode != 401 && statusCode != 403) {
+      return false;
+    }
+
+    final data = err.response?.data;
+    if (data is Map) {
+      final message = (data['message'] ?? data['error'] ?? '').toString().toLowerCase();
+      return message.contains('signed device') ||
+          message.contains('guest-token') ||
+          message.contains('device signature');
+    }
+    if (data is String) {
+      final lower = data.toLowerCase();
+      return lower.contains('signed device') ||
+          lower.contains('guest-token') ||
+          lower.contains('device signature');
+    }
+    return false;
   }
 }

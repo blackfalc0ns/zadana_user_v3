@@ -16,16 +16,31 @@ class GuestCartSignatureService {
   final DeviceIdService _deviceIdService;
 
   static const String _signatureStorageKey = 'guest_cart_signature';
+  static const String _signatureDeviceIdKey = 'guest_cart_signature_device_id';
   static const String _guestTokenEndpoint = '/cart/guest-token';
   static const String signatureHeader = 'X-Device-Signature';
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   /// Returns the cached signature or fetches a new one from the backend.
+  ///
+  /// If the cached signature was issued for a different device ID (e.g. after
+  /// app reinstall on iOS where Keychain persists but SharedPreferences are
+  /// cleared), the stale signature is discarded and a fresh one is fetched.
   Future<String?> getOrFetchSignature() async {
-    final cached = await _secureStorage.read(key: _signatureStorageKey);
-    if (cached != null && cached.isNotEmpty) {
-      return cached;
+    final currentDeviceId = await _deviceIdService.getOrCreateDeviceId();
+    final cachedDeviceId =
+        await _secureStorage.read(key: _signatureDeviceIdKey);
+
+    if (cachedDeviceId != null && cachedDeviceId == currentDeviceId) {
+      final cached = await _secureStorage.read(key: _signatureStorageKey);
+      if (cached != null && cached.isNotEmpty) {
+        return cached;
+      }
+    } else {
+      // Device ID changed — invalidate stale signature.
+      await _secureStorage.delete(key: _signatureStorageKey);
+      await _secureStorage.delete(key: _signatureDeviceIdKey);
     }
 
     return _fetchAndCacheSignature();
@@ -34,12 +49,14 @@ class GuestCartSignatureService {
   /// Forces a fresh signature fetch from the backend.
   Future<String?> refreshSignature() async {
     await _secureStorage.delete(key: _signatureStorageKey);
+    await _secureStorage.delete(key: _signatureDeviceIdKey);
     return _fetchAndCacheSignature();
   }
 
   /// Clears the stored signature (e.g. on logout or device id change).
   Future<void> clearSignature() async {
     await _secureStorage.delete(key: _signatureStorageKey);
+    await _secureStorage.delete(key: _signatureDeviceIdKey);
   }
 
   Future<String?> _fetchAndCacheSignature() async {
@@ -55,6 +72,11 @@ class GuestCartSignatureService {
       final response = await dio.post<Map<String, dynamic>>(
         _guestTokenEndpoint,
         data: {'deviceId': deviceId},
+        options: Options(
+          headers: {
+            NetworkConstants.deviceIdHeader: deviceId,
+          },
+        ),
       );
 
       final signature = response.data?['signature']?.toString();
@@ -62,6 +84,10 @@ class GuestCartSignatureService {
         await _secureStorage.write(
           key: _signatureStorageKey,
           value: signature,
+        );
+        await _secureStorage.write(
+          key: _signatureDeviceIdKey,
+          value: deviceId,
         );
         return signature;
       }
