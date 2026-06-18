@@ -40,6 +40,9 @@ class Assets {
   static const String successOrderAnimation =
       '$_images/success_order_animation.gif';
   static const String notFound = '$_images/image_not_found.png';
+  static const String cabbage = '$_images/Cabbage.png';
+  static const String tomato = '$_images/Tomato.png';
+  static const String chilli = '$_images/Chilli.png';
 
   // Lottie
   static const String emptyCart = '$_lottie/empty_cart.json';

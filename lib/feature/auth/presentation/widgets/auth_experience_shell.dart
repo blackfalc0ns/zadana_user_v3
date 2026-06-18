@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 
@@ -319,7 +320,7 @@ class _HeroProduceArtwork extends StatelessWidget {
             top: 18,
             left: 0,
             child: _ProduceBox(
-              assetPath: 'assets/images/Cabbage.png',
+              assetPath: Assets.cabbage,
               size: 34,
               rotation: -0.22,
             ),
@@ -328,7 +329,7 @@ class _HeroProduceArtwork extends StatelessWidget {
             top: 6,
             left: 32,
             child: _ProduceBox(
-              assetPath: 'assets/images/Tomato.png',
+              assetPath: Assets.tomato,
               size: 40,
               rotation: -0.04,
             ),
@@ -337,7 +338,7 @@ class _HeroProduceArtwork extends StatelessWidget {
             top: 22,
             right: 2,
             child: _ProduceBox(
-              assetPath: 'assets/images/Chilli.png',
+              assetPath: Assets.chilli,
               size: 32,
               rotation: 0.20,
             ),
@@ -420,8 +421,7 @@ class _FormCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Image.asset("assets/images/logo_dark.png", width: 100, height: 100),
-
+          Image.asset(Assets.logoDark, width: 100, height: 100),
           child,
         ],
       ),

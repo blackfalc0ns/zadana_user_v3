@@ -138,8 +138,8 @@
 
   "hint_full_name": "محمد أحمد",
   "hint_email": "example@gmail.com",
-  "hint_email_or_phone": "example@email.com أو 5xxxxxxxx",
-  "label_email_or_phone": "إيميل أو رقم الجوال",
+  "hint_email_or_phone": "example@email.com",
+  "label_email_or_phone": "البريد الالكتروني",
   "hint_phone": "05xxxxxxxx",
   "hint_password": "********",
 
@@ -192,7 +192,7 @@
   "footer_have_account": "عندك حساب؟ ",
   "footer_no_account": "ما عندك حساب؟ ",
   "footer_action_login": "دخول",
-  "footer_action_signup": "تسجيل",
+  "footer_action_signup": "تسجيل حساب",
 
   "deliver_to": "التوصيل إلى",
   "location": "السعوديه",

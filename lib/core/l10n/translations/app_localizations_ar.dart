@@ -412,10 +412,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hint_email => 'example@gmail.com';
 
   @override
-  String get hint_email_or_phone => 'example@email.com أو 5xxxxxxxx';
+  String get hint_email_or_phone => 'example@email.com';
 
   @override
-  String get label_email_or_phone => 'إيميل أو رقم الجوال';
+  String get label_email_or_phone => 'البريد الالكتروني';
 
   @override
   String get hint_phone => '05xxxxxxxx';
@@ -560,7 +560,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get footer_action_login => 'دخول';
 
   @override
-  String get footer_action_signup => 'تسجيل';
+  String get footer_action_signup => 'تسجيل حساب';
 
   @override
   String get deliver_to => 'التوصيل إلى';
