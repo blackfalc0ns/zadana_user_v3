@@ -169,54 +169,54 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   }
 
   Future<CartActionResult> addProductToCart(ProductModel product) async {
-    final detailsResult = await _productDetailsUseCase.getProductDetails(
-      product.id,
-    );
+    // If the product has multiple variants, fetch details to show variant
+    // selection bottom sheet.
+    if (product.hasMultipleVariants) {
+      final detailsResult = await _productDetailsUseCase.getProductDetails(
+        product.id,
+      );
 
-    switch (detailsResult) {
-      case ApiSuccessResult<ProductDetailsEntity>():
-        final details = detailsResult.data;
-
-        // If multiple variants exist, return a special result so the UI can
-        // show a variant selection bottom sheet.
-        if (details.variantOptions.length > 1) {
+      switch (detailsResult) {
+        case ApiSuccessResult<ProductDetailsEntity>():
           return CartActionResult(
             isSuccess: false,
             message: '',
             requiresVariantSelection: true,
-            productDetails: details,
+            productDetails: detailsResult.data,
           );
-        }
-
-        final productId = details.masterProductId;
-        if (productId.isEmpty) {
-          return const CartActionResult(
+        case ApiErrorResult<ProductDetailsEntity>():
+          return CartActionResult(
             isSuccess: false,
-            message: 'Product id is unavailable for this item.',
+            message: detailsResult.failure.errorMessage,
           );
-        }
+      }
+    }
 
-        final request = AddCartItemRequestEntity(
-          productId: productId,
-          quantity: 1,
+    // Single variant (or no variants) — add directly using product.id which
+    // is the same as master_product_id from the listing API.
+    final productId = product.id;
+    if (productId.isEmpty) {
+      return const CartActionResult(
+        isSuccess: false,
+        message: 'Product id is unavailable for this item.',
+      );
+    }
+
+    final request = AddCartItemRequestEntity(
+      productId: productId,
+      quantity: 1,
+    );
+    final addResult = await _addCartItemUseCase.call(request);
+    switch (addResult) {
+      case ApiSuccessResult():
+        return CartActionResult(
+          isSuccess: true,
+          message: addResult.data.message,
         );
-        final addResult = await _addCartItemUseCase.call(request);
-        switch (addResult) {
-          case ApiSuccessResult():
-            return CartActionResult(
-              isSuccess: true,
-              message: addResult.data.message,
-            );
-          case ApiErrorResult():
-            return CartActionResult(
-              isSuccess: false,
-              message: addResult.failure.errorMessage,
-            );
-        }
-      case ApiErrorResult<ProductDetailsEntity>():
+      case ApiErrorResult():
         return CartActionResult(
           isSuccess: false,
-          message: detailsResult.failure.errorMessage,
+          message: addResult.failure.errorMessage,
         );
     }
   }
