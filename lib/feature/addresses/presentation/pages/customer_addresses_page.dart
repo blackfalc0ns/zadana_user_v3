@@ -123,7 +123,7 @@ class _CustomerAddressesViewState extends State<_CustomerAddressesView> {
       // Refresh cart data when the default address changes so that
       // branch-based availability is re-evaluated.
       if (state.actionType == CustomerAddressesActionType.setDefaultSuccess) {
-        CartNavigationService().notifyTabChanged(reload: true);
+        CartNavigationService().notifyTabChanged();
       }
 
       viewModel.clearActionFeedback();

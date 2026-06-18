@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
       if (pendingCheckout.shouldResumeCheckout) {
         // Navigate to mainShell with cart tab (index 2) so the user
         // sees their synced cart and can proceed to checkout from there.
-        CartNavigationService().notifyTabChanged(reload: true);
+        CartNavigationService().notifyTabChanged();
         context.pushNamedAndRemoveUntil(
           AppRoutes.mainShell,
           arguments: 2, // Cart tab index

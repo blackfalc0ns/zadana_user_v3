@@ -451,7 +451,6 @@ class PaymentViewModel extends Cubit<PaymentState> {
           _refreshSummary(
             addressId: state.selectedAddressId,
             deliverySlotId: state.selectedDeliverySlotId,
-            paymentMethod: null,
             promoCode: state.appliedPromoCode,
           );
         }

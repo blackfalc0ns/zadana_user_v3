@@ -162,7 +162,6 @@ class OrderItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
 
     return DecoratedBlock(
       child: Row(
@@ -180,7 +179,7 @@ class OrderItemTile extends StatelessWidget {
                 child: Image.network(
                   imageUrl!,
                  
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
                 ),
               ),
             ),

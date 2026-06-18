@@ -10,7 +10,6 @@ import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_st
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
-import 'package:zadana_user_v3/feature/cart/domain/usecase/get_cart_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
@@ -36,7 +35,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     required TokenService tokenService,
     required FavoritesRepository favoritesRepository,
     required CartRepository cartRepository,
-    required GetCartUseCase getCartUseCase,
     required ProductDetailsUseCase productDetailsUseCase,
     required AddCartItemUseCase addCartItemUseCase,
   }) : _homeViewModel = homeViewModel,
@@ -47,7 +45,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
        _tokenService = tokenService,
        _favoritesRepository = favoritesRepository,
        _cartRepository = cartRepository,
-       _getCartUseCase = getCartUseCase,
        _productDetailsUseCase = productDetailsUseCase,
        _addCartItemUseCase = addCartItemUseCase,
        super(const AppSectionGlobalState());
@@ -60,7 +57,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   final TokenService _tokenService;
   final FavoritesRepository _favoritesRepository;
   final CartRepository _cartRepository;
-  final GetCartUseCase _getCartUseCase;
   final ProductDetailsUseCase _productDetailsUseCase;
   final AddCartItemUseCase _addCartItemUseCase;
   final CartNavigationService _cartNavigationService = CartNavigationService();
@@ -266,30 +262,6 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
 
   void _warmUpFeatureData() {
     _homeViewModel.doIntent(const HomeLoadEvent());
-  }
-
-  Future<void> _loadGlobalCounts() async {
-    await Future.wait([_loadCartCount(), _loadFavoritesCount()]);
-  }
-
-  Future<void> _loadCartCount() async {
-    final result = await _getCartUseCase.call();
-    switch (result) {
-      case ApiSuccessResult():
-        emit(state.copyWith(cartCount: result.data.summary.totalQuantity));
-      case ApiErrorResult():
-        break;
-    }
-  }
-
-  Future<void> _loadFavoritesCount() async {
-    final result = await _favoritesRepository.getFavorites();
-    switch (result) {
-      case ApiSuccessResult():
-        emit(state.copyWith(favoritesCount: result.data.itemsCount));
-      case ApiErrorResult():
-        break;
-    }
   }
 
   void _handleFavoriteMutation(FavoriteMutationEvent event) {

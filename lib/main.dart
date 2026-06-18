@@ -27,7 +27,7 @@ void main() async {
      kReleaseMode || !enableDevicePreview
       ? const AppBootstrapper()
     :
-    DevicePreview(builder: (context) => const AppBootstrapper(), enabled: true),
+    DevicePreview(builder: (context) => const AppBootstrapper()),
   );
 }
 

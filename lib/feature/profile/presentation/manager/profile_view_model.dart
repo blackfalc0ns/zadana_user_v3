@@ -186,7 +186,6 @@ class ProfileViewModel extends Cubit<ProfileState> {
                     phone: currentProfile.phone,
                     role: currentProfile.role,
                     favoritesCount: currentProfile.favoritesCount,
-                    profilePhotoUrl: null,
                   )
                 : null,
           ),

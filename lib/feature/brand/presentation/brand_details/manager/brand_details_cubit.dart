@@ -165,7 +165,7 @@ class BrandDetailsCubit extends Cubit<BrandDetailsState> {
     );
 
     final result = await _getBrandProductsUseCase(
-      _buildRequest(page: 1),
+      _buildRequest(),
     );
     switch (result) {
       case ApiSuccessResult<BrandProductsEntity>():

@@ -139,24 +139,28 @@ class _NotificationPreferencesScreenState
                         ),
                       ),
                     ),
-                    ..._soundOptions.map((option) {
-                      return RadioListTile<String>(
-                        title: Text(
-                          _soundLabel(option, isArabic),
-                          style: TextStyle(
-                            fontFamily: FontConstant.cairo,
-                            color: colors.onSurface,
-                          ),
-                        ),
-                        value: option,
-                        groupValue: _sound,
-                        onChanged: (value) {
-                          if (value == null) return;
-                          setState(() => _sound = value);
-                          _savePreferences();
-                        },
-                      );
-                    }),
+                    RadioGroup<String>(
+                      groupValue: _sound,
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() => _sound = value);
+                        _savePreferences();
+                      },
+                      child: Column(
+                        children: _soundOptions.map((option) {
+                          return RadioListTile<String>(
+                            title: Text(
+                              _soundLabel(option, isArabic),
+                              style: TextStyle(
+                                fontFamily: FontConstant.cairo,
+                                color: colors.onSurface,
+                              ),
+                            ),
+                            value: option,
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ],
                 ),
                 if (_isSaving) ...[

@@ -53,14 +53,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _pickAndUploadPhoto(BuildContext context) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      allowMultiple: false,
     );
 
     if (result == null || result.files.isEmpty) return;
     final filePath = result.files.single.path;
     if (filePath == null) return;
 
-    if (!mounted) return;
+    if (!context.mounted) return;
     context.read<ProfileViewModel>().doIntent(
       ProfileUpdatePhotoEvent(filePath),
     );
@@ -163,7 +162,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: isPhotoLoading
                             ? const CircularProgressIndicator(strokeWidth: 2)
                             : profilePhotoUrl == null
-                                ? Icon(
+                                ? const Icon(
                                     Icons.person,
                                     color: AppColors.primary,
                                     size: 50,

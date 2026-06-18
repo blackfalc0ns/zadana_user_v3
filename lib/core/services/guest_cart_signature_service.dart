@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:injectable/injectable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/core/services/device_id_service.dart';
 

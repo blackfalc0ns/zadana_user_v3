@@ -51,7 +51,7 @@ class SubCategoryChips extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.only(left: Spacing.xs, right: Spacing.md),
           itemCount: subCategories.length + (isLoadingMore ? 1 : 0),
-          separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
+          separatorBuilder: (_, _) => const SizedBox(width: Spacing.sm),
           itemBuilder: (context, index) {
             if (index >= subCategories.length) {
               return const Center(

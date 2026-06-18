@@ -12,7 +12,7 @@ void main() {
   group('RegisterViewModel', () {
     test('emits loading then success when register succeeds', () async {
       final viewModel = RegisterViewModel(
-        RegisterUseCase(repository: _SuccessfulRegisterRepository()),
+        RegisterUseCase(repository: const _SuccessfulRegisterRepository()),
       );
 
       final expectation = expectLater(
@@ -38,7 +38,7 @@ void main() {
 
     test('emits loading then user facing error when register fails', () async {
       final viewModel = RegisterViewModel(
-        RegisterUseCase(repository: _FailingRegisterRepository()),
+        RegisterUseCase(repository: const _FailingRegisterRepository()),
       );
 
       final expectation = expectLater(

@@ -15,7 +15,7 @@ void main() {
   group('LoginViewModel', () {
     test('emits loading then success when login succeeds', () async {
       final viewModel = LoginViewModel(
-        LoginUseCase(_SuccessfulLoginRepository()),
+        const LoginUseCase(_SuccessfulLoginRepository()),
       );
 
       final expectation = expectLater(
@@ -48,7 +48,7 @@ void main() {
 
     test('emits loading then error when login fails', () async {
       final viewModel = LoginViewModel(
-        LoginUseCase(_FailingLoginRepository()),
+        const LoginUseCase(_FailingLoginRepository()),
       );
 
       final expectation = expectLater(

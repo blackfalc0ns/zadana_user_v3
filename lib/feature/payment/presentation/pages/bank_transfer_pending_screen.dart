@@ -104,7 +104,6 @@ class BankTransferPendingScreen extends StatelessWidget {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 32),
                 // Status icon
@@ -279,7 +278,6 @@ class BankTransferPendingScreen extends StatelessWidget {
                               ? 'سيتم تأكيد طلبك تلقائياً بعد استلام التحويل. يمكنك متابعة حالة الطلب من صفحة طلباتي.'
                               : 'Your order will be confirmed automatically once the transfer is received. You can track the order status from My Orders.',
                           style: getRegularStyle(
-                            fontSize: FontSize.size12,
                             fontFamily: FontConstant.cairo,
                             color: Colors.blue.shade700,
                           ),

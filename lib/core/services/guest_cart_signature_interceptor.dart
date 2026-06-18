@@ -57,7 +57,6 @@ class GuestCartSignatureInterceptor extends Interceptor {
       handler.reject(
         DioException(
           requestOptions: options,
-          type: DioExceptionType.unknown,
           error:
               'Unable to obtain guest cart signature. '
               'Please check your internet connection and try again.',

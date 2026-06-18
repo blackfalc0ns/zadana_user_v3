@@ -1175,7 +1175,6 @@ extension GetItInjectableX on _i174.GetIt {
         tokenService: gh<_i227.TokenService>(),
         favoritesRepository: gh<_i140.FavoritesRepository>(),
         cartRepository: gh<_i435.CartRepository>(),
-        getCartUseCase: gh<_i925.GetCartUseCase>(),
         productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
         addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
       ),

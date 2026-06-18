@@ -26,15 +26,15 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_supp
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
-import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notification_preferences_screen.dart';
+import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/bank_transfer_pending_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_failed_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/payment_success_screen.dart';
-import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/product_details/presentation/pages/product_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';

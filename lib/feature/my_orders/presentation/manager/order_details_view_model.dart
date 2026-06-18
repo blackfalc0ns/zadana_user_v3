@@ -357,7 +357,7 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
       case ApiErrorResult():
         final errorMessage = SupportCaseErrorMapper.isKnownDisputeError(
               createResult.failure,
-            )
+            ) && context.mounted
             ? SupportCaseErrorMapper.resolveMessage(context, createResult.failure)
             : createResult.failure.errorMessage;
         emit(

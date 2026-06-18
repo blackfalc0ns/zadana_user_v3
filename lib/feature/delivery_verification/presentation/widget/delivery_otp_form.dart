@@ -43,6 +43,7 @@ class _DeliveryOtpFormState extends State<DeliveryOtpForm> {
     }
 
     Future.microtask(() {
+      if (!mounted) return;
       context.read<DeliveryOtpViewModel>().doIntent(
         SendOtpEvent(orderId: widget.orderId, phoneNumber: widget.phoneNumber),
       );

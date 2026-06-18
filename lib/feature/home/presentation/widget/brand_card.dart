@@ -47,7 +47,6 @@ class BrandCard extends StatelessWidget {
             vertical: verticalPadding,
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(

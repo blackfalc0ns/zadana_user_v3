@@ -23,7 +23,7 @@ class StartPage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color.primary, color.primary.withOpacity(0.8)],
+                colors: [color.primary, color.primary.withValues(alpha: 0.8)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -83,7 +83,7 @@ class StartPage extends StatelessWidget {
                     style: getMediumStyle(
                       fontSize: FontSize.size14,
                       fontFamily: FontConstant.cairo,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
 

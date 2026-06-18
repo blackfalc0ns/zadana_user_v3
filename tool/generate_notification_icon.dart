@@ -64,8 +64,10 @@ void main() {
     final outputFile = File(outputPath);
     outputFile.createSync(recursive: true);
     outputFile.writeAsBytesSync(img.encodePng(canvas));
+    // ignore: avoid_print
     print('Generated: $outputPath (${size}x$size)');
   }
 
+  // ignore: avoid_print
   print('\nDone! All notification icons generated as white-on-transparent.');
 }

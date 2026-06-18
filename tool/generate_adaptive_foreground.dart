@@ -32,5 +32,6 @@ void main() {
   // Save
   final outputFile = File('assets/images/logo_dark_padded.png');
   outputFile.writeAsBytesSync(img.encodePng(canvas));
+  // ignore: avoid_print
   print('Generated padded logo: ${outputFile.path}');
 }

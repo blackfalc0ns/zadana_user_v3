@@ -493,7 +493,6 @@ class _DeliveryUnavailableDialog extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: getMediumStyle(
                           fontFamily: FontConstant.cairo,
-                          fontSize: FontSize.size12,
                           color: const Color(0xFF4E342E),
                         ),
                       ),

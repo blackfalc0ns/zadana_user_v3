@@ -126,7 +126,7 @@ class _VariantSelectionBottomSheetState
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: widget.variants.length,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       const SizedBox(height: Spacing.sm),
                   itemBuilder: (context, index) {
                     final variant = widget.variants[index];

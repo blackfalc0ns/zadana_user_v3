@@ -70,6 +70,6 @@ class CaptchaInterceptor extends Interceptor {
   bool _requiresCaptcha(RequestOptions options) {
     if (options.method.toUpperCase() != 'POST') return false;
     final path = options.path.toLowerCase();
-    return _captchaEndpoints.any((ep) => path.contains(ep));
+    return _captchaEndpoints.any(path.contains);
   }
 }
