@@ -20,7 +20,7 @@ class RetryInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode != 429) {
+    if (!_shouldRetry(err)) {
       handler.next(err);
       return;
     }
@@ -43,6 +43,22 @@ class RetryInterceptor extends Interceptor {
     } on DioException catch (retryError) {
       handler.next(retryError);
     }
+  }
+
+  bool _shouldRetry(DioException err) {
+    // Retry on 429 (Too Many Requests).
+    if (err.response?.statusCode == 429) return true;
+
+    // Retry on connection closed prematurely by server.
+    if (err.type == DioExceptionType.unknown && err.error != null) {
+      final errorStr = err.error.toString();
+      if (errorStr.contains('Connection closed before full header was received') ||
+          errorStr.contains('Connection reset by peer')) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Duration _calculateDelay(Response<dynamic>? response, int retryCount) {

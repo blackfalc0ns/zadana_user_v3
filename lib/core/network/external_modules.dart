@@ -62,6 +62,23 @@ abstract class ExternalModules {
     dio.interceptors.add(retryInterceptor);
     dio.interceptors.add(prettyDioLogger);
 
+    // Temporary: log the real error behind DioExceptionType.unknown
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) {
+          if (error.type == DioExceptionType.unknown) {
+            // ignore: avoid_print
+            print('⚠️ DIO UNKNOWN ERROR ⚠️');
+            print('URL: ${error.requestOptions.uri}');
+            print('Inner error: ${error.error}');
+            print('Inner error type: ${error.error.runtimeType}');
+            print('Stack: ${error.stackTrace}');
+          }
+          handler.next(error);
+        },
+      ),
+    );
+
     return dio;
   }
 
