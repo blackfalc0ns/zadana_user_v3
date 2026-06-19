@@ -12,13 +12,12 @@ import 'package:zadana_user_v3/core/services/retry_interceptor.dart';
 
 import '../services/token_interceptor.dart';
 import 'network_constants.dart';
-import 'no_op_cache_store.dart';
 
 @module
 abstract class ExternalModules {
   @preResolve
   Future<CacheStore> get provideCacheStore async {
-    return NoOpCacheStore();
+    return MemCacheStore(maxSize: 50 * 1024 * 1024, maxEntrySize: 2 * 1024 * 1024);
   }
 
   @lazySingleton
@@ -30,7 +29,7 @@ abstract class ExternalModules {
     GuestCartSignatureInterceptor guestCartSignatureInterceptor,
     CaptchaInterceptor captchaInterceptor,
     RetryInterceptor retryInterceptor,
-    CacheStore _,
+    CacheStore cacheStore,
   ) {
     final dio = Dio(
       BaseOptions(
@@ -50,6 +49,16 @@ abstract class ExternalModules {
     dio.interceptors.add(tokenInterceptor);
     dio.interceptors.add(deviceIdInterceptor);
     dio.interceptors.add(guestCartSignatureInterceptor);
+    dio.interceptors.add(
+      DioCacheInterceptor(
+        options: CacheOptions(
+          store: cacheStore,
+          policy: CachePolicy.request,
+          maxStale: const Duration(minutes: 5),
+          hitCacheOnErrorExcept: [401, 403],
+        ),
+      ),
+    );
     dio.interceptors.add(retryInterceptor);
     dio.interceptors.add(prettyDioLogger);
 

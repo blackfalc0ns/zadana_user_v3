@@ -22,6 +22,7 @@ class NotificationsSignalRService {
   static const Duration _reconnectDelay = Duration(seconds: 5);
   static const Duration _heartbeatInterval = Duration(seconds: 60);
   static const int _maxTrackedNotificationIds = 200;
+  static const int _maxReconnectAttempts = 5;
   final StreamController<AppNotificationEntity> _notificationsController =
       StreamController<AppNotificationEntity>.broadcast();
   final StreamController<OrderStatusChangedRealtimePayload>
@@ -44,6 +45,8 @@ class NotificationsSignalRService {
   bool _isPresenceReconnectScheduled = false;
   bool _isManuallyStopped = false;
   bool _isAppInForeground = true;
+  int _reconnectAttempts = 0;
+  int _presenceReconnectAttempts = 0;
   Timer? _heartbeatTimer;
 
   Stream<AppNotificationEntity> watchNotifications() {
@@ -70,6 +73,8 @@ class NotificationsSignalRService {
 
   Future<void> activateAuthenticatedConnectionIfPossible() async {
     _isManuallyStopped = false;
+    _reconnectAttempts = 0;
+    _presenceReconnectAttempts = 0;
     await Future.wait<void>([_ensureConnected(), _ensurePresenceConnected()]);
     if (_isAppInForeground) {
       await notifyAppForeground();
@@ -169,6 +174,7 @@ class NotificationsSignalRService {
 
       await connection.start();
       _connection = connection;
+      _reconnectAttempts = 0;
       _logger.i('Notifications SignalR connected.');
     } catch (error, stackTrace) {
       _logger.w(
@@ -221,6 +227,7 @@ class NotificationsSignalRService {
 
       await connection.start();
       _presenceConnection = connection;
+      _presenceReconnectAttempts = 0;
       _logger.i('Customer presence SignalR connected.');
     } catch (error, stackTrace) {
       _logger.w(
@@ -336,8 +343,18 @@ class NotificationsSignalRService {
       return;
     }
 
+    if (_reconnectAttempts >= _maxReconnectAttempts) {
+      _logger.w(
+        'Notifications SignalR max reconnect attempts reached ($_maxReconnectAttempts). '
+        'Stopping reconnection. Will retry on next user action.',
+      );
+      return;
+    }
+
     _isReconnectScheduled = true;
-    Future<void>.delayed(_reconnectDelay, () async {
+    final delay = _reconnectDelay * (1 << _reconnectAttempts); // exponential backoff
+    _reconnectAttempts++;
+    Future<void>.delayed(delay, () async {
       _isReconnectScheduled = false;
       if (_hasRealtimeListeners) {
         await _ensureConnected();
@@ -350,8 +367,18 @@ class NotificationsSignalRService {
       return;
     }
 
+    if (_presenceReconnectAttempts >= _maxReconnectAttempts) {
+      _logger.w(
+        'Customer presence SignalR max reconnect attempts reached ($_maxReconnectAttempts). '
+        'Stopping reconnection. Will retry on next user action.',
+      );
+      return;
+    }
+
     _isPresenceReconnectScheduled = true;
-    Future<void>.delayed(_reconnectDelay, () async {
+    final delay = _reconnectDelay * (1 << _presenceReconnectAttempts); // exponential backoff
+    _presenceReconnectAttempts++;
+    Future<void>.delayed(delay, () async {
       _isPresenceReconnectScheduled = false;
       await _ensurePresenceConnected();
       if (_isAppInForeground) {

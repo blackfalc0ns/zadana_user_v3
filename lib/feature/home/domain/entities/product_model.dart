@@ -98,8 +98,11 @@ class ProductModel {
     );
   }
 
-  /// Whether this product has multiple size variants.
-  bool get hasMultipleVariants => (variantCount ?? 1) > 1;
+  /// Whether this product has size variants that require selection.
+  bool get hasMultipleVariants => variantCount != null && variantCount! > 1;
+
+  /// Whether this product has any variants (including single variant).
+  bool get hasVariants => variantCount != null && variantCount! >= 1;
 
   int get discountPercentage {
     if (discount != null && discount!.trim().isNotEmpty) {

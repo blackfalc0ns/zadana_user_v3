@@ -1159,12 +1159,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i910.ResetPasswordViewModel>(
       () => _i910.ResetPasswordViewModel(gh<_i996.ResetPasswordUseCase>()),
     );
-    gh.factory<_i718.VerifyOtpViewModel>(
-      () => _i718.VerifyOtpViewModel(
-        gh<_i851.VerifyOtpUseCase>(),
-        gh<_i62.ResendOtpUseCase>(),
-      ),
-    );
     gh.factory<_i162.AppSectionGlobalCubit>(
       () => _i162.AppSectionGlobalCubit(
         homeViewModel: gh<_i495.HomeViewModel>(),
@@ -1177,6 +1171,12 @@ extension GetItInjectableX on _i174.GetIt {
         cartRepository: gh<_i435.CartRepository>(),
         productDetailsUseCase: gh<_i875.ProductDetailsUseCase>(),
         addCartItemUseCase: gh<_i448.AddCartItemUseCase>(),
+      ),
+    );
+    gh.factory<_i718.VerifyOtpViewModel>(
+      () => _i718.VerifyOtpViewModel(
+        gh<_i851.VerifyOtpUseCase>(),
+        gh<_i62.ResendOtpUseCase>(),
       ),
     );
     return this;

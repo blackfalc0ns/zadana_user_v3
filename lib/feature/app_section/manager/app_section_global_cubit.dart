@@ -73,7 +73,8 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   ProfileViewModel get profileViewModel => _profileViewModel;
   CategoryViewModel get categoryViewModel => _categoryViewModel;
   List<CategoryEntity> get homeCategoriesForShopping {
-    final items = _homeViewModel.state.categoriesSection.data?.items ?? const [];
+    final items =
+        _homeViewModel.state.categoriesSection.data?.items ?? const [];
     return items
         .where((item) => item.id.isNotEmpty && item.name.isNotEmpty)
         .map(
@@ -169,54 +170,55 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   }
 
   Future<CartActionResult> addProductToCart(ProductModel product) async {
-    // If the product has multiple variants, fetch details to show variant
-    // selection bottom sheet.
-    if (product.hasMultipleVariants) {
-      final detailsResult = await _productDetailsUseCase.getProductDetails(
-        product.id,
-      );
+    // Always fetch product details to check for variants before adding to cart.
+    // The listing API doesn't include variant_count, so we must check details.
+    final detailsResult = await _productDetailsUseCase.getProductDetails(
+      product.id,
+    );
 
-      switch (detailsResult) {
-        case ApiSuccessResult<ProductDetailsEntity>():
+    switch (detailsResult) {
+      case ApiSuccessResult<ProductDetailsEntity>():
+        final details = detailsResult.data;
+        // If the product has more than one variant, show selection sheet.
+        if (details.variantOptions.length > 1) {
           return CartActionResult(
             isSuccess: false,
             message: '',
             requiresVariantSelection: true,
-            productDetails: detailsResult.data,
+            productDetails: details,
           );
-        case ApiErrorResult<ProductDetailsEntity>():
-          return CartActionResult(
+        }
+        // Single variant or no variants — add directly.
+        final productId = details.variantOptions.length == 1
+            ? details.variantOptions.first.id
+            : details.masterProductId.isNotEmpty
+                ? details.masterProductId
+                : product.id;
+        if (productId.isEmpty) {
+          return const CartActionResult(
             isSuccess: false,
-            message: detailsResult.failure.errorMessage,
+            message: 'Product id is unavailable for this item.',
           );
-      }
-    }
-
-    // Single variant (or no variants) — add directly using product.id which
-    // is the same as master_product_id from the listing API.
-    final productId = product.id;
-    if (productId.isEmpty) {
-      return const CartActionResult(
-        isSuccess: false,
-        message: 'Product id is unavailable for this item.',
-      );
-    }
-
-    final request = AddCartItemRequestEntity(
-      productId: productId,
-      quantity: 1,
-    );
-    final addResult = await _addCartItemUseCase.call(request);
-    switch (addResult) {
-      case ApiSuccessResult():
-        return CartActionResult(
-          isSuccess: true,
-          message: addResult.data.message,
-        );
-      case ApiErrorResult():
+        }
+        final request =
+            AddCartItemRequestEntity(productId: productId, quantity: 1);
+        final addResult = await _addCartItemUseCase.call(request);
+        switch (addResult) {
+          case ApiSuccessResult():
+            return CartActionResult(
+              isSuccess: true,
+              message: addResult.data.message,
+            );
+          case ApiErrorResult():
+            return CartActionResult(
+              isSuccess: false,
+              message: addResult.failure.errorMessage,
+            );
+        }
+      case ApiErrorResult<ProductDetailsEntity>():
         return CartActionResult(
           isSuccess: false,
-          message: addResult.failure.errorMessage,
+          message: detailsResult.failure.errorMessage,
         );
     }
   }
@@ -230,10 +232,7 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
       );
     }
 
-    final request = AddCartItemRequestEntity(
-      productId: variantId,
-      quantity: 1,
-    );
+    final request = AddCartItemRequestEntity(productId: variantId, quantity: 1);
     final addResult = await _addCartItemUseCase.call(request);
     switch (addResult) {
       case ApiSuccessResult():
