@@ -11,7 +11,7 @@ import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_item_card.d
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_prompt_card.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/vendor_selector.dart';
 
-class CartContent extends StatelessWidget {
+class CartContent extends StatefulWidget {
   const CartContent({
     super.key,
     required this.items,
@@ -25,6 +25,9 @@ class CartContent extends StatelessWidget {
     required this.onItemTap,
     required this.onUpdateQuantity,
     required this.onDeleteItem,
+    required this.onLoadMore,
+    this.isLoadingMore = false,
+    this.hasMore = false,
     this.activeHeroProductId,
     this.animatingPriceItemId,
   });
@@ -40,20 +43,57 @@ class CartContent extends StatelessWidget {
   final Function(CartItemModel) onItemTap;
   final Function(CartItemModel, bool) onUpdateQuantity;
   final Function(CartItemModel) onDeleteItem;
+  final VoidCallback onLoadMore;
+  final bool isLoadingMore;
+  final bool hasMore;
   final String? activeHeroProductId;
   final String? animatingPriceItemId;
+
+  @override
+  State<CartContent> createState() => _CartContentState();
+}
+
+class _CartContentState extends State<CartContent> {
+  static const double _loadMoreThreshold = 320;
+
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_handleScroll);
+  }
+
+  void _handleScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+    if (position.extentAfter <= _loadMoreThreshold &&
+        widget.hasMore &&
+        !widget.isLoadingMore) {
+      widget.onLoadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_handleScroll)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (selectedVendorId != null && unavailableCount > 0)
-          _buildUnavailableWarning(context, unavailableCount),
-        if (selectedVendorId == null) _buildSelectVendorPrompt(),
+        if (widget.selectedVendorId != null && widget.unavailableCount > 0)
+          _buildUnavailableWarning(context, widget.unavailableCount),
+        if (widget.selectedVendorId == null) _buildSelectVendorPrompt(),
         VendorSelector(
-          vendors: vendors,
-          selectedVendorId: selectedVendorId,
-          onVendorSelected: onVendorSelected,
+          vendors: widget.vendors,
+          selectedVendorId: widget.selectedVendorId,
+          onVendorSelected: widget.onVendorSelected,
         ),
         Container(
           height: 1,
@@ -126,25 +166,43 @@ class CartContent extends StatelessWidget {
   }
 
   Widget _buildItemsList() {
+    final itemCount = widget.items.length + (widget.isLoadingMore ? 1 : 0);
+
     return ListView.separated(
+      controller: _scrollController,
       key: const PageStorageKey<String>('cart_items_list'),
       padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
-      itemCount: items.length,
+      itemCount: itemCount,
       separatorBuilder: (_, _) => const SizedBox(height: 5),
-      itemBuilder: (_, index) => CartItemCard(
-        item: items[index],
-        selectedVendorId: selectedVendorId,
-        loadedVendorId: loadedVendorId,
-        isLoadingSelectedVendorPrices: isLoadingSelectedVendorPrices,
-        priceAnimationVersion: priceAnimationVersion,
-        onTap: () => onItemTap(items[index]),
-        onIncrement: () => onUpdateQuantity(items[index], true),
-        onDecrement: () => onUpdateQuantity(items[index], false),
-        onDelete: () => onDeleteItem(items[index]),
-        enableHeroAnimation: activeHeroProductId == items[index].id,
-        animatePrice:
-            selectedVendorId != null && items[index].id == animatingPriceItemId,
-      ),
+      itemBuilder: (_, index) {
+        if (index >= widget.items.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          );
+        }
+
+        return CartItemCard(
+          item: widget.items[index],
+          selectedVendorId: widget.selectedVendorId,
+          loadedVendorId: widget.loadedVendorId,
+          isLoadingSelectedVendorPrices: widget.isLoadingSelectedVendorPrices,
+          priceAnimationVersion: widget.priceAnimationVersion,
+          onTap: () => widget.onItemTap(widget.items[index]),
+          onIncrement: () => widget.onUpdateQuantity(widget.items[index], true),
+          onDecrement: () => widget.onUpdateQuantity(widget.items[index], false),
+          onDelete: () => widget.onDeleteItem(widget.items[index]),
+          enableHeroAnimation: widget.activeHeroProductId == widget.items[index].id,
+          animatePrice:
+              widget.selectedVendorId != null && widget.items[index].id == widget.animatingPriceItemId,
+        );
+      },
     );
   }
 }

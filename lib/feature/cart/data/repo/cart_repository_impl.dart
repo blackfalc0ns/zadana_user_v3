@@ -84,9 +84,17 @@ class CartRepositoryImpl implements CartRepository {
   }
 
   @override
-  Future<ApiResult<GetCartResponseEntity>> getCart({String? vendorId}) async {
+  Future<ApiResult<GetCartResponseEntity>> getCart({
+    String? vendorId,
+    int page = 1,
+    int perPage = 20,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getCart(vendorId: vendorId);
+      final response = await _remoteDataSource.getCart(
+        vendorId: vendorId,
+        page: page,
+        perPage: perPage,
+      );
       final entity = response.toEntity();
       _emitMutation(CartMutationEvent.setCount(entity.summary.totalQuantity));
       return entity;

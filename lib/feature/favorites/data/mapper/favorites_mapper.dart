@@ -32,9 +32,13 @@ extension FavoritesItemDtoMapper on FavoritesItemDto {
 
 extension FavoritesResponseDtoMapper on FavoritesResponseDto {
   FavoritesResponseEntity toEntity() {
+    final mappedItems = items.map((item) => item.toEntity()).toList();
     return FavoritesResponseEntity(
-      items: items.map((item) => item.toEntity()).toList(),
+      items: mappedItems,
       itemsCount: summary.itemsCount,
+      total: total ?? summary.itemsCount,
+      page: page ?? 1,
+      perPage: perPage ?? 20,
     );
   }
 }

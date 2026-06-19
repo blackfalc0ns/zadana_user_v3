@@ -6,16 +6,56 @@ import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
 import 'package:zadana_user_v3/core/widgets/custom_product_card.dart';
 import 'package:zadana_user_v3/feature/home/domain/entities/product_model.dart';
 
-class FavoritesGrid extends StatelessWidget {
+class FavoritesGrid extends StatefulWidget {
   const FavoritesGrid({
     super.key,
     required this.products,
     required this.onAddToCart,
     required this.onToggleFavorite,
+    required this.onLoadMore,
+    this.isLoadingMore = false,
+    this.hasMore = false,
   });
   final List<ProductModel> products;
   final Future<void> Function(ProductModel) onAddToCart;
   final Future<void> Function(ProductModel) onToggleFavorite;
+  final VoidCallback onLoadMore;
+  final bool isLoadingMore;
+  final bool hasMore;
+
+  @override
+  State<FavoritesGrid> createState() => _FavoritesGridState();
+}
+
+class _FavoritesGridState extends State<FavoritesGrid> {
+  static const double _loadMoreThreshold = 320;
+
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_handleScroll);
+  }
+
+  void _handleScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+    if (position.extentAfter <= _loadMoreThreshold &&
+        widget.hasMore &&
+        !widget.isLoadingMore) {
+      widget.onLoadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_handleScroll)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +67,11 @@ class FavoritesGrid extends StatelessWidget {
           crossAxisSpacing: Spacing.sm,
         );
 
+        final itemCount = widget.products.length +
+            (widget.isLoadingMore ? layout.crossAxisCount : 0);
+
         return GridView.builder(
+          controller: _scrollController,
           key: const PageStorageKey<String>('favorites_products_grid'),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: layout.crossAxisCount,
@@ -35,9 +79,13 @@ class FavoritesGrid extends StatelessWidget {
             crossAxisSpacing: Spacing.sm,
             mainAxisSpacing: Spacing.sm,
           ),
-          itemCount: products.length,
+          itemCount: itemCount,
           itemBuilder: (context, index) {
-            final product = products[index];
+            if (index >= widget.products.length) {
+              return const _LoadingPlaceholder();
+            }
+
+            final product = widget.products[index];
             final heroTag = productHeroTag(
               product.id,
               source: 'favorites-grid',
@@ -55,12 +103,33 @@ class FavoritesGrid extends StatelessWidget {
                   heroTag: heroTag,
                 );
               },
-              onAddTap: () => onAddToCart(product),
-              onFavoriteTap: () => onToggleFavorite(product),
+              onAddTap: () => widget.onAddToCart(product),
+              onFavoriteTap: () => widget.onToggleFavorite(product),
             );
           },
         );
       },
+    );
+  }
+}
+
+class _LoadingPlaceholder extends StatelessWidget {
+  const _LoadingPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(Spacing.cardRadius),
+      ),
+      child: const Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      ),
     );
   }
 }

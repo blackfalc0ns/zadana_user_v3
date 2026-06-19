@@ -27,6 +27,7 @@ class CartScreenBody extends StatelessWidget {
     required this.onUpdateQuantity,
     required this.onDeleteItem,
     required this.onCheckout,
+    required this.onLoadMore,
   });
   static const double _cartBottomBarGap = 8.0;
   static const double _cartBottomBarReservedHeight = 144.0;
@@ -44,6 +45,7 @@ class CartScreenBody extends StatelessWidget {
   final void Function(CartItemModel item, bool increment) onUpdateQuantity;
   final ValueChanged<CartItemModel> onDeleteItem;
   final VoidCallback onCheckout;
+  final VoidCallback onLoadMore;
 
   bool get _showGlobalError =>
       !state.isLoadingVendors &&
@@ -116,6 +118,9 @@ class CartScreenBody extends StatelessWidget {
       onUpdateQuantity: onUpdateQuantity,
       onDeleteItem: onDeleteItem,
       onCheckout: onCheckout,
+      onLoadMore: onLoadMore,
+      isLoadingMore: state.isLoadingMoreItems,
+      hasMore: state.hasMoreItems,
     );
   }
 }

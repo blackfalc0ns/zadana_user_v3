@@ -17,7 +17,11 @@ abstract class CartRepository {
     AddCartItemRequestEntity request,
   );
   Future<void> syncGuestCartIfAuthenticated();
-  Future<ApiResult<GetCartResponseEntity>> getCart({String? vendorId});
+  Future<ApiResult<GetCartResponseEntity>> getCart({
+    String? vendorId,
+    int page = 1,
+    int perPage = 20,
+  });
   Future<ApiResult<ClearCartResponseEntity>> clearCart();
   Future<ApiResult<RemoveCartItemResponseEntity>> removeCartItem(String itemId);
   Future<ApiResult<AddCartItemResponseEntity>> updateCartItemQuantity({

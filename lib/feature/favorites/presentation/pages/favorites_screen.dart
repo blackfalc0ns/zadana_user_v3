@@ -134,9 +134,12 @@ class _FavoritesScreenView extends StatelessWidget {
                       ),
                       child: FavoritesGrid(
                         products: state.items,
+                        isLoadingMore: state.isLoadingMore,
+                        hasMore: state.hasMore,
                         onAddToCart: (product) => _addToCart(context, product),
                         onToggleFavorite: (product) =>
                             _toggleFavorite(context, viewModel, product),
+                        onLoadMore: () => viewModel.loadMore(),
                       ),
                     ),
             ),

@@ -139,7 +139,11 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   }
 
   @override
-  Future<GetCartResponseDto> getCart({String? vendorId}) async {
+  Future<GetCartResponseDto> getCart({
+    String? vendorId,
+    int page = 1,
+    int perPage = 20,
+  }) async {
     await _clearCartReadCache();
 
     try {
@@ -147,6 +151,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         EndPoints.cart,
         queryParameters: {
           if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+          'page': page,
+          'per_page': perPage,
         },
         options: _noCacheOptions(),
       );
@@ -158,6 +164,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         EndPoints.cart,
         queryParameters: {
           if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+          'page': page,
+          'per_page': perPage,
         },
         options: await _guestNoCacheOptions(),
       );

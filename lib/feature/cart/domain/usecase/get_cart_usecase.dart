@@ -9,7 +9,15 @@ class GetCartUseCase {
 
   final CartRepository _repository;
 
-  Future<ApiResult<GetCartResponseEntity>> call({String? vendorId}) {
-    return _repository.getCart(vendorId: vendorId);
+  Future<ApiResult<GetCartResponseEntity>> call({
+    String? vendorId,
+    int page = 1,
+    int perPage = 20,
+  }) {
+    return _repository.getCart(
+      vendorId: vendorId,
+      page: page,
+      perPage: perPage,
+    );
   }
 }

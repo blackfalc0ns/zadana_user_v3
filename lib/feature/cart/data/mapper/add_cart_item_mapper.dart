@@ -104,6 +104,9 @@ extension GetCartResponseDtoMapper on GetCartResponseDto {
     return GetCartResponseEntity(
       items: items.map((item) => item.toEntity()).toList(),
       summary: summary.toEntity(),
+      total: total ?? items.length,
+      page: page ?? 1,
+      perPage: perPage ?? 20,
     );
   }
 }

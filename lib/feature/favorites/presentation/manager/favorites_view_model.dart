@@ -20,6 +20,8 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   final RemoveFavoriteUseCase _removeFavoriteUseCase;
   final ClearFavoritesUseCase _clearFavoritesUseCase;
 
+  static const int _perPage = 20;
+
   Future<void> loadFavorites({bool silent = false}) async {
     final showBlockingLoader = !silent || state.items.isEmpty;
 
@@ -27,14 +29,16 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
       state.copyWith(
         isLoading: showBlockingLoader,
         isSuccess: false,
+        currentPage: 1,
+        hasMore: true,
         clearFailure: true,
         clearErrorMessage: true,
       ),
     );
 
-    developer.log('Loading favorites', name: 'FavoritesViewModel');
+    developer.log('Loading favorites page 1', name: 'FavoritesViewModel');
 
-    final result = await _getFavoritesUseCase();
+    final result = await _getFavoritesUseCase(page: 1, perPage: _perPage);
 
     switch (result) {
       case ApiSuccessResult():
@@ -43,7 +47,9 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             isLoading: false,
             isSuccess: true,
             items: result.data.items,
-            itemsCount: result.data.itemsCount,
+            itemsCount: result.data.total,
+            currentPage: result.data.page,
+            hasMore: result.data.hasMore,
             clearFailure: true,
             clearErrorMessage: true,
           ),
@@ -56,6 +62,47 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             failure: result.failure,
             errorMessage: result.failure.errorMessage,
             clearSuccessMessage: true,
+          ),
+        );
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (state.isLoading || state.isLoadingMore || !state.hasMore) return;
+
+    final nextPage = state.currentPage + 1;
+
+    emit(state.copyWith(isLoadingMore: true, clearFailure: true));
+
+    developer.log(
+      'Loading favorites page $nextPage',
+      name: 'FavoritesViewModel',
+    );
+
+    final result = await _getFavoritesUseCase(
+      page: nextPage,
+      perPage: _perPage,
+    );
+
+    switch (result) {
+      case ApiSuccessResult():
+        final allItems = [...state.items, ...result.data.items];
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            items: allItems,
+            itemsCount: result.data.total,
+            currentPage: result.data.page,
+            hasMore: result.data.hasMore,
+            clearFailure: true,
+          ),
+        );
+      case ApiErrorResult():
+        emit(
+          state.copyWith(
+            isLoadingMore: false,
+            failure: result.failure,
+            errorMessage: result.failure.errorMessage,
           ),
         );
     }
@@ -122,6 +169,8 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             isClearing: false,
             items: const [],
             itemsCount: 0,
+            hasMore: false,
+            currentPage: 1,
             successMessage: result.data.message,
             clearFailure: true,
             clearErrorMessage: true,

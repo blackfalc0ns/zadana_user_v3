@@ -48,6 +48,9 @@ class CartScreenContent extends StatelessWidget {
     required this.onUpdateQuantity,
     required this.onDeleteItem,
     required this.onCheckout,
+    required this.onLoadMore,
+    this.isLoadingMore = false,
+    this.hasMore = false,
   });
 
   final double bottomOffset;
@@ -72,6 +75,9 @@ class CartScreenContent extends StatelessWidget {
   final void Function(CartItemModel item, bool increment) onUpdateQuantity;
   final ValueChanged<CartItemModel> onDeleteItem;
   final VoidCallback onCheckout;
+  final VoidCallback onLoadMore;
+  final bool isLoadingMore;
+  final bool hasMore;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +100,9 @@ class CartScreenContent extends StatelessWidget {
               onItemTap: onItemTap,
               onUpdateQuantity: onUpdateQuantity,
               onDeleteItem: onDeleteItem,
+              onLoadMore: onLoadMore,
+              isLoadingMore: isLoadingMore,
+              hasMore: hasMore,
             ),
           ),
         ),

@@ -9,12 +9,15 @@ class CartState {
     this.isVendorsSuccess = false,
     this.isLoadingItems = false,
     this.isItemsSuccess = false,
+    this.isLoadingMoreItems = false,
     this.isClearingCart = false,
     this.isRemovingItem = false,
     this.vendors = const [],
     this.items = const [],
     this.summary,
     this.loadedVendorId,
+    this.currentPage = 1,
+    this.hasMoreItems = true,
     this.clearCartSuccessMessage,
     this.clearCartErrorMessage,
     this.removeItemSuccessMessage,
@@ -32,12 +35,15 @@ class CartState {
   final bool isVendorsSuccess;
   final bool isLoadingItems;
   final bool isItemsSuccess;
+  final bool isLoadingMoreItems;
   final bool isClearingCart;
   final bool isRemovingItem;
   final List<CartVendorEntity> vendors;
   final List<CartItemModel> items;
   final CartSummaryEntity? summary;
   final String? loadedVendorId;
+  final int currentPage;
+  final bool hasMoreItems;
   final String? clearCartSuccessMessage;
   final String? clearCartErrorMessage;
   final String? removeItemSuccessMessage;
@@ -55,12 +61,15 @@ class CartState {
     bool? isVendorsSuccess,
     bool? isLoadingItems,
     bool? isItemsSuccess,
+    bool? isLoadingMoreItems,
     bool? isClearingCart,
     bool? isRemovingItem,
     List<CartVendorEntity>? vendors,
     List<CartItemModel>? items,
     CartSummaryEntity? summary,
     String? loadedVendorId,
+    int? currentPage,
+    bool? hasMoreItems,
     String? clearCartSuccessMessage,
     String? clearCartErrorMessage,
     String? removeItemSuccessMessage,
@@ -89,12 +98,15 @@ class CartState {
       isVendorsSuccess: isVendorsSuccess ?? this.isVendorsSuccess,
       isLoadingItems: isLoadingItems ?? this.isLoadingItems,
       isItemsSuccess: isItemsSuccess ?? this.isItemsSuccess,
+      isLoadingMoreItems: isLoadingMoreItems ?? this.isLoadingMoreItems,
       isClearingCart: isClearingCart ?? this.isClearingCart,
       isRemovingItem: isRemovingItem ?? this.isRemovingItem,
       vendors: vendors ?? this.vendors,
       items: items ?? this.items,
       summary: summary ?? this.summary,
       loadedVendorId: loadedVendorId ?? this.loadedVendorId,
+      currentPage: currentPage ?? this.currentPage,
+      hasMoreItems: hasMoreItems ?? this.hasMoreItems,
       clearCartSuccessMessage: clearClearCartSuccessMessage
           ? null
           : clearCartSuccessMessage ?? this.clearCartSuccessMessage,

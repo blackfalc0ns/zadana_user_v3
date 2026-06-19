@@ -91,6 +91,7 @@ class _CartScreenViewState extends State<_CartScreenView>
                 onUpdateQuantity: updateQuantity,
                 onDeleteItem: showDeleteDialog,
                 onCheckout: onCheckout,
+                onLoadMore: loadMoreCartItems,
               ),
             ),
           ),

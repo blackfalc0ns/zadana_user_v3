@@ -17,6 +17,7 @@ import 'package:zadana_user_v3/feature/addresses/domain/usecase/get_customer_add
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/delivery_check_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/check_delivery_usecase.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_state.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
@@ -135,6 +136,10 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
     viewModel
       ..doIntent(const CartRetryVendorsEvent())
       ..doIntent(const CartRetryItemsEvent());
+  }
+
+  void loadMoreCartItems() {
+    viewModel.doIntent(CartLoadMoreItemsEvent(vendorId: selectedVendorId));
   }
 
   void resetVendorSelection() {
@@ -289,39 +294,68 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       return;
     }
 
-    // Pre-check delivery eligibility before entering checkout.
-    final addressResult = await getIt<GetCustomerAddressesUseCase>()();
-    if (!mounted) return;
+    // Show loading overlay while checking delivery eligibility.
+    _showCheckoutLoading();
 
-    String? defaultAddressId;
-    if (addressResult case ApiSuccessResult<List<CustomerAddressEntity>>()) {
-      final defaultAddress = addressResult.data.where((a) => a.isDefault);
-      if (defaultAddress.isNotEmpty) {
-        defaultAddressId = defaultAddress.first.id;
-      } else if (addressResult.data.isNotEmpty) {
-        defaultAddressId = addressResult.data.first.id;
-      }
-    }
-
-    if (defaultAddressId != null) {
-      final deliveryResult = await getIt<CheckDeliveryUseCase>()(
-        vendorId: selectedVendorId!,
-        addressId: defaultAddressId,
-      );
+    try {
+      // Pre-check delivery eligibility before entering checkout.
+      final addressResult = await getIt<GetCustomerAddressesUseCase>()();
       if (!mounted) return;
 
-      if (deliveryResult case ApiSuccessResult<DeliveryCheckEntity>()) {
-        if (!deliveryResult.data.canProceedToCheckout) {
-          final message = deliveryResult.data.messageAr.isNotEmpty
-              ? deliveryResult.data.messageAr
-              : deliveryResult.data.messageEn;
-          showDeliveryUnavailableDialog(context: context, message: message);
-          return;
+      String? defaultAddressId;
+      if (addressResult case ApiSuccessResult<List<CustomerAddressEntity>>()) {
+        final defaultAddress = addressResult.data.where((a) => a.isDefault);
+        if (defaultAddress.isNotEmpty) {
+          defaultAddressId = defaultAddress.first.id;
+        } else if (addressResult.data.isNotEmpty) {
+          defaultAddressId = addressResult.data.first.id;
         }
       }
-    }
 
-    Navigator.pushNamed(context, AppRoutes.payment, arguments: selectedVendorId);
+      if (defaultAddressId != null) {
+        final deliveryResult = await getIt<CheckDeliveryUseCase>()(
+          vendorId: selectedVendorId!,
+          addressId: defaultAddressId,
+        );
+        if (!mounted) return;
+
+        if (deliveryResult case ApiSuccessResult<DeliveryCheckEntity>()) {
+          if (!deliveryResult.data.canProceedToCheckout) {
+            _dismissCheckoutLoading();
+            final message = deliveryResult.data.messageAr.isNotEmpty
+                ? deliveryResult.data.messageAr
+                : deliveryResult.data.messageEn;
+            showDeliveryUnavailableDialog(context: context, message: message);
+            return;
+          }
+        }
+      }
+
+      _dismissCheckoutLoading();
+      Navigator.pushNamed(
+          context, AppRoutes.payment, arguments: selectedVendorId);
+    } catch (_) {
+      _dismissCheckoutLoading();
+      rethrow;
+    }
+  }
+
+  void _showCheckoutLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black26,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: CustomProgressIndicator(),
+      ),
+    );
+  }
+
+  void _dismissCheckoutLoading() {
+    if (mounted && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
   }
 
   void _resetUiAfterCartEmptied({bool resetPriceAnimationVersion = false}) {

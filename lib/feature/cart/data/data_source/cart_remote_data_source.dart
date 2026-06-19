@@ -10,7 +10,11 @@ import 'package:zadana_user_v3/feature/cart/data/models/response/remove_cart_ite
 abstract class CartRemoteDataSource {
   Future<CartVendorsResponseDto> getCartVendors();
   Future<AddCartItemResponseDto> addCartItem(AddCartItemRequestDto request);
-  Future<GetCartResponseDto> getCart({String? vendorId});
+  Future<GetCartResponseDto> getCart({
+    String? vendorId,
+    int page = 1,
+    int perPage = 20,
+  });
   Future<ClearCartResponseDto> clearCart();
   Future<RemoveCartItemResponseDto> removeCartItem(String itemId);
   Future<AddCartItemResponseDto> updateCartItemQuantity(

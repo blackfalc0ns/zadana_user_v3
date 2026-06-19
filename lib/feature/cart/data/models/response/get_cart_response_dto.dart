@@ -8,10 +8,19 @@ part 'get_cart_response_dto.g.dart';
 class GetCartResponseDto {
   factory GetCartResponseDto.fromJson(Map<String, dynamic> json) =>
       _$GetCartResponseDtoFromJson(json);
-  const GetCartResponseDto({required this.items, required this.summary});
+  const GetCartResponseDto({
+    required this.items,
+    required this.summary,
+    this.total,
+    this.page,
+    this.perPage,
+  });
 
   final List<CartItemResponseDto> items;
   final CartSummaryResponseDto summary;
+  final int? total;
+  final int? page;
+  final int? perPage;
 
   Map<String, dynamic> toJson() => _$GetCartResponseDtoToJson(this);
 }

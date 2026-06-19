@@ -30,6 +30,8 @@ class CartViewModel extends Cubit<CartState> {
   final RemoveCartItemUseCase _removeCartItemUseCase;
   final UpdateCartItemQuantityUseCase _updateCartItemQuantityUseCase;
 
+  static const int _perPage = 20;
+
   void doIntent(CartEvent event) {
     switch (event) {
       case CartLoadVendorsEvent():
@@ -37,6 +39,8 @@ class CartViewModel extends Cubit<CartState> {
         _loadVendors();
       case CartLoadItemsEvent():
         _loadItems(event.vendorId);
+      case CartLoadMoreItemsEvent():
+        _loadMoreItems(event.vendorId);
       case CartRetryItemsEvent():
         _loadItems(event.vendorId);
       case CartResetAfterCheckoutEvent():
@@ -85,10 +89,13 @@ class CartViewModel extends Cubit<CartState> {
         items: const [],
         summary: const CartSummaryEntity(itemsCount: 0, totalQuantity: 0),
         loadedVendorId: '',
+        currentPage: 1,
+        hasMoreItems: true,
         isLoadingVendors: false,
         isVendorsSuccess: true,
         isLoadingItems: false,
         isItemsSuccess: true,
+        isLoadingMoreItems: false,
         isClearingCart: false,
         isRemovingItem: false,
         clearClearCartSuccessMessage: true,
@@ -153,14 +160,20 @@ class CartViewModel extends Cubit<CartState> {
       state.copyWith(
         isLoadingItems: true,
         isItemsSuccess: false,
+        currentPage: 1,
+        hasMoreItems: true,
         clearItemsErrorMessage: true,
         clearItemsFailure: true,
       ),
     );
 
-    developer.log('Loading cart items', name: 'CartViewModel');
+    developer.log('Loading cart items page 1', name: 'CartViewModel');
 
-    final result = await _getCartUseCase.call(vendorId: vendorId);
+    final result = await _getCartUseCase.call(
+      vendorId: vendorId,
+      page: 1,
+      perPage: _perPage,
+    );
 
     switch (result) {
       case ApiSuccessResult():
@@ -172,6 +185,8 @@ class CartViewModel extends Cubit<CartState> {
             items: result.data.items,
             summary: result.data.summary,
             loadedVendorId: vendorId,
+            currentPage: result.data.page,
+            hasMoreItems: result.data.hasMore,
             clearItemsErrorMessage: true,
             clearItemsFailure: true,
           ),
@@ -185,6 +200,47 @@ class CartViewModel extends Cubit<CartState> {
           state.copyWith(
             isLoadingItems: false,
             isItemsSuccess: false,
+            itemsErrorMessage: result.failure.code,
+            itemsFailure: result.failure,
+          ),
+        );
+    }
+  }
+
+  Future<void> _loadMoreItems(String? vendorId) async {
+    if (state.isLoadingItems || state.isLoadingMoreItems || !state.hasMoreItems) {
+      return;
+    }
+
+    final nextPage = state.currentPage + 1;
+
+    emit(state.copyWith(isLoadingMoreItems: true, clearItemsFailure: true));
+
+    developer.log('Loading cart items page $nextPage', name: 'CartViewModel');
+
+    final result = await _getCartUseCase.call(
+      vendorId: vendorId,
+      page: nextPage,
+      perPage: _perPage,
+    );
+
+    switch (result) {
+      case ApiSuccessResult():
+        final allItems = [...state.items, ...result.data.items];
+        emit(
+          state.copyWith(
+            isLoadingMoreItems: false,
+            items: allItems,
+            summary: result.data.summary,
+            currentPage: result.data.page,
+            hasMoreItems: result.data.hasMore,
+            clearItemsFailure: true,
+          ),
+        );
+      case ApiErrorResult():
+        emit(
+          state.copyWith(
+            isLoadingMoreItems: false,
             itemsErrorMessage: result.failure.code,
             itemsFailure: result.failure,
           ),

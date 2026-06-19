@@ -28,9 +28,16 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
   final DeviceIdService _deviceIdService;
 
   @override
-  Future<FavoritesResponseDto> getFavorites() async {
+  Future<FavoritesResponseDto> getFavorites({
+    int page = 1,
+    int perPage = 20,
+  }) async {
     try {
-      return await _apiServices.getFavorites();
+      final response = await _dio.get<Map<String, dynamic>>(
+        EndPoints.favorites,
+        queryParameters: {'page': page, 'per_page': perPage},
+      );
+      return FavoritesResponseDto.fromJson(response.data ?? {});
     } on DioException catch (error) {
       final token = await _tokenService.getToken();
       final shouldFallbackToGuest =
@@ -43,6 +50,7 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
       final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.favorites,
+        queryParameters: {'page': page, 'per_page': perPage},
         options: Options(
           headers: {NetworkConstants.deviceIdHeader: deviceId},
           extra: {

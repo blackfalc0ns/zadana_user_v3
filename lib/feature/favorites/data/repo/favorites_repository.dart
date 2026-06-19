@@ -30,9 +30,15 @@ class FavoritesRepository {
   DeviceIdService get _deviceIdService => GetIt.instance<DeviceIdService>();
   Stream<FavoriteMutationEvent> get mutations => _mutationController.stream;
 
-  Future<ApiResult<FavoritesResponseEntity>> getFavorites() async {
+  Future<ApiResult<FavoritesResponseEntity>> getFavorites({
+    int page = 1,
+    int perPage = 20,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getFavorites();
+      final response = await _remoteDataSource.getFavorites(
+        page: page,
+        perPage: perPage,
+      );
       return response.toEntity();
     });
   }

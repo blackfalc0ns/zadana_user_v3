@@ -18,6 +18,12 @@ class CartLoadItemsEvent extends CartEvent {
   final String? vendorId;
 }
 
+class CartLoadMoreItemsEvent extends CartEvent {
+  const CartLoadMoreItemsEvent({this.vendorId});
+
+  final String? vendorId;
+}
+
 class CartRetryItemsEvent extends CartEvent {
   const CartRetryItemsEvent({this.vendorId});
 

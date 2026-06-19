@@ -14,7 +14,16 @@ GetCartResponseDto _$GetCartResponseDtoFromJson(Map<String, dynamic> json) =>
       summary: CartSummaryResponseDto.fromJson(
         json['summary'] as Map<String, dynamic>,
       ),
+      total: (json['total'] as num?)?.toInt(),
+      page: (json['page'] as num?)?.toInt(),
+      perPage: (json['perPage'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$GetCartResponseDtoToJson(GetCartResponseDto instance) =>
-    <String, dynamic>{'items': instance.items, 'summary': instance.summary};
+    <String, dynamic>{
+      'items': instance.items,
+      'summary': instance.summary,
+      'total': instance.total,
+      'page': instance.page,
+      'perPage': instance.perPage,
+    };

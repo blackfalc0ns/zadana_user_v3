@@ -6,7 +6,13 @@ part 'favorites_response_dto.g.dart';
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class FavoritesResponseDto {
-  const FavoritesResponseDto({required this.items, required this.summary});
+  const FavoritesResponseDto({
+    required this.items,
+    required this.summary,
+    this.total,
+    this.page,
+    this.perPage,
+  });
 
   factory FavoritesResponseDto.fromJson(Map<String, dynamic> json) =>
       _$FavoritesResponseDtoFromJson(json);
@@ -16,6 +22,10 @@ class FavoritesResponseDto {
 
   @JsonKey(fromJson: _favoritesSummaryFromJson)
   final FavoritesSummaryDto summary;
+
+  final int? total;
+  final int? page;
+  final int? perPage;
 
   Map<String, dynamic> toJson() => _$FavoritesResponseDtoToJson(this);
 }
