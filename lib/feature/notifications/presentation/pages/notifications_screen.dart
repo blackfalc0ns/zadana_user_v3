@@ -86,7 +86,7 @@ class _NotificationsView extends StatelessWidget {
                     if (state.items.isNotEmpty)
                       IconButton(
                         onPressed: () => _confirmDeleteAll(context),
-                        icon: const Icon(Icons.delete_outline_rounded, size: 20,color: Colors.red,),
+                        icon: const Icon(Icons.delete_outline_rounded, size: 23,color: Colors.red,),
                         tooltip: l10n.localeName.startsWith('ar')
                             ? 'حذف الكل'
                             : 'Delete all',
