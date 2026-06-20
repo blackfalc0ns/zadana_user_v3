@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/utils/bloc_provider_utils.dart';
 import 'package:zadana_user_v3/core/utils/home_product_cart_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/app_section/page/main_shell.dart';
 import 'package:zadana_user_v3/feature/favorites/domain/usecase/clear_favorites_usecase.dart';
@@ -52,6 +53,30 @@ class _FavoritesScreenView extends StatefulWidget {
 }
 
 class _FavoritesScreenViewState extends State<_FavoritesScreenView> {
+  bool _isClearLoadingShown = false;
+
+  void _showClearLoading() {
+    if (_isClearLoadingShown) return;
+    _isClearLoadingShown = true;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black26,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: CustomProgressIndicator(),
+      ),
+    );
+  }
+
+  void _dismissClearLoading() {
+    if (!_isClearLoadingShown) return;
+    _isClearLoadingShown = false;
+    if (mounted && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> _toggleFavorite(
     BuildContext context,
     FavoritesViewModel viewModel,
@@ -67,7 +92,10 @@ class _FavoritesScreenViewState extends State<_FavoritesScreenView> {
   void _showClearDialog(BuildContext context, FavoritesViewModel viewModel) {
     showClearAllDialog(
       context: context,
-      onConfirm: () => viewModel.clearAllFavorites(),
+      onConfirm: () {
+        _showClearLoading();
+        viewModel.clearAllFavorites();
+      },
     );
   }
 
@@ -78,8 +106,12 @@ class _FavoritesScreenViewState extends State<_FavoritesScreenView> {
     return BlocListener<FavoritesViewModel, FavoritesState>(
       listenWhen: (previous, current) =>
           previous.errorMessage != current.errorMessage ||
-          previous.successMessage != current.successMessage,
+          previous.successMessage != current.successMessage ||
+          previous.isClearing != current.isClearing,
       listener: (context, state) {
+        if (!state.isClearing && _isClearLoadingShown) {
+          _dismissClearLoading();
+        }
         if (state.errorMessage != null) {
           CustomSnackbar.showError(
             context: context,

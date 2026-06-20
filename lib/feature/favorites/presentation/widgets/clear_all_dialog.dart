@@ -101,8 +101,8 @@ void showClearAllDialog({
                       height: 50,
                       child: FilledButton(
                         onPressed: () {
-                          onConfirm();
                           Navigator.pop(context);
+                          onConfirm();
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.error,
