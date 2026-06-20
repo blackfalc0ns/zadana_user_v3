@@ -220,7 +220,7 @@ class _CategoryGridItem extends StatelessWidget {
                 color: color.onSurface,
               ),
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),

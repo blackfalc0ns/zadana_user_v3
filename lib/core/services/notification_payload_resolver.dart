@@ -21,7 +21,9 @@ class NotificationPayloadResolver {
 
     return normalizedType.contains('order') ||
         normalizedType.contains('delivery-otp') ||
-        normalizedType.contains('delivery_otp');
+        normalizedType.contains('delivery_otp') ||
+        normalizedType.contains('driver') ||
+        normalizedType.contains('delivery');
   }
 
   static bool isSupportCaseType(String? type) {

@@ -80,62 +80,17 @@ class _NotificationsView extends StatelessWidget {
           actions: [
             BlocBuilder<NotificationsViewModel, NotificationsState>(
               builder: (context, state) {
-                final canMarkAll =
-                    state.unreadCount > 0 && !state.isMarkingAllRead;
-
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (state.items.isNotEmpty)
                       IconButton(
                         onPressed: () => _confirmDeleteAll(context),
-                        icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                        icon: const Icon(Icons.delete_outline_rounded, size: 20,color: Colors.red,),
                         tooltip: l10n.localeName.startsWith('ar')
                             ? 'حذف الكل'
                             : 'Delete all',
                         splashRadius: 20,
-                      ),
-                    if (state.unreadCount > 0 || state.isMarkingAllRead)
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          start: Spacing.sm,
-                          end: Spacing.sm,
-                        ),
-                        child: TextButton.icon(
-                          onPressed: canMarkAll
-                              ? () => _confirmMarkAllAsRead(context)
-                              : null,
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Spacing.sm,
-                              vertical: 8,
-                            ),
-                            minimumSize: const Size(0, 36),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            foregroundColor: colors.primary,
-                          ),
-                          icon: state.isMarkingAllRead
-                              ? SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: colors.primary,
-                                  ),
-                                )
-                              : const Icon(Icons.done_all_rounded, size: 16),
-                          label: Text(
-                            l10n.notifications_mark_all_read,
-                            style: getMediumStyle(
-                              fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size13,
-                              color: canMarkAll
-                                  ? colors.primary
-                                  : colors.onSurfaceVariant
-                                        .withValues(alpha: 0.7),
-                            ),
-                          ),
-                        ),
                       ),
                   ],
                 );
@@ -296,25 +251,6 @@ class _NotificationsView extends StatelessWidget {
         context,
       ).push(MaterialPageRoute(builder: (_) => const MyOrdersPage()));
     }
-  }
-
-  Future<void> _confirmMarkAllAsRead(BuildContext context) async {
-    final l10n = context.localization;
-    final colors = context.colorScheme;
-
-    final confirmed = await DialogueUtils.showCompactConfirmationDialog(
-      context: context,
-      title: l10n.notifications_mark_all_read_confirm_title,
-      message: l10n.notifications_mark_all_read_confirm_message,
-      confirmLabel: l10n.confirm,
-      cancelLabel: l10n.cancel,
-      icon: Icons.done_all_rounded,
-      accentColor: colors.primary,
-    );
-
-    if (!confirmed || !context.mounted) return;
-
-    context.read<NotificationsViewModel>().markAllAsRead();
   }
 
   Future<void> _confirmDeleteAll(BuildContext context) async {
