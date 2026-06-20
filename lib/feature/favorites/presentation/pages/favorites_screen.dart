@@ -44,15 +44,20 @@ class FavoritesScreen extends StatelessWidget {
   }
 }
 
-class _FavoritesScreenView extends StatelessWidget {
+class _FavoritesScreenView extends StatefulWidget {
   const _FavoritesScreenView();
 
+  @override
+  State<_FavoritesScreenView> createState() => _FavoritesScreenViewState();
+}
+
+class _FavoritesScreenViewState extends State<_FavoritesScreenView> {
   Future<void> _toggleFavorite(
     BuildContext context,
     FavoritesViewModel viewModel,
     ProductModel product,
   ) async {
-    viewModel.removeFavorite(product.id);
+    await viewModel.removeFavorite(product.id);
   }
 
   Future<void> _addToCart(BuildContext context, ProductModel product) {

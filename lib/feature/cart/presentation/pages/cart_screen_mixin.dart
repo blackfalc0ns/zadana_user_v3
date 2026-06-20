@@ -208,6 +208,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
     onConfirm: () {
       quantityDebouncers.remove(item.id)?.cancel();
       pendingQuantityBaselines.remove(item.id);
+      _showRemoveLoading();
       viewModel.doIntent(CartRemoveItemEvent(item));
     },
   );
@@ -216,9 +217,34 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
     context: context,
     onConfirm: () {
       clearPendingQuantityUpdates();
+      _showRemoveLoading();
       viewModel.doIntent(const CartClearAllEvent());
     },
   );
+
+  bool _isRemoveLoadingShown = false;
+
+  void _showRemoveLoading() {
+    if (_isRemoveLoadingShown) return;
+    _isRemoveLoadingShown = true;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black26,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: CustomProgressIndicator(),
+      ),
+    );
+  }
+
+  void _dismissRemoveLoading() {
+    if (!_isRemoveLoadingShown) return;
+    _isRemoveLoadingShown = false;
+    if (mounted && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+  }
 
   Future<void> onVendorSelected(String vendorId) async {
     if (selectedVendorId == vendorId) return;
@@ -371,6 +397,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
   }
 
   void _handleClearCartSuccess(CartState state) {
+    _dismissRemoveLoading();
     clearPendingQuantityUpdates();
     _resetUiAfterCartEmptied(resetPriceAnimationVersion: true);
     CustomSnackbar.showSuccess(
@@ -381,6 +408,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
   }
 
   void _handleRemoveItemSuccess(CartState state) {
+    _dismissRemoveLoading();
     quantityDebouncers.remove(state.removedItemId)?.cancel();
     pendingQuantityBaselines.remove(state.removedItemId);
     if (state.items.isEmpty) {
@@ -397,6 +425,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
     required String message,
     required VoidCallback clearFeedback,
   }) {
+    _dismissRemoveLoading();
     CustomSnackbar.showError(context: context, message: message);
     clearFeedback();
   }

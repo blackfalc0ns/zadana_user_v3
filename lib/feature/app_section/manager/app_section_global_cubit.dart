@@ -8,8 +8,10 @@ import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
+import 'package:zadana_user_v3/feature/cart/domain/entities/get_cart_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
+import 'package:zadana_user_v3/feature/favorites/domain/entities/favorites_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
@@ -113,6 +115,38 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         isGuest: isGuest,
       ),
     );
+
+    // Fetch initial badge counts so they appear immediately on the NavBar.
+    unawaited(_loadInitialBadgeCounts());
+  }
+
+  Future<void> _loadInitialBadgeCounts() async {
+    final results = await Future.wait([
+      _cartRepository.getCart(limit: 1, offset: 0),
+      _favoritesRepository.getFavorites(limit: 1, offset: 0),
+    ]);
+
+    final cartResult = results[0];
+    final favoritesResult = results[1];
+
+    int? cartCount;
+    int? favoritesCount;
+
+    if (cartResult is ApiSuccessResult<GetCartResponseEntity>) {
+      cartCount = cartResult.data.summary.totalQuantity;
+    }
+    if (favoritesResult is ApiSuccessResult<FavoritesResponseEntity>) {
+      favoritesCount = favoritesResult.data.total;
+    }
+
+    if (cartCount != null || favoritesCount != null) {
+      emit(
+        state.copyWith(
+          cartCount: cartCount ?? state.cartCount,
+          favoritesCount: favoritesCount ?? state.favoritesCount,
+        ),
+      );
+    }
   }
 
   Future<void> refreshProfileAuthState() async {
