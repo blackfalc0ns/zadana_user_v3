@@ -9,7 +9,10 @@ class GetCartVendorsUseCase {
 
   final CartRepository _repository;
 
-  Future<ApiResult<CartVendorsEntity>> call() {
-    return _repository.getCartVendors();
+  Future<ApiResult<CartVendorsEntity>> call({
+    int limit = 20,
+    int offset = 0,
+  }) {
+    return _repository.getCartVendors(limit: limit, offset: offset);
   }
 }

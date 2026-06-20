@@ -16,8 +16,10 @@ class CartState {
     this.items = const [],
     this.summary,
     this.loadedVendorId,
-    this.currentPage = 1,
+    this.currentOffset = 0,
     this.hasMoreItems = true,
+    this.vendorsOffset = 0,
+    this.hasMoreVendors = true,
     this.clearCartSuccessMessage,
     this.clearCartErrorMessage,
     this.removeItemSuccessMessage,
@@ -42,8 +44,10 @@ class CartState {
   final List<CartItemModel> items;
   final CartSummaryEntity? summary;
   final String? loadedVendorId;
-  final int currentPage;
+  final int currentOffset;
   final bool hasMoreItems;
+  final int vendorsOffset;
+  final bool hasMoreVendors;
   final String? clearCartSuccessMessage;
   final String? clearCartErrorMessage;
   final String? removeItemSuccessMessage;
@@ -68,8 +72,10 @@ class CartState {
     List<CartItemModel>? items,
     CartSummaryEntity? summary,
     String? loadedVendorId,
-    int? currentPage,
+    int? currentOffset,
     bool? hasMoreItems,
+    int? vendorsOffset,
+    bool? hasMoreVendors,
     String? clearCartSuccessMessage,
     String? clearCartErrorMessage,
     String? removeItemSuccessMessage,
@@ -105,8 +111,10 @@ class CartState {
       items: items ?? this.items,
       summary: summary ?? this.summary,
       loadedVendorId: loadedVendorId ?? this.loadedVendorId,
-      currentPage: currentPage ?? this.currentPage,
+      currentOffset: currentOffset ?? this.currentOffset,
       hasMoreItems: hasMoreItems ?? this.hasMoreItems,
+      vendorsOffset: vendorsOffset ?? this.vendorsOffset,
+      hasMoreVendors: hasMoreVendors ?? this.hasMoreVendors,
       clearCartSuccessMessage: clearClearCartSuccessMessage
           ? null
           : clearCartSuccessMessage ?? this.clearCartSuccessMessage,

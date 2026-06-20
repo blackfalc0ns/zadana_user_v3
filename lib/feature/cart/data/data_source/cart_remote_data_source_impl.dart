@@ -95,12 +95,16 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   }
 
   @override
-  Future<CartVendorsResponseDto> getCartVendors() async {
+  Future<CartVendorsResponseDto> getCartVendors({
+    int limit = 20,
+    int offset = 0,
+  }) async {
     await _clearCartReadCache();
 
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.cartVendors,
+        queryParameters: {'limit': limit, 'offset': offset},
         options: _noCacheOptions(),
       );
       return CartVendorsResponseDto.fromJson(response.data ?? {});
@@ -109,6 +113,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.cartVendors,
+        queryParameters: {'limit': limit, 'offset': offset},
         options: await _guestNoCacheOptions(),
       );
 
@@ -141,8 +146,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<GetCartResponseDto> getCart({
     String? vendorId,
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   }) async {
     await _clearCartReadCache();
 
@@ -151,8 +156,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         EndPoints.cart,
         queryParameters: {
           if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
-          'page': page,
-          'per_page': perPage,
+          'limit': limit,
+          'offset': offset,
         },
         options: _noCacheOptions(),
       );
@@ -164,8 +169,8 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         EndPoints.cart,
         queryParameters: {
           if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
-          'page': page,
-          'per_page': perPage,
+          'limit': limit,
+          'offset': offset,
         },
         options: await _guestNoCacheOptions(),
       );

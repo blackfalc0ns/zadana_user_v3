@@ -10,9 +10,9 @@ class GetFavoritesUseCase {
   final FavoritesRepository _repository;
 
   Future<ApiResult<FavoritesResponseEntity>> call({
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   }) {
-    return _repository.getFavorites(page: page, perPage: perPage);
+    return _repository.getFavorites(limit: limit, offset: offset);
   }
 }

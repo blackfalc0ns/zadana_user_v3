@@ -31,13 +31,13 @@ class FavoritesRepository {
   Stream<FavoriteMutationEvent> get mutations => _mutationController.stream;
 
   Future<ApiResult<FavoritesResponseEntity>> getFavorites({
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   }) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getFavorites(
-        page: page,
-        perPage: perPage,
+        limit: limit,
+        offset: offset,
       );
       return response.toEntity();
     });

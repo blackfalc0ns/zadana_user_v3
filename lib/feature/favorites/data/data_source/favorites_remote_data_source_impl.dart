@@ -29,13 +29,13 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
 
   @override
   Future<FavoritesResponseDto> getFavorites({
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   }) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.favorites,
-        queryParameters: {'page': page, 'per_page': perPage},
+        queryParameters: {'limit': limit, 'offset': offset},
       );
       return FavoritesResponseDto.fromJson(response.data ?? {});
     } on DioException catch (error) {
@@ -50,7 +50,7 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
       final deviceId = await _deviceIdService.getOrCreateDeviceId();
       final response = await _dio.get<Map<String, dynamic>>(
         EndPoints.favorites,
-        queryParameters: {'page': page, 'per_page': perPage},
+        queryParameters: {'limit': limit, 'offset': offset},
         options: Options(
           headers: {NetworkConstants.deviceIdHeader: deviceId},
           extra: {

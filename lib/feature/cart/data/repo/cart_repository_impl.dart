@@ -38,9 +38,15 @@ class CartRepositoryImpl implements CartRepository {
   Stream<CartMutationEvent> get mutations => _mutationController.stream;
 
   @override
-  Future<ApiResult<CartVendorsEntity>> getCartVendors() async {
+  Future<ApiResult<CartVendorsEntity>> getCartVendors({
+    int limit = 20,
+    int offset = 0,
+  }) async {
     return safeApiCall(() async {
-      final response = await _remoteDataSource.getCartVendors();
+      final response = await _remoteDataSource.getCartVendors(
+        limit: limit,
+        offset: offset,
+      );
       return response.toEntity();
     });
   }
@@ -86,14 +92,14 @@ class CartRepositoryImpl implements CartRepository {
   @override
   Future<ApiResult<GetCartResponseEntity>> getCart({
     String? vendorId,
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   }) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getCart(
         vendorId: vendorId,
-        page: page,
-        perPage: perPage,
+        limit: limit,
+        offset: offset,
       );
       final entity = response.toEntity();
       _emitMutation(CartMutationEvent.setCount(entity.summary.totalQuantity));

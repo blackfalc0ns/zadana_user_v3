@@ -10,8 +10,9 @@ class FavoritesResponseDto {
     required this.items,
     required this.summary,
     this.total,
-    this.page,
-    this.perPage,
+    this.limit,
+    this.offset,
+    this.hasMore,
   });
 
   factory FavoritesResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -24,8 +25,9 @@ class FavoritesResponseDto {
   final FavoritesSummaryDto summary;
 
   final int? total;
-  final int? page;
-  final int? perPage;
+  final int? limit;
+  final int? offset;
+  final bool? hasMore;
 
   Map<String, dynamic> toJson() => _$FavoritesResponseDtoToJson(this);
 }

@@ -12,8 +12,9 @@ FavoritesResponseDto _$FavoritesResponseDtoFromJson(
   items: _favoritesItemsFromJson(json['items'] as List?),
   summary: _favoritesSummaryFromJson(json['summary'] as Map<String, dynamic>?),
   total: (json['total'] as num?)?.toInt(),
-  page: (json['page'] as num?)?.toInt(),
-  perPage: (json['per_page'] as num?)?.toInt(),
+  limit: (json['limit'] as num?)?.toInt(),
+  offset: (json['offset'] as num?)?.toInt(),
+  hasMore: json['has_more'] as bool?,
 );
 
 Map<String, dynamic> _$FavoritesResponseDtoToJson(
@@ -22,6 +23,7 @@ Map<String, dynamic> _$FavoritesResponseDtoToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
   'summary': instance.summary.toJson(),
   'total': instance.total,
-  'page': instance.page,
-  'per_page': instance.perPage,
+  'limit': instance.limit,
+  'offset': instance.offset,
+  'has_more': instance.hasMore,
 };

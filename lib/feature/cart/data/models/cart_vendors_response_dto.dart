@@ -7,9 +7,19 @@ part 'cart_vendors_response_dto.g.dart';
 class CartVendorsResponseDto {
   factory CartVendorsResponseDto.fromJson(Map<String, dynamic> json) =>
       _$CartVendorsResponseDtoFromJson(json);
-  const CartVendorsResponseDto({required this.vendors});
+  const CartVendorsResponseDto({
+    required this.vendors,
+    this.total,
+    this.limit,
+    this.offset,
+    this.hasMore,
+  });
 
   final List<CartVendorItemDto> vendors;
+  final int? total;
+  final int? limit;
+  final int? offset;
+  final bool? hasMore;
 
   Map<String, dynamic> toJson() => _$CartVendorsResponseDtoToJson(this);
 }

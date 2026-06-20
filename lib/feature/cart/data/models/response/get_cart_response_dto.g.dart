@@ -15,8 +15,9 @@ GetCartResponseDto _$GetCartResponseDtoFromJson(Map<String, dynamic> json) =>
         json['summary'] as Map<String, dynamic>,
       ),
       total: (json['total'] as num?)?.toInt(),
-      page: (json['page'] as num?)?.toInt(),
-      perPage: (json['perPage'] as num?)?.toInt(),
+      limit: (json['limit'] as num?)?.toInt(),
+      offset: (json['offset'] as num?)?.toInt(),
+      hasMore: json['hasMore'] as bool?,
     );
 
 Map<String, dynamic> _$GetCartResponseDtoToJson(GetCartResponseDto instance) =>
@@ -24,6 +25,7 @@ Map<String, dynamic> _$GetCartResponseDtoToJson(GetCartResponseDto instance) =>
       'items': instance.items,
       'summary': instance.summary,
       'total': instance.total,
-      'page': instance.page,
-      'perPage': instance.perPage,
+      'limit': instance.limit,
+      'offset': instance.offset,
+      'hasMore': instance.hasMore,
     };

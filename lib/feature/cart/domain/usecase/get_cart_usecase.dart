@@ -11,13 +11,13 @@ class GetCartUseCase {
 
   Future<ApiResult<GetCartResponseEntity>> call({
     String? vendorId,
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   }) {
     return _repository.getCart(
       vendorId: vendorId,
-      page: page,
-      perPage: perPage,
+      limit: limit,
+      offset: offset,
     );
   }
 }

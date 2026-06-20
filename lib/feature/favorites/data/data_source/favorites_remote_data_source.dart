@@ -5,7 +5,7 @@ import 'package:zadana_user_v3/feature/favorites/data/models/favorites_response_
 import 'package:zadana_user_v3/feature/favorites/data/models/remove_favorite_response_dto.dart';
 
 abstract class FavoritesRemoteDataSource {
-  Future<FavoritesResponseDto> getFavorites({int page = 1, int perPage = 20});
+  Future<FavoritesResponseDto> getFavorites({int limit = 20, int offset = 0});
   Future<AddFavoriteResponseDto> addFavorite(AddFavoriteRequestDto request);
   Future<ClearFavoritesResponseDto> clearFavorites();
   Future<RemoveFavoriteResponseDto> removeFavorite(String productId);

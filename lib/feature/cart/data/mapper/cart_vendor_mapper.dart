@@ -18,6 +18,10 @@ extension CartVendorsResponseDtoMapper on CartVendorsResponseDto {
   CartVendorsEntity toEntity() {
     return CartVendorsEntity(
       vendors: vendors.map((vendor) => vendor.toEntity()).toList(),
+      total: total ?? vendors.length,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
+      hasMore: hasMore ?? false,
     );
   }
 }

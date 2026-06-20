@@ -37,8 +37,9 @@ extension FavoritesResponseDtoMapper on FavoritesResponseDto {
       items: mappedItems,
       itemsCount: summary.itemsCount,
       total: total ?? summary.itemsCount,
-      page: page ?? 1,
-      perPage: perPage ?? 20,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
+      hasMore: hasMore ?? false,
     );
   }
 }

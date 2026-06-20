@@ -12,15 +12,17 @@ class GetCartResponseDto {
     required this.items,
     required this.summary,
     this.total,
-    this.page,
-    this.perPage,
+    this.limit,
+    this.offset,
+    this.hasMore,
   });
 
   final List<CartItemResponseDto> items;
   final CartSummaryResponseDto summary;
   final int? total;
-  final int? page;
-  final int? perPage;
+  final int? limit;
+  final int? offset;
+  final bool? hasMore;
 
   Map<String, dynamic> toJson() => _$GetCartResponseDtoToJson(this);
 }

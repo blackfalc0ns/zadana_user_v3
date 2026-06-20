@@ -12,15 +12,18 @@ import 'package:zadana_user_v3/feature/cart/domain/entities/update_cart_item_qua
 
 abstract class CartRepository {
   Stream<CartMutationEvent> get mutations;
-  Future<ApiResult<CartVendorsEntity>> getCartVendors();
+  Future<ApiResult<CartVendorsEntity>> getCartVendors({
+    int limit = 20,
+    int offset = 0,
+  });
   Future<ApiResult<AddCartItemResponseEntity>> addCartItem(
     AddCartItemRequestEntity request,
   );
   Future<void> syncGuestCartIfAuthenticated();
   Future<ApiResult<GetCartResponseEntity>> getCart({
     String? vendorId,
-    int page = 1,
-    int perPage = 20,
+    int limit = 20,
+    int offset = 0,
   });
   Future<ApiResult<ClearCartResponseEntity>> clearCart();
   Future<ApiResult<RemoveCartItemResponseEntity>> removeCartItem(String itemId);

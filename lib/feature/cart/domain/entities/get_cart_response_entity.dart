@@ -6,15 +6,15 @@ class GetCartResponseEntity {
     required this.items,
     required this.summary,
     required this.total,
-    required this.page,
-    required this.perPage,
+    required this.limit,
+    required this.offset,
+    required this.hasMore,
   });
 
   final List<CartItemModel> items;
   final CartSummaryEntity summary;
   final int total;
-  final int page;
-  final int perPage;
-
-  bool get hasMore => page * perPage < total;
+  final int limit;
+  final int offset;
+  final bool hasMore;
 }

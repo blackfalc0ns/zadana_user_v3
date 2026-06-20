@@ -20,7 +20,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   final RemoveFavoriteUseCase _removeFavoriteUseCase;
   final ClearFavoritesUseCase _clearFavoritesUseCase;
 
-  static const int _perPage = 20;
+  static const int _limit = 20;
 
   Future<void> loadFavorites({bool silent = false}) async {
     final showBlockingLoader = !silent || state.items.isEmpty;
@@ -29,16 +29,16 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
       state.copyWith(
         isLoading: showBlockingLoader,
         isSuccess: false,
-        currentPage: 1,
+        currentOffset: 0,
         hasMore: true,
         clearFailure: true,
         clearErrorMessage: true,
       ),
     );
 
-    developer.log('Loading favorites page 1', name: 'FavoritesViewModel');
+    developer.log('Loading favorites offset=0', name: 'FavoritesViewModel');
 
-    final result = await _getFavoritesUseCase(page: 1, perPage: _perPage);
+    final result = await _getFavoritesUseCase(limit: _limit, offset: 0);
 
     switch (result) {
       case ApiSuccessResult():
@@ -48,7 +48,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             isSuccess: true,
             items: result.data.items,
             itemsCount: result.data.total,
-            currentPage: result.data.page,
+            currentOffset: result.data.items.length,
             hasMore: result.data.hasMore,
             clearFailure: true,
             clearErrorMessage: true,
@@ -70,18 +70,18 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   Future<void> loadMore() async {
     if (state.isLoading || state.isLoadingMore || !state.hasMore) return;
 
-    final nextPage = state.currentPage + 1;
+    final nextOffset = state.currentOffset;
 
     emit(state.copyWith(isLoadingMore: true, clearFailure: true));
 
     developer.log(
-      'Loading favorites page $nextPage',
+      'Loading favorites offset=$nextOffset',
       name: 'FavoritesViewModel',
     );
 
     final result = await _getFavoritesUseCase(
-      page: nextPage,
-      perPage: _perPage,
+      limit: _limit,
+      offset: nextOffset,
     );
 
     switch (result) {
@@ -92,7 +92,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             isLoadingMore: false,
             items: allItems,
             itemsCount: result.data.total,
-            currentPage: result.data.page,
+            currentOffset: allItems.length,
             hasMore: result.data.hasMore,
             clearFailure: true,
           ),
@@ -170,7 +170,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
             items: const [],
             itemsCount: 0,
             hasMore: false,
-            currentPage: 1,
+            currentOffset: 0,
             successMessage: result.data.message,
             clearFailure: true,
             clearErrorMessage: true,

@@ -9,7 +9,7 @@ class FavoritesState {
     this.isLoadingMore = false,
     this.items = const [],
     this.itemsCount = 0,
-    this.currentPage = 1,
+    this.currentOffset = 0,
     this.hasMore = true,
     this.failure,
     this.errorMessage,
@@ -22,7 +22,7 @@ class FavoritesState {
   final bool isLoadingMore;
   final List<ProductModel> items;
   final int itemsCount;
-  final int currentPage;
+  final int currentOffset;
   final bool hasMore;
   final Failure? failure;
   final String? errorMessage;
@@ -35,7 +35,7 @@ class FavoritesState {
     bool? isLoadingMore,
     List<ProductModel>? items,
     int? itemsCount,
-    int? currentPage,
+    int? currentOffset,
     bool? hasMore,
     Failure? failure,
     String? errorMessage,
@@ -51,7 +51,7 @@ class FavoritesState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       items: items ?? this.items,
       itemsCount: itemsCount ?? this.itemsCount,
-      currentPage: currentPage ?? this.currentPage,
+      currentOffset: currentOffset ?? this.currentOffset,
       hasMore: hasMore ?? this.hasMore,
       failure: clearFailure ? null : failure ?? this.failure,
       errorMessage: clearErrorMessage
