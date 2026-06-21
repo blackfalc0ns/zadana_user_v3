@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:lottie/lottie.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
+import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -86,11 +88,7 @@ class _NotificationsView extends StatelessWidget {
                     if (state.items.isNotEmpty)
                       IconButton(
                         onPressed: () => _confirmDeleteAll(context),
-                        icon: const Icon(Icons.delete_outline_rounded, size: 23,color: Colors.red,),
-                        tooltip: l10n.localeName.startsWith('ar')
-                            ? 'حذف الكل'
-                            : 'Delete all',
-                        splashRadius: 20,
+                        icon: const Icon(Iconsax.trash, size: 20, color: AppColors.error),
                       ),
                   ],
                 );
