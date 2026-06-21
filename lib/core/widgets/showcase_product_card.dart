@@ -164,7 +164,7 @@ class _ShowcaseProductCardState extends State<ShowcaseProductCard> {
                           fontScale: 0.82,
                         ),
                       ],
-                      const Spacer(),
+                    const SizedBox(height: 5),
                       _AddButton(
                         onTap: _handleAddTap,
                         isLoading: _isSubmittingCart,
