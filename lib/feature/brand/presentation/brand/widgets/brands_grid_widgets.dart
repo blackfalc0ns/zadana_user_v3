@@ -76,7 +76,7 @@ class BrandsLoadingView extends StatelessWidget {
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 _buildSkeletonItem,
-                childCount: 12,
+                childCount: 24,
               ),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,

@@ -17,7 +17,7 @@ abstract class HomePaginatedProductsCubit
     );
   }
 
-  static const int pageSize = 12;
+  static const int pageSize = 24;
 
   final FavoritesRepository _favoritesRepository =
       GetIt.instance<FavoritesRepository>();

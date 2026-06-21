@@ -245,7 +245,7 @@ class _CategoriesLoadingGrid extends StatelessWidget {
           crossAxisSpacing: Spacing.sm,
           mainAxisSpacing: Spacing.md,
         ),
-        itemCount: 20,
+        itemCount: 30,
         itemBuilder: (_, _) => const _CategoryItemSkeleton(),
       ),
     );

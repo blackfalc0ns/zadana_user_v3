@@ -213,7 +213,7 @@ class _ProductsLoadingGrid extends StatelessWidget {
               crossAxisSpacing: Spacing.xss,
               mainAxisSpacing: Spacing.xss,
             ),
-            itemCount: 15,
+            itemCount: 24,
             itemBuilder: (_, index) => _ProductCardSkeleton(index: index),
           ),
         );

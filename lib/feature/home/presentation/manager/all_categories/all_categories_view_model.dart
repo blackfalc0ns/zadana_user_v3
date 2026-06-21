@@ -13,7 +13,7 @@ class AllCategoriesViewModel extends Cubit<AllCategoriesState> {
   AllCategoriesViewModel(this._getCategoriesUseCase)
       : super(const AllCategoriesState());
 
-  static const int _pageSize = 20;
+  static const int _pageSize = 30;
 
   final GetCategoriesUseCase _getCategoriesUseCase;
 
