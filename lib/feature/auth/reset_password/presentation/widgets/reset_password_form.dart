@@ -16,11 +16,11 @@ class ResetPasswordForm extends StatefulWidget {
   const ResetPasswordForm({
     super.key,
     required this.identifier,
-    required this.otpCode,
+    required this.resetToken,
     required this.onSuccess,
   });
   final String identifier;
-  final String otpCode;
+  final String resetToken;
   final VoidCallback onSuccess;
 
   @override
@@ -45,7 +45,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
         ResetPasswordSubmitEvent(
           requestEntity: ResetPasswordRequestEntity(
             identifier: widget.identifier,
-            otpCode: widget.otpCode,
+            resetToken: widget.resetToken,
             newPassword: _newPasswordController.text,
           ),
         ),

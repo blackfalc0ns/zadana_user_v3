@@ -6,14 +6,14 @@ part 'reset_password_request_dto.g.dart';
 class ResetPasswordRequestDto {
   ResetPasswordRequestDto({
     required this.identifier,
-    required this.otpCode,
+    required this.resetToken,
     required this.newPassword,
   });
 
   factory ResetPasswordRequestDto.fromJson(Map<String, dynamic> json) =>
       _$ResetPasswordRequestDtoFromJson(json);
   final String identifier;
-  final String otpCode;
+  final String resetToken;
   final String newPassword;
 
   Map<String, dynamic> toJson() => _$ResetPasswordRequestDtoToJson(this);

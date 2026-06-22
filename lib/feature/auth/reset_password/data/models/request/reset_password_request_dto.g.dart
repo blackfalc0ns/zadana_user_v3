@@ -10,7 +10,7 @@ ResetPasswordRequestDto _$ResetPasswordRequestDtoFromJson(
   Map<String, dynamic> json,
 ) => ResetPasswordRequestDto(
   identifier: json['identifier'] as String,
-  otpCode: json['otpCode'] as String,
+  resetToken: json['resetToken'] as String,
   newPassword: json['newPassword'] as String,
 );
 
@@ -18,6 +18,6 @@ Map<String, dynamic> _$ResetPasswordRequestDtoToJson(
   ResetPasswordRequestDto instance,
 ) => <String, dynamic>{
   'identifier': instance.identifier,
-  'otpCode': instance.otpCode,
+  'resetToken': instance.resetToken,
   'newPassword': instance.newPassword,
 };

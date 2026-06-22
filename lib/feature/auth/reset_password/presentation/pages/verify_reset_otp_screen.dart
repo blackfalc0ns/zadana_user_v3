@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_extensions.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/presentation/widgets/verify_reset_otp_form.dart';
 
@@ -38,14 +37,13 @@ class _VerifyResetOtpScreenState extends State<VerifyResetOtpScreen> {
           if (!mounted) return;
           setState(() => _isLoading = isLoading);
         },
-        onSuccess: (otpCode) {
-          CustomSnackbar.showSuccess(
-            context: context,
-            message: locale.otp_success_message,
-          );
+        onSuccess: (resetToken) {
           context.pushNamed(
             AppRoutes.resetPassword,
-            arguments: {'identifier': widget.identifier, 'otpCode': otpCode},
+            arguments: {
+              'identifier': widget.identifier,
+              'resetToken': resetToken,
+            },
           );
         },
       ),

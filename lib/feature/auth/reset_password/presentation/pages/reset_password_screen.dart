@@ -20,22 +20,22 @@ class ResetPasswordScreen extends StatelessWidget {
   final Map<String, String> arguments;
 
   String get identifier => arguments['identifier'] ?? '';
-  String get otpCode => arguments['otpCode'] ?? '';
+  String get resetToken => arguments['resetToken'] ?? '';
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<ResetPasswordViewModel>(),
-      child: _ResetPasswordView(identifier: identifier, otpCode: otpCode),
+      child: _ResetPasswordView(identifier: identifier, resetToken: resetToken),
     );
   }
 }
 
 class _ResetPasswordView extends StatelessWidget {
-  const _ResetPasswordView({required this.identifier, required this.otpCode});
+  const _ResetPasswordView({required this.identifier, required this.resetToken});
 
   final String identifier;
-  final String otpCode;
+  final String resetToken;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class _ResetPasswordView extends StatelessWidget {
                 )
               : ResetPasswordForm(
                   identifier: identifier,
-                  otpCode: otpCode,
+                  resetToken: resetToken,
                   onSuccess: () {
                     context.pushNamedAndRemoveUntil(
                       AppRoutes.login,

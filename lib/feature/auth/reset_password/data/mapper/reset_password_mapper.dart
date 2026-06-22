@@ -7,7 +7,7 @@ class ResetPasswordMapper {
   static ResetPasswordRequestDto toDto(ResetPasswordRequestEntity entity) {
     return ResetPasswordRequestDto(
       identifier: entity.identifier,
-      otpCode: entity.otpCode,
+      resetToken: entity.resetToken,
       newPassword: entity.newPassword,
     );
   }

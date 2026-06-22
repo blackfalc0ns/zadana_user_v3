@@ -13,7 +13,9 @@ import 'package:zadana_user_v3/feature/auth/logout/data/models/request/logout_re
 import 'package:zadana_user_v3/feature/auth/register/data/models/request/register_request_dto.dart';
 import 'package:zadana_user_v3/feature/auth/register/data/models/response/register_response_dto.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/data/models/request/reset_password_request_dto.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/data/models/request/verify_reset_otp_request_dto.dart';
 import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/reset_password_response_dto.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/data/models/response/verify_reset_otp_response_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/resend_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_request_model_dto.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/data/models/verify_otp_response_model_dto.dart';
@@ -211,6 +213,11 @@ abstract class ApiServices {
   @POST(EndPoints.forgetPassword)
   Future<ForgetPasswordResponseDto> forgetPassword(
     @Body() ForgetPasswordRequestDto request,
+  );
+
+  @POST(EndPoints.verifyResetOtp)
+  Future<VerifyResetOtpResponseDto> verifyResetOtp(
+    @Body() VerifyResetOtpRequestDto request,
   );
 
   @POST(EndPoints.resetPassword)

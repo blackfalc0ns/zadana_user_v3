@@ -3,9 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/auth/forget_password/domain/entities/forget_password_request_entity.dart';
+import 'package:zadana_user_v3/feature/auth/forget_password/domain/usecase/forget_password_usecase.dart';
 import 'package:zadana_user_v3/feature/auth/register/presentation/widgets/button_switch.dart';
+import 'package:zadana_user_v3/feature/auth/reset_password/domain/usecase/verify_reset_otp_usecase.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/widget/otp_input_field.dart';
 
 class VerifyResetOtpForm extends StatefulWidget {
@@ -17,7 +23,7 @@ class VerifyResetOtpForm extends StatefulWidget {
   });
 
   final String identifier;
-  final void Function(String otpCode) onSuccess;
+  final void Function(String resetToken) onSuccess;
   final ValueChanged<bool>? onLoadingChanged;
 
   @override
@@ -31,6 +37,12 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
   );
   final List<FocusNode> focusNodes = List.generate(4, (_) => FocusNode());
   bool _isLoading = false;
+  bool _isResending = false;
+
+  final VerifyResetOtpUseCase _verifyResetOtpUseCase =
+      getIt<VerifyResetOtpUseCase>();
+  final ForgetPasswordUseCase _forgetPasswordUseCase =
+      getIt<ForgetPasswordUseCase>();
 
   @override
   void initState() {
@@ -104,13 +116,61 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
     setState(() => _isLoading = true);
     widget.onLoadingChanged?.call(true);
 
-    await Future.delayed(const Duration(seconds: 2));
+    final result = await _verifyResetOtpUseCase.call(
+      identifier: widget.identifier,
+      otpCode: otpCode,
+    );
+
+    if (!mounted) return;
 
     setState(() => _isLoading = false);
     widget.onLoadingChanged?.call(false);
 
-    if (mounted) {
-      widget.onSuccess(otpCode);
+    switch (result) {
+      case ApiSuccessResult():
+        if (context.mounted && result.data.message != null) {
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: result.data.message!,
+          );
+        }
+        widget.onSuccess(result.data.resetToken);
+      case ApiErrorResult():
+        if (context.mounted) {
+          CustomSnackbar.showError(
+            context: context,
+            message: result.failure.errorMessage,
+          );
+        }
+    }
+  }
+
+  Future<void> _resendOtp(BuildContext context) async {
+    setState(() => _isResending = true);
+
+    final result = await _forgetPasswordUseCase.call(
+      ForgetPasswordRequestEntity(identifier: widget.identifier),
+    );
+
+    if (!mounted) return;
+
+    setState(() => _isResending = false);
+
+    switch (result) {
+      case ApiSuccessResult():
+        if (context.mounted) {
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: AppLocalizations.of(context)!.otp_resend_success,
+          );
+        }
+      case ApiErrorResult():
+        if (context.mounted) {
+          CustomSnackbar.showError(
+            context: context,
+            message: result.failure.errorMessage,
+          );
+        }
     }
   }
 
@@ -164,6 +224,26 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
             label: localizations.otp_verify_button,
             onPressed: isOtpComplete ? () => _submitOtp(context) : () {},
             isLoading: _isLoading,
+          ),
+          const SizedBox(height: Spacing.lg),
+          Center(
+            child: _isResending
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : TextButton(
+                    onPressed: () => _resendOtp(context),
+                    child: Text(
+                      localizations.otp_resend_code,
+                      style: getMediumStyle(
+                        fontSize: FontSize.size14,
+                        fontFamily: FontConstant.cairo,
+                        color: color.primary,
+                      ),
+                    ),
+                  ),
           ),
           const SizedBox(height: Spacing.base),
         ],

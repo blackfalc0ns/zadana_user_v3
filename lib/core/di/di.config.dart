@@ -90,6 +90,8 @@ import '../../feature/auth/reset_password/domain/repo/reset_password_repository.
     as _i491;
 import '../../feature/auth/reset_password/domain/usecase/reset_password_usecase.dart'
     as _i996;
+import '../../feature/auth/reset_password/domain/usecase/verify_reset_otp_usecase.dart'
+    as _i23;
 import '../../feature/auth/reset_password/presentation/manager/reset_password_view_model.dart'
     as _i910;
 import '../../feature/auth/verify_otp/data/data_source/verify_otp_remote_data_source.dart'
@@ -1124,6 +1126,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i996.ResetPasswordUseCase>(
       () => _i996.ResetPasswordUseCase(
+        repository: gh<_i491.ResetPasswordRepository>(),
+      ),
+    );
+    gh.factory<_i23.VerifyResetOtpUseCase>(
+      () => _i23.VerifyResetOtpUseCase(
         repository: gh<_i491.ResetPasswordRepository>(),
       ),
     );
