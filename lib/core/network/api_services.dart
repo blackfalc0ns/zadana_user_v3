@@ -233,6 +233,9 @@ abstract class ApiServices {
   @POST(EndPoints.resendOtp)
   Future<void> resendOtp(@Body() ResendOtpRequestModelDto request);
 
+  @POST(EndPoints.resendResetOtp)
+  Future<void> resendResetOtp(@Body() ResendOtpRequestModelDto request);
+
   @GET(EndPoints.getProfile)
   Future<ProfileResponseModelDto> getProfile();
 

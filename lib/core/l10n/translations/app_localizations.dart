@@ -1070,6 +1070,12 @@ abstract class AppLocalizations {
   /// **'Verification code resent successfully'**
   String get otp_resend_success;
 
+  /// No description provided for @otp_resend_cooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds}s'**
+  String otp_resend_cooldown(Object seconds);
+
   /// No description provided for @otp_hero_badge.
   ///
   /// In en, this message translates to:

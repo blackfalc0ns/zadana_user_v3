@@ -541,6 +541,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otp_resend_success => 'Verification code resent successfully';
 
   @override
+  String otp_resend_cooldown(Object seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
   String get otp_hero_badge => 'Account verification';
 
   @override

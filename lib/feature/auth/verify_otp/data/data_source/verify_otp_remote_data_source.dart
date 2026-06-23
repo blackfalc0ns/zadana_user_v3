@@ -7,4 +7,5 @@ import '../models/verify_otp_response_model_dto.dart';
 abstract class VerifyOtpRemoteDataSource {
   Future<VerifyOtpResponseModelDto> verifyOtp(VerifyOtpRequestModelDto request);
   Future<void> resendOtp(ResendOtpRequestModelDto request);
+  Future<void> resendResetOtp(ResendOtpRequestModelDto request);
 }

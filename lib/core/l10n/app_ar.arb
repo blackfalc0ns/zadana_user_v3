@@ -179,6 +179,7 @@
   "otp_success_message": "تم تفعيل الحساب",
   "otp_resend_code": "إعادة إرسال الرمز",
   "otp_resend_success": "تم إعادة إرسال رمز التحقق بنجاح",
+  "otp_resend_cooldown": "إعادة الإرسال بعد {seconds} ثانية",
   "otp_hero_badge": "تأكيد الحساب",
   "otp_hero_subtitle": "أدخل الرمز المرسل إليك لإكمال تفعيل الحساب.",
   "otp_section_badge": "تحقق",

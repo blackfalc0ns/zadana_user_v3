@@ -104,6 +104,8 @@ import '../../feature/auth/verify_otp/domain/repo/verify_otp_repository.dart'
     as _i415;
 import '../../feature/auth/verify_otp/domain/usecase/resend_otp_usecase.dart'
     as _i62;
+import '../../feature/auth/verify_otp/domain/usecase/resend_reset_otp_usecase.dart'
+    as _i1027;
 import '../../feature/auth/verify_otp/domain/usecase/verify_otp_usecase.dart'
     as _i851;
 import '../../feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart'
@@ -1159,6 +1161,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i62.ResendOtpUseCase>(
       () => _i62.ResendOtpUseCase(gh<_i415.VerifyOtpRepository>()),
+    );
+    gh.factory<_i1027.ResendResetOtpUseCase>(
+      () => _i1027.ResendResetOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
     gh.factory<_i851.VerifyOtpUseCase>(
       () => _i851.VerifyOtpUseCase(gh<_i415.VerifyOtpRepository>()),

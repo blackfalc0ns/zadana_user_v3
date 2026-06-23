@@ -527,6 +527,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get otp_resend_success => 'تم إعادة إرسال رمز التحقق بنجاح';
 
   @override
+  String otp_resend_cooldown(Object seconds) {
+    return 'إعادة الإرسال بعد $seconds ثانية';
+  }
+
+  @override
   String get otp_hero_badge => 'تأكيد الحساب';
 
   @override

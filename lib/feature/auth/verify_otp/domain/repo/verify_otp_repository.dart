@@ -10,4 +10,6 @@ abstract class VerifyOtpRepository {
   );
 
   Future<ApiResult<void>> resendOtp(String identifier);
+
+  Future<ApiResult<void>> resendResetOtp(String identifier);
 }

@@ -23,4 +23,9 @@ class VerifyOtpRemoteDataSourceImpl implements VerifyOtpRemoteDataSource {
   Future<void> resendOtp(ResendOtpRequestModelDto request) {
     return _apiServices.resendOtp(request);
   }
+
+  @override
+  Future<void> resendResetOtp(ResendOtpRequestModelDto request) {
+    return _apiServices.resendResetOtp(request);
+  }
 }

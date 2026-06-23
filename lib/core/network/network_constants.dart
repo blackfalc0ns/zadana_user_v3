@@ -51,6 +51,7 @@ abstract class EndPoints {
   static const String resetPassword = '/customers/auth/reset-password';
   static const String verifyOtp = '/customers/auth/verify-otp';
   static const String resendOtp = '/customers/auth/resend-otp';
+  static const String resendResetOtp = '/customers/auth/resend-reset-otp';
   static const String getProfile = '/customers/auth/me';
   static const String updateProfile = '/customers/auth/me';
   static const String profilePhoto = '/customers/auth/me/profile-photo';

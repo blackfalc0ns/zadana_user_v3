@@ -11,6 +11,7 @@ import 'package:zadana_user_v3/feature/auth/verify_otp/domain/entities/verify_ot
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/verify_otp_event.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/verify_otp_state.dart';
 import 'package:zadana_user_v3/feature/auth/verify_otp/presentation/manager/verify_otp_view_model.dart';
+import 'otp_cooldown_button.dart';
 import 'otp_input_field.dart';
 
 class VerifyOtpForm extends StatefulWidget {
@@ -158,27 +159,16 @@ class _VerifyOtpFormState extends State<VerifyOtpForm> {
             ),
             const SizedBox(height: Spacing.lg),
             Center(
-              child: state.isResending
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : TextButton(
-                      onPressed: () {
-                        context.read<VerifyOtpViewModel>().doIntent(
-                          ResendOtpCodeEvent(identifier: widget.identifier),
-                        );
-                      },
-                      child: Text(
-                        locale.otp_resend_code,
-                        style: getMediumStyle(
-                          fontSize: FontSize.size14,
-                          fontFamily: FontConstant.cairo,
-                          color: color.primary,
-                        ),
-                      ),
-                    ),
+              child: OtpCooldownButton(
+                isResending: state.isResending,
+                cooldownSeconds: 60,
+                startWithCooldown: true,
+                onResend: () {
+                  context.read<VerifyOtpViewModel>().doIntent(
+                    ResendOtpCodeEvent(identifier: widget.identifier),
+                  );
+                },
+              ),
             ),
           ],
         );

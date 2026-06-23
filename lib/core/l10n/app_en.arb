@@ -178,6 +178,7 @@
 "otp_success_message": "Account verified successfully",
 "otp_resend_code": "Resend Code",
 "otp_resend_success": "Verification code resent successfully",
+"otp_resend_cooldown": "Resend in {seconds}s",
 "otp_hero_badge": "Account verification",
 "otp_hero_subtitle": "Enter the code sent to you to complete account verification.",
 "otp_section_badge": "Verify",

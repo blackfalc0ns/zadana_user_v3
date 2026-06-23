@@ -70,4 +70,12 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
       await _remoteDataSource.resendOtp(dto);
     });
   }
+
+  @override
+  Future<ApiResult<void>> resendResetOtp(String identifier) async {
+    return safeApiCall(() async {
+      final dto = ResendOtpRequestModelDto(identifier: identifier);
+      await _remoteDataSource.resendResetOtp(dto);
+    });
+  }
 }
