@@ -25,7 +25,7 @@ abstract class Validations {
     if (normalizedEmail.contains(' ')) {
       return _localizedMessage(
         context,
-        ar: 'الإيميل ما ينفعش يحتوي مسافات',
+        ar: 'الإيميل ما يقبل مسافات',
         en: 'Email must not contain spaces',
       );
     }
@@ -33,7 +33,7 @@ abstract class Validations {
     if (!normalizedEmail.contains('@')) {
       return _localizedMessage(
         context,
-        ar: 'الإيميل ناقص @',
+        ar: 'أضف @ إلى الإيميل',
         en: 'Email must contain @',
       );
     }
@@ -42,7 +42,7 @@ abstract class Validations {
     if (emailParts.length != 2) {
       return _localizedMessage(
         context,
-        ar: 'الإيميل لازم يحتوي على @ واحدة فقط',
+        ar: 'استخدم @ مرة وحدة فقط',
         en: 'Email must contain only one @',
       );
     }
@@ -53,7 +53,7 @@ abstract class Validations {
     if (localPart.isEmpty) {
       return _localizedMessage(
         context,
-        ar: 'لازم تكتب اسم قبل @',
+        ar: 'اكتب اسم المستخدم قبل @',
         en: 'Email must contain text before @',
       );
     }
@@ -61,7 +61,7 @@ abstract class Validations {
     if (domainPart.isEmpty) {
       return _localizedMessage(
         context,
-        ar: 'لازم تكتب اسم النطاق بعد @',
+        ar: 'اكتب اسم النطاق بعد @',
         en: 'Email must contain a domain after @',
       );
     }
@@ -69,7 +69,7 @@ abstract class Validations {
     if (!domainPart.contains('.')) {
       return _localizedMessage(
         context,
-        ar: 'الإيميل ناقص اسم النطاق مثل .com',
+        ar: 'أكمل اسم النطاق مثل .com',
         en: 'Email must contain a domain like .com',
       );
     }
@@ -78,7 +78,7 @@ abstract class Validations {
     if (domainSections.any((section) => section.isEmpty)) {
       return _localizedMessage(
         context,
-        ar: 'اسم النطاق في الإيميل غير مكتمل',
+        ar: 'اسم النطاق غير مكتمل',
         en: 'Email domain is incomplete',
       );
     }
@@ -92,22 +92,16 @@ abstract class Validations {
       );
     }
 
-    if (!normalizedEmail.endsWith('.com')) {
-      return _localizedMessage(
-        context,
-        ar: 'الإيميل لازم ينتهي بـ .com',
-        en: 'Email must end with .com',
-      );
-    }
-
     if (!AppRegExp.isEmailValid(normalizedEmail)) {
       return localized.email_is_not_valid;
     }
+
     return null;
   }
 
   static String? validatePassword(BuildContext context, String? password) {
     final normalizedPassword = password?.trim() ?? '';
+
     if (normalizedPassword.isEmpty) {
       return AppLocalizations.of(context)!.password_is_required;
     }
@@ -119,32 +113,36 @@ abstract class Validations {
         en: 'Password must be at least 8 characters',
       );
     }
+
     if (!RegExp(r'[A-Z]').hasMatch(normalizedPassword)) {
       return _localizedMessage(
         context,
-        ar: 'كلمة المرور لازم تحتوي حرف كبير',
+        ar: 'أضف حرفًا كبيرًا',
         en: 'Password must contain an uppercase letter',
       );
     }
+
     if (!RegExp(r'[a-z]').hasMatch(normalizedPassword)) {
       return _localizedMessage(
         context,
-        ar: 'كلمة المرور لازم تحتوي حرف صغير',
+        ar: 'أضف حرفًا صغيرًا',
         en: 'Password must contain a lowercase letter',
       );
     }
+
     if (!RegExp(r'[0-9]').hasMatch(normalizedPassword)) {
       return _localizedMessage(
         context,
-        ar: 'كلمة المرور لازم تحتوي رقم',
+        ar: 'أضف رقمًا',
         en: 'Password must contain a number',
       );
     }
+
     if (!RegExp(r'[#?!@$%^&*-]').hasMatch(normalizedPassword)) {
       return _localizedMessage(
         context,
-        ar: 'كلمة المرور لازم تحتوي رمز خاص مثل #?!@\$%^&*-',
-        en: 'Password must contain a special character like #?!@\$%^&*-',
+        ar: 'أضف رمزًا مثل @ أو #',
+        en: 'Password must contain a special character',
       );
     }
 
