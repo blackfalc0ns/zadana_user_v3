@@ -153,12 +153,14 @@ class MainShellState extends State<MainShell> {
         );
         break;
       case 2:
+        _globalCubit.markCartTabActivated();
         final loadedVendorId = _globalCubit.cartViewModel.state.loadedVendorId;
         _globalCubit.cartViewModel
           ..doIntent(const CartLoadVendorsEvent())
           ..doIntent(CartLoadItemsEvent(vendorId: loadedVendorId));
         break;
       case 3:
+        _globalCubit.markFavoritesTabActivated();
         _globalCubit.favoritesViewModel.loadFavorites();
         break;
       case 4:
@@ -169,14 +171,25 @@ class MainShellState extends State<MainShell> {
 
   void _refreshLocalizedContent() {
     _globalCubit.homeViewModel.doIntent(const HomeRetryEvent());
-    _globalCubit.categoryViewModel.loadInitialData();
 
-    final loadedVendorId = _globalCubit.cartViewModel.state.loadedVendorId;
-    _globalCubit.cartViewModel
-      ..doIntent(const CartLoadVendorsEvent())
-      ..doIntent(CartLoadItemsEvent(vendorId: loadedVendorId));
+    if (_loadedScreens[1] != null) {
+      _globalCubit.categoryViewModel.loadInitialData();
+    }
 
-    _globalCubit.favoritesViewModel.loadFavorites(silent: true);
+    if (_loadedScreens[2] != null) {
+      final loadedVendorId = _globalCubit.cartViewModel.state.loadedVendorId;
+      _globalCubit.cartViewModel
+        ..doIntent(const CartLoadVendorsEvent())
+        ..doIntent(CartLoadItemsEvent(vendorId: loadedVendorId));
+    }
+
+    if (_loadedScreens[3] != null) {
+      _globalCubit.favoritesViewModel.loadFavorites(silent: true);
+    }
+
+    if (_loadedScreens[4] != null) {
+      _globalCubit.refreshProfileAuthState();
+    }
   }
 
   Widget _buildScreenForIndex(int index) {
@@ -218,29 +231,32 @@ class MainShellState extends State<MainShell> {
             drawer: const AppDrawer(),
             drawerEdgeDragWidth: 20,
             body: Stack(
-            children: [
-              ...List.generate(_loadedScreens.length, _buildScreenForIndex),
-              if (!isKeyboardVisible)
-                Positioned(
-                  bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
-                  left: 12,
-                  right: 12,
-                  child:
-                      BlocBuilder<AppSectionGlobalCubit, AppSectionGlobalState>(
-                        builder: (context, state) {
-                          return CustomBottomNavBar(
-                            selectedIndex: _selectedIndex,
-                            navItems: navItems,
-                            cartCount: state.cartCount,
-                            favoritesCount: state.favoritesCount,
-                            onItemSelected: _onItemTapped,
-                          );
-                        },
-                      ),
-                ),
-            ],
+              children: [
+                ...List.generate(_loadedScreens.length, _buildScreenForIndex),
+                if (!isKeyboardVisible)
+                  Positioned(
+                    bottom: bottomSafeInset + kMainShellBottomNavBottomOffset,
+                    left: 12,
+                    right: 12,
+                    child:
+                        BlocBuilder<
+                          AppSectionGlobalCubit,
+                          AppSectionGlobalState
+                        >(
+                          builder: (context, state) {
+                            return CustomBottomNavBar(
+                              selectedIndex: _selectedIndex,
+                              navItems: navItems,
+                              cartCount: state.cartCount,
+                              favoritesCount: state.favoritesCount,
+                              onItemSelected: _onItemTapped,
+                            );
+                          },
+                        ),
+                  ),
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );

@@ -8,10 +8,8 @@ import 'package:zadana_user_v3/core/services/cart_navigation_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/app_section/manager/app_section_global_state.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/add_cart_item_request_entity.dart';
-import 'package:zadana_user_v3/feature/cart/domain/entities/get_cart_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/repo/cart_repository.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/add_cart_item_usecase.dart';
-import 'package:zadana_user_v3/feature/favorites/domain/entities/favorites_response_entity.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
 import 'package:zadana_user_v3/feature/category/domain/entities/category_entity.dart';
@@ -68,6 +66,8 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   Timer? _favoritesRefreshDebouncer;
   Timer? _cartRefreshDebouncer;
   bool _didInitialize = false;
+  bool _cartTabActivated = false;
+  bool _favoritesTabActivated = false;
 
   HomeViewModel get homeViewModel => _homeViewModel;
   CartViewModel get cartViewModel => _cartViewModel;
@@ -115,38 +115,14 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         isGuest: isGuest,
       ),
     );
-
-    // Fetch initial badge counts so they appear immediately on the NavBar.
-    unawaited(_loadInitialBadgeCounts());
   }
 
-  Future<void> _loadInitialBadgeCounts() async {
-    final results = await Future.wait([
-      _cartRepository.getCart(limit: 1, offset: 0),
-      _favoritesRepository.getFavorites(limit: 1, offset: 0),
-    ]);
+  void markCartTabActivated() {
+    _cartTabActivated = true;
+  }
 
-    final cartResult = results[0];
-    final favoritesResult = results[1];
-
-    int? cartCount;
-    int? favoritesCount;
-
-    if (cartResult is ApiSuccessResult<GetCartResponseEntity>) {
-      cartCount = cartResult.data.summary.totalQuantity;
-    }
-    if (favoritesResult is ApiSuccessResult<FavoritesResponseEntity>) {
-      favoritesCount = favoritesResult.data.total;
-    }
-
-    if (cartCount != null || favoritesCount != null) {
-      emit(
-        state.copyWith(
-          cartCount: cartCount ?? state.cartCount,
-          favoritesCount: favoritesCount ?? state.favoritesCount,
-        ),
-      );
-    }
+  void markFavoritesTabActivated() {
+    _favoritesTabActivated = true;
   }
 
   Future<void> refreshProfileAuthState() async {
@@ -226,16 +202,18 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
         final productId = details.variantOptions.length == 1
             ? details.variantOptions.first.id
             : details.masterProductId.isNotEmpty
-                ? details.masterProductId
-                : product.id;
+            ? details.masterProductId
+            : product.id;
         if (productId.isEmpty) {
           return const CartActionResult(
             isSuccess: false,
             message: 'Product id is unavailable for this item.',
           );
         }
-        final request =
-            AddCartItemRequestEntity(productId: productId, quantity: 1);
+        final request = AddCartItemRequestEntity(
+          productId: productId,
+          quantity: 1,
+        );
         final addResult = await _addCartItemUseCase.call(request);
         switch (addResult) {
           case ApiSuccessResult():
@@ -283,6 +261,8 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   }
 
   void refreshCartInBackground() {
+    if (!_cartTabActivated) return;
+
     final loadedVendorId = _cartViewModel.state.loadedVendorId;
     _cartViewModel
       ..doIntent(const CartLoadVendorsEvent())
@@ -290,6 +270,8 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
   }
 
   void refreshFavoritesInBackground() {
+    if (!_favoritesTabActivated) return;
+
     _favoritesViewModel.loadFavorites(silent: true);
   }
 

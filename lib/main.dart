@@ -24,11 +24,11 @@ void main() async {
   );
   const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
   runApp(
-   // kReleaseMode || !enableDevicePreview
-     //   ?
-      //   const AppBootstrapper()
-      //  :
-         DevicePreview(builder: (context) => const AppBootstrapper()),
+    // kReleaseMode || !enableDevicePreview
+    //   ?
+    //   const AppBootstrapper()
+    //  :
+    DevicePreview(builder: (context) => const AppBootstrapper()),
   );
 }
 
