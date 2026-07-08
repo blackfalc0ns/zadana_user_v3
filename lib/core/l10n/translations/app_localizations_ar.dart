@@ -13,100 +13,98 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get error_no_internet_connection_desc =>
-      'يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى';
+      'فضلاً تأكد من اتصالك بالإنترنت وحاول مرة ثانية';
 
   @override
   String get error_connection_timeout => 'انتهت مهلة الاتصال بالسيرفر';
 
   @override
   String get error_connection_timeout_desc =>
-      'استغرق الاتصال وقتاً طويلاً. يرجى المحاولة مرة أخرى';
+      'الاتصال طول أكثر من المتوقع. حاول مرة ثانية';
 
   @override
   String get error_receive_timeout => 'انتهت مهلة استلام الرد من السيرفر';
 
   @override
-  String get error_receive_timeout_desc =>
-      'استغرق الخادم وقتاً طويلاً للرد. يرجى المحاولة مرة أخرى';
+  String get error_receive_timeout_desc => 'السيرفر طول بالرد. حاول مرة ثانية';
 
   @override
   String get error_send_timeout => 'انتهت مهلة إرسال الطلب للسيرفر';
 
   @override
   String get error_send_timeout_desc =>
-      'فشل في إرسال البيانات إلى الخادم. يرجى المحاولة مرة أخرى';
+      'ما قدرنا نرسل البيانات للسيرفر. حاول مرة ثانية';
 
   @override
-  String get error_server_error => 'خطأ في الخادم';
+  String get error_server_error => 'خطأ في السيرفر';
 
   @override
-  String get error_server_error_desc =>
-      'حدث خطأ في الخادم. يرجى المحاولة لاحقاً';
+  String get error_server_error_desc => 'صار خطأ في السيرفر. حاول لاحقًا';
 
   @override
-  String get error_internal_server_error => 'خطأ داخلي في الخادم';
+  String get error_internal_server_error => 'خطأ داخلي في السيرفر';
 
   @override
   String get error_internal_server_error_desc =>
-      'واجه الخادم خطأ داخلي. يرجى المحاولة لاحقاً';
+      'السيرفر واجه خطأ داخلي. حاول لاحقًا';
 
   @override
   String get error_bad_gateway => 'حدث خطأ مؤقت';
 
   @override
   String get error_bad_gateway_desc =>
-      'حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مرة أخرى';
+      'صار خطأ وقت الاتصال بالسيرفر. حاول مرة ثانية';
 
   @override
   String get error_service_unavailable => 'الخدمة غير متاحة';
 
   @override
   String get error_service_unavailable_desc =>
-      'الخدمة غير متاحة مؤقتاً. يرجى المحاولة لاحقاً';
+      'الخدمة غير متاحة مؤقتًا. حاول لاحقًا';
 
   @override
   String get error_gateway_timeout => 'انتهت مهلة البوابة';
 
   @override
-  String get error_gateway_timeout_desc =>
-      'انتهت مهلة البوابة. يرجى المحاولة لاحقاً';
+  String get error_gateway_timeout_desc => 'انتهت مهلة البوابة. حاول لاحقًا';
+
+  @override
+  String get reviewsFor => 'مراجعات ل';
 
   @override
   String get error_bad_request => 'الطلب غير صحيح';
 
   @override
-  String get properties_empty_message_favourite =>
-      'You have not added any properties to your favorites.';
+  String get properties_empty_message_favourite => 'ما أضفت أي منتجات للمفضلة.';
 
   @override
   String get error_bad_request_desc =>
-      'يحتوي الطلب على بيانات غير صالحة. يرجى التحقق من المدخلات';
+      'الطلب فيه بيانات غير صحيحة. فضلاً تأكد من المدخلات';
 
   @override
   String get error_unauthorized => 'غير مصرح، سجّل دخولك من جديد';
 
   @override
   String get error_unauthorized_desc =>
-      'أنت غير مصرح للوصول إلى هذا المورد. يرجى تسجيل الدخول مرة أخرى';
+      'ما عندك صلاحية للوصول. فضلاً سجّل دخولك من جديد';
 
   @override
   String get error_forbidden => 'ما عندك صلاحية';
 
   @override
-  String get error_forbidden_desc => 'ليس لديك إذن للوصول إلى هذا المورد';
+  String get error_forbidden_desc => 'ما عندك إذن للوصول لهذا المورد';
 
   @override
   String get error_not_found => 'المورد غير موجود';
 
   @override
-  String get error_not_found_desc => 'المورد المطلوب غير موجود';
+  String get error_not_found_desc => 'المورد المطلوب مو موجود';
 
   @override
   String get error_method_not_allowed => 'الطريقة غير مسموحة';
 
   @override
-  String get error_method_not_allowed_desc =>
-      'هذه الطريقة غير مسموحة لهذا المورد';
+  String get error_method_not_allowed_desc => 'هالطريقة غير مسموحة لهذا المورد';
 
   @override
   String get error_not_acceptable => 'غير مقبول';
@@ -118,26 +116,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_request_timeout => 'انتهت مهلة الطلب';
 
   @override
-  String get error_request_timeout_desc =>
-      'انتهت مهلة الطلب. يرجى المحاولة مرة أخرى';
+  String get error_request_timeout_desc => 'انتهت مهلة الطلب. حاول مرة ثانية';
 
   @override
   String get error_conflict => 'صار تعارض في البيانات';
 
   @override
-  String get error_conflict_desc => 'يوجد تعارض مع الحالة الحالية للمورد';
+  String get error_conflict_desc => 'فيه تعارض مع الحالة الحالية للمورد';
 
   @override
   String get error_gone => 'المورد غير متاح';
 
   @override
-  String get error_gone_desc => 'المورد المطلوب لم يعد متاحاً';
+  String get error_gone_desc => 'المورد المطلوب ما عاد متاح';
 
   @override
   String get error_length_required => 'الطول مطلوب';
 
   @override
-  String get error_length_required_desc => 'يجب أن يحدد الطلب طول المحتوى';
+  String get error_length_required_desc => 'لازم يحدد الطلب طول المحتوى';
 
   @override
   String get error_precondition_failed => 'فشل الشرط المسبق';
@@ -149,22 +146,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_payload_too_large => 'الحمولة كبيرة جداً';
 
   @override
-  String get error_payload_too_large_desc => 'حمولة الطلب كبيرة جداً';
+  String get error_payload_too_large_desc => 'حجم الطلب كبير مرة';
 
   @override
   String get error_uri_too_long => 'الرابط طويل جداً';
 
   @override
-  String get error_uri_too_long_desc => 'رابط الطلب طويل جداً';
+  String get error_uri_too_long_desc => 'رابط الطلب طويل مرة';
 
   @override
-  String get lead_send_error => 'حدث خطأ أثناء إرسال طلب التواصل';
+  String get lead_send_error => 'صار خطأ وقت إرسال طلب التواصل';
 
   @override
-  String get lead_info_collected => 'تم جمع معلومات العميل المحتمل بنجاح';
+  String get lead_info_collected => 'جمعنا معلومات العميل المحتمل بنجاح';
 
   @override
-  String get lead_offline_mode => 'تم حفظ معلومات التواصل محلياً';
+  String get lead_offline_mode => 'حفظنا معلومات التواصل على الجهاز';
 
   @override
   String get error_unsupported_media_type => 'نوع الوسائط غير مدعوم';
@@ -176,54 +173,54 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_range_not_satisfiable => 'النطاق غير قابل للتحقيق';
 
   @override
-  String get error_range_not_satisfiable_desc => 'لا يمكن تحقيق النطاق المطلوب';
+  String get error_range_not_satisfiable_desc => 'ما نقدر نحقق النطاق المطلوب';
 
   @override
   String get error_expectation_failed => 'فشل التوقع';
 
   @override
   String get error_expectation_failed_desc =>
-      'لا يمكن تلبية التوقع المحدد في حقل رأس الطلب';
+      'ما نقدر نلبي التوقع المحدد في رأس الطلب';
 
   @override
   String get error_too_many_requests => 'طلبات كثيرة جداً';
 
   @override
   String get error_too_many_requests_desc =>
-      'لقد أرسلت طلبات كثيرة جداً. يرجى المحاولة لاحقاً';
+      'أرسلت طلبات كثيرة مرة. حاول لاحقًا';
 
   @override
   String get error_unknown => 'صار خطأ غير متوقع';
 
   @override
-  String get error_unknown_desc => 'حدث خطأ غير معروف. يرجى المحاولة مرة أخرى';
+  String get error_unknown_desc => 'صار خطأ غير معروف. حاول مرة ثانية';
 
   @override
-  String get error_cancelled => 'تم إلغاء الطلب';
+  String get error_cancelled => 'انلغى الطلب';
 
   @override
-  String get error_cancelled_desc => 'تم إلغاء الطلب';
+  String get error_cancelled_desc => 'انلغى الطلب';
 
   @override
   String get error_other => 'حدث خطأ';
 
   @override
-  String get error_other_desc => 'حدث خطأ. يرجى المحاولة مرة أخرى';
+  String get error_other_desc => 'صار خطأ. حاول مرة ثانية';
 
   @override
-  String get retry => 'إعادة المحاولة';
+  String get retry => 'حاول مرة ثانية';
 
   @override
-  String get contact_support => 'تواصل مع الدعم';
+  String get contact_support => 'كلم الدعم';
 
   @override
-  String get go_back => 'العودة';
+  String get go_back => 'رجوع';
 
   @override
   String get refresh => 'تحديث';
 
   @override
-  String get check_connection => 'فحص الاتصال';
+  String get check_connection => 'شيّك الاتصال';
 
   @override
   String get login => 'تسجيل دخول';
@@ -273,7 +270,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get phone_number_is_not_valid => 'رقم الجوال مو صحيح';
 
   @override
-  String get this_field_is_required => 'هذا الحقل مطلوب';
+  String get this_field_is_required => 'هالحقل مطلوب';
 
   @override
   String get error => 'صار خطأ';
@@ -285,60 +282,58 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_service_disabled => 'خدمة الموقع مقفلة';
 
   @override
-  String get location_permission_denied => 'تم رفض إذن الموقع';
+  String get location_permission_denied => 'انرفض إذن الموقع';
 
   @override
-  String get location_permission_denied_forever => 'تم رفض إذن الموقع نهائيًا';
+  String get location_permission_denied_forever => 'انرفض إذن الموقع نهائيًا';
 
   @override
   String get location_service_disabled_message =>
-      'خدمة الموقع غير مفعلة. يرجى تفعيل خدمة الموقع من الإعدادات ثم المحاولة مرة أخرى.';
+      'خدمة الموقع غير مفعلة. فعّلها من الإعدادات ثم حاول مرة ثانية.';
 
   @override
   String get location_permission_denied_message =>
-      'يحتاج التطبيق إلى إذن الوصول للموقع لتحديد موقعك الحالي. يرجى السماح بالوصول للموقع.';
+      'التطبيق يحتاج إذن الموقع عشان يحدد موقعك الحالي. فضلاً اسمح بالوصول للموقع.';
 
   @override
   String get location_permission_denied_forever_message =>
-      'تم رفض إذن الوصول للموقع نهائيًا. يرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع.';
+      'انرفض إذن الوصول للموقع نهائيًا. فضلاً روح لإعدادات التطبيق وفعّل إذن الموقع.';
 
   @override
   String get location_search_temporarily_unavailable =>
-      'البحث غير متاح مؤقتًا، يرجى المحاولة لاحقًا.';
+      'البحث غير متاح مؤقتًا، حاول لاحقًا.';
 
   @override
-  String get location_rate_limit_retry =>
-      'يرجى الانتظار قليلًا قبل المحاولة مرة أخرى.';
+  String get location_rate_limit_retry => 'انتظر شوي قبل ما تحاول مرة ثانية.';
 
   @override
   String get location_start_title => 'الموقع';
 
   @override
-  String get location_start_subtitle =>
-      'حدد موقعك لنتمكن من توصيل طلباتك بسرعة ودقة';
+  String get location_start_subtitle => 'حدد موقعك عشان نوصل طلباتك بسرعة ودقة';
 
   @override
   String location_start_selected_subtitle(String address) {
-    return 'تم اختيار الموقع: $address';
+    return 'اخترنا الموقع: $address';
   }
 
   @override
-  String get location_select_on_map => 'اختيار الموقع من الخريطة';
+  String get location_select_on_map => 'اختر الموقع من الخريطة';
 
   @override
-  String get location_use_current_location => 'استخدام موقعي الحالي';
+  String get location_use_current_location => 'استخدم موقعي الحالي';
 
   @override
-  String get location_enter_address_manually => 'أدخل العنوان يدويًا';
+  String get location_enter_address_manually => 'اكتب العنوان يدويًا';
 
   @override
   String get location_map_search_hint => 'ابحث عن موقع...';
 
   @override
-  String get location_map_drag_hint => 'حرّك الخريطة لاختيار الموقع';
+  String get location_map_drag_hint => 'حرّك الخريطة عشان تختار الموقع';
 
   @override
-  String get location_map_confirm => 'تأكيد الموقع';
+  String get location_map_confirm => 'أكد الموقع';
 
   @override
   String get auth_title => 'ابدأ معنا الحين';
@@ -350,13 +345,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get auth_subtitle_signup => 'سو حساب جديد وابدأ';
 
   @override
-  String get login_hero_badge => 'مرحبا بعودتك';
+  String get login_hero_badge => 'هلا برجعتك';
 
   @override
   String get login_hero_title => 'تسجيل الدخول';
 
   @override
-  String get login_hero_subtitle => 'سجل الدخول للمتابعة واستعراض المنتجات';
+  String get login_hero_subtitle => 'سجّل دخولك عشان تكمل وتشوف المنتجات';
 
   @override
   String get login_section_badge => 'عضو';
@@ -366,17 +361,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get login_section_description =>
-      'أدخل بريدك الإلكتروني أو رقم الجوال وكلمة المرور للوصول إلى حسابك.';
+      'اكتب إيميلك أو رقم جوالك وكلمة المرور عشان تدخل حسابك.';
 
   @override
   String get register_hero_badge => 'ابدأ التسوق';
 
   @override
-  String get register_screen_title => 'إنشاء حساب';
+  String get register_screen_title => 'إنشاء حساب جديد';
 
   @override
   String get register_hero_subtitle =>
-      'أنشئ حسابك بخطوات بسيطة وابدأ التسوق بسهولة.';
+      'سو حسابك بخطوات بسيطة وابدأ التسوق بسهولة.';
 
   @override
   String get register_section_badge => 'حساب جديد';
@@ -385,7 +380,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get register_form_title => 'سجّل حساب جديد';
 
   @override
-  String get register_form_description => 'أدخل بياناتك الأساسية للبدء.';
+  String get register_form_description => 'اكتب بياناتك الأساسية عشان تبدأ.';
 
   @override
   String get toggle_login => 'تسجيل دخول';
@@ -440,11 +435,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'اكتب رقم جوالك أو إيميلك وبنرسل لك كود';
 
   @override
-  String get forget_password_hero_badge => 'استعادة الوصول';
+  String get forget_password_hero_badge => 'استرجاع الدخول';
 
   @override
   String get forget_password_hero_subtitle =>
-      'سنساعدك على استعادة الوصول بسرعة حتى تتمكن من متابعة استخدام حسابك بسهولة.';
+      'بنساعدك ترجع لحسابك بسرعة وتكمل استخدامه بسهولة.';
 
   @override
   String get forget_password_section_badge => 'استعادة';
@@ -453,30 +448,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get btn_send_verification_code => 'إرسال الكود';
 
   @override
-  String get msg_verification_code_sent => 'تم إرسال الكود';
+  String get msg_verification_code_sent => 'أرسلنا الكود';
 
   @override
   String get reset_password_title => 'تغيير كلمة المرور';
 
   @override
-  String get reset_password_description_prefix => 'أدخل الكود اللي انرسل لـ';
+  String get reset_password_description_prefix => 'اكتب الكود اللي انرسل لـ';
 
   @override
-  String get reset_password_otp_hero_badge => 'تأكيد الرمز';
+  String get reset_password_otp_hero_badge => 'تأكيد الكود';
 
   @override
   String get reset_password_otp_hero_subtitle =>
-      'أدخل الرمز الذي أرسلناه لك حتى تتمكن من متابعة تعيين كلمة مرور جديدة بأمان.';
+      'اكتب الكود اللي أرسلناه لك عشان تعيّن كلمة مرور جديدة بأمان.';
 
   @override
-  String get reset_password_otp_section_badge => 'رمز التحقق';
+  String get reset_password_otp_section_badge => 'كود التحقق';
 
   @override
   String get reset_password_hero_badge => 'تأمين الحساب';
 
   @override
   String get reset_password_hero_subtitle =>
-      'اختر كلمة مرور أقوى وحافظ على أمان حسابك في كل مرة تسجل فيها الدخول.';
+      'اختر كلمة مرور أقوى وخلك مطمّن على حسابك كل مرة تسجل دخول.';
 
   @override
   String get reset_password_section_badge => 'أمان';
@@ -497,7 +492,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get btn_confirm => 'تاكيد';
 
   @override
-  String get msg_password_reset_success => 'تم تغيير كلمة المرور';
+  String get msg_password_reset_success => 'تغيّرت كلمة المرور';
 
   @override
   String get verification_code_required => 'اكتب كود التحقق';
@@ -518,24 +513,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get otp_complete_code_required => 'اكتب الكود كامل';
 
   @override
-  String get otp_success_message => 'تم تفعيل الحساب';
+  String get otp_success_message => 'تفعّل الحساب';
 
   @override
-  String get otp_resend_code => 'إعادة إرسال الرمز';
+  String get otp_resend_code => 'إعادة إرسال الكود';
 
   @override
-  String get otp_resend_success => 'تم إعادة إرسال رمز التحقق بنجاح';
+  String get otp_resend_success => 'أرسلنا كود التحقق من جديد';
 
   @override
   String otp_resend_cooldown(Object seconds) {
-    return 'إعادة الإرسال بعد $seconds ثانية';
+    return 'تقدر تعيد الإرسال بعد $seconds ثانية';
   }
 
   @override
   String get otp_hero_badge => 'تأكيد الحساب';
 
   @override
-  String get otp_hero_subtitle => 'أدخل الرمز المرسل إليك لإكمال تفعيل الحساب.';
+  String get otp_hero_subtitle =>
+      'اكتب الكود اللي وصلك عشان تكمل تفعيل الحساب.';
 
   @override
   String get otp_section_badge => 'تحقق';
@@ -584,14 +580,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get search_start_description =>
-      'اكتب اسم المنتج وسيتم تحميل النتائج تدريجيًا مع التصفح.';
+      'اكتب اسم المنتج وبنحمّل النتائج تدريجيًا وأنت تتصفح.';
 
   @override
-  String get search_empty_title => 'لا توجد نتائج';
+  String get search_empty_title => 'ما فيه نتائج';
 
   @override
   String get search_empty_description =>
-      'جرّب كلمة بحث مختلفة أو وسّع نطاق البحث.';
+      'جرّب كلمة بحث ثانية أو وسّع نطاق البحث.';
 
   @override
   String search_in_brand_products(String brandName) {
@@ -651,27 +647,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get section_special_offers => 'عروض';
 
   @override
-  String get special_offers_unavailable => 'لا توجد عروض خاصة متاحه';
+  String get special_offers_unavailable => 'ما فيه عروض خاصة متاحة';
 
   @override
   String get section_best_selling => 'الأكثر مبيع';
 
   @override
-  String get best_selling_unavailable => 'لا توجد منتجات الاكثر مبيعا متاحه';
+  String get best_selling_unavailable => 'ما فيه منتجات أكثر مبيعًا متاحة';
 
   @override
-  String get section_brands => 'العلامات التجارية';
+  String get section_brands => 'البراندات';
 
   @override
-  String get brands_unavailable => 'لا توجد علامات تجارية متاحه';
+  String get brands_unavailable => 'ما فيه براندات متاحة';
 
   @override
   String get brands_empty_description =>
-      'لا توجد علامات تجارية متاحة حاليًا. اسحب للتحديث أو جرّب مرة أخرى بعد قليل.';
+      'ما فيه براندات متاحة حاليًا. اسحب للتحديث أو جرّب بعد شوي.';
 
   @override
   String get brands_listing_subtitle =>
-      'تصفّح العلامات التجارية المتاحة واختر ما يناسبك بسهولة.';
+      'تصفّح البراندات المتاحة واختر ما يناسبك بسهولة.';
 
   @override
   String brands_count_badge(int count) {
@@ -682,19 +678,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get section_featured => 'مميزة';
 
   @override
-  String get featured_unavailable => 'لا توجد منتجات مميزة متاحه';
+  String get featured_unavailable => 'ما فيه منتجات مميزة متاحة';
 
   @override
   String get section_recommended => 'مقترح لك';
 
   @override
-  String get recommended_unavailable => 'لا توجد منتجات مقترحة متاحه';
+  String get recommended_unavailable => 'ما فيه منتجات مقترحة متاحة';
 
   @override
   String get section_explore => 'استكشف أكثر';
 
   @override
-  String get explore_more_unavailable => 'لا توجد منتجات استكشاف متاحه';
+  String get explore_more_unavailable => 'ما فيه منتجات للاستكشاف متاحة';
 
   @override
   String get similar_products => 'منتجات مشابهة';
@@ -709,7 +705,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get add_button => 'إضافة';
 
   @override
-  String get select_size => 'اختر الحجم:';
+  String get select_size => 'اختر المقاس:';
 
   @override
   String variant_sizes_count(Object count) {
@@ -783,24 +779,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications => 'الإشعارات';
 
   @override
-  String get notifications_empty_title => 'لا توجد إشعارات';
+  String get notifications_empty_title => 'ما فيه إشعارات';
 
   @override
   String get notifications_empty_description =>
-      'أنت متابع كل جديد حاليًا. ستظهر هنا تحديثات الطلبات والتنبيهات المهمة أولًا بأول.';
+      'أنت متابع كل جديد حاليًا. هنا بتظهر تحديثات الطلبات والتنبيهات المهمة أول بأول.';
 
   @override
-  String get notifications_mark_all_read => 'قراءة الكل';
+  String get notifications_mark_all_read => 'اعتبار الكل مقروء';
 
   @override
-  String get notifications_mark_all_read_confirm_title => 'تأكيد قراءة الكل';
+  String get notifications_mark_all_read_confirm_title =>
+      'تأكيد اعتبار الكل مقروء';
 
   @override
   String get notifications_mark_all_read_confirm_message =>
-      'هل تريد تحديد كل الإشعارات الحالية كمقروءة؟';
+      'تبغى تعتبر كل الإشعارات الحالية مقروءة؟';
 
   @override
-  String get notifications_preferences_saved => 'تم حفظ الإعدادات';
+  String get notifications_preferences_saved => 'حفظنا الإعدادات';
 
   @override
   String notifications_unread_count(int count) {
@@ -812,7 +809,7 @@ class AppLocalizationsAr extends AppLocalizations {
       few: '$count إشعارات غير مقروءة',
       two: 'إشعاران غير مقروءين',
       one: 'إشعار واحد غير مقروء',
-      zero: 'لا توجد إشعارات غير مقروءة',
+      zero: 'ما فيه إشعارات غير مقروءة',
     );
     return '$_temp0';
   }
@@ -838,8 +835,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get help_support_header_title => 'كيف يمكننا مساعدتك؟';
 
   @override
-  String get help_support_header_subtitle =>
-      'تواصل معنا وسنرد على استفسارك قريبًا.';
+  String get help_support_header_subtitle => 'كلمنا وبنرد عليك قريب.';
 
   @override
   String get about_app => 'عن التطبيق';
@@ -851,16 +847,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get version => 'الإصدار';
 
   @override
-  String get contact_us => 'تواصل معنا';
+  String get contact_us => 'كلمنا';
 
   @override
   String get contact_whatsapp => 'واتساب';
 
   @override
-  String get contact_whatsapp_subtitle => 'تواصل معنا عبر واتساب';
+  String get contact_whatsapp_subtitle => 'كلمنا عبر واتساب';
 
   @override
-  String get contact_phone_subtitle => 'اتصل بنا مباشرة';
+  String get contact_phone_subtitle => 'اتصل علينا مباشرة';
 
   @override
   String get select_language => 'اختر اللغة';
@@ -875,7 +871,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get about_app_title => 'عن التطبيق';
 
   @override
-  String get app_name => 'تطبيق زدانا للتسوّق';
+  String get app_name => 'تطبيق زدانا للتسوق';
 
   @override
   String get version_label => 'الإصدار';
@@ -885,13 +881,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get app_description =>
-      'منصة زادانا للتسوق متعدد البائعين تعيد تعريف تجربة التسوق الخاصة بك. آلاف البائعين، مئات الآلاف من المنتجات، وفئات لا حصر لها… كل ما تحتاجه هو مجرد نقرة واحدة.\n\nمع شبكتنا الواسعة من البائعين، من الأعمال المحلية إلى العلامات التجارية العالمية، نقدم لمستخدمينا أوسع مجموعة من المنتجات، مع توفير تجربة تسوق سلسة من خلال بنية تحتية آمنة للدفع وخيارات شحن سريعة.\n\nفي زادانا، لا تشتري المنتجات فقط؛ بل تكتشف، وتقارن، وتجد أفضل الأسعار، وتربح مع العروض الحصرية. سواء كنت مهتمًا بالموضة، أو الإلكترونيات، أو المنزل والحياة، زادانا دائمًا معك.\n\nوجهتك الجديدة للتسوق: زادانا';
+      'منصة زادانا للتسوق متعدد البائعين تعيد تعريف تجربة التسوق الخاصة بك. آلاف البائعين، مئات الآلاف من المنتجات، وفئات لا حصر لها… كل ما تحتاجه هو مجرد نقرة واحدة.\n\nمع شبكتنا الواسعة من البائعين، من الأعمال المحلية إلى البراندات العالمية، نقدم لمستخدمينا أوسع مجموعة من المنتجات، مع توفير تجربة تسوق سلسة من خلال بنية تحتية آمنة للدفع وخيارات شحن سريعة.\n\nفي زادانا، لا تشتري المنتجات فقط؛ بل تكتشف، وتقارن، وتجد أفضل الأسعار، وتربح مع العروض الحصرية. سواء كنت مهتمًا بالموضة، أو الإلكترونيات، أو المنزل والحياة، زادانا دائمًا معك.\n\nوجهتك الجديدة للتسوق: زادانا';
 
   @override
   String get ok => 'تمام';
 
   @override
-  String get login_success => 'تم تسجيل الدخول';
+  String get login_success => 'سجلت دخولك بنجاح';
 
   @override
   String get register_success => 'تم إنشاء الحساب، فعّل الإيميل';
@@ -909,32 +905,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get faq => 'الأسئلة الشائعة';
 
   @override
-  String get faq_track_order_question => 'كيف يمكنني تتبع طلبي؟';
+  String get faq_track_order_question => 'كيف أتتبع طلبي؟';
 
   @override
   String get faq_track_order_answer =>
-      'يمكنك تتبع طلبك من صفحة طلباتي، ثم فتح الطلب الذي تريد متابعة حالته.';
+      'تقدر تتبع طلبك من صفحة طلباتي، وبعدها افتح الطلب اللي تبغى تتابع حالته.';
 
   @override
-  String get faq_payment_methods_question => 'ما هي طرق الدفع المتاحة؟';
+  String get faq_payment_methods_question => 'وش طرق الدفع المتاحة؟';
 
   @override
   String get faq_payment_methods_answer =>
-      'ندعم بطاقات الدفع المختلفة والمحافظ الإلكترونية والدفع عند الاستلام حسب المتاح.';
+      'ندعم بطاقات الدفع المختلفة والمحافظ الإلكترونية والدفع وقت الاستلام حسب المتاح.';
 
   @override
-  String get faq_return_product_question => 'كيف يمكنني إرجاع منتج؟';
+  String get faq_return_product_question => 'كيف أقدر أرجع منتج؟';
 
   @override
   String get faq_return_product_answer =>
-      'يمكنك طلب الإرجاع من صفحة تفاصيل الطلب خلال فترة الإرجاع المسموح بها.';
+      'تقدر تطلب الإرجاع من صفحة تفاصيل الطلب خلال فترة الإرجاع المسموح بها.';
 
   @override
-  String get faq_contact_support_question => 'كيف أتواصل مع الدعم؟';
+  String get faq_contact_support_question => 'كيف أكلم الدعم؟';
 
   @override
   String get faq_contact_support_answer =>
-      'يمكنك التواصل معنا من خلال صفحة الدعم والمساعدة أو عبر وسائل التواصل المتاحة داخل التطبيق.';
+      'تقدر تكلمنا من صفحة الدعم والمساعدة أو عبر وسائل التواصل المتاحة داخل التطبيق.';
 
   @override
   String get logout => 'تسجيل خروج';
@@ -985,19 +981,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vat => 'ضريبة القيمة المضافة';
 
   @override
-  String get cod_fee => 'رسوم الدفع عند الاستلام';
+  String get cod_fee => 'رسوم الدفع وقت الاستلام';
 
   @override
   String get total => 'الإجمالي';
 
   @override
-  String get checkout => 'إتمام الطلب';
+  String get checkout => 'إكمال الطلب';
 
   @override
   String get cart_empty => 'السلة فارغة';
 
   @override
-  String get cart_empty_description => 'لا توجد منتجات في سلة التسوق';
+  String get cart_empty_description => 'ما فيه منتجات في السلة';
 
   @override
   String get cart_empty_message => 'ابدأ تسوق وحط منتجات';
@@ -1012,7 +1008,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cart_checkout_blocked_unavailable_products =>
-      'لا يمكن إتمام الطلب لوجود منتجات غير متوفرة';
+      'لا يمكن إكمال الطلب لوجود منتجات غير متوفرة';
 
   @override
   String get shop_now => 'تسوّق الحين';
@@ -1027,7 +1023,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delete_category_title => 'حذف التصفيه';
 
   @override
-  String get delete_category_confirm => 'هل تريد حذف التصفيه؟';
+  String get delete_category_confirm => 'تبغى تحذف التصفية؟';
 
   @override
   String get delete_category_tooltip => 'حذف التصفيه ';
@@ -1037,7 +1033,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get clear_filters_confirm =>
-      'سيتم حذف السعر والبراند وأي تصفيه مفعلة حاليًا. هل تريد المتابعة؟';
+      'بنحذف السعر والبراند وأي تصفية مفعلة حاليًا. تبغى تكمل؟';
 
   @override
   String get available_vendors => 'المتاجر';
@@ -1055,17 +1051,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_bad_certificate => 'شهادة الأمان غير صالحة';
 
   @override
-  String get error_request_cancelled => 'تم إلغاء الطلب';
+  String get error_request_cancelled => 'انلغى الطلب';
 
   @override
   String get error_no_internet => 'ما فيه إنترنت';
 
   @override
-  String get offline_connection_issue_title => 'مشكله ف الاتصال';
+  String get offline_connection_issue_title => 'مشكلة في الاتصال';
 
   @override
   String get offline_connection_issue_message =>
-      'تحقق من الانترنت وحاول مره اخري';
+      'تأكد من الإنترنت وحاول مرة ثانية';
 
   @override
   String get error_no_response => 'ما وصل رد من السيرفر';
@@ -1080,10 +1076,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get locationServicesDisabled => 'خدمات الموقع مقفلة';
 
   @override
-  String get locationPermissionDenied => 'تم رفض إذن الموقع';
+  String get locationPermissionDenied => 'انرفض إذن الموقع';
 
   @override
-  String get locationPermissionDeniedForever => 'تم رفض إذن الموقع نهائيًا';
+  String get locationPermissionDeniedForever => 'انرفض إذن الموقع نهائيًا';
 
   @override
   String get unknownError => 'صار شيء غلط';
@@ -1111,7 +1107,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String product_added_to_cart(Object quantity, Object name) {
-    return 'تم إضافة $quantity من $name';
+    return 'أضفنا $quantity من $name';
   }
 
   @override
@@ -1148,7 +1144,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get yes => 'نعم';
 
   @override
-  String get redirecting_to_checkout => 'جاري تحويلك لإتمام الطلب...';
+  String get redirecting_to_checkout => 'جاري تحويلك لإكمال الطلب...';
 
   @override
   String get cart => 'سلة التسوق';
@@ -1190,7 +1186,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get compare => 'قارن';
 
   @override
-  String get select_vendor_to_show_price => 'اختر المتجر لعرض السعر';
+  String get select_vendor_to_show_price => 'اختر المتجر عشان تشوف السعر';
 
   @override
   String get comparison_results => 'نتائج المقارنة';
@@ -1208,10 +1204,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get more_expensive_by => 'أغلى بـ';
 
   @override
-  String get currently_selected => 'المحدد حاليًا';
+  String get currently_selected => 'المحدد الآن';
 
   @override
-  String get select_one_more_vendor => 'اختر متجر إضافي على الأقل';
+  String get select_one_more_vendor => 'اختر متجر إضافي واحد على الأقل';
 
   @override
   String get compare_prices => 'سعر المنتج في المتجر';
@@ -1220,10 +1216,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_cheapest => 'اختيار';
 
   @override
-  String get select_vendors_to_compare => 'اختر المتاجر للمقارنة';
+  String get select_vendors_to_compare => 'اختر المتاجر عشان تقارن';
 
   @override
-  String get select_2_to_3_vendors => 'اختر من متجرين إلى 3 متاجر للمقارنة';
+  String get select_2_to_3_vendors => 'اختر من متجرين إلى 3 متاجر عشان تقارن';
 
   @override
   String get category_vegetables => 'الخضار';
@@ -1259,7 +1255,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sort_newest => 'الأحدث';
 
   @override
-  String get sort_newest_desc => 'المنتجات المضافة مؤخرًا';
+  String get sort_newest_desc => 'المنتجات المضافة جديد';
 
   @override
   String get sort_price_low => 'السعر من الأقل للأعلى';
@@ -1277,13 +1273,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sort_best_selling => 'الأكثر مبيعًا';
 
   @override
-  String get sort_best_selling_desc => 'المنتجات الأكثر شراءً';
+  String get sort_best_selling_desc => 'المنتجات الأكثر طلبًا';
 
   @override
   String get sort_highest_rated => 'الأعلى تقييمًا';
 
   @override
-  String get sort_highest_rated_desc => 'بناءً على تقييم العملاء';
+  String get sort_highest_rated_desc => 'حسب تقييم العملاء';
 
   @override
   String get sort_alphabetical => 'أبجدي';
@@ -1295,7 +1291,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filter_title => 'فلترة المنتجات';
 
   @override
-  String get sort_title => 'ترتيب المنتجات';
+  String get sort_title => 'رتّب المنتجات';
 
   @override
   String get search_hint_category => 'ابحث عن خضار، فواكه، لحوم...';
@@ -1385,10 +1381,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filter_apply => 'تطبيق تصنيف';
 
   @override
-  String get show_more => 'عرض المزيد';
+  String get show_more => 'اعرض المزيد';
 
   @override
-  String get show_less => 'عرض أقل';
+  String get show_less => 'اعرض أقل';
 
   @override
   String get favorites => 'المفضلة';
@@ -1397,7 +1393,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favorites_empty => 'المفضلة فارغة';
 
   @override
-  String get favorites_empty_message => 'لا توجد منتجات في قائمة المفضلة';
+  String get favorites_empty_message => 'ما فيه منتجات في المفضلة';
 
   @override
   String get clear_favorites => 'حذف كل المفضلة';
@@ -1410,16 +1406,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invoice_details => 'تفاصيل الطلب';
 
   @override
-  String get processing => 'جاري التنفيذ...';
+  String get processing => 'قاعدين ننفذ...';
 
   @override
-  String get order_success => 'تم الطلب!';
+  String get order_success => 'تم إرسال الطلب!';
 
   @override
   String get order_number => 'رقم الطلب';
 
   @override
-  String get payment_successful => 'تم الدفع!';
+  String get payment_successful => 'تم الدفع بنجاح!';
 
   @override
   String get payment_success_message => 'طلبك وصلنا وبيوصلك قريب';
@@ -1429,7 +1425,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get payment_confirmation_failed_message =>
-      'لم يتم تأكيد الدفع بنجاح، وما زال الطلب في انتظار الدفع. يمكنك متابعة الطلب أو المحاولة مرة أخرى لاحقًا.';
+      'ما تأكد الدفع بنجاح، والطلب باقي ينتظر الدفع. تقدر تتابع الطلب أو تحاول مرة ثانية لاحقًا.';
 
   @override
   String get estimated_delivery => 'وقت التوصيل';
@@ -1444,16 +1440,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get back_to_home => 'رجوع للرئيسية';
 
   @override
-  String get track_order_order_placed => 'تم استلام الطلب';
+  String get track_order_order_placed => 'استلمنا الطلب';
 
   @override
-  String get track_order_vendor_confirmed => 'تم تأكيد الطلب من المتجر';
+  String get track_order_vendor_confirmed => 'المتجر أكد الطلب';
 
   @override
-  String get track_order_preparing => 'جارٍ تجهيز الطلب';
+  String get track_order_preparing => 'جاري تجهيز الطلب';
 
   @override
-  String get track_order_out_for_delivery => 'خرج الطلب للتوصيل';
+  String get track_order_out_for_delivery => 'الطلب طلع للتوصيل';
 
   @override
   String get my_orders_title => 'طلباتي';
@@ -1477,16 +1473,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_active_orders => 'ما عندك طلبات حالية';
 
   @override
-  String get no_previous_orders => 'لا يوجد طلبات سابقة';
+  String get no_previous_orders => 'ما عندك طلبات سابقة';
 
   @override
-  String get no_returning_orders => 'لا يوجد طلبات قيد الارجاع';
+  String get no_returning_orders => 'ما عندك طلبات قيد الإرجاع';
 
   @override
   String get my_orders_order_date => 'تاريخ الطلب';
 
   @override
-  String get my_orders_created_at => 'تم الإنشاء بتاريخ';
+  String get my_orders_created_at => 'اننشأ بتاريخ';
 
   @override
   String get my_orders_items => 'المنتجات';
@@ -1506,22 +1502,22 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get my_orders_view_details => 'عرض التفاصيل';
+  String get my_orders_view_details => 'شوف التفاصيل';
 
   @override
   String get my_orders_cancel_order => 'إلغاء الطلب';
 
   @override
-  String get my_orders_reorder => 'إعادة الطلب';
+  String get my_orders_reorder => 'اطلب مرة ثانية';
 
   @override
   String get my_orders_rate_order => 'قيّم الطلب';
 
   @override
-  String get my_orders_reorder_button => 'إعادة الطلب';
+  String get my_orders_reorder_button => 'اطلب مرة ثانية';
 
   @override
-  String get my_orders_return_request => 'طلب الغاء';
+  String get my_orders_return_request => 'طلب إلغاء';
 
   @override
   String get my_orders_retry_payment => 'إعادة الدفع';
@@ -1536,11 +1532,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_details_title => 'تفاصيل الطلب';
 
   @override
-  String get my_orders_delete_title => 'حذف هذا الطلب؟';
+  String get my_orders_delete_title => 'تبغى تحذف هالطلب؟';
 
   @override
   String get my_orders_delete_message =>
-      'سيتم حذف الطلب نهائيًا من قائمتك إذا كان الحذف متاحًا له.';
+      'بنحذف الطلب نهائيًا من قائمتك إذا كان الحذف متاح له.';
 
   @override
   String get my_orders_order_summary_title => 'ملخص الطلب';
@@ -1549,7 +1545,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_delivery_otp_title => 'رمز التسليم';
 
   @override
-  String get my_orders_view_otp => 'عرض رمز OTP';
+  String get my_orders_view_otp => 'شوف كود OTP';
 
   @override
   String get my_orders_complaint_status_title => 'حالة الشكوى';
@@ -1559,7 +1555,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_cancel_sheet_subtitle =>
-      'يرجى اختيار سبب الإلغاء قبل تأكيد الطلب';
+      'فضلاً اختر سبب الإلغاء قبل تأكيد الطلب';
 
   @override
   String get my_orders_cancel_sheet_reason_label => 'سبب الإلغاء';
@@ -1579,7 +1575,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_cancel_confirm_message =>
-      'يرجى التأكد أنك تريد إلغاء هذا الطلب قبل المتابعة.';
+      'تأكد إنك تبغى تلغي هالطلب قبل ما تكمل.';
 
   @override
   String get my_orders_cancel_reason_delay => 'تأخر في تجهيز الطلب';
@@ -1588,7 +1584,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_cancel_reason_changed_mind => 'غيرت رأيي';
 
   @override
-  String get my_orders_cancel_reason_modify_order => 'أريد تعديل الطلب';
+  String get my_orders_cancel_reason_modify_order => 'أبغى أعدل الطلب';
 
   @override
   String get my_orders_cancel_reason_ordered_by_mistake => 'طلبت بالخطأ';
@@ -1604,7 +1600,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_complaint_sheet_subtitle =>
-      'اكتب تفاصيل المشكلة وأرفق صورًا إن لزم';
+      'اكتب تفاصيل المشكلة وأرفق صور إذا احتجت';
 
   @override
   String get my_orders_complaint_sheet_hint => 'اكتب تفاصيل الشكوى';
@@ -1614,7 +1610,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String my_orders_complaint_sheet_attached_images(int count) {
-    return 'تم إرفاق $count صورة';
+    return 'أرفقنا $count صورة';
   }
 
   @override
@@ -1622,20 +1618,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String my_orders_cancelled_feedback(String reason) {
-    return 'تم إلغاء الطلب: $reason';
+    return 'انلغى الطلب: $reason';
   }
 
   @override
-  String get my_orders_complaint_submitted_feedback => 'تم تقديم الشكوى';
+  String get my_orders_complaint_submitted_feedback => 'أرسلنا الشكوى';
 
   @override
-  String get my_orders_complaint_received => 'تم استلام الشكوى';
+  String get my_orders_complaint_received => 'استلمنا الشكوى';
 
   @override
   String get my_orders_complaint_under_review => 'الشكوى تحت المراجعة';
 
   @override
-  String get my_orders_complaint_resolved => 'تم حل الشكوى';
+  String get my_orders_complaint_resolved => 'انحلت الشكوى';
 
   @override
   String get my_orders_support_case_title => 'حالة الدعم';
@@ -1650,23 +1646,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_support_case_timeline_title => 'التحديثات الظاهرة لك';
 
   @override
-  String get my_orders_support_case_empty_details => 'اختر حالة لعرض تفاصيلها.';
+  String get my_orders_support_case_empty_details =>
+      'اختر حالة عشان تشوف تفاصيلها.';
 
   @override
   String get my_orders_support_case_action => 'الدعم والمساعدة';
 
   @override
-  String get my_orders_support_case_view => 'عرض الحالة';
+  String get my_orders_support_case_view => 'شوف الحالة';
 
   @override
-  String get my_orders_support_case_created => 'تم إرسال الحالة بنجاح';
+  String get my_orders_support_case_created => 'أرسلنا الحالة بنجاح';
 
   @override
   String get my_orders_support_case_sheet_title => 'إنشاء حالة دعم';
 
   @override
   String get my_orders_support_case_sheet_subtitle =>
-      'اشرح المشكلة وأرفق الملفات قبل إرسال الحالة.';
+      'اشرح المشكلة وأرفق الملفات قبل ما ترسل الحالة.';
 
   @override
   String get my_orders_support_case_sheet_hint => 'اكتب ما حدث';
@@ -1676,7 +1673,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String my_orders_support_case_sheet_attached_files(int count) {
-    return 'تم إرفاق $count ملف';
+    return 'أرفقنا $count ملف';
   }
 
   @override
@@ -1711,7 +1708,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_support_case_waiting_for_reply =>
-      'النظام ينتظر ردك الآن.';
+      'النظام ينتظر ردك الحين.';
 
   @override
   String get my_orders_support_case_case_details_label => 'تفاصيل الحالة';
@@ -1726,13 +1723,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_support_case_expires_at_label => 'ينتهي في';
 
   @override
-  String get my_orders_support_case_redeemed_label => 'تم الاستخدام';
+  String get my_orders_support_case_redeemed_label => 'استخدمته';
 
   @override
   String get my_orders_support_case_copy_code => 'نسخ الكود';
 
   @override
-  String get my_orders_support_case_code_copied => 'تم نسخ الكود';
+  String get my_orders_support_case_code_copied => 'نسخنا الكود';
 
   @override
   String get my_orders_support_case_admin_decision_label => 'قرار الإدارة';
@@ -1745,7 +1742,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_support_case_messages_empty =>
-      'لا توجد رسائل ظاهرة حتى الآن.';
+      'ما فيه رسائل ظاهرة إلى الآن.';
 
   @override
   String get my_orders_support_case_actor_you => 'أنت';
@@ -1754,7 +1751,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_support_case_actor_support => 'الدعم';
 
   @override
-  String get my_orders_support_case_preview_image_error => 'تعذر عرض الصورة';
+  String get my_orders_support_case_preview_image_error =>
+      'ما قدرنا نعرض الصورة';
 
   @override
   String get my_orders_support_case_priority_high => 'عالية';
@@ -1779,28 +1777,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get my_orders_support_case_settlement_cash_refunded =>
-      'تم الاسترجاع النقدي';
+      'استرجعنا المبلغ كاش';
 
   @override
-  String get my_orders_support_case_settlement_coupon_issued =>
-      'تم إصدار كوبون';
+  String get my_orders_support_case_settlement_coupon_issued => 'أصدرنا كوبون';
 
   @override
   String get my_orders_support_case_settlement_coupon_redeemed =>
-      'تم استخدام الكوبون';
+      'استخدمت الكوبون';
 
   @override
-  String get my_orders_support_case_settlement_rejected => 'تم الرفض';
+  String get my_orders_support_case_settlement_rejected => 'انرفض';
 
   @override
   String get my_orders_support_case_settlement_approved => 'تمت الموافقة';
 
   @override
   String get my_orders_support_case_evidence_guidance =>
-      'إذا طُلبت أدلة إضافية، راجع آخر ملاحظة ظاهرة لك وتواصل مع الدعم أو انتظر التحديث القادم.';
+      'إذا طُلبت أدلة إضافية، راجع آخر ملاحظة ظاهرة لك وكلم الدعم أو انتظر التحديث القادم.';
 
   @override
-  String get my_orders_support_case_status_submitted => 'تم الإرسال';
+  String get my_orders_support_case_status_submitted => 'انرسل';
 
   @override
   String get my_orders_support_case_status_in_review => 'قيد المراجعة';
@@ -1813,19 +1810,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get my_orders_support_case_status_approved => 'تمت الموافقة';
 
   @override
-  String get my_orders_support_case_status_rejected => 'تم الرفض';
+  String get my_orders_support_case_status_rejected => 'انرفض';
 
   @override
-  String get my_orders_support_case_status_resolved => 'تم الحل';
+  String get my_orders_support_case_status_resolved => 'انحلت';
 
   @override
-  String get my_orders_support_case_status_unknown => 'تم التحديث';
+  String get my_orders_support_case_status_unknown => 'تحدثت الحالة';
 
   @override
   String get my_orders_support_case_reason_payment_issue => 'مشكلة في الدفع';
 
   @override
-  String get my_orders_support_case_reason_delivery_delay => 'تأخير في التوصيل';
+  String get my_orders_support_case_reason_delivery_delay => 'تأخر في التوصيل';
 
   @override
   String get my_orders_support_case_reason_prep_delay => 'تأخير في التجهيز';
@@ -1843,7 +1840,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get order_shipped => 'انشحن';
 
   @override
-  String get order_delivered => 'تم التوصيل';
+  String get order_delivered => 'وصل الطلب';
 
   @override
   String get order_cancelled => 'ملغي';
@@ -1864,10 +1861,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get apple_pay_subtitle => 'دفع سريع وآمن';
 
   @override
-  String get cash_on_delivery => 'الدفع عند الاستلام';
+  String get cash_on_delivery => 'الدفع وقت الاستلام';
 
   @override
-  String get cash_on_delivery_subtitle => 'ادفع كاش وقت استلام الطلب';
+  String get cash_on_delivery_subtitle => 'ادفع كاش عند استلام الطلب';
 
   @override
   String get bank_transfer => 'تحويل بنكي';
@@ -1879,39 +1876,39 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shopping => 'تسوق';
 
   @override
-  String get delivery_otp_title => 'تأكيد التوصيل';
+  String get delivery_otp_title => 'أكد التوصيل';
 
   @override
   String get delivery_otp_subtitle =>
-      'أدخل رمز التحقق المرسل إليك لتأكيد التوصيل';
+      'اكتب كود التحقق اللي وصلك عشان تأكد التوصيل';
 
   @override
-  String get delivery_otp_sent_to => 'تم إرسال الرمز إلى';
+  String get delivery_otp_sent_to => 'أرسلنا الكود إلى';
 
   @override
-  String get delivery_otp_verify_button => 'تأكيد التوصيل';
+  String get delivery_otp_verify_button => 'أكد التوصيل';
 
   @override
-  String get delivery_otp_resend => 'إعادة إرسال الرمز';
+  String get delivery_otp_resend => 'إعادة إرسال الكود';
 
   @override
-  String get delivery_otp_resend_success => 'تم إعادة إرسال رمز التحقق';
+  String get delivery_otp_resend_success => 'أرسلنا كود التحقق من جديد';
 
   @override
-  String get delivery_otp_verified => 'تم تأكيد التوصيل';
+  String get delivery_otp_verified => 'تأكد التوصيل';
 
   @override
-  String get delivery_otp_invalid_code => 'رمز التحقق غير صحيح';
+  String get delivery_otp_invalid_code => 'كود التحقق غير صحيح';
 
   @override
-  String get delivery_otp_required => 'الرجاء إدخال رمز التحقق';
+  String get delivery_otp_required => 'فضلاً اكتب كود التحقق';
 
   @override
-  String get delivery_otp_expired => 'انتهت صلاحية رمز التحقق';
+  String get delivery_otp_expired => 'انتهت صلاحية كود التحقق';
 
   @override
   String get delivery_otp_attempts_exceeded =>
-      'تم تجاوز الحد الأقصى لمحاولات التحقق';
+      'تجاوزت الحد الأقصى لمحاولات التحقق';
 
   @override
   String get delivery_otp_remaining_attempts => 'المحاولات المتبقية';
@@ -1923,7 +1920,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delivery_otp_seconds => 'ثانية';
 
   @override
-  String get delivery_rating_delivered_to => 'تم التوصيل إلى';
+  String get delivery_rating_delivered_to => 'وصلنا إلى';
 
   @override
   String get delivery_rating_your_feeling => 'كيف شعورك تجاه المندوب؟';
@@ -1945,26 +1942,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delivery_rating_submit => 'إرسال';
 
   @override
-  String get delivery_code_title => 'رمز التحقق من التوصيل الخاص بك';
+  String get delivery_code_title => 'كود التحقق من التوصيل الخاص بك';
 
   @override
   String get delivery_code_share_instruction =>
-      'يرجى مشاركة هذا الرمز مع مندوب التوصيل الخاص بك';
+      'فضلاً شارك هالكود مع مندوب التوصيل';
 
   @override
-  String get delivery_code_share_label => 'شارك هذا الرمز';
+  String get delivery_code_share_label => 'شارك هالكود';
 
   @override
-  String get delivery_code_shared_button => 'تم مشاركة الرمز';
+  String get delivery_code_shared_button => 'تمت مشاركة الكود';
 
   @override
-  String get delivery_code_generate_new => 'إنشاء رمز جديد';
+  String get delivery_code_generate_new => 'إنشاء كود جديد';
 
   @override
-  String get order_success_title => 'تم نجاح الطلب';
+  String get order_success_title => 'تم طلبك بنجاح';
 
   @override
-  String get order_success_subtitle => 'شكراً لطلبك! سيتم توصيل طلبك قريباً';
+  String get order_success_subtitle => 'شكرًا لطلبك! طلبك بيوصلك قريب';
 
   @override
   String get courier_name => 'اسم المندوب';
@@ -1973,13 +1970,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delegate_values => 'قيم المندوب';
 
   @override
-  String get continue_shopping => 'مواصلة التسوق';
+  String get continue_shopping => 'كمل التسوق';
 
   @override
-  String get view_order_details => 'عرض تفاصيل الطلب';
+  String get view_order_details => 'شوف تفاصيل الطلب';
 
   @override
-  String get delivery_get_otp => 'رمز التحقق';
+  String get delivery_get_otp => 'كود التحقق';
 
   @override
   String get delivery_datetime_title => 'تاريخ ووقت التسليم';
@@ -1991,69 +1988,69 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_delivery_time => 'اختر وقت التسليم';
 
   @override
-  String get delivery_time_selected => 'تم تحديد وقت التسليم';
+  String get delivery_time_selected => 'حددنا وقت التسليم';
 
   @override
   String get today => 'اليوم';
 
   @override
-  String get tomorrow => 'غداً';
+  String get tomorrow => 'بكرة';
 
   @override
   String get delivery_time_note => 'قد يختلف وقت التسليم حسب التوفر';
 
   @override
-  String get reset => 'إعادة تعيين';
+  String get reset => 'إعادة ضبط';
 
   @override
   String get delivery_code_section_title => 'رمز التسليم';
 
   @override
-  String get otp_verification_code => 'رمز التحقق OTP';
+  String get otp_verification_code => 'كود التحقق OTP';
 
   @override
-  String get otp_show_instruction => 'اضغط لعرض رمز التحقق عند استلام الطلب';
+  String get otp_show_instruction => 'اضغط لعرض كود التحقق عند استلام الطلب';
 
   @override
-  String get view_otp_code => 'عرض رمز OTP';
+  String get view_otp_code => 'شوف كود OTP';
 
   @override
   String get location_accuracy_dialog_title => 'تفعيل دقة الموقع';
 
   @override
   String get location_accuracy_dialog_message =>
-      'للحصول على موقعك الحالي بدقة أكبر وتسريع التوصيل، سنطلب من الجهاز تفعيل إعدادات الموقع المناسبة.';
+      'عشان نحدد موقعك بدقة أكبر ونسرّع التوصيل، بنطلب من الجهاز تفعيل إعدادات الموقع المناسبة.';
 
   @override
   String get location_accuracy_dialog_hint =>
-      'قد تظهر لك نافذة من النظام لتأكيد استخدام الموقع أو تحسين دقته. يمكنك المتابعة أو المحاولة لاحقًا.';
+      'ممكن تطلع لك نافذة من النظام لتأكيد استخدام الموقع أو تحسين دقته. تقدر تكمل أو تحاول لاحقًا.';
 
   @override
   String get location_accuracy_dialog_continue => 'متابعة';
 
   @override
-  String get location_accuracy_dialog_not_now => 'ليس الآن';
+  String get location_accuracy_dialog_not_now => 'مو الحين';
 
   @override
-  String get home_empty_title => 'لا توجد منتجات أو أقسام متاحة الآن';
+  String get home_empty_title => 'ما فيه منتجات أو أقسام متاحة الآن';
 
   @override
   String get home_empty_description =>
-      'لم يصلنا أي محتوى للصفحة الرئيسية حاليًا. اسحب للتحديث أو جرّب مرة أخرى بعد قليل.';
+      'ما وصلنا أي محتوى للصفحة الرئيسية حاليًا. اسحب للتحديث أو جرّب بعد شوي.';
 
   @override
   String get profile_guest_title => 'أنت تتصفح كزائر';
 
   @override
   String get profile_guest_subtitle =>
-      'سجّل الدخول أو أنشئ حسابًا للوصول إلى الطلبات والمفضلة وبياناتك الشخصية.';
+      'سجّل دخولك أو سو حساب عشان توصل لطلباتك والمفضلة وبياناتك الشخصية.';
 
   @override
-  String get profile_guest_explore_title => 'متاح لك الآن';
+  String get profile_guest_explore_title => 'متاح لك الحين';
 
   @override
   String get profile_guest_addresses_subtitle =>
-      'يمكنك إضافة عنوان، لكن مزامنة البيانات تحتاج إلى تسجيل الدخول';
+      'تقدر تضيف عنوان، لكن مزامنة البيانات تحتاج تسجيل دخول';
 
   @override
   String get location_building_details_page_title => 'تفاصيل المبنى';
@@ -2062,20 +2059,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_save_address => 'حفظ العنوان';
 
   @override
-  String get location_building_details_heading => 'أدخل تفاصيل المبنى';
+  String get location_building_details_heading => 'اكتب تفاصيل المبنى';
 
   @override
   String get location_building_details_subtitle =>
-      'أضف تفاصيل المبنى والشقة لإكمال عنوانك';
+      'أضف تفاصيل المبنى والشقة عشان تكمل عنوانك';
 
   @override
   String get location_address_label_title => 'تسمية العنوان *';
 
   @override
-  String get location_address_label_hint => 'اختر تسمية العنوان';
+  String get location_address_label_hint => 'اختر اسم العنوان';
 
   @override
-  String get location_address_label_required => 'يرجى اختيار تسمية العنوان';
+  String get location_address_label_required => 'فضلاً اختر اسم العنوان';
 
   @override
   String get location_address_label_home => 'المنزل';
@@ -2096,7 +2093,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_building_number_required => 'رقم المبنى مطلوب';
 
   @override
-  String get location_floor_number_label => 'رقم الطابق';
+  String get location_floor_number_label => 'رقم الدور';
 
   @override
   String get location_floor_number_hint => 'مثال: 3';
@@ -2111,10 +2108,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location_manual_address_page_title => 'إدخال العنوان يدويًا';
 
   @override
-  String get location_confirm_address => 'تأكيد العنوان';
+  String get location_confirm_address => 'أكد العنوان';
 
   @override
-  String get location_manual_address_heading => 'أدخل تفاصيل عنوانك';
+  String get location_manual_address_heading => 'اكتب تفاصيل عنوانك';
 
   @override
   String get location_manual_address_subtitle =>
@@ -2131,7 +2128,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get location_edit_address_subtitle =>
-      'حدّث البيانات التالية ثم احفظ التغييرات';
+      'حدّث البيانات التالية وبعدها احفظ التغييرات';
 
   @override
   String get location_address_details_label => 'العنوان التفصيلي *';
@@ -2172,7 +2169,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String addresses_summary_default(String label) {
-    return 'الافتراضي الحالي: $label';
+    return 'العنوان الافتراضي الحالي: $label';
   }
 
   @override
@@ -2185,7 +2182,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addresses_current => 'العنوان الحالي';
 
   @override
-  String get addresses_set_default => 'اجعله افتراضي';
+  String get addresses_set_default => 'خلّه افتراضي';
 
   @override
   String get addresses_edit => 'تعديل';
@@ -2198,11 +2195,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String addresses_delete_confirm(String label) {
-    return 'هل تريد حذف عنوان \"$label\"؟';
+    return 'تبغى تحذف عنوان \"$label\"؟';
   }
 
   @override
-  String get addresses_delete_success => 'تم حذف العنوان بنجاح';
+  String get addresses_delete_success => 'حذفنا العنوان بنجاح';
 
   @override
   String addresses_set_default_success(String label) {
@@ -2210,7 +2207,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get addresses_edit_success => 'تم تحديث العنوان بنجاح';
+  String get addresses_edit_success => 'حدثنا العنوان بنجاح';
 
   @override
   String addresses_meta_building(String value) {
@@ -2237,7 +2234,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_status_active => 'نشط';
 
   @override
-  String get profile_edit_subtitle => 'حدّث اسمك ورقمك والبريد الإلكتروني';
+  String get profile_edit_subtitle => 'حدّث اسمك ورقمك وإيميلك';
 
   @override
   String get profile_addresses_subtitle =>
@@ -2247,16 +2244,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_orders_subtitle => 'راجع طلباتك الحالية والسابقة بسهولة';
 
   @override
-  String get profile_language_subtitle => 'إدارة لغة التطبيق';
+  String get profile_language_subtitle => 'تحكم بلغة التطبيق';
 
   @override
-  String get profile_notifications_subtitle => 'تحكم في الإشعارات والتنبيهات';
+  String get profile_notifications_subtitle => 'تحكم بالإشعارات والتنبيهات';
 
   @override
-  String get profile_password_subtitle => 'حدّث كلمة المرور لحماية حسابك';
+  String get profile_password_subtitle => 'حدّث كلمة المرور عشان تحمي حسابك';
 
   @override
-  String get profile_help_subtitle => 'تواصل معنا أو اطّلع على المساعدة';
+  String get profile_help_subtitle => 'كلمنا أو اطّلع على المساعدة';
 
   @override
   String get profile_faq_subtitle => 'أسئلة وإجابات سريعة تساعدك';
@@ -2268,14 +2265,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_privacy_subtitle => 'الخصوصية والشروط والأحكام';
 
   @override
-  String get profile_logout_subtitle => 'تسجيل الخروج من هذا الجهاز';
+  String get profile_logout_subtitle => 'تسجيل الخروج من هالجهاز';
 
   @override
   String get delivery_unavailable_title => 'التوصيل غير متاح';
 
   @override
   String get delivery_unavailable_hint =>
-      'برجاء اختيار متجر آخر أو تغيير عنوان التوصيل';
+      'فضلاً اختر متجر ثاني أو غيّر عنوان التوصيل';
 
   @override
   String get delivery_unavailable_dismiss => 'فهمت';
@@ -2288,11 +2285,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get checkout_login_message =>
-      'لإتمام الطلب، نحتاج أولًا إلى تسجيل دخولك أو إكمال التسجيل إذا لم يكن لديك حساب بعد.';
+      'لإكمال الطلب، نحتاج أولًا إلى تسجيل دخولك أو إكمال التسجيل إذا لم يكن لديك حساب بعد.';
 
   @override
   String get checkout_login_helper =>
-      'إذا كان لديك حساب بالفعل، يمكنك تسجيل الدخول من الشاشة التالية';
+      'إذا عندك حساب، تقدر تسجّل دخولك من الشاشة الجاية';
 
   @override
   String get checkout_login_action => 'متابعة';
@@ -2303,7 +2300,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get error_duplicate_return_request =>
-      'يوجد طلب استرجاع مفتوح لهذا الطلب بالفعل';
+      'فيه طلب استرجاع مفتوح لهالطلب بالفعل';
 
   @override
   String get error_return_window_expired => 'انتهت فترة الاسترجاع';
@@ -2337,7 +2334,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifications_delete_all_message =>
-      'هل تريد حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا الإجراء.';
+      'تبغى تحذف كل الإشعارات؟ ما تقدر تتراجع عن هالإجراء.';
 
   @override
   String get notifications_delete_all_confirm => 'حذف';
@@ -2349,8 +2346,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications_push_enabled => 'الإشعارات';
 
   @override
-  String get notifications_push_enabled_subtitle =>
-      'استقبال إشعارات على الجهاز';
+  String get notifications_push_enabled_subtitle => 'استقبل إشعارات على الجهاز';
 
   @override
   String get notifications_sound_title => 'صوت الإشعار';
@@ -2368,9 +2364,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications_sound_alert => 'تنبيه';
 
   @override
-  String get product_not_available_title => 'هذا المنتج لم يعد متاحاً';
+  String get product_not_available_title => 'هالمنتج ما عاد متاح';
 
   @override
   String get product_not_available_description =>
-      'هذا المنتج غير متوفر حالياً. يمكنك تصفح منتجات أخرى.';
+      'هالمنتج غير متوفر حاليًا. تقدر تتصفح منتجات ثانية.';
 }

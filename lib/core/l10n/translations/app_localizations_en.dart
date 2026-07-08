@@ -72,6 +72,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'The gateway timed out. Please try again later';
 
   @override
+  String get reviewsFor => 'Reviews for';
+
+  @override
   String get error_bad_request => 'Bad request';
 
   @override

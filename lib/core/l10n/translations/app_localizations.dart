@@ -206,6 +206,12 @@ abstract class AppLocalizations {
   /// **'The gateway timed out. Please try again later'**
   String get error_gateway_timeout_desc;
 
+  /// No description provided for @reviewsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews for'**
+  String get reviewsFor;
+
   /// No description provided for @error_bad_request.
   ///
   /// In en, this message translates to:
