@@ -295,6 +295,20 @@ class OrderRefundStatusEntity {
   final OrderRefundLifecycleStatus refundLifecycleStatus;
   final String? refundProvider;
   final String? refundFailureMessage;
+
+  bool get hasAnySupportStatus {
+    return caseStatus != null ||
+        caseType != null ||
+        (refundStatus?.trim().isNotEmpty ?? false);
+  }
+
+  bool get isCaseOpen => hasActiveCase;
+
+  double? get displayRefundAmount {
+    final amount = approvedAmount ?? requestedAmount;
+    if (amount == null || amount <= 0) return null;
+    return amount;
+  }
 }
 
 /// Lifecycle status of the actual refund transaction.
@@ -401,11 +415,10 @@ class OrderSupportCaseEntity {
     return orderId;
   }
 
-  bool get canSendMessage =>
-      allowedActions.any((action) {
-        final normalized = action.trim().toLowerCase();
-        return normalized == 'reply' || normalized == 'message';
-      });
+  bool get canSendMessage => allowedActions.any((action) {
+    final normalized = action.trim().toLowerCase();
+    return normalized == 'reply' || normalized == 'message';
+  });
 
   bool get isWaitingOnCustomer =>
       waitingOnRole?.trim().toLowerCase() == 'customer';

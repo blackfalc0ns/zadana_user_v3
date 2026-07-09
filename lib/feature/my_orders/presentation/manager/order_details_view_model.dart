@@ -73,15 +73,15 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
         final refundStatusResult = await _repository.getOrderRefundStatus(
           orderId,
         );
+        final refundStatus = _resolveRefundStatus(
+          order: result.data,
+          result: refundStatusResult,
+        );
         emit(
           state.copyWith(
             isLoading: false,
             order: result.data,
-            refundStatus: switch (refundStatusResult) {
-              ApiSuccessResult<OrderRefundStatusEntity>() =>
-                refundStatusResult.data,
-              ApiErrorResult<OrderRefundStatusEntity>() => null,
-            },
+            refundStatus: refundStatus,
             status: result.data.status,
             clearFailure: true,
           ),
@@ -355,10 +355,13 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
         );
         return createResult.data.id;
       case ApiErrorResult():
-        final errorMessage = SupportCaseErrorMapper.isKnownDisputeError(
-              createResult.failure,
-            ) && context.mounted
-            ? SupportCaseErrorMapper.resolveMessage(context, createResult.failure)
+        final errorMessage =
+            SupportCaseErrorMapper.isKnownDisputeError(createResult.failure) &&
+                context.mounted
+            ? SupportCaseErrorMapper.resolveMessage(
+                context,
+                createResult.failure,
+              )
             : createResult.failure.errorMessage;
         emit(
           state.copyWith(
@@ -444,6 +447,77 @@ class OrderDetailsViewModel extends Cubit<OrderDetailsState> {
 
   bool _canCreateReturnRequest(OrderStatus status) =>
       status.canCreateReturnRequest;
+
+  OrderRefundStatusEntity? _resolveRefundStatus({
+    required OrderDetailsEntity order,
+    required ApiResult<OrderRefundStatusEntity> result,
+  }) {
+    final endpointStatus = switch (result) {
+      ApiSuccessResult<OrderRefundStatusEntity>() => result.data,
+      ApiErrorResult<OrderRefundStatusEntity>() => null,
+    };
+
+    final hasEndpointDisplayData =
+        endpointStatus != null &&
+        (endpointStatus.hasAnySupportStatus ||
+            endpointStatus.settlementStatus !=
+                OrderSupportSettlementStatus.unknown ||
+            (endpointStatus.couponCode?.trim().isNotEmpty ?? false));
+    if (hasEndpointDisplayData) {
+      return endpointStatus;
+    }
+
+    final fallbackCase = order.activeCase;
+    if (fallbackCase == null) {
+      return endpointStatus;
+    }
+
+    return OrderRefundStatusEntity(
+      hasActiveCase: fallbackCase.status.isOpen,
+      caseStatus: fallbackCase.status == OrderSupportCaseStatus.unknown
+          ? null
+          : fallbackCase.status,
+      caseType: fallbackCase.type == OrderSupportCaseType.unknown
+          ? null
+          : fallbackCase.type,
+      requestedAmount: null,
+      approvedAmount: null,
+      refundMethod: null,
+      compensationType: OrderSupportCompensationType.unknown,
+      settlementStatus: OrderSupportSettlementStatus.unknown,
+      couponCode: null,
+      couponExpiresAt: null,
+      couponRedeemed: false,
+      refundStatus: fallbackCase.status == OrderSupportCaseStatus.unknown
+          ? null
+          : _supportCaseStatusApiValue(fallbackCase.status),
+      customerNote: fallbackCase.message.trim().isEmpty
+          ? null
+          : fallbackCase.message,
+      refundLifecycleStatus: OrderRefundLifecycleStatus.notApplicable,
+      refundProvider: null,
+      refundFailureMessage: null,
+    );
+  }
+
+  String _supportCaseStatusApiValue(OrderSupportCaseStatus status) {
+    switch (status) {
+      case OrderSupportCaseStatus.submitted:
+        return 'submitted';
+      case OrderSupportCaseStatus.inReview:
+        return 'in_review';
+      case OrderSupportCaseStatus.awaitingCustomerEvidence:
+        return 'awaiting_customer_evidence';
+      case OrderSupportCaseStatus.approved:
+        return 'approved';
+      case OrderSupportCaseStatus.rejected:
+        return 'rejected';
+      case OrderSupportCaseStatus.resolved:
+        return 'resolved';
+      case OrderSupportCaseStatus.unknown:
+        return '';
+    }
+  }
 
   Future<(List<OrderSupportReasonEntity>, List<OrderSupportReasonEntity>)?>
   _ensureAvailableSupportReasons(OrderStatus status) async {

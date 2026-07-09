@@ -44,20 +44,23 @@ class OrderDetailsBodyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final hasActiveSupportCase = order.activeCase != null;
     final activeSupportCase = order.activeCase;
+    final hasActiveSupportCase = activeSupportCase?.status.isOpen ?? false;
+    final hasSupportCaseSummary = activeSupportCase != null;
+    final isRefundCaseOpen = refundStatus?.isCaseOpen ?? false;
     final showRefundStatusCard =
         refundStatus != null &&
-        (refundStatus!.hasActiveCase ||
+        (refundStatus!.hasAnySupportStatus ||
             refundStatus!.settlementStatus !=
                 OrderSupportSettlementStatus.unknown ||
             (refundStatus!.couponCode?.trim().isNotEmpty ?? false));
     final canShowSupportAction =
         hasActiveSupportCase ||
+        isRefundCaseOpen ||
         status.canCreateComplaint ||
         status.canCreateReturnRequest;
     final showBottomSupportAction =
-        !hasActiveSupportCase && canShowSupportAction;
+        !hasSupportCaseSummary && canShowSupportAction;
     final canShowActions =
         order.canCancel || order.canRetryPayment || showBottomSupportAction;
     final createdAt =
@@ -122,7 +125,7 @@ class OrderDetailsBodyView extends StatelessWidget {
                 .toList(),
           ),
         ),
-        if (hasActiveSupportCase) ...[
+        if (hasSupportCaseSummary) ...[
           const SizedBox(height: Spacing.base),
           DetailSection(
             title: l10n.my_orders_support_case_title,
@@ -131,7 +134,7 @@ class OrderDetailsBodyView extends StatelessWidget {
                 ActiveSupportCaseCard(
                   title: supportCaseOperationalTypeLabel(
                     l10n,
-                    type: activeSupportCase!.type,
+                    type: activeSupportCase.type,
                     status: activeSupportCase.status,
                     settlementStatus: OrderSupportSettlementStatus.unknown,
                   ),
@@ -167,11 +170,10 @@ class OrderDetailsBodyView extends StatelessWidget {
         if (showRefundStatusCard) ...[
           const SizedBox(height: Spacing.base),
           DetailSection(
-            title: _isArabic(l10n)
-                ? 'حالة الاسترجاع / الإرجاع'
-                : 'Refund / Return Status',
+            title: _refundStatusCardTitle(l10n, refundStatus!),
             child: _RefundStatusCard(
               refundStatus: refundStatus!,
+              l10n: l10n,
               money: money,
               onCopyCoupon: (code) async {
                 await Clipboard.setData(ClipboardData(text: code));
@@ -240,6 +242,27 @@ class OrderDetailsBodyView extends StatelessWidget {
     }
   }
 
+  String _refundStatusCardTitle(
+    AppLocalizations l10n,
+    OrderRefundStatusEntity status,
+  ) {
+    final isArabic = _isArabic(l10n);
+
+    switch (status.caseType) {
+      case OrderSupportCaseType.returnRequest:
+        return isArabic ? 'طلب استرجاع' : 'Return Request';
+      case OrderSupportCaseType.driverDispute:
+        return isArabic ? 'نزاع مالي' : 'Financial Dispute';
+      case OrderSupportCaseType.driverReport:
+        return isArabic ? 'بلاغ تشغيلي' : 'Operational Report';
+      case OrderSupportCaseType.complaint:
+        return isArabic ? 'شكوى' : 'Complaint';
+      case OrderSupportCaseType.unknown:
+      case null:
+        return isArabic ? 'حالة الدعم' : 'Support Status';
+    }
+  }
+
   String _humanize(String value) {
     final normalized = value.trim();
     if (normalized.isEmpty) return '-';
@@ -259,11 +282,13 @@ class OrderDetailsBodyView extends StatelessWidget {
 class _RefundStatusCard extends StatelessWidget {
   const _RefundStatusCard({
     required this.refundStatus,
+    required this.l10n,
     required this.money,
     required this.onCopyCoupon,
   });
 
   final OrderRefundStatusEntity refundStatus;
+  final AppLocalizations l10n;
   final String Function(double value) money;
   final ValueChanged<String> onCopyCoupon;
 
@@ -272,6 +297,7 @@ class _RefundStatusCard extends StatelessWidget {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final couponCode = refundStatus.couponCode?.trim() ?? '';
     final note = refundStatus.customerNote?.trim() ?? '';
+    final refundAmount = refundStatus.displayRefundAmount;
     final showLifecycleProgress =
         refundStatus.refundLifecycleStatus !=
             OrderRefundLifecycleStatus.notApplicable &&
@@ -289,22 +315,31 @@ class _RefundStatusCard extends StatelessWidget {
           const SizedBox(height: Spacing.base),
         ],
         SummaryRow(
-          label: isArabic ? 'النتيجة' : 'Result',
-          value: _settlementLabel(refundStatus.settlementStatus, isArabic),
+          label: l10n.my_orders_support_case_status_label,
+          value: _displayStatusLabel(l10n, refundStatus),
           emphasized: true,
         ),
-        if (refundStatus.approvedAmount != null) ...[
+        if (refundStatus.caseType != null &&
+            refundStatus.caseType != OrderSupportCaseType.unknown) ...[
           const SizedBox(height: Spacing.sm),
           SummaryRow(
-            label: isArabic ? 'المبلغ المعتمد' : 'Approved amount',
-            value: money(refundStatus.approvedAmount!),
+            label: l10n.my_orders_support_case_type_label,
+            value: supportCaseTypeFallbackLabel(l10n, refundStatus.caseType!),
           ),
         ],
-        if (refundStatus.requestedAmount != null) ...[
+        if (refundStatus.settlementStatus !=
+            OrderSupportSettlementStatus.unknown) ...[
           const SizedBox(height: Spacing.sm),
           SummaryRow(
-            label: isArabic ? 'المبلغ المطلوب' : 'Requested amount',
-            value: money(refundStatus.requestedAmount!),
+            label: isArabic ? 'النتيجة' : 'Result',
+            value: _settlementLabel(refundStatus.settlementStatus, isArabic),
+          ),
+        ],
+        if (refundAmount != null) ...[
+          const SizedBox(height: Spacing.sm),
+          SummaryRow(
+            label: isArabic ? 'المبلغ' : 'Amount',
+            value: money(refundAmount),
           ),
         ],
         if ((refundStatus.refundMethod?.trim().isNotEmpty ?? false)) ...[
@@ -359,6 +394,36 @@ class _RefundStatusCard extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  static String _displayStatusLabel(
+    AppLocalizations l10n,
+    OrderRefundStatusEntity status,
+  ) {
+    final caseStatus = status.caseStatus;
+    if (caseStatus != null && caseStatus != OrderSupportCaseStatus.unknown) {
+      return supportCaseMainStatusLabel(l10n, caseStatus);
+    }
+
+    final isArabic = l10n.localeName.toLowerCase().startsWith('ar');
+    switch (status.refundStatus?.trim().toLowerCase()) {
+      case 'submitted':
+        return isArabic ? 'تم استلام الطلب' : 'Submitted';
+      case 'in_review':
+        return isArabic ? 'قيد المراجعة' : 'In review';
+      case 'approved':
+        return isArabic ? 'تمت الموافقة' : 'Approved';
+      case 'resolved':
+        return isArabic ? 'تم الحل' : 'Resolved';
+      case 'rejected':
+        return isArabic ? 'تم الرفض' : 'Rejected';
+      case 'failed':
+        return isArabic ? 'فشل الاسترجاع' : 'Refund failed';
+      case 'cancelled':
+        return isArabic ? 'تم الإلغاء' : 'Cancelled';
+      default:
+        return isArabic ? 'قيد المتابعة' : 'In progress';
+    }
   }
 
   static String _settlementLabel(
@@ -508,9 +573,9 @@ class _RefundLifecycleProgressBar extends StatelessWidget {
                   Expanded(
                     child: Text(
                       failureMessage!.trim(),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colors.error,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: colors.error),
                     ),
                   ),
                 ],
