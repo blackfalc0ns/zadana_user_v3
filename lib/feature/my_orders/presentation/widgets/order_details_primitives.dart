@@ -18,31 +18,35 @@ class DetailSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return SurfaceCard(
-      borderRadius: 22,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: getSemiBoldStyle(
-              fontSize: 18,
-              fontFamily: FontConstant.cairo,
-              color: colors.onSurface,
+    return SizedBox(
+      width: double.infinity,
+      child: SurfaceCard(
+        borderRadius: 22,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.start,
+              style: getSemiBoldStyle(
+                fontSize: 18,
+                fontFamily: FontConstant.cairo,
+                color: colors.onSurface,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Container(
-            width: 36,
-            height: 3,
-            decoration: BoxDecoration(
-              color: colors.primary.withValues(alpha: .14),
-              borderRadius: BorderRadius.circular(999),
+            const SizedBox(height: 6),
+            Container(
+              width: 36,
+              height: 3,
+              decoration: BoxDecoration(
+                color: colors.primary.withValues(alpha: .14),
+                borderRadius: BorderRadius.circular(999),
+              ),
             ),
-          ),
-          const SizedBox(height: Spacing.md),
-          child,
-        ],
+            const SizedBox(height: Spacing.md),
+            child,
+          ],
+        ),
       ),
     );
   }
@@ -402,7 +406,7 @@ class SecondaryText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color=context.colorScheme;
+    final color = context.colorScheme;
     return Text(
       text,
       textAlign: textAlign,

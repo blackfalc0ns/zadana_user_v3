@@ -100,6 +100,7 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
               ? localizedMessageFallback
               : localizedActivityNoteFallback);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DetailSection(
           title: l10n.my_orders_support_case_details_title,
@@ -306,6 +307,7 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
           child: visibleMessages.isEmpty
               ? SecondaryText(l10n.my_orders_support_case_messages_empty)
               : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: visibleMessages
                       .map(
                         (message) => Padding(
@@ -355,6 +357,7 @@ class OrderSupportCaseDetailsView extends StatelessWidget {
           child: visibleActivities.isEmpty
               ? SecondaryText(l10n.my_orders_support_case_empty_details)
               : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: visibleActivities
                       .map(
                         (activity) => Padding(

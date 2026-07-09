@@ -77,6 +77,7 @@ class OrderSupportCasePage extends StatelessWidget {
                   )
                 else if (state.selectedCase != null)
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _SupportCaseOverviewCard(
                         orderSupportCase: state.selectedCase!,
