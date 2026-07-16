@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/routing/routing_generator.dart';
 import 'package:zadana_user_v3/config/theme/app_theme.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
@@ -143,7 +144,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             theme: AppTheme.light,
             locale: state.locale,
             onGenerateRoute: RouteGenerator.getRoute,
-            initialRoute: widget.initialRoute,
+            initialRoute: 
+            //AppRoutes.paymentFailed, //widget.initialRoute,
+            widget.initialRoute,
           );
         },
       ),

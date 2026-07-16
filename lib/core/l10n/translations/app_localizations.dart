@@ -1970,6 +1970,24 @@ abstract class AppLocalizations {
   /// **'Checkout is unavailable because some products are not available'**
   String get cart_checkout_blocked_unavailable_products;
 
+  /// No description provided for @cart_checkout_unavailable_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Review unavailable products before checkout'**
+  String get cart_checkout_unavailable_hint;
+
+  /// No description provided for @cart_unavailable_checkout_dialog_message.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products in your cart are currently unavailable at this store. Remove them or choose another store, then try again.'**
+  String cart_unavailable_checkout_dialog_message(int count);
+
+  /// No description provided for @cart_unavailable_checkout_dialog_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Review cart'**
+  String get cart_unavailable_checkout_dialog_action;
+
   /// No description provided for @shop_now.
   ///
   /// In en, this message translates to:

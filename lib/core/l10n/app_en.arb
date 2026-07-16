@@ -379,6 +379,16 @@
     }
   },
   "cart_checkout_blocked_unavailable_products": "Checkout is unavailable because some products are not available",
+  "cart_checkout_unavailable_hint": "Review unavailable products before checkout",
+  "cart_unavailable_checkout_dialog_message": "{count} products in your cart are currently unavailable at this store. Remove them or choose another store, then try again.",
+  "@cart_unavailable_checkout_dialog_message": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cart_unavailable_checkout_dialog_action": "Review cart",
   "shop_now": "Shop Now",
   "delete_item": "Delete Item",
   "delete_item_confirm": "Do you want to remove this item from your cart?",

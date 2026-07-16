@@ -49,8 +49,7 @@ class Assets {
 
   static const String loading = '$_lottie/loading_animation.json';
   static const String successPayment = '$_lottie/success_payment.json';
-  static const String errorPayment = '$_lottie/failed_payment.json';
-
+  static const String errorPayment = '$_lottie/faild_payment.json';
   // Icons (SVG)
   static const String icHome = '$_icons/ic_home.svg';
   static const String icProfile = '$_icons/ic_profile.svg';

@@ -381,6 +381,16 @@
     }
   },
   "cart_checkout_blocked_unavailable_products": "لا يمكن إكمال الطلب لوجود منتجات غير متوفرة",
+  "cart_checkout_unavailable_hint": "راجع المنتجات غير المتوفرة قبل إكمال الطلب",
+  "cart_unavailable_checkout_dialog_message": "يوجد {count} منتجات غير متوفرة حاليًا في هذا المتجر. احذفها أو اختر متجرًا آخر ثم حاول مرة أخرى.",
+  "@cart_unavailable_checkout_dialog_message": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cart_unavailable_checkout_dialog_action": "مراجعة السلة",
   "shop_now": "تسوّق الحين",
 
   "delete_item": "حذف المنتج",

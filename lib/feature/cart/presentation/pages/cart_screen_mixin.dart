@@ -11,13 +11,13 @@ import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/core/utils/product_hero_tag.dart';
 import 'package:zadana_user_v3/core/utils/product_navigation_helper.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_address_entity.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/usecase/get_customer_addresses_usecase.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/cart_item_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/entities/delivery_check_entity.dart';
 import 'package:zadana_user_v3/feature/cart/domain/usecase/check_delivery_usecase.dart';
-import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_event.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_state.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/manager/cart_view_model.dart';
@@ -231,10 +231,8 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black26,
-      builder: (_) => const PopScope(
-        canPop: false,
-        child: CustomProgressIndicator(),
-      ),
+      builder: (_) =>
+          const PopScope(canPop: false, child: CustomProgressIndicator()),
     );
   }
 
@@ -297,12 +295,16 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       return;
     }
 
-    // Block checkout if server indicates items are unavailable at branch.
+    // Explain unavailable items in a focused dialog instead of leaving the
+    // checkout action disabled with no way for the user to understand why.
     final summary = cartState.summary;
-    if (summary?.canCheckout == false || (summary?.hasUnavailableItems == true)) {
-      _showSnackBar(
-        summary?.checkoutBlockReason ??
-            context.localization.cart_checkout_blocked_unavailable_products,
+    if (summary?.canCheckout == false ||
+        (summary?.hasUnavailableItems == true)) {
+      showUnavailableProductsCheckoutDialog(
+        context: context,
+        unavailableCount: viewData.unavailableCount > 0
+            ? viewData.unavailableCount
+            : summary?.unavailableItemsCount ?? 1,
       );
       return;
     }
@@ -359,7 +361,10 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
 
       _dismissCheckoutLoading();
       Navigator.pushNamed(
-          context, AppRoutes.payment, arguments: selectedVendorId);
+        context,
+        AppRoutes.payment,
+        arguments: selectedVendorId,
+      );
     } catch (_) {
       _dismissCheckoutLoading();
       rethrow;
@@ -371,10 +376,8 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black26,
-      builder: (_) => const PopScope(
-        canPop: false,
-        child: CustomProgressIndicator(),
-      ),
+      builder: (_) =>
+          const PopScope(canPop: false, child: CustomProgressIndicator()),
     );
   }
 

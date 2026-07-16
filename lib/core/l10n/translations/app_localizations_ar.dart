@@ -1011,6 +1011,18 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا يمكن إكمال الطلب لوجود منتجات غير متوفرة';
 
   @override
+  String get cart_checkout_unavailable_hint =>
+      'راجع المنتجات غير المتوفرة قبل إكمال الطلب';
+
+  @override
+  String cart_unavailable_checkout_dialog_message(int count) {
+    return 'يوجد $count منتجات غير متوفرة حاليًا في هذا المتجر. احذفها أو اختر متجرًا آخر ثم حاول مرة أخرى.';
+  }
+
+  @override
+  String get cart_unavailable_checkout_dialog_action => 'مراجعة السلة';
+
+  @override
   String get shop_now => 'تسوّق الحين';
 
   @override

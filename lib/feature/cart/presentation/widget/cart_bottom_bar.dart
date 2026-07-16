@@ -224,7 +224,7 @@ class _SelectedVendorBar extends StatelessWidget {
                 ),
               ),
               child: Text(
-                locale.cart_checkout_blocked_unavailable_products,
+                locale.cart_checkout_unavailable_hint,
                 textAlign: TextAlign.center,
                 style: getMediumStyle(
                   fontFamily: FontConstant.cairo,
@@ -239,7 +239,7 @@ class _SelectedVendorBar extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: _CartCheckoutButton(
-                  onTap: hasUnavailableItems ? null : onCheckout,
+                  onTap: onCheckout,
                   label: locale.checkout,
                 ),
               ),

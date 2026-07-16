@@ -62,10 +62,9 @@ class PaymentFailedScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
     final resolvedTitle = l10n.payment_confirmation_failed;
-    final resolvedMessage =
-        (message != null && message!.isNotEmpty)
-            ? message!
-            : l10n.payment_confirmation_failed_message;
+    final resolvedMessage = (message != null && message!.isNotEmpty)
+        ? message!
+        : l10n.payment_confirmation_failed_message;
 
     return PopScope(
       canPop: false,
@@ -80,14 +79,24 @@ class PaymentFailedScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Lottie.asset(
-                    Assets.errorPayment,
-                    width: 300,
-                    height: 300,
-                    repeat: true,
+                  SizedBox(
+                    height: 250,
+                    child: Transform.scale(
+                      // The Lottie asset has generous transparent padding.
+                      // Scaling it here makes the failed-payment mark readable
+                      // without adding unnecessary empty space to the screen.
+                      scale: 1.65,
+                      child: Lottie.asset(
+                        Assets.errorPayment,
+                        width: 250,
+                        height: 250,
+                        repeat: true,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 20),
                   Text(
                     resolvedTitle,
                     style: getSemiBoldStyle(
@@ -107,7 +116,7 @@ class PaymentFailedScreen extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 32),
                   AppButton(
                     text: l10n.my_orders_retry_payment,
                     icon: Icons.refresh_rounded,

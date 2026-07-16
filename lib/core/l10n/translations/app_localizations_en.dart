@@ -1036,6 +1036,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Checkout is unavailable because some products are not available';
 
   @override
+  String get cart_checkout_unavailable_hint =>
+      'Review unavailable products before checkout';
+
+  @override
+  String cart_unavailable_checkout_dialog_message(int count) {
+    return '$count products in your cart are currently unavailable at this store. Remove them or choose another store, then try again.';
+  }
+
+  @override
+  String get cart_unavailable_checkout_dialog_action => 'Review cart';
+
+  @override
   String get shop_now => 'Shop Now';
 
   @override

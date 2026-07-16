@@ -59,6 +59,123 @@ void showDeliveryUnavailableDialog({
   );
 }
 
+void showUnavailableProductsCheckoutDialog({
+  required BuildContext context,
+  required int unavailableCount,
+}) {
+  showDialog<void>(
+    context: context,
+    builder: (_) =>
+        _UnavailableProductsCheckoutDialog(unavailableCount: unavailableCount),
+  );
+}
+
+class _UnavailableProductsCheckoutDialog extends StatelessWidget {
+  const _UnavailableProductsCheckoutDialog({required this.unavailableCount});
+
+  final int unavailableCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+
+    return Directionality(
+      textDirection: Directionality.of(context),
+      child: Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+          decoration: BoxDecoration(
+            color: color.surface,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: AppColors.warning.withValues(alpha: 0.24),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.shadow.withValues(alpha: 0.14),
+                blurRadius: 32,
+                offset: const Offset(0, 16),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 76,
+                height: 76,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.warning.withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: AppColors.warning.withValues(alpha: 0.25),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.inventory_2_outlined,
+                  color: AppColors.warning,
+                  size: 36,
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                locale.cart_unavailable_products_title,
+                textAlign: TextAlign.center,
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size20,
+                  color: color.onSurface,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                locale.cart_unavailable_checkout_dialog_message(
+                  unavailableCount,
+                ),
+                textAlign: TextAlign.center,
+                style: getRegularStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size14,
+                  color: color.onSurfaceVariant,
+                ).copyWith(height: 1.65),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: FilledButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: color.primary,
+                    foregroundColor: color.onPrimary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  icon: const Icon(Icons.edit_note_rounded, size: 21),
+                  label: Text(
+                    locale.cart_unavailable_checkout_dialog_action,
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                      color: color.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _CheckoutRegistrationDialog extends StatelessWidget {
   const _CheckoutRegistrationDialog();
 
@@ -519,10 +636,7 @@ class _DeliveryUnavailableDialog extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.customerAddresses,
-                    );
+                    Navigator.pushNamed(context, AppRoutes.customerAddresses);
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: color.primary,
