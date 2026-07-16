@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
@@ -63,11 +64,23 @@ class OrderDetailsPageFlow {
 
     if (!context.mounted) return;
 
+    // The payment form has just closed, but the backend still needs to
+    // confirm the transaction. Keep the order-details page covered so it
+    // never flashes briefly before the result screen appears.
+    _showConfirmingOverlay(context);
+
     // Confirm with backend before deciding navigation.
     final confirmer = MoyasarPaymentConfirmer(
       getIt<ConfirmMoyasarPaymentUseCase>(),
     );
-    final paymentResult = await confirmer.confirmAndResolve(sdkResult);
+    final PaymentCallbackResult? paymentResult;
+    try {
+      paymentResult = await confirmer.confirmAndResolve(sdkResult);
+    } finally {
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    }
 
     if (!context.mounted) return;
     await _handlePaymentCallbackResult(
@@ -76,6 +89,16 @@ class OrderDetailsPageFlow {
       fallbackErrorMessage: l10n.error_other_desc,
       pendingMessage: l10n.order_pending,
       fallbackOrderId: targetOrderId,
+    );
+  }
+
+  void _showConfirmingOverlay(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black26,
+      builder: (_) =>
+          const PopScope(canPop: false, child: CustomProgressIndicator()),
     );
   }
 
@@ -128,16 +151,14 @@ class OrderDetailsPageFlow {
     final orderId = result['orderId'] ?? fallbackOrderId;
 
     if (paymentStatus == _paymentStatusFailed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!context.mounted) return;
-        Navigator.of(context).pushReplacementNamed(
-          AppRoutes.paymentFailed,
-          arguments: {
-            'orderId': orderId,
-            'message': paymentMessage ?? fallbackErrorMessage,
-          },
-        );
-      });
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.paymentFailed,
+        (route) => route.isFirst,
+        arguments: {
+          'orderId': orderId,
+          'message': paymentMessage ?? fallbackErrorMessage,
+        },
+      );
       return;
     }
 
@@ -150,12 +171,11 @@ class OrderDetailsPageFlow {
     }
 
     if (paymentStatus == _paymentStatusSuccess && orderId.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!context.mounted) return;
-        Navigator.of(
-          context,
-        ).pushReplacementNamed(AppRoutes.paymentSuccess, arguments: orderId);
-      });
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.paymentSuccess,
+        (route) => route.isFirst,
+        arguments: orderId,
+      );
       return;
     }
 

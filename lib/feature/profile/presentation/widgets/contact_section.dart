@@ -35,7 +35,7 @@ class ContactSection extends StatelessWidget {
           ContactButton(
             icon: FontAwesomeIcons.whatsapp,
             title: l10n.contact_whatsapp,
-            subtitle: l10n.contact_whatsapp_subtitle,
+            subtitle: AppConstants.developerPhone,
             onTap: () =>
                 _launchUrl('https://wa.me/${AppConstants.developerWhatsapp}'),
             iconColor: const Color(0xFF25D366),
@@ -52,7 +52,7 @@ class ContactSection extends StatelessWidget {
           ContactButton(
             icon: FontAwesomeIcons.phone,
             title: l10n.phone,
-            subtitle: l10n.contact_phone_subtitle,
+            subtitle: AppConstants.developerPhone,
             onTap: () => _launchUrl('tel:${AppConstants.developerPhone}'),
             iconColor: const Color(0xFF4285F4),
           ),

@@ -254,6 +254,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   void _handleCategoryStateChanged(BuildContext context, CategoryState state) {
+    _latestCategoryState = state;
+
+    // A request from Home can arrive before the shopping tab finishes its
+    // first state emission. Consume it as soon as that state is available,
+    // so the search field becomes active and receives focus.
+    _handleExternalSearchRequest();
+
     if (_isResettingFilters && mounted) {
       setState(() {
         _isResettingFilters = false;
@@ -420,17 +427,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
           onLoadMore: () => context.read<CategoryViewModel>().doIntent(
             const CategoryLoadMoreProductsEvent(),
           ),
-          onLoadMoreCategories: () => context.read<CategoryViewModel>().doIntent(
-            const CategoryLoadMoreCategoriesEvent(),
-          ),
+          onLoadMoreCategories: () => context
+              .read<CategoryViewModel>()
+              .doIntent(const CategoryLoadMoreCategoriesEvent()),
           isLoadingMoreCategories: state.isLoadingMoreCategories,
           hasMoreCategories: state.hasMoreCategories,
           isLoadingMoreSubCategories: state.isLoadingMoreSubCategories,
           hasMoreSubCategories: state.hasMoreSubCategories,
-          onLoadMoreSubCategories: () =>
-              context.read<CategoryViewModel>().doIntent(
-                const CategoryLoadMoreSubCategoriesEvent(),
-              ),
+          onLoadMoreSubCategories: () => context
+              .read<CategoryViewModel>()
+              .doIntent(const CategoryLoadMoreSubCategoriesEvent()),
         );
       },
     );

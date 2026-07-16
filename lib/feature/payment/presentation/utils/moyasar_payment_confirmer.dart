@@ -66,13 +66,7 @@ class MoyasarPaymentConfirmer {
         // Confirm failed (network error, server error, etc.).
         // Do NOT blindly trust the SDK status — the backend is authoritative.
         // Mark as pending so the user doesn't see a false success.
-        return <String, String?>{
-          'source': 'moyasar_confirm_fallback',
-          'status': 'pending',
-          'paymentId': moyasarPaymentId,
-          'orderId': sdkResult['orderId'],
-          'message': sdkResult['message'],
-        };
+        return sdkResult;
     }
   }
 }

@@ -120,7 +120,7 @@ class _HomeScreenView extends StatelessWidget {
                   const SliverToBoxAdapter(child: BestSellingSection()),
                   const SliverToBoxAdapter(child: SizedBox(height: Spacing.lg)),
                   const SliverToBoxAdapter(child: BrandsSection()),
-                  
+
                   const SliverToBoxAdapter(child: FeaturedProductsSection()),
                   const SliverToBoxAdapter(child: DynamicHomePreviewSection()),
                   SliverToBoxAdapter(
@@ -145,7 +145,10 @@ class _HomeScreenView extends StatelessWidget {
 
   void _openShoppingSearch(BuildContext context) {
     CategoryNavigationService().requestOpenSearch();
-    mainShellKey.currentState?.jumpToTab(1);
+    // Prefer the shell that owns this screen. The global key may briefly be
+    // unavailable while routes are being rebuilt.
+    final shellState = context.findAncestorStateOfType<MainShellState>();
+    (shellState ?? mainShellKey.currentState)?.jumpToTab(1);
   }
 
   Future<void> _openNotifications(BuildContext context) async {
