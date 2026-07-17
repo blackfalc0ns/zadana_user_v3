@@ -943,5 +943,13 @@
   "notifications_sound_chime": "Chime",
   "notifications_sound_alert": "Alert",
   "product_not_available_title": "Product no longer available",
-  "product_not_available_description": "This product is currently unavailable. You can browse other products."
+  "product_not_available_description": "This product is currently unavailable. You can browse other products.",
+  "checkout_unavailable_items_confirm_title": "Some items are unavailable",
+  "checkout_unavailable_items_confirm_message": "The selected vendor cannot provide all {count} unavailable cart items. Continue and remove them from the order?",
+  "@checkout_unavailable_items_confirm_message": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "checkout_unavailable_items_confirm_continue": "Continue"
 }

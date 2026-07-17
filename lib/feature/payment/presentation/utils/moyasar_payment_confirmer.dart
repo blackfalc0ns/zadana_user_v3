@@ -63,6 +63,16 @@ class MoyasarPaymentConfirmer {
           'message': entity.message,
         };
       case ApiErrorResult<ConfirmPaymentResponseEntity>():
+        if (confirmResult.failure.code == 'ORDER_PAYMENT_RESERVATION_EXPIRED' ||
+            confirmResult.failure.code == 'order_payment_reservation_expired') {
+          return <String, String?>{
+            'source': 'moyasar_confirm',
+            'status': 'failed',
+            'paymentId': moyasarPaymentId,
+            'message':
+                'Order reservation expired. Please start checkout again.',
+          };
+        }
         // Confirm failed (network error, server error, etc.).
         // Do NOT blindly trust the SDK status — the backend is authoritative.
         // Mark as pending so the user doesn't see a false success.

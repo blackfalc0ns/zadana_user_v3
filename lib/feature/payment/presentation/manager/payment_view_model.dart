@@ -33,9 +33,17 @@ class PaymentViewModel extends Cubit<PaymentState> {
   final PlaceOrderUseCase _placeOrderUseCase;
   final GetCustomerAddressesUseCase _getCustomerAddressesUseCase;
 
-  void initialize({String? vendorId}) {
-    if (state.vendorId == vendorId) return;
-    emit(state.copyWith(vendorId: vendorId));
+  void initialize({String? vendorId, bool removeUnavailableItems = false}) {
+    if (state.vendorId == vendorId &&
+        state.removeUnavailableItems == removeUnavailableItems) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        vendorId: vendorId,
+        removeUnavailableItems: removeUnavailableItems,
+      ),
+    );
   }
 
   void doIntent(PaymentEvent event) {
@@ -57,7 +65,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       case PaymentRemovePromoEvent():
         _removePromoCode();
       case PaymentPlaceOrderEvent():
-        _placeOrder();
+        _placeOrder(removeUnavailableItems: event.removeUnavailableItems);
       case PaymentRequestAddressSelectionEvent():
         emit(state.copyWith(uiEffect: const OpenAddressSelectorEffect()));
       case PaymentHandleAddressSelectionResultEvent():
@@ -331,7 +339,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
     }
   }
 
-  Future<void> _placeOrder() async {
+  Future<void> _placeOrder({bool removeUnavailableItems = false}) async {
     final checkoutSummary = state.checkoutSummary;
     final selectedPaymentMethodCode = state.selectedPaymentMethodCode;
     final selectedAddressId = state.selectedAddressId;
@@ -355,10 +363,22 @@ class PaymentViewModel extends Cubit<PaymentState> {
     if (!checkoutSummary.isDeliveryValid) {
       final message =
           checkoutSummary.deliveryCheck?.messageAr.isNotEmpty == true
-              ? checkoutSummary.deliveryCheck!.messageAr
-              : 'Delivery is not available for the selected address.';
+          ? checkoutSummary.deliveryCheck!.messageAr
+          : 'Delivery is not available for the selected address.';
+      emit(state.copyWith(actionFailure: Failure(errorMessage: message)));
+      return;
+    }
+
+    final shouldRemoveUnavailableItems =
+        removeUnavailableItems || state.removeUnavailableItems;
+    if (checkoutSummary.cart.requiresUnavailableItemsConfirmation &&
+        !shouldRemoveUnavailableItems) {
       emit(
-        state.copyWith(actionFailure: Failure(errorMessage: message)),
+        state.copyWith(
+          uiEffect: ConfirmUnavailableItemsEffect(
+            unavailableItemsCount: checkoutSummary.cart.unavailableItemsCount,
+          ),
+        ),
       );
       return;
     }
@@ -379,6 +399,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
         paymentMethod: selectedPaymentMethodCode,
         promoCode:
             state.appliedPromoCode ?? checkoutSummary.promoCode?.code ?? '',
+        removeUnavailableItems: shouldRemoveUnavailableItems,
       ),
     );
 
@@ -433,12 +454,30 @@ class PaymentViewModel extends Cubit<PaymentState> {
         final isCartItemsUnavailable =
             result.failure.code == 'CART_ITEMS_UNAVAILABLE_AT_ADDRESS_BRANCH' ||
             result.failure.code == 'cart_items_unavailable_at_address_branch';
+        final requiresUnavailableItemsConfirmation =
+            result.failure.code ==
+                'CART_UNAVAILABLE_ITEMS_CONFIRMATION_REQUIRED' ||
+            result.failure.code ==
+                'cart_unavailable_items_confirmation_required';
+        final insufficientStock =
+            result.failure.code == 'INSUFFICIENT_STOCK' ||
+            result.failure.code == 'insufficient_stock';
 
         emit(
           state.copyWith(
             isPlacingOrder: false,
-            actionFailure: result.failure,
-            uiEffect: isCartItemsUnavailable
+            actionFailure:
+                requiresUnavailableItemsConfirmation || isCartItemsUnavailable
+                ? null
+                : result.failure,
+            clearActionFailure:
+                requiresUnavailableItemsConfirmation || isCartItemsUnavailable,
+            uiEffect: requiresUnavailableItemsConfirmation
+                ? ConfirmUnavailableItemsEffect(
+                    unavailableItemsCount:
+                        checkoutSummary.cart.unavailableItemsCount,
+                  )
+                : isCartItemsUnavailable
                 ? ShowCartItemsUnavailableAtBranchEffect(
                     result.failure.errorMessage,
                   )
@@ -446,7 +485,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
 
-        if (isPaymentMethodNotSupported) {
+        if (isPaymentMethodNotSupported ||
+            insufficientStock ||
+            isCartItemsUnavailable) {
           // Reload checkout summary to get updated payment methods.
           _refreshSummary(
             addressId: state.selectedAddressId,

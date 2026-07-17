@@ -6,6 +6,7 @@ class PlaceOrderRequestEntity {
     required this.paymentMethod,
     required this.promoCode,
     this.notes,
+    this.removeUnavailableItems = false,
   });
 
   final String? vendorId;
@@ -14,4 +15,5 @@ class PlaceOrderRequestEntity {
   final String paymentMethod;
   final String promoCode;
   final String? notes;
+  final bool removeUnavailableItems;
 }

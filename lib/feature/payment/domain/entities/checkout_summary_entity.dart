@@ -85,11 +85,35 @@ class CheckoutCartEntity {
     required this.itemsCount,
     required this.totalQuantity,
     required this.items,
+    this.hasUnavailableItems = false,
+    this.unavailableItemsCount = 0,
+    this.requiresUnavailableItemsConfirmation = false,
+    this.unavailableItems = const [],
   });
 
   final int itemsCount;
   final int totalQuantity;
   final List<CheckoutCartItemEntity> items;
+  final bool hasUnavailableItems;
+  final int unavailableItemsCount;
+  final bool requiresUnavailableItemsConfirmation;
+  final List<CheckoutUnavailableCartItemEntity> unavailableItems;
+}
+
+class CheckoutUnavailableCartItemEntity {
+  const CheckoutUnavailableCartItemEntity({
+    required this.id,
+    required this.productId,
+    required this.name,
+    required this.quantity,
+    required this.availabilityStatus,
+  });
+
+  final String id;
+  final String productId;
+  final String name;
+  final int quantity;
+  final String availabilityStatus;
 }
 
 class CheckoutCartItemEntity {

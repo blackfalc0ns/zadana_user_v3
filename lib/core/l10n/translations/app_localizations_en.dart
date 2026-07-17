@@ -2435,4 +2435,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get product_not_available_description =>
       'This product is currently unavailable. You can browse other products.';
+
+  @override
+  String get checkout_unavailable_items_confirm_title =>
+      'Some items are unavailable';
+
+  @override
+  String checkout_unavailable_items_confirm_message(int count) {
+    return 'The selected vendor cannot provide all $count unavailable cart items. Continue and remove them from the order?';
+  }
+
+  @override
+  String get checkout_unavailable_items_confirm_continue => 'Continue';
 }

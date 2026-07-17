@@ -24,24 +24,24 @@ class CheckoutSummaryDto {
       selectedAddress: _nullableMap(json['selected_address']) == null
           ? null
           : CheckoutAddressDto.fromJson(_asMap(json['selected_address'])),
-      availableAddresses: _asList(json['available_addresses'])
-          .map((item) => CheckoutAddressDto.fromJson(_asMap(item)))
-          .toList(),
-      deliverySlots: _asList(json['delivery_slots'])
-          .map((item) => CheckoutDeliverySlotDto.fromJson(_asMap(item)))
-          .toList(),
-      paymentMethods: _asList(json['payment_methods'])
-          .map((item) => CheckoutPaymentMethodDto.fromJson(_asMap(item)))
-          .toList(),
+      availableAddresses: _asList(
+        json['available_addresses'],
+      ).map((item) => CheckoutAddressDto.fromJson(_asMap(item))).toList(),
+      deliverySlots: _asList(
+        json['delivery_slots'],
+      ).map((item) => CheckoutDeliverySlotDto.fromJson(_asMap(item))).toList(),
+      paymentMethods: _asList(
+        json['payment_methods'],
+      ).map((item) => CheckoutPaymentMethodDto.fromJson(_asMap(item))).toList(),
       promoCode: _nullableMap(json['promo_code']) == null
           ? null
           : CheckoutPromoCodeDto.fromJson(_asMap(json['promo_code'])),
       deliveryQuote: _nullableMap(json['delivery_quote']) == null
           ? null
           : CheckoutDeliveryQuoteDto.fromJson(_asMap(json['delivery_quote'])),
-      shippingBreakdown: _asList(json['shipping_breakdown'])
-          .map((item) => CheckoutShippingLineDto.fromJson(_asMap(item)))
-          .toList(),
+      shippingBreakdown: _asList(
+        json['shipping_breakdown'],
+      ).map((item) => CheckoutShippingLineDto.fromJson(_asMap(item))).toList(),
       pricingMode: json['pricing_mode']?.toString(),
       summary: CheckoutTotalsDto.fromJson(_asMap(json['summary'])),
       deliveryCheck: _nullableMap(json['delivery_check']) == null
@@ -49,10 +49,10 @@ class CheckoutSummaryDto {
           : CheckoutDeliveryCheckDto.fromJson(_asMap(json['delivery_check'])),
       estimatedDeliveryWindow:
           _nullableMap(json['estimated_delivery_window']) == null
-              ? null
-              : EstimatedDeliveryWindowDto.fromJson(
-                  _asMap(json['estimated_delivery_window']),
-                ),
+          ? null
+          : EstimatedDeliveryWindowDto.fromJson(
+              _asMap(json['estimated_delivery_window']),
+            ),
     );
   }
 
@@ -80,7 +80,9 @@ class CheckoutSummaryDto {
       paymentMethods: paymentMethods.map((item) => item.toEntity()).toList(),
       promoCode: promoCode?.toEntity(),
       deliveryQuote: deliveryQuote?.toEntity(),
-      shippingBreakdown: shippingBreakdown.map((item) => item.toEntity()).toList(),
+      shippingBreakdown: shippingBreakdown
+          .map((item) => item.toEntity())
+          .toList(),
       pricingMode: pricingMode,
       summary: summary.toEntity(),
       deliveryCheck: deliveryCheck?.toEntity(),
@@ -94,14 +96,25 @@ class CheckoutCartDto {
     required this.itemsCount,
     required this.totalQuantity,
     required this.items,
+    this.hasUnavailableItems = false,
+    this.unavailableItemsCount = 0,
+    this.requiresUnavailableItemsConfirmation = false,
+    this.unavailableItems = const [],
   });
 
   factory CheckoutCartDto.fromJson(Map<String, dynamic> json) {
     return CheckoutCartDto(
       itemsCount: _asInt(json['items_count']),
       totalQuantity: _asInt(json['total_quantity']),
-      items: _asList(json['items'])
-          .map((item) => CheckoutCartItemDto.fromJson(_asMap(item)))
+      items: _asList(
+        json['items'],
+      ).map((item) => CheckoutCartItemDto.fromJson(_asMap(item))).toList(),
+      hasUnavailableItems: json['has_unavailable_items'] == true,
+      unavailableItemsCount: _asInt(json['unavailable_items_count']),
+      requiresUnavailableItemsConfirmation:
+          json['requires_unavailable_items_confirmation'] == true,
+      unavailableItems: _asList(json['unavailable_items'])
+          .map((item) => CheckoutUnavailableCartItemDto.fromJson(_asMap(item)))
           .toList(),
     );
   }
@@ -109,12 +122,59 @@ class CheckoutCartDto {
   final int itemsCount;
   final int totalQuantity;
   final List<CheckoutCartItemDto> items;
+  final bool hasUnavailableItems;
+  final int unavailableItemsCount;
+  final bool requiresUnavailableItemsConfirmation;
+  final List<CheckoutUnavailableCartItemDto> unavailableItems;
 
   CheckoutCartEntity toEntity() {
     return CheckoutCartEntity(
       itemsCount: itemsCount,
       totalQuantity: totalQuantity,
       items: items.map((item) => item.toEntity()).toList(),
+      hasUnavailableItems: hasUnavailableItems,
+      unavailableItemsCount: unavailableItemsCount,
+      requiresUnavailableItemsConfirmation:
+          requiresUnavailableItemsConfirmation,
+      unavailableItems: unavailableItems
+          .map((item) => item.toEntity())
+          .toList(),
+    );
+  }
+}
+
+class CheckoutUnavailableCartItemDto {
+  const CheckoutUnavailableCartItemDto({
+    required this.id,
+    required this.productId,
+    required this.name,
+    required this.quantity,
+    required this.availabilityStatus,
+  });
+
+  factory CheckoutUnavailableCartItemDto.fromJson(Map<String, dynamic> json) {
+    return CheckoutUnavailableCartItemDto(
+      id: json['id']?.toString() ?? '',
+      productId: json['product_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      quantity: _asInt(json['quantity']),
+      availabilityStatus: json['availability_status']?.toString() ?? '',
+    );
+  }
+
+  final String id;
+  final String productId;
+  final String name;
+  final int quantity;
+  final String availabilityStatus;
+
+  CheckoutUnavailableCartItemEntity toEntity() {
+    return CheckoutUnavailableCartItemEntity(
+      id: id,
+      productId: productId,
+      name: name,
+      quantity: quantity,
+      availabilityStatus: availabilityStatus,
     );
   }
 }
@@ -152,10 +212,9 @@ class CheckoutCartItemDto {
       measurementValue: json['measurement_value']?.toString(),
       measurementUnitName: json['measurement_unit_name']?.toString(),
       variantImageUrl: json['variant_image_url']?.toString(),
-      variantImages: _asList(json['variant_images'])
-          .map((e) => e?.toString() ?? '')
-          .where((e) => e.isNotEmpty)
-          .toList(),
+      variantImages: _asList(
+        json['variant_images'],
+      ).map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList(),
     );
   }
 

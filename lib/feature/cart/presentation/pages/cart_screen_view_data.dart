@@ -64,7 +64,7 @@ class CartScreenViewData {
     if (summary?.canCheckout != null) {
       canCheckout = summary!.canCheckout!;
     } else {
-      canCheckout = unavailableCount == 0;
+      canCheckout = true;
     }
 
     return CartScreenViewData(

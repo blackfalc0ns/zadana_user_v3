@@ -39,7 +39,9 @@ class PaymentRemovePromoEvent extends PaymentEvent {
 }
 
 class PaymentPlaceOrderEvent extends PaymentEvent {
-  const PaymentPlaceOrderEvent();
+  const PaymentPlaceOrderEvent({this.removeUnavailableItems = false});
+
+  final bool removeUnavailableItems;
 }
 
 class PaymentRequestAddressSelectionEvent extends PaymentEvent {

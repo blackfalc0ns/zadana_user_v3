@@ -158,9 +158,22 @@ class RouteGenerator {
           },
         );
       case AppRoutes.payment:
-        final vendorId = settings.arguments as String?;
+        final arguments = settings.arguments;
+        final vendorId = switch (arguments) {
+          final String id => id,
+          final Map<dynamic, dynamic> map => map['vendorId']?.toString(),
+          _ => null,
+        };
+        final removeUnavailableItems = switch (arguments) {
+          final Map<dynamic, dynamic> map =>
+            map['removeUnavailableItems'] as bool? ?? false,
+          _ => false,
+        };
         return MaterialPageRoute(
-          builder: (_) => PaymentScreen(vendorId: vendorId),
+          builder: (_) => PaymentScreen(
+            vendorId: vendorId,
+            removeUnavailableItems: removeUnavailableItems,
+          ),
         );
       case AppRoutes.paymentSuccess:
         final arguments = settings.arguments;
@@ -272,10 +285,8 @@ class RouteGenerator {
         final courierName = arguments?['courierName']?.toString();
         final otpCode = arguments?['otpCode']?.toString();
         return MaterialPageRoute(
-          builder: (_) => DeliveryOtpScreen(
-            courierName: courierName,
-            otpCode: otpCode,
-          ),
+          builder: (_) =>
+              DeliveryOtpScreen(courierName: courierName, otpCode: otpCode),
         );
       case AppRoutes.successOrder:
         final arguments = settings.arguments as Map<String, String?>?;
@@ -286,9 +297,7 @@ class RouteGenerator {
           ),
         );
       case AppRoutes.allCategories:
-        return MaterialPageRoute(
-          builder: (_) => const AllCategoriesPage(),
-        );
+        return MaterialPageRoute(builder: (_) => const AllCategoriesPage());
       case AppRoutes.notificationPreferences:
         return MaterialPageRoute(
           builder: (_) => const NotificationPreferencesScreen(),

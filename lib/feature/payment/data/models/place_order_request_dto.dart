@@ -8,6 +8,7 @@ class PlaceOrderRequestDto {
     required this.paymentMethod,
     required this.promoCode,
     this.notes,
+    this.removeUnavailableItems = false,
   });
 
   final String? vendorId;
@@ -16,6 +17,7 @@ class PlaceOrderRequestDto {
   final String paymentMethod;
   final String promoCode;
   final String? notes;
+  final bool removeUnavailableItems;
 
   Map<String, dynamic> toJson() {
     return {
@@ -25,6 +27,7 @@ class PlaceOrderRequestDto {
       'payment_method': _normalizePaymentMethod(paymentMethod),
       'promo_code': promoCode,
       'notes': notes,
+      if (removeUnavailableItems) 'remove_unavailable_items': true,
     };
   }
 }
@@ -38,6 +41,7 @@ extension PlaceOrderRequestMapper on PlaceOrderRequestEntity {
       paymentMethod: paymentMethod,
       promoCode: promoCode,
       notes: notes,
+      removeUnavailableItems: removeUnavailableItems,
     );
   }
 }

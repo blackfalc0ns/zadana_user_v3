@@ -74,9 +74,16 @@ class ShowCartItemsUnavailableAtBranchEffect extends PaymentUiEffect {
   final String message;
 }
 
+class ConfirmUnavailableItemsEffect extends PaymentUiEffect {
+  const ConfirmUnavailableItemsEffect({required this.unavailableItemsCount});
+
+  final int unavailableItemsCount;
+}
+
 class PaymentState {
   const PaymentState({
     this.vendorId,
+    this.removeUnavailableItems = false,
     this.appliedPromoCode,
     this.isLoadingSummary = false,
     this.isRefreshingSummary = false,
@@ -96,6 +103,7 @@ class PaymentState {
   });
 
   final String? vendorId;
+  final bool removeUnavailableItems;
   final String? appliedPromoCode;
   final bool isLoadingSummary;
   final bool isRefreshingSummary;
@@ -167,6 +175,7 @@ class PaymentState {
 
   PaymentState copyWith({
     String? vendorId,
+    bool? removeUnavailableItems,
     String? appliedPromoCode,
     bool? isLoadingSummary,
     bool? isRefreshingSummary,
@@ -195,6 +204,8 @@ class PaymentState {
   }) {
     return PaymentState(
       vendorId: vendorId ?? this.vendorId,
+      removeUnavailableItems:
+          removeUnavailableItems ?? this.removeUnavailableItems,
       appliedPromoCode: clearAppliedPromoCode
           ? null
           : appliedPromoCode ?? this.appliedPromoCode,

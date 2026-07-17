@@ -6,17 +6,24 @@ import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_view
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_screen_content.dart';
 
 class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key, this.vendorId});
+  const PaymentScreen({
+    super.key,
+    this.vendorId,
+    this.removeUnavailableItems = false,
+  });
 
   final String? vendorId;
+  final bool removeUnavailableItems;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          getIt<PaymentViewModel>()
-            ..initialize(vendorId: vendorId)
-            ..doIntent(const PaymentLoadEvent()),
+      create: (_) => getIt<PaymentViewModel>()
+        ..initialize(
+          vendorId: vendorId,
+          removeUnavailableItems: removeUnavailableItems,
+        )
+        ..doIntent(const PaymentLoadEvent()),
       child: const PaymentScreenContent(),
     );
   }

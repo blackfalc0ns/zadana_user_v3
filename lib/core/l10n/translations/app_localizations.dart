@@ -4579,6 +4579,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This product is currently unavailable. You can browse other products.'**
   String get product_not_available_description;
+
+  /// No description provided for @checkout_unavailable_items_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Some items are unavailable'**
+  String get checkout_unavailable_items_confirm_title;
+
+  /// No description provided for @checkout_unavailable_items_confirm_message.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected vendor cannot provide all {count} unavailable cart items. Continue and remove them from the order?'**
+  String checkout_unavailable_items_confirm_message(int count);
+
+  /// No description provided for @checkout_unavailable_items_confirm_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get checkout_unavailable_items_confirm_continue;
 }
 
 class _AppLocalizationsDelegate

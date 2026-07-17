@@ -70,6 +70,188 @@ void showUnavailableProductsCheckoutDialog({
   );
 }
 
+Future<bool> showConfirmUnavailableProductsCheckoutDialog({
+  required BuildContext context,
+  required int unavailableCount,
+}) async {
+  return await showDialog<bool>(
+        context: context,
+        barrierColor: Colors.black.withValues(alpha: 0.58),
+        builder: (_) => _ConfirmUnavailableProductsCheckoutDialog(
+          unavailableCount: unavailableCount,
+        ),
+      ) ??
+      false;
+}
+
+class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
+  const _ConfirmUnavailableProductsCheckoutDialog({
+    required this.unavailableCount,
+  });
+
+  final int unavailableCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final locale = context.localization;
+
+    return Directionality(
+      textDirection: Directionality.of(context),
+      child: Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
+          decoration: BoxDecoration(
+            color: color.surface,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: AppColors.warning.withValues(alpha: 0.25),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.22),
+                blurRadius: 36,
+                offset: const Offset(0, 18),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: AppColors.warning.withValues(alpha: 0.13),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: const Icon(
+                      Icons.inventory_2_outlined,
+                      color: AppColors.warning,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      locale.checkout_unavailable_items_confirm_title,
+                      style: getBoldStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size20,
+                        color: color.onSurface,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.warning.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '$unavailableCount',
+                      style: getBoldStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size14,
+                        color: AppColors.warning,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: color.surfaceContainerHighest.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Text(
+                  locale.checkout_unavailable_items_confirm_message(
+                    unavailableCount,
+                  ),
+                  style: getRegularStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size14,
+                    color: color.onSurfaceVariant,
+                  ).copyWith(height: 1.65),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    size: 17,
+                    color: AppColors.warning,
+                  ),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Text(
+                      'سيتم إكمال الطلب بالمنتجات المتوفرة فقط.',
+                      style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        color: color.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 22),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52),
+                        foregroundColor: color.onSurfaceVariant,
+                        side: BorderSide(color: color.outlineVariant),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(locale.cancel),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: FilledButton.icon(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52),
+                        backgroundColor: color.primary,
+                        foregroundColor: color.onPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      icon: const Icon(Icons.arrow_back_rounded, size: 19),
+                      label: Text(
+                        locale.checkout_unavailable_items_confirm_continue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _UnavailableProductsCheckoutDialog extends StatelessWidget {
   const _UnavailableProductsCheckoutDialog({required this.unavailableCount});
 

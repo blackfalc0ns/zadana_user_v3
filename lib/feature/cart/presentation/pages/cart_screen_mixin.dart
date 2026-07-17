@@ -295,11 +295,10 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       return;
     }
 
-    // Explain unavailable items in a focused dialog instead of leaving the
-    // checkout action disabled with no way for the user to understand why.
     final summary = cartState.summary;
-    if (summary?.canCheckout == false ||
-        (summary?.hasUnavailableItems == true)) {
+    final hasUnavailableItems =
+        summary?.hasUnavailableItems == true || viewData.unavailableCount > 0;
+    if (summary?.canCheckout == false && !hasUnavailableItems) {
       showUnavailableProductsCheckoutDialog(
         context: context,
         unavailableCount: viewData.unavailableCount > 0
@@ -308,6 +307,16 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       );
       return;
     }
+
+    final removeUnavailableItems = hasUnavailableItems
+        ? await showConfirmUnavailableProductsCheckoutDialog(
+            context: context,
+            unavailableCount: viewData.unavailableCount > 0
+                ? viewData.unavailableCount
+                : summary?.unavailableItemsCount ?? 1,
+          )
+        : false;
+    if (!mounted || (hasUnavailableItems && !removeUnavailableItems)) return;
 
     final token = await getIt<TokenService>().getToken();
     if (!mounted) return;
@@ -363,7 +372,10 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       Navigator.pushNamed(
         context,
         AppRoutes.payment,
-        arguments: selectedVendorId,
+        arguments: {
+          'vendorId': selectedVendorId,
+          'removeUnavailableItems': removeUnavailableItems,
+        },
       );
     } catch (_) {
       _dismissCheckoutLoading();

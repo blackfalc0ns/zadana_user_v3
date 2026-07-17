@@ -946,4 +946,13 @@
   "notifications_sound_alert": "تنبيه",
   "product_not_available_title": "هالمنتج ما عاد متاح",
   "product_not_available_description": "هالمنتج غير متوفر حاليًا. تقدر تتصفح منتجات ثانية."
+,
+  "checkout_unavailable_items_confirm_title": "في منتجات غير متوفرة",
+  "checkout_unavailable_items_confirm_message": "التاجر المختار لا يوفر كل منتجات العربة. هل تريد حذف {count} منتجات غير متوفرة وإكمال الطلب؟",
+  "@checkout_unavailable_items_confirm_message": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "checkout_unavailable_items_confirm_continue": "إكمال الطلب"
 }

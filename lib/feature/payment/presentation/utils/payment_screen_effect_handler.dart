@@ -27,9 +27,7 @@ class PaymentScreenEffectHandler {
       barrierColor: Colors.black54,
       builder: (_) => const PopScope(
         canPop: false,
-        child: Center(
-          child: CircularProgressIndicator(color: Colors.white),
-        ),
+        child: Center(child: CircularProgressIndicator(color: Colors.white)),
       ),
     );
   }
@@ -62,6 +60,35 @@ class PaymentScreenEffectHandler {
         arguments: {'orderId': orderId, 'message': message},
       );
     });
+  }
+
+  static Future<bool> _confirmUnavailableItems(
+    BuildContext context,
+    int unavailableItemsCount,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    return await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(l10n.checkout_unavailable_items_confirm_title),
+            content: Text(
+              l10n.checkout_unavailable_items_confirm_message(
+                unavailableItemsCount,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.cancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.checkout_unavailable_items_confirm_continue),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   static Future<void> _handlePaymentCallbackResult({
@@ -172,6 +199,19 @@ class PaymentScreenEffectHandler {
     final effect = state.uiEffect;
     if (effect == null) return;
 
+    if (effect is ConfirmUnavailableItemsEffect) {
+      viewModel.doIntent(const PaymentClearUiEffectEvent());
+      final confirmed = await _confirmUnavailableItems(
+        context,
+        effect.unavailableItemsCount,
+      );
+      if (!context.mounted || !confirmed) return;
+      viewModel.doIntent(
+        const PaymentPlaceOrderEvent(removeUnavailableItems: true),
+      );
+      return;
+    }
+
     if (effect is OpenAddressSelectorEffect) {
       viewModel.doIntent(const PaymentClearUiEffectEvent());
       final result = await CheckoutAddressSelectorBottomSheet.show(
@@ -269,10 +309,7 @@ class PaymentScreenEffectHandler {
 
     if (effect is ShowDeliveryUnavailableDialogEffect) {
       viewModel.doIntent(const PaymentClearUiEffectEvent());
-      showDeliveryUnavailableDialog(
-        context: context,
-        message: effect.message,
-      );
+      showDeliveryUnavailableDialog(context: context, message: effect.message);
       return;
     }
 
