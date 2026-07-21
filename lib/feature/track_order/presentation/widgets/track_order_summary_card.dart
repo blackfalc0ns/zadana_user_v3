@@ -49,23 +49,10 @@ class TrackOrderSummaryCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Container(
-                  //   width: 48,
-                  //   height: 48,
-                  //   decoration: BoxDecoration(
-                  //     color: color.primary.withValues(alpha: .10),
-                  //     borderRadius: BorderRadius.circular(14),
-                  //   ),
-                  //   child: Icon(
-                  //     Icons.local_shipping_outlined,
-                  //     color: color.primary,
-                  //     size: 22,
-                  //   ),
-                  // ),
                   const SizedBox(width: Spacing.sm),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           l10n.estimated_delivery,
@@ -108,11 +95,10 @@ class TrackOrderSummaryCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             l10n.order_number,
-                            textAlign: TextAlign.end,
                             style: getMediumStyle(
                               fontFamily: FontConstant.cairo,
                               color: color.onSurfaceVariant,

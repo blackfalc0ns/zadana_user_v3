@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:collection';
-
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
