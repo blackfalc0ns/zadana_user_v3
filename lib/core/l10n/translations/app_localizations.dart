@@ -4589,8 +4589,8 @@ abstract class AppLocalizations {
   /// No description provided for @checkout_unavailable_items_confirm_message.
   ///
   /// In en, this message translates to:
-  /// **'The selected vendor cannot provide all {count} unavailable cart items. Continue and remove them from the order?'**
-  String checkout_unavailable_items_confirm_message(int count);
+  /// **'The selected vendor cannot provide all items in your cart. Continue and remove unavailable items from the order?'**
+  String get checkout_unavailable_items_confirm_message;
 
   /// No description provided for @checkout_unavailable_items_confirm_continue.
   ///

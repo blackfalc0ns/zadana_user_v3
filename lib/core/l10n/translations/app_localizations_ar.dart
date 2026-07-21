@@ -2383,13 +2383,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'هالمنتج غير متوفر حاليًا. تقدر تتصفح منتجات ثانية.';
 
   @override
-  String get checkout_unavailable_items_confirm_title => 'في منتجات غير متوفرة';
+  String get checkout_unavailable_items_confirm_title =>
+      'عندك منتجات مو متوفرة';
 
   @override
-  String checkout_unavailable_items_confirm_message(int count) {
-    return 'التاجر المختار لا يوفر كل منتجات العربة. هل تريد حذف $count منتجات غير متوفرة وإكمال الطلب؟';
-  }
+  String get checkout_unavailable_items_confirm_message =>
+      'المتجر اللي اخترته ما يوفّر كل منتجات سلتك. تبي نشيل المنتجات اللي مو متوفرة ونكمّل طلبك؟';
 
   @override
-  String get checkout_unavailable_items_confirm_continue => 'إكمال الطلب';
+  String get checkout_unavailable_items_confirm_continue => 'كمّل الطلب';
 }

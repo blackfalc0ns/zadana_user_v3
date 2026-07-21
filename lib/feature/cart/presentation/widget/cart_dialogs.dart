@@ -72,24 +72,17 @@ void showUnavailableProductsCheckoutDialog({
 
 Future<bool> showConfirmUnavailableProductsCheckoutDialog({
   required BuildContext context,
-  required int unavailableCount,
 }) async {
   return await showDialog<bool>(
         context: context,
         barrierColor: Colors.black.withValues(alpha: 0.58),
-        builder: (_) => _ConfirmUnavailableProductsCheckoutDialog(
-          unavailableCount: unavailableCount,
-        ),
+        builder: (_) => const _ConfirmUnavailableProductsCheckoutDialog(),
       ) ??
       false;
 }
 
 class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
-  const _ConfirmUnavailableProductsCheckoutDialog({
-    required this.unavailableCount,
-  });
-
-  final int unavailableCount;
+  const _ConfirmUnavailableProductsCheckoutDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -147,24 +140,6 @@ class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '$unavailableCount',
-                      style: getBoldStyle(
-                        fontFamily: FontConstant.cairo,
-                        fontSize: FontSize.size14,
-                        color: AppColors.warning,
-                      ),
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(height: 18),
@@ -176,9 +151,7 @@ class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Text(
-                  locale.checkout_unavailable_items_confirm_message(
-                    unavailableCount,
-                  ),
+                  locale.checkout_unavailable_items_confirm_message,
                   style: getRegularStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size14,
@@ -197,7 +170,7 @@ class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
                   const SizedBox(width: 7),
                   Expanded(
                     child: Text(
-                      'سيتم إكمال الطلب بالمنتجات المتوفرة فقط.',
+                      'بنكمل طلبك بالمنتجات المتوفرة بس.',
                       style: getMediumStyle(
                         fontFamily: FontConstant.cairo,
                         color: color.onSurfaceVariant,
@@ -209,21 +182,6 @@ class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
               const SizedBox(height: 22),
               Row(
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(52),
-                        foregroundColor: color.onSurfaceVariant,
-                        side: BorderSide(color: color.outlineVariant),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: Text(locale.cancel),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     flex: 2,
                     child: FilledButton.icon(
@@ -240,6 +198,21 @@ class _ConfirmUnavailableProductsCheckoutDialog extends StatelessWidget {
                       label: Text(
                         locale.checkout_unavailable_items_confirm_continue,
                       ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52),
+                        foregroundColor: color.onSurfaceVariant,
+                        side: BorderSide(color: color.outlineVariant),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(locale.cancel),
                     ),
                   ),
                 ],

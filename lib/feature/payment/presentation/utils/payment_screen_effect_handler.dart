@@ -62,20 +62,13 @@ class PaymentScreenEffectHandler {
     });
   }
 
-  static Future<bool> _confirmUnavailableItems(
-    BuildContext context,
-    int unavailableItemsCount,
-  ) async {
+  static Future<bool> _confirmUnavailableItems(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
             title: Text(l10n.checkout_unavailable_items_confirm_title),
-            content: Text(
-              l10n.checkout_unavailable_items_confirm_message(
-                unavailableItemsCount,
-              ),
-            ),
+            content: Text(l10n.checkout_unavailable_items_confirm_message),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
@@ -201,10 +194,7 @@ class PaymentScreenEffectHandler {
 
     if (effect is ConfirmUnavailableItemsEffect) {
       viewModel.doIntent(const PaymentClearUiEffectEvent());
-      final confirmed = await _confirmUnavailableItems(
-        context,
-        effect.unavailableItemsCount,
-      );
+      final confirmed = await _confirmUnavailableItems(context);
       if (!context.mounted || !confirmed) return;
       viewModel.doIntent(
         const PaymentPlaceOrderEvent(removeUnavailableItems: true),

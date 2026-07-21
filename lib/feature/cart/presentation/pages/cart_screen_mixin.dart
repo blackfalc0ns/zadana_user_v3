@@ -308,12 +308,7 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
     }
 
     final removeUnavailableItems = hasUnavailableItems
-        ? await showConfirmUnavailableProductsCheckoutDialog(
-            context: context,
-            unavailableCount: viewData.unavailableCount > 0
-                ? viewData.unavailableCount
-                : summary?.unavailableItemsCount ?? 1,
-          )
+        ? await showConfirmUnavailableProductsCheckoutDialog(context: context)
         : false;
     if (!mounted || (hasUnavailableItems && !removeUnavailableItems)) return;
 
