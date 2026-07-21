@@ -6,26 +6,33 @@ ProductModel mapCartItemToProductModel({
   required String? selectedVendorId,
   required String? loadedVendorId,
 }) {
-  final vendorPrice = selectedVendorId == null
-      ? item.cheapest
-      : item.vendorPrices.firstWhere(
-          (vendor) => vendor.id == selectedVendorId,
-          orElse: () =>
-              item.getPriceForVendor(
-                selectedVendorId,
-                loadedVendorId: loadedVendorId,
-              ) ??
-              item.cheapest,
-        );
+  final VendorPrice? vendorPrice;
+  if (selectedVendorId == null) {
+    vendorPrice = item.cheapestOrNull;
+  } else {
+    vendorPrice = item.vendorPrices.cast<VendorPrice?>().firstWhere(
+      (vendor) => vendor?.id == selectedVendorId,
+      orElse: () =>
+          item.getPriceForVendor(
+            selectedVendorId,
+            loadedVendorId: loadedVendorId,
+          ) ??
+          item.cheapestOrNull,
+    );
+  }
 
   return ProductModel(
     id: item.productId,
     name: item.name,
-    store: vendorPrice.name,
-    price: vendorPrice.price,
+    // Product details loads its current availability and prices by product ID.
+    // A cart item may have no price at the currently selected vendor, but must
+    // still be able to open its details screen.
+    store: vendorPrice?.name ?? '',
+    price: vendorPrice?.price ?? 0,
     imageUrl: item.imageUrl ?? '',
     unit: item.unit,
     emoji: '',
     isDiscounted: false,
+    showPriceOnCard: vendorPrice != null,
   );
 }

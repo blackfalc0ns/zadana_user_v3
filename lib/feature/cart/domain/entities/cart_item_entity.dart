@@ -59,8 +59,14 @@ class CartItemModel {
     );
   }
 
-  VendorPrice get cheapest =>
-      vendorPrices.reduce((a, b) => a.price < b.price ? a : b);
+  /// The lowest vendor price, or null when the item has no price data.
+  ///
+  /// Price data can temporarily be absent while the cart is refreshed or
+  /// when an item is unavailable at every vendor.
+  VendorPrice? get cheapestOrNull {
+    if (vendorPrices.isEmpty) return null;
+    return vendorPrices.reduce((a, b) => a.price < b.price ? a : b);
+  }
 
   /// Check if this item is available at a specific vendor.
   /// Uses the server-provided [isAvailableAtBranch] flag when available,

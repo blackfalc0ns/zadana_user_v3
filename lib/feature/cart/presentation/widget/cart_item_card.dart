@@ -103,7 +103,7 @@ class CartItemCard extends StatelessWidget {
                             color: color.onSurface,
                           ),
                         ),
-                      
+
                         const SizedBox(height: 3),
                         _buildPrice(locale, color),
                         const SizedBox(height: 6),
@@ -327,9 +327,12 @@ class CartItemCard extends StatelessWidget {
       tween: Tween(begin: 0.0, end: 1.0),
       curve: Curves.easeOutBack,
       builder: (context, value, child) {
+        // easeOutBack intentionally overshoots 1.0; Opacity does not allow
+        // values outside of the 0..1 range.
+        final opacity = value.clamp(0.0, 1.0).toDouble();
         return Transform.translate(
           offset: Offset((1.0 - value) * 20, 0),
-          child: Opacity(opacity: value, child: child),
+          child: Opacity(opacity: opacity, child: child),
         );
       },
       child: hasDiscount && oldPrice != null
@@ -397,13 +400,13 @@ class CartItemCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-      
         const SizedBox(width: 3),
         Flexible(
           child: Text(
             priceLabel,
             overflow: TextOverflow.ellipsis,
-            style: getBoldStyle(fontSize: FontSize.size14,
+            style: getBoldStyle(
+              fontSize: FontSize.size14,
               color: AppColors.primary,
               fontFamily: FontConstant.cairo,
             ),

@@ -266,7 +266,6 @@ mixin CartScreenMixin<T extends StatefulWidget> on State<T>, TickerProvider
       selectedVendorId: selectedVendorId,
       loadedVendorId: viewData.loadedVendorId,
     );
-
     setState(() {
       activeHeroProductId = item.id;
       animatingPriceItemId = item.id;
