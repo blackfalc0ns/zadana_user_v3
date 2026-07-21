@@ -1198,7 +1198,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get compare => 'قارن';
 
   @override
-  String get select_vendor_to_show_price => 'اختر المتجر عشان تشوف السعر';
+  String get select_vendor_to_show_price => 'اختار المتجر عشان يطلع لك السعر';
 
   @override
   String get comparison_results => 'نتائج المقارنة';
@@ -2392,4 +2392,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get checkout_unavailable_items_confirm_continue => 'كمّل الطلب';
+
+  @override
+  String get cart_items_unavailable_at_address_branch =>
+      'بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.';
 }

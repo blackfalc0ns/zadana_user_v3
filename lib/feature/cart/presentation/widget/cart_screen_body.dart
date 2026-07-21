@@ -31,6 +31,7 @@ class CartScreenBody extends StatelessWidget {
   });
   static const double _cartBottomBarGap = 8.0;
   static const double _cartBottomBarReservedHeight = 144.0;
+  static const double _cartBottomBarUnavailableReservedHeight = 208.0;
 
   final CartState state;
   final CartScreenViewData viewData;
@@ -92,8 +93,13 @@ class CartScreenBody extends StatelessWidget {
 
     final bottomNavReservedSpace = mainShellBottomNavReservedSpace(context);
     final cartBottomOffset = bottomNavReservedSpace + _cartBottomBarGap;
-    final contentBottomPadding =
-        cartBottomOffset + _cartBottomBarReservedHeight;
+    // The checkout bar grows when it contains the unavailable-items warning.
+    // Reserve its full height so the final cart item can be scrolled completely
+    // above the floating checkout bar and the app navigation.
+    final checkoutBarHeight = viewData.unavailableCount > 0
+        ? _cartBottomBarUnavailableReservedHeight
+        : _cartBottomBarReservedHeight;
+    final contentBottomPadding = cartBottomOffset + checkoutBarHeight;
 
     return CartScreenContent(
       bottomOffset: cartBottomOffset,

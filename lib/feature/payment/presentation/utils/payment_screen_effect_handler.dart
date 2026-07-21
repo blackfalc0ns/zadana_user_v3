@@ -309,7 +309,7 @@ class PaymentScreenEffectHandler {
         context: context,
         message: effect.message.isNotEmpty
             ? effect.message
-            : 'بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.',
+            : l10n.cart_items_unavailable_at_address_branch,
       );
       return;
     }

@@ -18,7 +18,7 @@ extension ProductVariantOptionModelDtoMapper on ProductVariantOptionModelDto {
 
     return ProductVariantOptionEntity(
       id: id ?? '',
-      defaultVendorProductId: defaultVendorProductId ?? '',
+      defaultVendorProductId: defaultVendorProductId,
       nameAr: nameAr ?? '',
       nameEn: nameEn ?? '',
       displaySizeAr: displaySizeAr ?? '',
@@ -37,6 +37,9 @@ extension ProductVariantOptionModelDtoMapper on ProductVariantOptionModelDto {
       isDiscounted: isDiscounted ?? false,
       vendorPrices:
           vendorPrices?.map((item) => item.toEntity()).toList() ?? const [],
+      isOnlineNow: isOnlineNow ?? true,
+      isAvailableForPurchase: isAvailableForPurchase ?? true,
+      unavailableReason: unavailableReason,
     );
   }
 }

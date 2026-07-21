@@ -725,7 +725,7 @@
   "start_shopping_message": "ابدأ التسوق وأضف منتجات للسلة",
   "store_price_comparison": "مقارنة أسعار المتاجر",
   "unknownError": "صار شيء غلط",
-  "select_vendor_to_show_price": "اختر المتجر عشان تشوف السعر",
+  "select_vendor_to_show_price": "اختار المتجر عشان يطلع لك السعر",
 "shopping":"تسوق",
 
   "delivery_otp_title": "أكد التوصيل",
@@ -949,5 +949,6 @@
 ,
   "checkout_unavailable_items_confirm_title": "عندك منتجات مو متوفرة",
   "checkout_unavailable_items_confirm_message": "المتجر اللي اخترته ما يوفّر كل منتجات سلتك. تبي نشيل المنتجات اللي مو متوفرة ونكمّل طلبك؟",
-  "checkout_unavailable_items_confirm_continue": "كمّل الطلب"
+  "checkout_unavailable_items_confirm_continue": "كمّل الطلب",
+  "cart_items_unavailable_at_address_branch": "بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان."
 }

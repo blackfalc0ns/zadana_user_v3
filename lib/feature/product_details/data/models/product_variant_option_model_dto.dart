@@ -21,6 +21,9 @@ class ProductVariantOptionModelDto {
     this.oldPrice,
     this.isDiscounted,
     this.vendorPrices,
+    this.isOnlineNow,
+    this.isAvailableForPurchase,
+    this.unavailableReason,
   });
 
   factory ProductVariantOptionModelDto.fromJson(Map<String, dynamic> json) {
@@ -50,6 +53,9 @@ class ProductVariantOptionModelDto {
             ),
           )
           .toList(),
+      isOnlineNow: json['is_online_now'] as bool?,
+      isAvailableForPurchase: json['is_available_for_purchase'] as bool?,
+      unavailableReason: json['unavailable_reason'] as String?,
     );
   }
 
@@ -72,4 +78,7 @@ class ProductVariantOptionModelDto {
   final double? oldPrice;
   final bool? isDiscounted;
   final List<ProductVendorPriceModelDto>? vendorPrices;
+  final bool? isOnlineNow;
+  final bool? isAvailableForPurchase;
+  final String? unavailableReason;
 }

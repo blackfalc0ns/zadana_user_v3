@@ -99,7 +99,6 @@ class _ProductDetailsView extends StatelessWidget {
 
         if (state.isInitialLoading) {
           return const Scaffold(
-          
             body: SafeArea(child: ProductDetailsLoadingView()),
           );
         }
@@ -110,7 +109,11 @@ class _ProductDetailsView extends StatelessWidget {
               productId: productId,
               productName: title,
               unit: state.effectiveUnit ?? productDetails.unit,
-              displaySize: _resolveDisplaySize(context, product, state.resolvedVariantOptions),
+              displaySize: _resolveDisplaySize(
+                context,
+                product,
+                state.resolvedVariantOptions,
+              ),
               emoji: product.emoji ?? '',
               imageUrl: imageUrl,
               quantity: state.quantity,
@@ -176,8 +179,12 @@ class _ProductDetailsView extends StatelessWidget {
               ),
               cartCount: cartCount,
               isAddingToCart: state.isAddingToCart,
-              isAvailableForPurchase: state.isAvailableForPurchase,
-              unavailableMessage: state.isAvailableForPurchase
+              isAvailableForPurchase:
+                  state.isAvailableForPurchase &&
+                  state.effectiveProductIdForCart.isNotEmpty,
+              unavailableMessage:
+                  (state.isAvailableForPurchase &&
+                      state.effectiveProductIdForCart.isNotEmpty)
                   ? null
                   : state.unavailableMessage,
             );
@@ -261,14 +268,16 @@ String? _resolveDisplaySize(
   ProductModel product,
   List<ProductVariantOptionEntity> variantOptions,
 ) {
-  final isArabic =
-      Localizations.localeOf(context).languageCode.startsWith('ar');
+  final isArabic = Localizations.localeOf(
+    context,
+  ).languageCode.startsWith('ar');
 
   // Prefer the current variant's display size
   final currentVariant = variantOptions.where((v) => v.isCurrent).firstOrNull;
   if (currentVariant != null) {
-    final variantSize =
-        isArabic ? currentVariant.displaySizeAr : currentVariant.displaySizeEn;
+    final variantSize = isArabic
+        ? currentVariant.displaySizeAr
+        : currentVariant.displaySizeEn;
     if (variantSize.isNotEmpty) return variantSize;
   }
 
@@ -287,8 +296,9 @@ class _ProductNotAvailableView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final isArabic =
-        Localizations.localeOf(context).languageCode.startsWith('ar');
+    final isArabic = Localizations.localeOf(
+      context,
+    ).languageCode.startsWith('ar');
 
     return Center(
       child: Padding(
@@ -311,7 +321,9 @@ class _ProductNotAvailableView extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              isArabic ? 'هذا المنتج لم يعد متاحاً' : 'Product no longer available',
+              isArabic
+                  ? 'هذا المنتج لم يعد متاحاً'
+                  : 'Product no longer available',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
@@ -324,9 +336,9 @@ class _ProductNotAvailableView extends StatelessWidget {
                   ? 'هذا المنتج غير متوفر حالياً. يمكنك تصفح منتجات أخرى.'
                   : 'This product is currently unavailable. You can browse other products.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colors.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
             ),
             const SizedBox(height: 32),
             if (onGoBack != null)

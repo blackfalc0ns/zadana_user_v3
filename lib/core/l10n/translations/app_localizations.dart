@@ -4597,6 +4597,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get checkout_unavailable_items_confirm_continue;
+
+  /// No description provided for @cart_items_unavailable_at_address_branch.
+  ///
+  /// In en, this message translates to:
+  /// **'Some products are unavailable at the branch for your current address. Please remove them or change your address.'**
+  String get cart_items_unavailable_at_address_branch;
 }
 
 class _AppLocalizationsDelegate

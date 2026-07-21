@@ -62,10 +62,13 @@ class ProductVariantOptionsSection extends StatelessWidget {
           runSpacing: Spacing.sm,
           children: variantOptions.map((variant) {
             final isCurrent = variant.isCurrent;
+            final isAvailable = variant.isAvailableForPurchase;
             final label = _buildSizeLabel(variant, isArabic);
 
             return GestureDetector(
-              onTap: isCurrent ? null : () => onVariantSelected?.call(variant),
+              onTap: !isAvailable || isCurrent
+                  ? null
+                  : () => onVariantSelected?.call(variant),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(
@@ -73,12 +76,18 @@ class ProductVariantOptionsSection extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: isCurrent ? AppColors.primary : color.surface,
+                  color: isCurrent && isAvailable
+                      ? AppColors.primary
+                      : (isAvailable
+                            ? color.surface
+                            : color.surfaceContainerHighest),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: isCurrent
+                    color: isCurrent && isAvailable
                         ? AppColors.primary
-                        : color.outline.withValues(alpha: 0.3),
+                        : color.outline.withValues(
+                            alpha: isAvailable ? 0.3 : 0.15,
+                          ),
                   ),
                 ),
                 child: Text(
@@ -86,7 +95,11 @@ class ProductVariantOptionsSection extends StatelessWidget {
                   style: getSemiBoldStyle(
                     fontFamily: FontConstant.cairo,
                     fontSize: FontSize.size13,
-                    color: isCurrent ? Colors.white : color.onSurface,
+                    color: isCurrent && isAvailable
+                        ? Colors.white
+                        : color.onSurface.withValues(
+                            alpha: isAvailable ? 1 : 0.45,
+                          ),
                   ),
                 ),
               ),

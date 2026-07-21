@@ -3,7 +3,7 @@ import 'package:zadana_user_v3/feature/product_details/domain/entities/product_v
 class ProductVariantOptionEntity {
   const ProductVariantOptionEntity({
     required this.id,
-    required this.defaultVendorProductId,
+    this.defaultVendorProductId,
     required this.nameAr,
     required this.nameEn,
     required this.displaySizeAr,
@@ -21,10 +21,13 @@ class ProductVariantOptionEntity {
     this.oldPrice,
     this.isDiscounted = false,
     this.vendorPrices = const [],
+    this.isOnlineNow = true,
+    this.isAvailableForPurchase = true,
+    this.unavailableReason,
   });
 
   final String id;
-  final String defaultVendorProductId;
+  final String? defaultVendorProductId;
   final String nameAr;
   final String nameEn;
   final String displaySizeAr;
@@ -42,6 +45,9 @@ class ProductVariantOptionEntity {
   final double? oldPrice;
   final bool isDiscounted;
   final List<ProductVendorPriceEntity> vendorPrices;
+  final bool isOnlineNow;
+  final bool isAvailableForPurchase;
+  final String? unavailableReason;
 
   ProductVariantOptionEntity copyWith({bool? isCurrent}) {
     return ProductVariantOptionEntity(
@@ -64,6 +70,9 @@ class ProductVariantOptionEntity {
       oldPrice: oldPrice,
       isDiscounted: isDiscounted,
       vendorPrices: vendorPrices,
+      isOnlineNow: isOnlineNow,
+      isAvailableForPurchase: isAvailableForPurchase,
+      unavailableReason: unavailableReason,
     );
   }
 }

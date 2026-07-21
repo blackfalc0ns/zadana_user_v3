@@ -2446,4 +2446,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get checkout_unavailable_items_confirm_continue => 'Continue';
+
+  @override
+  String get cart_items_unavailable_at_address_branch =>
+      'Some products are unavailable at the branch for your current address. Please remove them or change your address.';
 }

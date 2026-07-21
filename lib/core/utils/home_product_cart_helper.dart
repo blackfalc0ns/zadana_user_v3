@@ -33,7 +33,9 @@ class HomeProductCartHelper {
 
       if (selectedVariant == null || !context.mounted) return;
 
-      final addResult = await globalCubit.addVariantToCart(selectedVariant.id);
+      final addResult = await globalCubit.addVariantToCart(
+        details.masterProductId,
+      );
 
       if (!context.mounted) return;
 

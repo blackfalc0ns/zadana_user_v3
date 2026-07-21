@@ -81,12 +81,8 @@ class ProductDetailsState {
     return options.where((v) => v.isCurrent).firstOrNull ?? options.first;
   }
 
-  /// The product ID to use when adding to cart.
-  /// If a variant is selected, use its ID (each variant is a separate MasterProduct).
-  /// Otherwise fall back to the product's masterProductId.
+  /// The cart API uses the master product ID, regardless of the selected variant.
   String get effectiveProductIdForCart {
-    final variant = selectedVariant;
-    if (variant != null && variant.id.isNotEmpty) return variant.id;
     return productDetails?.masterProductId ?? '';
   }
 
@@ -113,9 +109,8 @@ class ProductDetailsState {
   /// Resolved price considering the selected variant.
   double get effectivePrice {
     final variant = selectedVariant;
-    if (variant != null && variant.price != null) {
-      return variant.price!;
-    }
+    // A null price is intentional for an unavailable selected variant.
+    if (variant != null) return variant.price ?? 0;
     return productDetails?.price ?? 0;
   }
 
@@ -144,9 +139,7 @@ class ProductDetailsState {
 
   List<ProductVendorPriceEntity> get effectiveVendorPrices {
     final variant = selectedVariant;
-    if (variant != null && variant.vendorPrices.isNotEmpty) {
-      return variant.vendorPrices;
-    }
+    if (variant != null) return variant.vendorPrices;
     return productDetails?.vendorPrices ?? const [];
   }
 
@@ -171,16 +164,27 @@ class ProductDetailsState {
         .toList();
   }
 
-  /// Whether the product is available for purchase.
-  bool get isAvailableForPurchase =>
-      productDetails?.isAvailableForPurchase ?? true;
+  /// Availability belongs to the selected variant. Root fields are only a
+  /// fallback for products with no variant options.
+  bool get isAvailableForPurchase {
+    final variant = selectedVariant;
+    return variant?.isAvailableForPurchase ??
+        (productDetails?.isAvailableForPurchase ?? true);
+  }
 
   /// The reason the product is unavailable (if any).
-  String? get unavailableReason => productDetails?.unavailableReason;
+  String? get unavailableReason =>
+      selectedVariant?.unavailableReason ?? productDetails?.unavailableReason;
 
   /// Returns a user-facing message for the unavailability reason.
   String get unavailableMessage {
     switch (unavailableReason) {
+      case 'product_inactive':
+        return 'غير متاح حالياً';
+      case 'out_of_stock':
+        return 'غير متوفر';
+      case 'unavailable':
+        return 'غير متاح';
       case 'vendor_offline':
         return 'المتجر غير متاح حاليًا';
       case 'outside_working_hours':

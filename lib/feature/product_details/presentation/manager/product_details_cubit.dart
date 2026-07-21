@@ -145,12 +145,10 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     if (state.isAddingToCart || productDetails == null) return;
 
     final productId = state.effectiveProductIdForCart;
-    if (productId.isEmpty) {
+    if (!state.isAvailableForPurchase || productId.isEmpty) {
       emit(
         state.copyWith(
-          addToCartFailure: Failure(
-            errorMessage: 'Product id is unavailable for this item.',
-          ),
+          addToCartFailure: Failure(errorMessage: state.unavailableMessage),
         ),
       );
       return;

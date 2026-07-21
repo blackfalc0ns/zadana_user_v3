@@ -64,8 +64,13 @@ class _VariantSelectionBottomSheetState
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final l10n = context.localization;
-    final isArabic =
-        Localizations.localeOf(context).languageCode.startsWith('ar');
+    final isArabic = Localizations.localeOf(
+      context,
+    ).languageCode.startsWith('ar');
+    final canAddSelectedVariant =
+        _selected != null &&
+        _selected!.isAvailableForPurchase &&
+        _selected!.defaultVendorProductId != null;
 
     return Container(
       constraints: BoxConstraints(
@@ -135,6 +140,14 @@ class _VariantSelectionBottomSheetState
                         ? variant.displaySizeAr
                         : variant.displaySizeEn;
                     final price = variant.price;
+                    final isPurchasable =
+                        variant.isAvailableForPurchase &&
+                        variant.defaultVendorProductId != null;
+                    final unavailableLabel = _unavailableLabel(
+                      variant,
+                      isArabic: isArabic,
+                      fallback: l10n.not_available,
+                    );
 
                     return GestureDetector(
                       onTap: () => setState(() => _selected = variant),
@@ -146,12 +159,16 @@ class _VariantSelectionBottomSheetState
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppColors.primary.withValues(alpha: 0.08)
+                              ? (isPurchasable
+                                    ? AppColors.primary.withValues(alpha: 0.08)
+                                    : colors.error.withValues(alpha: 0.08))
                               : colors.surface,
                           borderRadius: BorderRadius.circular(Spacing.sm + 2),
                           border: Border.all(
                             color: isSelected
-                                ? AppColors.primary
+                                ? (isPurchasable
+                                      ? AppColors.primary
+                                      : colors.error)
                                 : colors.outline.withValues(alpha: 0.3),
                             width: isSelected ? 1.5 : 1,
                           ),
@@ -166,7 +183,9 @@ class _VariantSelectionBottomSheetState
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isSelected
-                                      ? AppColors.primary
+                                      ? (isPurchasable
+                                            ? AppColors.primary
+                                            : colors.error)
                                       : colors.outline,
                                   width: isSelected ? 6 : 2,
                                 ),
@@ -177,8 +196,9 @@ class _VariantSelectionBottomSheetState
                             if (variant.imageUrl != null &&
                                 variant.imageUrl!.isNotEmpty)
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(right: Spacing.sm),
+                                padding: const EdgeInsets.only(
+                                  right: Spacing.sm,
+                                ),
                                 child: ProductImage(
                                   url: variant.imageUrl!,
                                   width: 36,
@@ -188,15 +208,31 @@ class _VariantSelectionBottomSheetState
                               ),
                             // Size label
                             Expanded(
-                              child: Text(
-                                displaySize,
-                                style: getSemiBoldStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  fontSize: 14,
-                                  color: isSelected
-                                      ? AppColors.primary
-                                      : colors.onSurface,
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    displaySize,
+                                    style: getSemiBoldStyle(
+                                      fontFamily: FontConstant.cairo,
+                                      fontSize: 14,
+                                      color: isPurchasable
+                                          ? (isSelected
+                                                ? AppColors.primary
+                                                : colors.onSurface)
+                                          : colors.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  if (!isPurchasable)
+                                    Text(
+                                      unavailableLabel,
+                                      style: getRegularStyle(
+                                        fontFamily: FontConstant.cairo,
+                                        fontSize: 11,
+                                        color: colors.error,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                             // Price
@@ -209,13 +245,15 @@ class _VariantSelectionBottomSheetState
                                   ),
                                   child: Text(
                                     '${variant.oldPrice!.toStringAsFixed(variant.oldPrice! == variant.oldPrice!.roundToDouble() ? 0 : 2)} ${widget.currency}',
-                                    style: getRegularStyle(
-                                      fontFamily: FontConstant.cairo,
-                                      fontSize: 11,
-                                      color: colors.onSurfaceVariant,
-                                    ).copyWith(
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
+                                    style:
+                                        getRegularStyle(
+                                          fontFamily: FontConstant.cairo,
+                                          fontSize: 11,
+                                          color: colors.onSurfaceVariant,
+                                        ).copyWith(
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                        ),
                                   ),
                                 ),
                               Text(
@@ -224,8 +262,12 @@ class _VariantSelectionBottomSheetState
                                   fontFamily: FontConstant.cairo,
                                   fontSize: 14,
                                   color: isSelected
-                                      ? AppColors.primary
-                                      : colors.onSurface,
+                                      ? (isPurchasable
+                                            ? AppColors.primary
+                                            : colors.onSurfaceVariant)
+                                      : (isPurchasable
+                                            ? colors.onSurface
+                                            : colors.onSurfaceVariant),
                                 ),
                               ),
                             ],
@@ -242,12 +284,16 @@ class _VariantSelectionBottomSheetState
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: _selected != null
+                  onPressed: canAddSelectedVariant
                       ? () => Navigator.of(context).pop(_selected)
                       : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
+                    backgroundColor: canAddSelectedVariant
+                        ? AppColors.primary
+                        : colors.onSurface.withValues(alpha: 0.12),
+                    foregroundColor: canAddSelectedVariant
+                        ? AppColors.white
+                        : colors.onSurfaceVariant,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -258,7 +304,9 @@ class _VariantSelectionBottomSheetState
                     style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: 15,
-                      color: AppColors.white,
+                      color: canAddSelectedVariant
+                          ? AppColors.white
+                          : colors.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -268,5 +316,23 @@ class _VariantSelectionBottomSheetState
         ),
       ),
     );
+  }
+
+  String _unavailableLabel(
+    ProductVariantOptionEntity variant, {
+    required bool isArabic,
+    required String fallback,
+  }) {
+    switch (variant.unavailableReason) {
+      case 'product_inactive':
+        return isArabic ? 'غير متاح حاليًا' : 'Currently unavailable';
+      case 'out_of_stock':
+        return isArabic ? 'نفدت الكمية' : 'Out of stock';
+      case 'vendor_offline':
+      case 'vendor_inactive':
+        return isArabic ? 'المتجر غير متاح حاليًا' : 'Store is unavailable';
+      default:
+        return fallback;
+    }
   }
 }

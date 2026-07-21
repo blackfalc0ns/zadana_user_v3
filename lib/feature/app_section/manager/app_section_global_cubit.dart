@@ -199,9 +199,7 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
           );
         }
         // Single variant or no variants — add directly.
-        final productId = details.variantOptions.length == 1
-            ? details.variantOptions.first.id
-            : details.masterProductId.isNotEmpty
+        final productId = details.masterProductId.isNotEmpty
             ? details.masterProductId
             : product.id;
         if (productId.isEmpty) {
@@ -235,16 +233,19 @@ class AppSectionGlobalCubit extends Cubit<AppSectionGlobalState> {
     }
   }
 
-  /// Adds a specific variant to cart (called after user selects from bottom sheet).
-  Future<CartActionResult> addVariantToCart(String variantId) async {
-    if (variantId.isEmpty) {
+  /// Adds the selected product's master ID to cart after variant selection.
+  Future<CartActionResult> addVariantToCart(String masterProductId) async {
+    if (masterProductId.isEmpty) {
       return const CartActionResult(
         isSuccess: false,
         message: 'Product id is unavailable for this item.',
       );
     }
 
-    final request = AddCartItemRequestEntity(productId: variantId, quantity: 1);
+    final request = AddCartItemRequestEntity(
+      productId: masterProductId,
+      quantity: 1,
+    );
     final addResult = await _addCartItemUseCase.call(request);
     switch (addResult) {
       case ApiSuccessResult():
