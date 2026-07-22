@@ -2476,4 +2476,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cart_items_unavailable_at_address_branch =>
       'Some products are unavailable at the branch for your current address. Please remove them or change your address.';
+
+  @override
+  String get profile_photo_camera => 'Camera';
+
+  @override
+  String get profile_photo_library => 'Photo library';
+
+  @override
+  String get profile_photo_invalid_format =>
+      'Choose a JPG, PNG, WEBP, GIF, or BMP image.';
+
+  @override
+  String get profile_photo_too_large => 'Choose an image smaller than 5 MB.';
+
+  @override
+  String get profile_photo_updated => 'Profile photo updated.';
+
+  @override
+  String get profile_photo_removed => 'Profile photo removed.';
+
+  @override
+  String get profile_photo_edit_tooltip => 'Edit profile photo';
+
+  @override
+  String get profile_updated => 'Profile updated successfully';
+
+  @override
+  String get profile_update_action => 'Update';
 }

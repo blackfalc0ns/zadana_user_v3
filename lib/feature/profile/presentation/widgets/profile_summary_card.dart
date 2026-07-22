@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
@@ -10,6 +11,7 @@ class ProfileSummaryCard extends StatelessWidget {
     required this.name,
     required this.phone,
     required this.email,
+    this.profilePhotoUrl,
     this.onEditTap,
     this.showEditButton = true,
   });
@@ -18,6 +20,7 @@ class ProfileSummaryCard extends StatelessWidget {
   final String name;
   final String phone;
   final String email;
+  final String? profilePhotoUrl;
   final VoidCallback? onEditTap;
   final bool showEditButton;
 
@@ -69,12 +72,18 @@ class ProfileSummaryCard extends StatelessWidget {
                 width: 1.5,
               ),
             ),
+            clipBehavior: Clip.antiAlias,
             alignment: Alignment.center,
-            child: const Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 44,
-            ),
+            child: profilePhotoUrl == null
+                ? const Icon(Icons.person, color: Colors.white, size: 44)
+                : CachedNetworkImage(
+                    imageUrl: profilePhotoUrl!,
+                    width: 86,
+                    height: 86,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, _, _) =>
+                        const Icon(Icons.person, color: Colors.white, size: 44),
+                  ),
           ),
           const SizedBox(height: Spacing.sm),
           Text(

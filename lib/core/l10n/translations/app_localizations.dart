@@ -4651,6 +4651,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some products are unavailable at the branch for your current address. Please remove them or change your address.'**
   String get cart_items_unavailable_at_address_branch;
+
+  /// No description provided for @profile_photo_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get profile_photo_camera;
+
+  /// No description provided for @profile_photo_library.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library'**
+  String get profile_photo_library;
+
+  /// No description provided for @profile_photo_invalid_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a JPG, PNG, WEBP, GIF, or BMP image.'**
+  String get profile_photo_invalid_format;
+
+  /// No description provided for @profile_photo_too_large.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an image smaller than 5 MB.'**
+  String get profile_photo_too_large;
+
+  /// No description provided for @profile_photo_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo updated.'**
+  String get profile_photo_updated;
+
+  /// No description provided for @profile_photo_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo removed.'**
+  String get profile_photo_removed;
+
+  /// No description provided for @profile_photo_edit_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile photo'**
+  String get profile_photo_edit_tooltip;
+
+  /// No description provided for @profile_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profile_updated;
+
+  /// No description provided for @profile_update_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get profile_update_action;
 }
 
 class _AppLocalizationsDelegate

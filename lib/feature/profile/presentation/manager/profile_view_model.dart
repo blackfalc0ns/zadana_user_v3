@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
-import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
 import 'package:zadana_user_v3/feature/profile/domain/entities/update_profile_request_entity.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_state.dart';
 import '../../domain/usecase/delete_profile_photo_usecase.dart';
@@ -119,10 +118,13 @@ class ProfileViewModel extends Cubit<ProfileState> {
 
   /// Upload and update profile photo
   Future<void> _updateProfilePhoto(String filePath) async {
-    emit(state.copyWith(
-      isPhotoUploading: true,
-      isPhotoUpdateSuccess: false,
-    ));
+    emit(
+      state.copyWith(
+        isPhotoUploading: true,
+        isPhotoUpdateSuccess: false,
+        isPhotoDeleteSuccess: false,
+      ),
+    );
 
     developer.log('Updating profile photo', name: 'ProfileViewModel');
 
@@ -158,10 +160,13 @@ class ProfileViewModel extends Cubit<ProfileState> {
 
   /// Delete profile photo
   Future<void> _deleteProfilePhoto() async {
-    emit(state.copyWith(
-      isPhotoDeleting: true,
-      isPhotoDeleteSuccess: false,
-    ));
+    emit(
+      state.copyWith(
+        isPhotoDeleting: true,
+        isPhotoDeleteSuccess: false,
+        isPhotoUpdateSuccess: false,
+      ),
+    );
 
     developer.log('Deleting profile photo', name: 'ProfileViewModel');
 
@@ -173,21 +178,11 @@ class ProfileViewModel extends Cubit<ProfileState> {
           'Profile photo deleted successfully',
           name: 'ProfileViewModel',
         );
-        final currentProfile = state.profileResponse;
         emit(
           state.copyWith(
             isPhotoDeleting: false,
             isPhotoDeleteSuccess: true,
-            profileResponse: currentProfile != null
-                ? ProfileResponseEntity(
-                    id: currentProfile.id,
-                    fullName: currentProfile.fullName,
-                    email: currentProfile.email,
-                    phone: currentProfile.phone,
-                    role: currentProfile.role,
-                    favoritesCount: currentProfile.favoritesCount,
-                  )
-                : null,
+            profileResponse: result.data,
           ),
         );
       case ApiErrorResult():

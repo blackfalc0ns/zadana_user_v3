@@ -12,7 +12,7 @@ abstract class ProfileRemoteDataSource {
 
   Future<ProfileResponseModelDto> updateProfilePhoto(String profilePhotoUrl);
 
-  Future<void> deleteProfilePhoto();
+  Future<ProfileResponseModelDto> deleteProfilePhoto();
 
   Future<String> uploadFile(String filePath);
 }

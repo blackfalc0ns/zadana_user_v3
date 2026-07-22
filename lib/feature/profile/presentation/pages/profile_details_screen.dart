@@ -1,11 +1,14 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/inline_api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/helpers/account_close_helper.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/api_services.dart';
@@ -74,6 +77,82 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     }
   }
 
+  Future<void> _showPhotoSourcePicker() async {
+    final l10n = context.localization;
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined),
+              title: Text(l10n.profile_photo_camera),
+              onTap: () => Navigator.of(sheetContext).pop(ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(l10n.profile_photo_library),
+              onTap: () => Navigator.of(sheetContext).pop(ImageSource.gallery),
+            ),
+            const SizedBox(height: Spacing.sm),
+          ],
+        ),
+      ),
+    );
+    if (source != null && mounted) await _pickAndUploadPhoto(source);
+  }
+
+  Future<void> _pickAndUploadPhoto(ImageSource source) async {
+    XFile? photo;
+    try {
+      photo = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 2048,
+        maxHeight: 2048,
+        imageQuality: 90,
+      );
+    } on PlatformException catch (_) {
+      if (!mounted) return;
+      CustomSnackbar.showError(
+        context: context,
+        message: context.localization.error_other_desc,
+      );
+      return;
+    } on MissingPluginException {
+      if (!mounted) return;
+      CustomSnackbar.showError(
+        context: context,
+        message: context.localization.error_other_desc,
+      );
+      return;
+    }
+    if (photo == null) return;
+
+    final extension = photo.path.split('.').last.toLowerCase();
+    const allowedExtensions = {'jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'};
+    final fileSize = await File(photo.path).length();
+    if (!mounted) return;
+    if (!allowedExtensions.contains(extension)) {
+      CustomSnackbar.showError(
+        context: context,
+        message: context.localization.profile_photo_invalid_format,
+      );
+      return;
+    }
+    if (fileSize > 5 * 1024 * 1024) {
+      CustomSnackbar.showError(
+        context: context,
+        message: context.localization.profile_photo_too_large,
+      );
+      return;
+    }
+    context.read<ProfileViewModel>().doIntent(
+      ProfileUpdatePhotoEvent(photo.path),
+    );
+  }
+
   Future<void> _onSave() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -90,18 +169,6 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     );
   }
 
-  Future<void> _showCloseAccountDialog() async {
-    final closed = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const AccountCloseDialog(),
-    );
-
-    if (closed == true && mounted) {
-      await AccountCloseHelper.complete(context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final locale = context.localization;
@@ -115,7 +182,10 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
           listenWhen: (previous, current) =>
               previous.isUpdating != current.isUpdating ||
               previous.isUpdateSuccess != current.isUpdateSuccess ||
-              previous.updateFailure != current.updateFailure,
+              previous.updateFailure != current.updateFailure ||
+              previous.isPhotoUpdateSuccess != current.isPhotoUpdateSuccess ||
+              previous.isPhotoDeleteSuccess != current.isPhotoDeleteSuccess ||
+              previous.photoFailure != current.photoFailure,
           listener: (context, state) {
             if (state.isUpdating != _isSaving) {
               setState(() => _isSaving = state.isUpdating);
@@ -124,9 +194,27 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
             if (state.isUpdateSuccess && state.profileResponse != null) {
               CustomSnackbar.showSuccess(
                 context: context,
-                message: _updateSuccessMessage(context),
+                message: context.localization.profile_updated,
               );
               Navigator.of(context).pop(state.profileResponse);
+            }
+            if (state.isPhotoUpdateSuccess) {
+              CustomSnackbar.showSuccess(
+                context: context,
+                message: context.localization.profile_photo_updated,
+              );
+            }
+            if (state.isPhotoDeleteSuccess) {
+              CustomSnackbar.showSuccess(
+                context: context,
+                message: context.localization.profile_photo_removed,
+              );
+            }
+            if (state.photoFailure != null) {
+              CustomSnackbar.showError(
+                context: context,
+                message: state.photoFailure!.errorMessage,
+              );
             }
           },
           builder: (context, state) {
@@ -146,7 +234,12 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _ProfileDetailsHeader(profile: currentProfile),
+                        _ProfileDetailsHeader(
+                          profile: currentProfile,
+                          isPhotoLoading:
+                              state.isPhotoUploading || state.isPhotoDeleting,
+                          onPhotoTap: _showPhotoSourcePicker,
+                        ),
                         const SizedBox(height: Spacing.base),
                         _ProfileInfoCard(
                           child: Column(
@@ -197,33 +290,15 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                         ],
                         const SizedBox(height: Spacing.xl),
                         AppButtonSwitch(
-                          label: _updateButtonLabel(context),
+                          label: locale.profile_update_action,
                           onPressed: _hasChanges ? _onSave : null,
                         ),
                         const SizedBox(height: Spacing.lg),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: _isSaving
-                                ? null
-                                : _showCloseAccountDialog,
-                            icon: const Icon(Icons.delete_outline_rounded),
-                            label: Text(
-                              context.localization.account_close_action,
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: colorScheme.error,
-                              side: BorderSide(color: colorScheme.error),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Spacing.md,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
-                ),
+                ), // SizedBox(
+
                 if (_isSaving)
                   Positioned.fill(
                     child: ColoredBox(
@@ -237,22 +312,6 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
         ),
       ),
     );
-  }
-
-  String _updateButtonLabel(BuildContext context) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    if (languageCode == 'ar') {
-      return 'تحديث';
-    }
-    return 'Update';
-  }
-
-  String _updateSuccessMessage(BuildContext context) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    if (languageCode == 'ar') {
-      return 'تم تحديث البيانات بنجاح';
-    }
-    return 'Profile updated successfully';
   }
 }
 
@@ -405,66 +464,61 @@ class _AccountCloseDialogState extends State<AccountCloseDialog> {
 }
 
 class _ProfileDetailsHeader extends StatelessWidget {
-  const _ProfileDetailsHeader({required this.profile});
+  const _ProfileDetailsHeader({
+    required this.profile,
+    required this.isPhotoLoading,
+    required this.onPhotoTap,
+  });
 
   final ProfileResponseEntity profile;
+  final bool isPhotoLoading;
+  final VoidCallback onPhotoTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(Spacing.lg),
-      decoration: BoxDecoration(
-        color: colorScheme.primary,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.18),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
+    return Center(
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Container(
-            width: 82,
-            height: 82,
+            width: 104,
+            height: 104,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
+              color: colorScheme.primaryContainer,
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.24),
-                width: 1.5,
+                color: colorScheme.primary.withValues(alpha: 0.22),
+                width: 2,
               ),
             ),
+            clipBehavior: Clip.antiAlias,
             alignment: Alignment.center,
-            child: const Icon(Icons.person, color: Colors.white, size: 42),
+            child: isPhotoLoading
+                ? const SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                  )
+                : profile.profilePhotoUrl == null
+                ? const Icon(Icons.person, color: Colors.white, size: 44)
+                : CachedNetworkImage(
+                    imageUrl: profile.profilePhotoUrl!,
+                    width: 104,
+                    height: 104,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, _, _) =>
+                        const Icon(Icons.person, color: Colors.white, size: 44),
+                  ),
           ),
-          const SizedBox(height: Spacing.md),
-          Text(
-            profile.fullName,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.h3.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            profile.email,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.white.withValues(alpha: 0.92),
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            profile.phone,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: Colors.white.withValues(alpha: 0.84),
+          PositionedDirectional(
+            end: -15,
+            bottom: -15,
+            child: IconButton.filled(
+              onPressed: isPhotoLoading ? null : onPhotoTap,
+              tooltip: context.localization.profile_photo_edit_tooltip,
+              icon: const Icon(Icons.edit_rounded, size: 17),
+              style: IconButton.styleFrom(),
             ),
           ),
         ],

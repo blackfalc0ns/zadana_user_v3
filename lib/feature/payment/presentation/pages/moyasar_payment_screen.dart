@@ -23,26 +23,66 @@ String? _extractSourceMessage(dynamic source) {
 ///
 /// Pops with a [PaymentCallbackResult] map on completion.
 class MoyasarPaymentScreen extends StatelessWidget {
-  const MoyasarPaymentScreen({
-    super.key,
-    required this.config,
-    this.orderId,
-  });
+  const MoyasarPaymentScreen({super.key, required this.config, this.orderId});
 
   final MoyasarProviderConfigEntity config;
   final String? orderId;
 
+  /// Supplied per build environment, e.g.
+  /// `--dart-define=APPLE_PAY_MERCHANT_ID=merchant.com.example`.
+  ///
+  /// This is intentionally not inferred from the API response: the Merchant
+  /// ID must match the Apple Pay capability and Moyasar certificate.
+  static const _applePayMerchantId = String.fromEnvironment(
+    'APPLE_PAY_MERCHANT_ID',
+  );
+
+  bool get _usesApplePay =>
+      config.methods.any((method) => method.trim().toLowerCase() == 'applepay');
+
   PaymentConfig _buildPaymentConfig() {
+    if (config.callbackUrl.isNotEmpty) {
+      PaymentConfig.callbackUrl = config.callbackUrl;
+    }
+
     return PaymentConfig(
       publishableApiKey: config.publishableKey,
       amount: config.amount,
+      currency: config.currency,
       description: config.description,
       metadata: config.metadata,
-      creditCard: CreditCardConfig(
-        saveCard: false,
-        manual: false,
-      ),
+      supportedNetworks: _supportedNetworks(),
+      applePay: _usesApplePay
+          ? ApplePayConfig(
+              merchantId: _applePayMerchantId,
+              label: 'Zadana',
+              manual: false,
+              saveCard: false,
+            )
+          : null,
+      creditCard: _usesApplePay
+          ? null
+          : CreditCardConfig(saveCard: false, manual: false),
     );
+  }
+
+  List<PaymentNetwork> _supportedNetworks() {
+    final networks = <PaymentNetwork>[];
+    for (final network in config.supportedNetworks) {
+      switch (network.trim().toLowerCase()) {
+        case 'amex':
+        case 'american_express':
+          networks.add(PaymentNetwork.amex);
+        case 'visa':
+          networks.add(PaymentNetwork.visa);
+        case 'mada':
+          networks.add(PaymentNetwork.mada);
+        case 'mastercard':
+        case 'master_card':
+          networks.add(PaymentNetwork.masterCard);
+      }
+    }
+    return networks.toSet().toList();
   }
 
   void _onPaymentResult(BuildContext context, dynamic result) {
@@ -76,7 +116,17 @@ class MoyasarPaymentScreen extends StatelessWidget {
       }
 
       Navigator.of(context).pop(callbackResult);
+      return;
     }
+
+    // Covers Apple Pay cancellation and SDK-level errors that do not include
+    // a Moyasar payment ID. The pending order remains retryable and is never
+    // treated as paid without the backend confirmation endpoint.
+    Navigator.of(context).pop(<String, String?>{
+      'source': 'moyasar_sdk',
+      'status': 'pending',
+      'orderId': orderId,
+    });
   }
 
   @override
@@ -85,16 +135,36 @@ class MoyasarPaymentScreen extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final paymentConfig = _buildPaymentConfig();
 
+    if (_usesApplePay && _applePayMerchantId.isEmpty) {
+      return AppScaffold(
+        backgroundColor: colors.surface,
+        appBar: CustomAppBar(title: l10n.checkout),
+        body: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text('Apple Pay is not configured for this app build.'),
+          ),
+        ),
+      );
+    }
+
     return AppScaffold(
       backgroundColor: colors.surface,
       appBar: CustomAppBar(title: l10n.checkout),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          child: CreditCard(
-            config: paymentConfig,
-            onPaymentResult: (result) => _onPaymentResult(context, result),
-          ),
+          child: _usesApplePay
+              ? ApplePay(
+                  config: paymentConfig,
+                  onPaymentResult: (result) =>
+                      _onPaymentResult(context, result),
+                )
+              : CreditCard(
+                  config: paymentConfig,
+                  onPaymentResult: (result) =>
+                      _onPaymentResult(context, result),
+                ),
         ),
       ),
     );

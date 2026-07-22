@@ -212,12 +212,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final updatedProfile = await Navigator.of(
               context,
             ).pushNamed(AppRoutes.profileDetails, arguments: profile);
-            if (!context.mounted || updatedProfile is! ProfileResponseEntity) {
+            if (!context.mounted) {
               return;
             }
-            context.read<ProfileViewModel>().doIntent(
-              ProfileSetLocalDataEvent(updatedProfile),
-            );
+            if (updatedProfile is ProfileResponseEntity) {
+              context.read<ProfileViewModel>().doIntent(
+                ProfileSetLocalDataEvent(updatedProfile),
+              );
+            } else {
+              // Photo updates are handled in the details route. Reloading from
+              // GET /me keeps this dashboard in sync when that route closes.
+              context.read<ProfileViewModel>().doIntent(ProfileLoadEvent());
+            }
           },
           onNotificationsChanged: _handleNotificationsChanged,
           onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),

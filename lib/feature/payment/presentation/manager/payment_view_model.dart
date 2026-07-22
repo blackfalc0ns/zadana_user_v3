@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
@@ -231,6 +232,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
   void _selectPaymentMethod(String paymentMethodCode) {
     if (state.selectedPaymentMethodCode == paymentMethodCode) return;
 
+    if (!_isPaymentMethodSupportedOnCurrentPlatform(paymentMethodCode)) {
+      return;
+    }
+
     final isAvailable = state.checkoutSummary?.paymentMethods.any(
       (method) => method.code == paymentMethodCode && method.isAvailable,
     );
@@ -250,6 +255,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
       paymentMethod: paymentMethodCode,
       promoCode: state.appliedPromoCode,
     );
+  }
+
+  bool _isPaymentMethodSupportedOnCurrentPlatform(String paymentMethodCode) {
+    return paymentMethodCode.trim().toLowerCase() != 'apple_pay' ||
+        defaultTargetPlatform == TargetPlatform.iOS;
   }
 
   Future<void> _applyPromoCode(String code) async {
@@ -518,7 +528,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
     String? preferredCode,
   }) {
     final availableMethods = summary.paymentMethods
-        .where((method) => method.isAvailable)
+        .where(
+          (method) =>
+              method.isAvailable &&
+              _isPaymentMethodSupportedOnCurrentPlatform(method.code),
+        )
         .toList();
 
     if (availableMethods.isEmpty) return null;

@@ -2422,4 +2422,32 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get cart_items_unavailable_at_address_branch =>
       'بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.';
+
+  @override
+  String get profile_photo_camera => 'الكاميرا';
+
+  @override
+  String get profile_photo_library => 'المعرض';
+
+  @override
+  String get profile_photo_invalid_format =>
+      'اختر صورة بصيغة JPG أو PNG أو WEBP أو GIF أو BMP.';
+
+  @override
+  String get profile_photo_too_large => 'اختر صورة بحجم أقل من 5 ميجابايت.';
+
+  @override
+  String get profile_photo_updated => 'تم تحديث الصورة الشخصية.';
+
+  @override
+  String get profile_photo_removed => 'تم حذف الصورة الشخصية.';
+
+  @override
+  String get profile_photo_edit_tooltip => 'تعديل الصورة الشخصية';
+
+  @override
+  String get profile_updated => 'تم تحديث البيانات بنجاح';
+
+  @override
+  String get profile_update_action => 'تحديث';
 }

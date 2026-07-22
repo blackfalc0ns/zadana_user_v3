@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -8,7 +10,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_loc
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/info_card_container.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/section_header.dart';
 
-class CheckoutPaymentMethodCard extends StatelessWidget {
+class CheckoutPaymentMethodCard extends StatefulWidget {
   const CheckoutPaymentMethodCard({
     super.key,
     required this.paymentMethods,
@@ -21,8 +23,48 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
   final ValueChanged<String> onMethodChanged;
 
   @override
+  State<CheckoutPaymentMethodCard> createState() =>
+      _CheckoutPaymentMethodCardState();
+}
+
+class _CheckoutPaymentMethodCardState extends State<CheckoutPaymentMethodCard> {
+  static const _applePayChannel = MethodChannel(
+    'flutter.moyasar.com/apple_pay',
+  );
+  bool? _canUseApplePay;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkApplePayAvailability();
+  }
+
+  Future<void> _checkApplePayAvailability() async {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return;
+
+    try {
+      final isAvailable = await _applePayChannel.invokeMethod<bool>(
+        'isApplePayAvailable',
+        const {
+          'supportedNetworks': ['mada', 'visa', 'masterCard'],
+        },
+      );
+      if (mounted) setState(() => _canUseApplePay = isAvailable == true);
+    } on PlatformException {
+      if (mounted) setState(() => _canUseApplePay = false);
+    } catch (_) {
+      if (mounted) setState(() => _canUseApplePay = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final visiblePaymentMethods = widget.paymentMethods
+        .where(_isVisibleOnCurrentPlatform)
+        .toList();
+
+    if (visiblePaymentMethods.isEmpty) return const SizedBox.shrink();
 
     return InfoCardContainer(
       child: Column(
@@ -33,17 +75,30 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
             title: l10n.payment_method,
           ),
           const SizedBox(height: Spacing.md),
-          for (final method in paymentMethods) ...[
+          for (final method in visiblePaymentMethods) ...[
             _PaymentMethodTile(
               method: method,
-              isSelected: selectedMethodCode == method.code,
-              onTap: method.isAvailable ? () => onMethodChanged(method.code) : null,
+              isSelected: widget.selectedMethodCode == method.code,
+              onTap: method.isAvailable
+                  ? () => widget.onMethodChanged(method.code)
+                  : null,
             ),
-            if (method != paymentMethods.last) const SizedBox(height: Spacing.xs),
+            if (method != visiblePaymentMethods.last)
+              const SizedBox(height: Spacing.xs),
           ],
         ],
       ),
     );
+  }
+
+  bool _isVisibleOnCurrentPlatform(CheckoutPaymentMethodEntity method) {
+    if (method.code.trim().toLowerCase() != 'apple_pay') return true;
+
+    // Apple Pay must be enabled by the checkout API and can only be used on
+    // iOS. Unlike other unavailable methods, it is intentionally hidden.
+    return method.isAvailable &&
+        defaultTargetPlatform == TargetPlatform.iOS &&
+        _canUseApplePay == true;
   }
 }
 
@@ -138,7 +193,9 @@ class _PaymentMethodTile extends StatelessWidget {
                           style: getRegularStyle(
                             fontSize: FontSize.size11,
                             fontFamily: FontConstant.cairo,
-                            color: colors.onSurfaceVariant.withValues(alpha: 0.7),
+                            color: colors.onSurfaceVariant.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                       ],

@@ -255,7 +255,7 @@ abstract class ApiServices {
   );
 
   @DELETE(EndPoints.profilePhoto)
-  Future<void> deleteProfilePhoto();
+  Future<ProfileResponseModelDto> deleteProfilePhoto();
 
   @MultiPart()
   @POST(EndPoints.fileUpload)

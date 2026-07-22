@@ -45,9 +45,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<ApiResult<void>> deleteProfilePhoto() async {
+  Future<ApiResult<ProfileResponseEntity>> deleteProfilePhoto() async {
     return safeApiCall(() async {
-      await _remoteDataSource.deleteProfilePhoto();
+      final result = await _remoteDataSource.deleteProfilePhoto();
+      return result.toEntity();
     });
   }
 }
