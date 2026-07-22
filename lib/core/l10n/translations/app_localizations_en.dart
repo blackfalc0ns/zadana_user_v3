@@ -2333,6 +2333,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_logout_subtitle => 'Sign out from this device';
 
   @override
+  String get account_deleted_message => 'Account deleted.';
+
+  @override
+  String get account_close_action => 'Delete account';
+
+  @override
+  String get account_close_title => 'Delete account?';
+
+  @override
+  String get account_close_description =>
+      'You will no longer be able to sign in. Your personal data will be hidden, while order history remains available only to the platform.';
+
+  @override
+  String get account_close_confirmation_label => 'Type DELETE to confirm';
+
+  @override
+  String get account_close_confirmation_required =>
+      'Type DELETE in uppercase to confirm.';
+
+  @override
+  String get account_close_password_required => 'Enter your password.';
+
+  @override
+  String get account_close_invalid_password => 'Incorrect password.';
+
+  @override
   String get delivery_unavailable_title => 'Delivery Unavailable';
 
   @override

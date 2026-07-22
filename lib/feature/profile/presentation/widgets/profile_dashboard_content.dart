@@ -19,6 +19,7 @@ class ProfileDashboardContent extends StatelessWidget {
     required this.onNotificationsChanged,
     required this.onLanguageTap,
     required this.onLogout,
+    required this.onCloseAccount,
     required this.onEditTap,
   });
 
@@ -29,6 +30,7 @@ class ProfileDashboardContent extends StatelessWidget {
   final ValueChanged<bool> onNotificationsChanged;
   final VoidCallback onLanguageTap;
   final VoidCallback onLogout;
+  final Future<void> Function() onCloseAccount;
   final Future<void> Function() onEditTap;
 
   @override
@@ -150,6 +152,25 @@ class ProfileDashboardContent extends StatelessWidget {
               onTap: onLogout,
             ),
           ],
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.sm)),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: onCloseAccount,
+                icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                label: Text(l10n.account_close_action),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                  side: const BorderSide(color: AppColors.error),
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
+                ),
+              ),
+            ),
+          ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 120)),
       ],

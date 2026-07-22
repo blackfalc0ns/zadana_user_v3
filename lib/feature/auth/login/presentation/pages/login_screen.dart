@@ -15,8 +15,29 @@ import 'package:zadana_user_v3/feature/auth/login/presentation/manager/login_vie
 import 'package:zadana_user_v3/feature/auth/login/presentation/widget/login_form_wrapper.dart';
 import 'package:zadana_user_v3/feature/auth/presentation/widgets/auth_experience_shell.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key, this.accountDeleted = false});
+
+  final bool accountDeleted;
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.accountDeleted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        CustomSnackbar.showSuccess(
+          context: context,
+          message: context.localization.account_deleted_message,
+        );
+      });
+    }
+  }
 
   void _handleStateChanges(BuildContext context, LoginState state) {
     if (state.isEmailNotVerified && state.identifier != null) {

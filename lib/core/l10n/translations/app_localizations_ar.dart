@@ -2280,6 +2280,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_logout_subtitle => 'تسجيل الخروج من هالجهاز';
 
   @override
+  String get account_deleted_message => 'تم حذف الحساب.';
+
+  @override
+  String get account_close_action => 'حذف الحساب';
+
+  @override
+  String get account_close_title => 'حذف الحساب؟';
+
+  @override
+  String get account_close_description =>
+      'لن تتمكن من تسجيل الدخول بهذا الحساب. ستُحذف بياناتك الشخصية من العرض، بينما يبقى سجل الطلبات للمنصة فقط.';
+
+  @override
+  String get account_close_confirmation_label => 'اكتب DELETE للتأكيد';
+
+  @override
+  String get account_close_confirmation_required =>
+      'اكتب DELETE بحروف كبيرة للتأكيد.';
+
+  @override
+  String get account_close_password_required => 'أدخل كلمة المرور.';
+
+  @override
+  String get account_close_invalid_password => 'كلمة المرور غير صحيحة.';
+
+  @override
   String get delivery_unavailable_title => 'التوصيل غير متاح';
 
   @override

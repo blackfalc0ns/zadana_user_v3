@@ -55,7 +55,7 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => getIt<LoginViewModel>(),
-            child: const LoginScreen(),
+            child: LoginScreen(accountDeleted: settings.arguments == true),
           ),
         );
       case AppRoutes.splash:

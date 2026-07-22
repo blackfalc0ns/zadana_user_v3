@@ -4388,6 +4388,54 @@ abstract class AppLocalizations {
   /// **'Sign out from this device'**
   String get profile_logout_subtitle;
 
+  /// No description provided for @account_deleted_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted.'**
+  String get account_deleted_message;
+
+  /// No description provided for @account_close_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get account_close_action;
+
+  /// No description provided for @account_close_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account?'**
+  String get account_close_title;
+
+  /// No description provided for @account_close_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You will no longer be able to sign in. Your personal data will be hidden, while order history remains available only to the platform.'**
+  String get account_close_description;
+
+  /// No description provided for @account_close_confirmation_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Type DELETE to confirm'**
+  String get account_close_confirmation_label;
+
+  /// No description provided for @account_close_confirmation_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Type DELETE in uppercase to confirm.'**
+  String get account_close_confirmation_required;
+
+  /// No description provided for @account_close_password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password.'**
+  String get account_close_password_required;
+
+  /// No description provided for @account_close_invalid_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password.'**
+  String get account_close_invalid_password;
+
   /// No description provided for @delivery_unavailable_title.
   ///
   /// In en, this message translates to:

@@ -9,12 +9,16 @@ import '../network/network_constants.dart';
 @injectable
 class TokenInterceptor extends QueuedInterceptor {
   static const String skipAuthKey = 'skipAuth';
+
+  /// Allows authenticated requests such as account closure to fail without
+  /// triggering the refresh-token flow.
+  static const String skipTokenRefreshKey = 'skipTokenRefresh';
   static const String retryAttemptedKey = 'retryAttempted';
 
   final TokenService tokenService = getIt.get<TokenService>();
   final AuthRefreshService _authRefreshService = AuthRefreshService();
-  final SessionExpiryService _sessionExpiryService =
-      getIt.get<SessionExpiryService>();
+  final SessionExpiryService _sessionExpiryService = getIt
+      .get<SessionExpiryService>();
 
   @override
   void onRequest(
@@ -99,6 +103,7 @@ class TokenInterceptor extends QueuedInterceptor {
     // Never attempt token refresh for requests that explicitly skip auth
     // (e.g. guest cart operations that use device id instead).
     if (requestOptions.extra[skipAuthKey] == true) return false;
+    if (requestOptions.extra[skipTokenRefreshKey] == true) return false;
 
     return err.response?.statusCode == 401 &&
         !_isTokenRevoked(err) &&

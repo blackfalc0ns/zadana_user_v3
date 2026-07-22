@@ -688,6 +688,26 @@ class _ApiServices implements ApiServices {
   }
 
   @override
+  Future<void> closeAccount(Map<String, dynamic> request) async {
+    final _extra = <String, dynamic>{'skipTokenRefresh': true};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request);
+    final _options = _setStreamType<void>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/customers/auth/close-account',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    await _dio.fetch<void>(_options);
+  }
+
+  @override
   Future<ForgetPasswordResponseDto> forgetPassword(
     ForgetPasswordRequestDto request,
   ) async {

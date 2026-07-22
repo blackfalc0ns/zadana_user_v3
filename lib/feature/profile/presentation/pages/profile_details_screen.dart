@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
+import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/inline_api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/helpers/account_close_helper.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
+import 'package:zadana_user_v3/core/network/api_results.dart';
+import 'package:zadana_user_v3/core/network/api_services.dart';
 import 'package:zadana_user_v3/core/widgets/app_text_field.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/core/widgets/custom_progress_indicator.dart';
@@ -84,6 +88,18 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _showCloseAccountDialog() async {
+    final closed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const AccountCloseDialog(),
+    );
+
+    if (closed == true && mounted) {
+      await AccountCloseHelper.complete(context);
+    }
   }
 
   @override
@@ -166,10 +182,8 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                               AppPhoneField(
                                 controller: _phoneController,
                                 hint: locale.hint_phone,
-                                validator: (v) => Validations.validatePhoneNumber(
-                                  context,
-                                  v,
-                                ),
+                                validator: (v) =>
+                                    Validations.validatePhoneNumber(context, v),
                               ),
                             ],
                           ),
@@ -185,6 +199,26 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                         AppButtonSwitch(
                           label: _updateButtonLabel(context),
                           onPressed: _hasChanges ? _onSave : null,
+                        ),
+                        const SizedBox(height: Spacing.lg),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: _isSaving
+                                ? null
+                                : _showCloseAccountDialog,
+                            icon: const Icon(Icons.delete_outline_rounded),
+                            label: Text(
+                              context.localization.account_close_action,
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: colorScheme.error,
+                              side: BorderSide(color: colorScheme.error),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: Spacing.md,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -219,6 +253,154 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
       return 'تم تحديث البيانات بنجاح';
     }
     return 'Profile updated successfully';
+  }
+}
+
+class AccountCloseDialog extends StatefulWidget {
+  const AccountCloseDialog({super.key});
+
+  @override
+  State<AccountCloseDialog> createState() => _AccountCloseDialogState();
+}
+
+class _AccountCloseDialogState extends State<AccountCloseDialog> {
+  final _confirmationController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isSubmitting = false;
+  bool _obscurePassword = true;
+  String? _error;
+
+  bool get _canSubmit =>
+      _confirmationController.text == 'DELETE' &&
+      _passwordController.text.isNotEmpty &&
+      !_isSubmitting;
+
+  @override
+  void initState() {
+    super.initState();
+    _confirmationController.addListener(_onInputChanged);
+    _passwordController.addListener(_onInputChanged);
+  }
+
+  @override
+  void dispose() {
+    _confirmationController
+      ..removeListener(_onInputChanged)
+      ..dispose();
+    _passwordController
+      ..removeListener(_onInputChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onInputChanged() => setState(() => _error = null);
+
+  Future<void> _submit() async {
+    if (!_canSubmit) return;
+    FocusScope.of(context).unfocus();
+    setState(() => _isSubmitting = true);
+
+    final result = await safeApiCall(
+      () => getIt<ApiServices>().closeAccount({
+        'confirmation': _confirmationController.text,
+        'password': _passwordController.text,
+      }),
+    );
+
+    if (!mounted) return;
+    switch (result) {
+      case ApiSuccessResult():
+        Navigator.of(context).pop(true);
+      case ApiErrorResult():
+        if (result.failure.exception.backendErrorCode ==
+            'ACCOUNT_ALREADY_CLOSED') {
+          Navigator.of(context).pop(true);
+          return;
+        }
+        setState(() {
+          _isSubmitting = false;
+          _error = _messageForErrorCode(
+            result.failure.exception.backendErrorCode,
+            result.failure.errorMessage,
+          );
+        });
+    }
+  }
+
+  String _messageForErrorCode(String? errorCode, String fallback) {
+    final l10n = context.localization;
+    return switch (errorCode) {
+      'ACCOUNT_CLOSE_CONFIRMATION_REQUIRED' =>
+        l10n.account_close_confirmation_required,
+      'ACCOUNT_CLOSE_PASSWORD_REQUIRED' => l10n.account_close_password_required,
+      'ACCOUNT_CLOSE_INVALID_PASSWORD' => l10n.account_close_invalid_password,
+      _ => fallback,
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.localization;
+    final colorScheme = Theme.of(context).colorScheme;
+    return AlertDialog(
+      icon: Icon(Icons.warning_amber_rounded, color: colorScheme.error),
+      title: Text(l10n.account_close_title),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.account_close_description),
+            const SizedBox(height: Spacing.lg),
+            AppTextField(
+              controller: _confirmationController,
+              label: l10n.account_close_confirmation_label,
+              hint: 'DELETE',
+              textInputAction: TextInputAction.next,
+              autofocus: true,
+            ),
+            const SizedBox(height: Spacing.md),
+            AppTextField(
+              controller: _passwordController,
+              label: l10n.label_password,
+              obscureText: _obscurePassword,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+              suffixIcon: IconButton(
+                onPressed: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
+                icon: Icon(
+                  _obscurePassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+              ),
+            ),
+            if (_error != null) ...[
+              const SizedBox(height: Spacing.sm),
+              Text(_error!, style: TextStyle(color: colorScheme.error)),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: _canSubmit ? _submit : null,
+          style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
+          child: _isSubmitting
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Text(l10n.account_close_action),
+        ),
+      ],
+    );
   }
 }
 
@@ -258,11 +440,7 @@ class _ProfileDetailsHeader extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: const Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 42,
-            ),
+            child: const Icon(Icons.person, color: Colors.white, size: 42),
           ),
           const SizedBox(height: Spacing.md),
           Text(
