@@ -51,9 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _pickAndUploadPhoto(BuildContext context) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
+    final result = await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result == null || result.files.isEmpty) return;
     final filePath = result.files.single.path;
@@ -151,33 +149,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   const SizedBox(height: Spacing.base),
                   Stack(
+                    clipBehavior: Clip.none,
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.1),
+                        backgroundColor: AppColors.primary.withValues(
+                          alpha: 0.1,
+                        ),
                         backgroundImage: profilePhotoUrl != null
                             ? CachedNetworkImageProvider(profilePhotoUrl)
                             : null,
                         child: isPhotoLoading
                             ? const CircularProgressIndicator(strokeWidth: 2)
                             : profilePhotoUrl == null
-                                ? const Icon(
-                                    Icons.person,
-                                    color: AppColors.primary,
-                                    size: 50,
-                                  )
-                                : null,
+                            ? const Icon(
+                                Icons.person,
+                                color: AppColors.primary,
+                                size: 50,
+                              )
+                            : null,
                       ),
                       Positioned(
-                        bottom: 0,
-                        right: 0,
+                        bottom: -8,
+                        right: -20,
                         child: GestureDetector(
                           onTap: isPhotoLoading
                               ? null
                               : () => _pickAndUploadPhoto(context),
                           child: Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(7),
                             decoration: BoxDecoration(
                               color: AppColors.primary,
                               shape: BoxShape.circle,
@@ -188,7 +188,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                             child: const FaIcon(
                               FontAwesomeIcons.camera,
-                              size: 16,
+                              size: 15,
                               color: AppColors.white,
                             ),
                           ),

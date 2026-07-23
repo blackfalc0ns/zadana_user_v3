@@ -402,14 +402,54 @@ class _AccountCloseDialogState extends State<AccountCloseDialog> {
     final l10n = context.localization;
     final colorScheme = Theme.of(context).colorScheme;
     return AlertDialog(
-      icon: Icon(Icons.warning_amber_rounded, color: colorScheme.error),
-      title: Text(l10n.account_close_title),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+      iconPadding: const EdgeInsets.only(top: Spacing.lg),
+      titlePadding: const EdgeInsets.fromLTRB(
+        Spacing.lg,
+        Spacing.sm,
+        Spacing.lg,
+        Spacing.xs,
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(
+        Spacing.lg,
+        Spacing.sm,
+        Spacing.lg,
+        Spacing.sm,
+      ),
+      actionsPadding: const EdgeInsets.fromLTRB(
+        Spacing.lg,
+        Spacing.sm,
+        Spacing.lg,
+        Spacing.lg,
+      ),
+      icon: Container(
+        width: 48,
+        height: 48,
+        decoration: const BoxDecoration(shape: BoxShape.circle),
+        child: const Icon(Icons.warning_amber_rounded, size: 30),
+      ),
+      title: Text(
+        l10n.account_close_title,
+        textAlign: TextAlign.center,
+        style: Theme.of(
+          context,
+        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.account_close_description),
+            Text(
+              l10n.account_close_description,
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(height: 1.55),
+            ),
             const SizedBox(height: Spacing.lg),
             AppTextField(
               controller: _confirmationController,
@@ -443,20 +483,43 @@ class _AccountCloseDialogState extends State<AccountCloseDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: Text(l10n.cancel),
-        ),
-        FilledButton(
-          onPressed: _canSubmit ? _submit : null,
-          style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
-          child: _isSubmitting
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(l10n.account_close_action),
+        Row(
+          children: [
+            Expanded(
+              child: FilledButton(
+                onPressed: _canSubmit ? _submit : null,
+                style: FilledButton.styleFrom(
+                  backgroundColor: colorScheme.error,
+                  minimumSize: const Size.fromHeight(52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: _isSubmitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(l10n.account_close_action),
+              ),
+            ),
+            const SizedBox(width: Spacing.sm),
+            Expanded(
+              child: OutlinedButton(
+                onPressed: _isSubmitting
+                    ? null
+                    : () => Navigator.of(context).pop(),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text(l10n.cancel),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -478,50 +541,81 @@ class _ProfileDetailsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     return Center(
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 104,
-            height: 104,
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: colorScheme.primary.withValues(alpha: 0.22),
-                width: 2,
+      child: SizedBox(
+        width: 104,
+        height: 104,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: 104,
+              height: 104,
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: colorScheme.primary.withValues(alpha: 0.22),
+                  width: 2,
+                ),
+              ),
+              clipBehavior: Clip.antiAlias,
+              alignment: Alignment.center,
+              child: isPhotoLoading
+                  ? const SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    )
+                  : profile.profilePhotoUrl == null
+                  ? const Icon(Icons.person, color: Colors.white, size: 44)
+                  : CachedNetworkImage(
+                      imageUrl: profile.profilePhotoUrl!,
+                      width: 104,
+                      height: 104,
+                      fit: BoxFit.cover,
+                      errorWidget: (_, _, _) => const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 44,
+                      ),
+                    ),
+            ),
+            Positioned(
+              left: -4,
+              bottom: -3,
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: colorScheme.outlineVariant),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x24000000),
+                      blurRadius: 5,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  onPressed: isPhotoLoading ? null : onPhotoTap,
+                  tooltip: context.localization.profile_photo_edit_tooltip,
+                  icon: Icon(
+                    Icons.edit_rounded,
+                    size: 15,
+                    color: colorScheme.onSurface,
+                  ),
+                  constraints: const BoxConstraints.tightFor(
+                    width: 28,
+                    height: 28,
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
               ),
             ),
-            clipBehavior: Clip.antiAlias,
-            alignment: Alignment.center,
-            child: isPhotoLoading
-                ? const SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  )
-                : profile.profilePhotoUrl == null
-                ? const Icon(Icons.person, color: Colors.white, size: 44)
-                : CachedNetworkImage(
-                    imageUrl: profile.profilePhotoUrl!,
-                    width: 104,
-                    height: 104,
-                    fit: BoxFit.cover,
-                    errorWidget: (_, _, _) =>
-                        const Icon(Icons.person, color: Colors.white, size: 44),
-                  ),
-          ),
-          PositionedDirectional(
-            end: -15,
-            bottom: -15,
-            child: IconButton.filled(
-              onPressed: isPhotoLoading ? null : onPhotoTap,
-              tooltip: context.localization.profile_photo_edit_tooltip,
-              icon: const Icon(Icons.edit_rounded, size: 17),
-              style: IconButton.styleFrom(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
