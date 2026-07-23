@@ -10,6 +10,7 @@ HomeAppBarModelDto _$HomeAppBarModelDtoFromJson(Map<String, dynamic> json) =>
     HomeAppBarModelDto(
       fullName: json['full_name'] as String?,
       email: json['email'] as String?,
+      profilePhotoUrl: json['profile_photo_url'] as String?,
       deliverToLabel: json['deliver_to_label'] as String?,
       location: json['location'] as String?,
       addressLine: json['address_line'] as String?,
@@ -20,6 +21,7 @@ Map<String, dynamic> _$HomeAppBarModelDtoToJson(HomeAppBarModelDto instance) =>
     <String, dynamic>{
       'full_name': instance.fullName,
       'email': instance.email,
+      'profile_photo_url': instance.profilePhotoUrl,
       'deliver_to_label': instance.deliverToLabel,
       'location': instance.location,
       'address_line': instance.addressLine,

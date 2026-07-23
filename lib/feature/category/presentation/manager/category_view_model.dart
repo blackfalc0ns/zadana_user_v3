@@ -486,10 +486,12 @@ class CategoryViewModel extends Cubit<CategoryState> {
   Future<void> _applyCategoryChangeFromFilters(
     CategoryFilterSelection selection,
   ) async {
-    final category =
-        (selection.categoryId != null && selection.categoryId!.isNotEmpty)
-        ? findCategoryById(state.categories, selection.categoryId!)
-        : findCategoryByName(state.categories, selection.categoryName ?? '');
+    final categoryId = selection.categoryId?.trim();
+    final categoryName = selection.categoryName?.trim() ?? '';
+    final category = (categoryId != null && categoryId.isNotEmpty)
+        ? findCategoryById(state.categories, categoryId) ??
+              buildFallbackCategory(id: categoryId, name: categoryName)
+        : findCategoryByName(state.categories, categoryName);
     if (category == null) {
       return;
     }

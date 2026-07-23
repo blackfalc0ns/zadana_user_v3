@@ -15,11 +15,13 @@ class DrawerHeader extends StatefulWidget {
     required this.isGuest,
     this.displayName,
     this.secondaryText,
+    this.profilePhotoUrl,
   });
 
   final bool isGuest;
   final String? displayName;
   final String? secondaryText;
+  final String? profilePhotoUrl;
 
   @override
   State<DrawerHeader> createState() => _DrawerHeaderState();
@@ -90,13 +92,7 @@ class _DrawerHeaderState extends State<DrawerHeader> {
                     ),
                   ),
                   alignment: Alignment.center,
-                  child: Icon(
-                    widget.isGuest
-                        ? Icons.person_outline_rounded
-                        : Icons.person_rounded,
-                    size: 30,
-                    color: Colors.white,
-                  ),
+                  child: _buildAvatar(),
                 ),
               ),
               const SizedBox(height: Spacing.md),
@@ -150,4 +146,41 @@ class _DrawerHeaderState extends State<DrawerHeader> {
       ),
     );
   }
+
+  Widget _buildAvatar() {
+    final photoUrl = widget.profilePhotoUrl?.trim();
+    if (!widget.isGuest && photoUrl != null && photoUrl.isNotEmpty) {
+      return ClipOval(
+        child: Image.network(
+          photoUrl,
+          width: 56,
+          height: 56,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+
+            return const Center(
+              child: SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (_, _, _) => _defaultAvatar(),
+        ),
+      );
+    }
+
+    return _defaultAvatar();
+  }
+
+  Widget _defaultAvatar() => Icon(
+    widget.isGuest ? Icons.person_outline_rounded : Icons.person_rounded,
+    size: 30,
+    color: Colors.white,
+  );
 }
