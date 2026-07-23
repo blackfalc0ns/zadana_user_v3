@@ -39,6 +39,7 @@ class AppDrawer extends StatelessWidget {
                       isGuest: data.isGuest,
                       displayName: data.displayName,
                       secondaryText: data.secondaryText,
+                      profilePhotoUrl: data.profilePhotoUrl,
                     ),
                     Expanded(
                       child: CustomScrollView(
@@ -90,6 +91,7 @@ class AppDrawer extends StatelessWidget {
       isGuest: false,
       displayName: appBarData?.fullName.trim(),
       secondaryText: appBarData?.email.trim(),
+      profilePhotoUrl: appBarData?.profilePhotoUrl,
     );
   }
 
@@ -175,9 +177,11 @@ class _DrawerViewData {
     required this.isGuest,
     this.displayName,
     this.secondaryText,
+    this.profilePhotoUrl,
   });
 
   final bool isGuest;
   final String? displayName;
   final String? secondaryText;
+  final String? profilePhotoUrl;
 }

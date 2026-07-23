@@ -7,6 +7,7 @@ class HomeAppBarModelDto {
   const HomeAppBarModelDto({
     this.fullName,
     this.email,
+    this.profilePhotoUrl,
     this.deliverToLabel,
     this.location,
     this.addressLine,
@@ -20,6 +21,9 @@ class HomeAppBarModelDto {
   final String? fullName;
 
   final String? email;
+
+  @JsonKey(name: 'profile_photo_url')
+  final String? profilePhotoUrl;
 
   @JsonKey(name: 'deliver_to_label')
   final String? deliverToLabel;

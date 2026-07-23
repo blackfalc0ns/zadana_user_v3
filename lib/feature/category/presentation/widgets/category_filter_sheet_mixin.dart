@@ -52,8 +52,9 @@ mixin CategoryFilterSheetMixin
             ? _resolveParentCategoryName()
             : widget.selectedCategory);
     tempFilterCategoryId = widget.selectedCategoryId;
-    tempSubCategoryName =
-        widget.selectedSubCategory.isEmpty ? null : widget.selectedSubCategory;
+    tempSubCategoryName = widget.selectedSubCategory.isEmpty
+        ? null
+        : widget.selectedSubCategory;
     tempSubCategoryId = widget.selectedSubCategoryId;
     tempFilterQuantity = widget.filterSelectedQuantity;
     tempFilterBrand = widget.filterSelectedBrand;
@@ -97,6 +98,14 @@ mixin CategoryFilterSheetMixin
   }
 
   String? resolveTempFilterCategoryId() {
+    // The bottom sheet can load additional categories that are not in the
+    // initially displayed list. Keep the selected ID as the source of truth,
+    // otherwise applying a selection from those later rows falls back to the
+    // previous category (or null) and the selection is lost when reopening.
+    if (tempFilterCategoryId != null && tempFilterCategoryId!.isNotEmpty) {
+      return tempFilterCategoryId;
+    }
+
     return findCategoryByName(tempFilterCategory, widget.categories)?.id ??
         widget.selectedCategoryId;
   }
@@ -135,10 +144,12 @@ mixin CategoryFilterSheetMixin
     String? categoryId,
     List<CategoryEntity> categories,
     StateSetter setSheetState,
+    bool Function() isSheetActive,
   ) async {
     final category = findCategoryInList(categoryId, categories);
 
     if (category == null) {
+      if (!mounted || !isSheetActive()) return;
       setSheetState(resetTempFilters);
       return;
     }
@@ -152,30 +163,58 @@ mixin CategoryFilterSheetMixin
       tempFilterPart = null;
     });
 
-    try {
-      final results = await Future.wait<dynamic>([
-        getIt<ApiServices>().getCategoryFilters(category.id),
-        getIt<ApiServices>().getCategorySubcategories(category.id, 5),
-      ]);
-      if (!mounted) return;
+    // These endpoints are independent. A category can have subcategories even
+    // when its optional filter metadata is unavailable, so do not discard a
+    // successful subcategory response when the filters request fails.
+    final results = await Future.wait<dynamic>([
+      _fetchCategoryFilters(category.id),
+      _fetchCategorySubcategories(category.id),
+    ]);
+    if (!mounted || !isSheetActive() || tempFilterCategoryId != category.id) {
+      return;
+    }
 
-      setSheetState(() {
-        _applyTempCategoryFilters(
-          results[0] as CategoryFiltersResponseModelDto,
-          subCategories: results[1] as List<CategorySubcategoryItemDto>,
-        );
-      });
+    final filters = results[0] as CategoryFiltersResponseModelDto?;
+    final subCategories = results[1] as List<CategorySubcategoryItemDto>?;
+    setSheetState(() {
+      if (filters != null) {
+        _applyTempCategoryFilters(filters, subCategories: subCategories);
+        return;
+      }
+
+      tempSubCategories = (subCategories ?? const [])
+          .where(
+            (item) =>
+                (item.id ?? '').isNotEmpty &&
+                (item.name ?? '').trim().isNotEmpty,
+          )
+          .toList(growable: false);
+      tempQuantityOptions = const [];
+      tempBrandOptions = const [];
+      tempProductTypeOptions = const [];
+      tempPartOptions = const [];
+      tempPriceBounds = widget.priceBounds;
+      tempPriceRange = widget.priceBounds;
+    });
+  }
+
+  Future<CategoryFiltersResponseModelDto?> _fetchCategoryFilters(
+    String categoryId,
+  ) async {
+    try {
+      return await getIt<ApiServices>().getCategoryFilters(categoryId);
     } catch (_) {
-      if (!mounted) return;
-      setSheetState(() {
-        tempSubCategories = const [];
-        tempQuantityOptions = const [];
-        tempBrandOptions = const [];
-        tempProductTypeOptions = const [];
-        tempPartOptions = const [];
-        tempPriceBounds = widget.priceBounds;
-        tempPriceRange = widget.priceBounds;
-      });
+      return null;
+    }
+  }
+
+  Future<List<CategorySubcategoryItemDto>?> _fetchCategorySubcategories(
+    String categoryId,
+  ) async {
+    try {
+      return await getIt<ApiServices>().getCategorySubcategories(categoryId, 5);
+    } catch (_) {
+      return null;
     }
   }
 
@@ -227,6 +266,7 @@ mixin CategoryFilterSheetMixin
     BuildContext context,
     WidgetBuilder sheetBuilder,
     Function(dynamic)? onResult,
+    {VoidCallback? onDismissed}
   ) {
     showModalBottomSheet(
       context: context,
@@ -234,6 +274,7 @@ mixin CategoryFilterSheetMixin
       backgroundColor: Colors.transparent,
       builder: sheetBuilder,
     ).then((result) {
+      onDismissed?.call();
       if (result != null && onResult != null) {
         onResult(result);
       }
@@ -269,6 +310,7 @@ mixin CategoryFilterSheetMixin
         : List<CategoryEntity>.from(widget.categories);
     var isLoadingMoreCats = false;
     var hasMoreCats = cachedHasMoreCategories;
+    var isSheetActive = true;
 
     final selectedCatId = widget.selectedCategoryId;
     final needsAutoExpand =
@@ -289,7 +331,7 @@ mixin CategoryFilterSheetMixin
                 final response = await getIt<ApiServices>().getHomeCategories(
                   take: 50,
                 );
-                if (!mounted) return;
+                if (!mounted || !isSheetActive) return;
                 final allCategories = response.toCategoryEntities();
                 setSheetState(() {
                   hasMoreCats = allCategories.length > sheetCategories.length;
@@ -299,7 +341,7 @@ mixin CategoryFilterSheetMixin
                 cachedSheetCategories = sheetCategories;
                 cachedHasMoreCategories = hasMoreCats;
               } catch (_) {
-                if (!mounted) return;
+                if (!mounted || !isSheetActive) return;
                 setSheetState(() => isLoadingMoreCats = false);
               }
             });
@@ -356,7 +398,7 @@ mixin CategoryFilterSheetMixin
                     final nextTake = sheetCategories.length + 8;
                     final response = await getIt<ApiServices>()
                         .getHomeCategories(take: nextTake);
-                    if (!mounted) return;
+                    if (!mounted || !isSheetActive) return;
                     final newItems = response.toCategoryEntities();
                     setSheetState(() {
                       hasMoreCats = newItems.length > sheetCategories.length;
@@ -366,7 +408,7 @@ mixin CategoryFilterSheetMixin
                     cachedSheetCategories = sheetCategories;
                     cachedHasMoreCategories = hasMoreCats;
                   } catch (_) {
-                    if (!mounted) return;
+                    if (!mounted || !isSheetActive) return;
                     setSheetState(() => isLoadingMoreCats = false);
                   }
                 },
@@ -388,8 +430,9 @@ mixin CategoryFilterSheetMixin
                     categoryId,
                     sheetCategories,
                     setSheetState,
+                    () => isSheetActive,
                   );
-                  if (categoryId != null) {
+                  if (categoryId != null && isSheetActive) {
                     scrollSheetTo(sheetScrollController, 170);
                   }
                 },
@@ -472,6 +515,10 @@ mixin CategoryFilterSheetMixin
         },
       ),
       (result) => widget.onFilterChanged(result),
+      onDismissed: () {
+        isSheetActive = false;
+        sheetScrollController.dispose();
+      },
     );
   }
 }

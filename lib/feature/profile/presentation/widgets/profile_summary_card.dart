@@ -77,7 +77,7 @@ class ProfileSummaryCard extends StatelessWidget {
             child: profilePhotoUrl == null
                 ? const Icon(Icons.person, color: Colors.white, size: 44)
                 : CachedNetworkImage(
-                    imageUrl: profilePhotoUrl!,
+                    imageUrl: profilePhotoUrl??"",
                     width: 86,
                     height: 86,
                     fit: BoxFit.cover,

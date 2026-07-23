@@ -35,6 +35,7 @@ extension HomeAppBarModelDtoMapper on HomeAppBarModelDto {
     return HomeAppBarEntity(
       fullName: fullName ?? '',
       email: email ?? '',
+      profilePhotoUrl: profilePhotoUrl,
       deliverToLabel: deliverToLabel ?? '',
       location: location ?? '',
       addressLine: addressLine ?? '',

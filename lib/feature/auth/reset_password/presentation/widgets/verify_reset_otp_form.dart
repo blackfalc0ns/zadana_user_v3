@@ -113,6 +113,9 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
       return;
     }
 
+    // Clear focus before showing the loading state so the keyboard does not
+    // cover the progress overlay while the verification request is running.
+    FocusScope.of(context).unfocus();
     setState(() => _isLoading = true);
     widget.onLoadingChanged?.call(true);
 
@@ -227,8 +230,6 @@ class _VerifyResetOtpFormState extends State<VerifyResetOtpForm> {
           Center(
             child: OtpCooldownButton(
               isResending: _isResending,
-              cooldownSeconds: 60,
-              startWithCooldown: true,
               onResend: () => _resendOtp(context),
             ),
           ),
