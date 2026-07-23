@@ -26,9 +26,21 @@ String localizeAddressLabel(AppLocalizations l10n, String label) {
 }
 
 bool isArabicPaymentLocale(BuildContext context) {
-  return Localizations.localeOf(context).languageCode.toLowerCase().startsWith(
-    'ar',
-  );
+  return Localizations.localeOf(
+    context,
+  ).languageCode.toLowerCase().startsWith('ar');
+}
+
+bool isBankTransferPaymentMethod(String code) {
+  switch (code.trim().toLowerCase()) {
+    case 'bank':
+    case 'bank_transfer':
+    case 'banktransfer':
+    case 'manual_bank_transfer':
+      return true;
+    default:
+      return false;
+  }
 }
 
 String resolveBilingualValue(

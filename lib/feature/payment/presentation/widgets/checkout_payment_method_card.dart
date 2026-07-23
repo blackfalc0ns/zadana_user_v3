@@ -65,6 +65,8 @@ class _CheckoutPaymentMethodCardState extends State<CheckoutPaymentMethodCard> {
     CheckoutPaymentMethodEntity method,
     TargetPlatform platform,
   ) {
+    if (isBankTransferPaymentMethod(method.code)) return false;
+
     if (method.code.trim().toLowerCase() != 'apple_pay') return true;
 
     // Apple Pay is displayed on iOS whenever the checkout API enables it.

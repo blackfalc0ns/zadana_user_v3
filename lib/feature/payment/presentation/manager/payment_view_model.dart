@@ -16,6 +16,7 @@ import 'package:zadana_user_v3/feature/payment/domain/usecase/place_order_usecas
 import 'package:zadana_user_v3/feature/payment/domain/usecase/remove_checkout_promo_code_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_state.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_address_selector_bottom_sheet.dart';
 
 @injectable
@@ -258,6 +259,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
   }
 
   bool _isPaymentMethodSupportedOnCurrentPlatform(String paymentMethodCode) {
+    if (isBankTransferPaymentMethod(paymentMethodCode)) return false;
+
     return paymentMethodCode.trim().toLowerCase() != 'apple_pay' ||
         defaultTargetPlatform == TargetPlatform.iOS;
   }
