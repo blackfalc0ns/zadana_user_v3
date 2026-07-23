@@ -14,7 +14,6 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart' as _i695;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:pretty_dio_logger/pretty_dio_logger.dart' as _i528;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../feature/addresses/data/data_source/customer_addresses_remote_data_source.dart'
@@ -422,9 +421,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i844.RetryInterceptor>(() => _i844.RetryInterceptor());
     gh.factory<_i1056.TokenInterceptor>(() => _i1056.TokenInterceptor());
-    gh.lazySingleton<_i528.PrettyDioLogger>(
-      () => externalModules.providePrettyDioLogger(),
-    );
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => externalModules.flutterSecureStorage(),
     );
@@ -442,7 +438,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i42.SharedPrefHelper(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i361.Dio>(
-      () => externalModules.provideOsmDio(gh<_i528.PrettyDioLogger>()),
+      () => externalModules.provideOsmDio(),
       instanceName: 'osmDio',
     );
     gh.lazySingleton<_i762.LocalNotificationService>(
@@ -523,7 +519,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i361.Dio>(
       () => externalModules.provideDio(
-        gh<_i528.PrettyDioLogger>(),
         gh<_i1056.TokenInterceptor>(),
         gh<_i930.DeviceIdInterceptor>(),
         gh<_i32.LanguageInterceptor>(),
