@@ -1,4 +1,4 @@
-package com.example.zadana_user_v3
+package com.zadnauser
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

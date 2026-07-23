@@ -1,4 +1,4 @@
-package com.example.zadana_user_v3
+package com.zadnauser
 
 import androidx.annotation.Keep
 import androidx.core.app.NotificationCompat
