@@ -1,0 +1,34 @@
+PODS:
+  - Flutter (1.0.0)
+  - fluttertoast (0.0.2):
+    - Flutter
+  - moyasar (0.0.1):
+    - Flutter
+  - pay_ios (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - moyasar (from `.symlinks/plugins/moyasar/ios`)
+  - pay_ios (from `.symlinks/plugins/pay_ios/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
+  moyasar:
+    :path: ".symlinks/plugins/moyasar/ios"
+  pay_ios:
+    :path: ".symlinks/plugins/pay_ios/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
+  moyasar: 1fa35fd99cec4dd2a0913539ba902218e1e3deba
+  pay_ios: 2c48d76615ded0cfaff66185669501b8b1dfc55e
+
+PODFILE CHECKSUM: b3d4beb7969b56299f79b3473341d5c5d76ebf95
+
+COCOAPODS: 1.16.2
