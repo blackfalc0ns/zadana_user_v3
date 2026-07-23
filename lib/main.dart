@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,12 +20,7 @@ void main() async {
   unawaited(
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
   );
-  const enableDevicePreview = bool.fromEnvironment('ENABLE_DEVICE_PREVIEW');
-  runApp(
-    kReleaseMode || !enableDevicePreview
-        ? const AppBootstrapper()
-        : DevicePreview(builder: (context) => const AppBootstrapper()),
-  );
+  runApp(const AppBootstrapper());
 }
 
 class AppBootstrapper extends StatefulWidget {
@@ -70,7 +63,6 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
     if (_initialRoute == null) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-        builder: DevicePreview.appBuilder,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: AppTheme.light,
@@ -136,7 +128,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         builder: (context, state) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            builder: DevicePreview.appBuilder,
             navigatorKey: getIt<AppNavigatorService>().navigatorKey,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

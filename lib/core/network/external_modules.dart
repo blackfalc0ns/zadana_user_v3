@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zadana_user_v3/core/services/captcha_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
@@ -22,7 +21,6 @@ abstract class ExternalModules {
 
   @lazySingleton
   Dio provideDio(
-    PrettyDioLogger prettyDioLogger,
     TokenInterceptor tokenInterceptor,
     DeviceIdInterceptor deviceIdInterceptor,
     LanguageInterceptor languageInterceptor,
@@ -60,7 +58,6 @@ abstract class ExternalModules {
       ),
     );
     dio.interceptors.add(retryInterceptor);
-    dio.interceptors.add(prettyDioLogger);
 
     // Temporary: log the real error behind DioExceptionType.unknown
     dio.interceptors.add(
@@ -84,7 +81,7 @@ abstract class ExternalModules {
 
   @Named('osmDio')
   @lazySingleton
-  Dio provideOsmDio(PrettyDioLogger prettyDioLogger) {
+  Dio provideOsmDio() {
     final dio = Dio();
 
     dio.options.baseUrl = 'https://nominatim.openstreetmap.org';
@@ -94,14 +91,7 @@ abstract class ExternalModules {
       'User-Agent': 'zadana-user-app',
     };
 
-    dio.interceptors.add(prettyDioLogger);
-
     return dio;
-  }
-
-  @lazySingleton
-  PrettyDioLogger providePrettyDioLogger() {
-    return PrettyDioLogger(requestHeader: true, requestBody: true);
   }
 
   @preResolve
