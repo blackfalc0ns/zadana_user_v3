@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/signalr_diagnostics.dart';
 import 'package:zadana_user_v3/feature/track_order/data/data_source/track_order_remote_data_source.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/driver_arrival_state_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_status_changed_realtime_payload.dart';
@@ -23,6 +24,10 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
 
   @override
   Stream<ApiResult<OrderTrackingEntity>> watchOrderTracking(String orderId) {
+    SignalRDiagnostics.instance.currentOrderId = orderId;
+    SignalRDiagnostics.instance.add('TrackOrderRepository started tracking', {
+      'currentOrderId': orderId,
+    });
     late final StreamController<ApiResult<OrderTrackingEntity>> controller;
     StreamSubscription<OrderStatusChangedRealtimePayload>? realtimeSubscription;
     StreamSubscription<DriverArrivalStateChangedRealtimePayload>?
@@ -72,12 +77,22 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
       if (isDisposed || controller.isClosed || isRefreshingFromRealtime) return;
       isRefreshingFromRealtime = true;
       try {
+        SignalRDiagnostics.instance.add(
+          'TrackOrderRepository REST refresh started',
+          {'currentOrderId': orderId, 'restSnapshotRefreshed': false},
+        );
         final result = await _fetchTrackingSnapshot(orderId);
         if (isDisposed || controller.isClosed) return;
         if (result case ApiSuccessResult<OrderTrackingEntity>()) {
           currentTracking = result.data;
         }
         controller.add(result);
+        SignalRDiagnostics.instance
+            .add('TrackOrderRepository REST refresh completed', {
+              'currentOrderId': orderId,
+              'restSnapshotRefreshed':
+                  result is ApiSuccessResult<OrderTrackingEntity>,
+            });
       } finally {
         isRefreshingFromRealtime = false;
       }
@@ -88,16 +103,32 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
         realtimeSubscription = _trackOrderSignalRService
             .watchOrderStatusChangedEvents()
             .listen((payload) {
-              if (!_matchesStatusPayload(
+              final accepted = _matchesStatusPayload(
                 requestedOrderId: orderId,
                 payload: payload,
                 tracking: currentTracking,
-              )) {
+              );
+              SignalRDiagnostics.instance
+                  .add('TrackOrderRepository status event decision', {
+                    'currentOrderId': orderId,
+                    'incomingOrderId': payload.orderId,
+                    'eventAccepted': accepted,
+                    if (!accepted)
+                      'discardReason':
+                          'Incoming orderId did not match the tracked order.',
+                  });
+              if (!accepted) {
                 return;
               }
 
               final tracking = currentTracking;
               if (tracking == null || controller.isClosed) {
+                SignalRDiagnostics.instance
+                    .add('TrackOrderRepository status event queued', {
+                      'currentOrderId': orderId,
+                      'incomingOrderId': payload.orderId,
+                      'eventAccepted': true,
+                    });
                 pendingStatusEvents.add(payload);
                 return;
               }
@@ -106,6 +137,12 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
               controller.add(
                 ApiSuccessResult<OrderTrackingEntity>(data: currentTracking!),
               );
+              SignalRDiagnostics.instance
+                  .add('TrackOrderRepository emitted realtime state', {
+                    'currentOrderId': orderId,
+                    'incomingOrderId': payload.orderId,
+                    'eventAccepted': true,
+                  });
               unawaited(refreshTrackingFromRealtime());
             });
 

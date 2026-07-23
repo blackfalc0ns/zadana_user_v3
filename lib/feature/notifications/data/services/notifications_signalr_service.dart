@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart'
 import 'package:zadana_user_v3/core/services/token_service.dart';
 import 'package:zadana_user_v3/feature/my_orders/data/models/order_support_case_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/notifications/data/models/app_notification_dto.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/signalr_diagnostics.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/driver_arrival_state_changed_realtime_payload.dart';
 import 'package:zadana_user_v3/feature/track_order/data/models/order_status_changed_realtime_payload.dart';
@@ -81,6 +82,14 @@ class NotificationsSignalRService {
     }
   }
 
+  /// Used only by the hidden iOS diagnostics screen.
+  Future<void> ensureNotificationHubConnection() async {
+    SignalRDiagnostics.instance.add(
+      'Ensure Notification Hub Connection requested',
+    );
+    await activateAuthenticatedConnectionIfPossible();
+  }
+
   Future<void> disconnect() async {
     _isManuallyStopped = true;
     final connection = _connection;
@@ -89,6 +98,7 @@ class NotificationsSignalRService {
     _presenceConnection = null;
     _heartbeatTimer?.cancel();
     _heartbeatTimer = null;
+    SignalRDiagnostics.instance.connection(state: 'Disconnected');
 
     if (connection != null) {
       try {
@@ -130,8 +140,14 @@ class NotificationsSignalRService {
     try {
       final token = await _tokenService.getToken();
       if (token == null || token.trim().isEmpty) {
+        SignalRDiagnostics.instance.connection(
+          state: 'Disconnected',
+          error: 'No authenticated session token available.',
+        );
         return;
       }
+
+      SignalRDiagnostics.instance.connection(state: 'Connecting');
 
       final connection = HubConnectionBuilder()
           .withUrl(
@@ -166,6 +182,10 @@ class NotificationsSignalRService {
 
       connection.onclose(({error}) {
         _connection = null;
+        SignalRDiagnostics.instance.connection(
+          state: 'Disconnected',
+          error: error,
+        );
         _logger.w('Notifications SignalR connection closed.', error: error);
         if (!_isManuallyStopped) {
           _scheduleReconnect();
@@ -175,6 +195,10 @@ class NotificationsSignalRService {
       await connection.start();
       _connection = connection;
       _reconnectAttempts = 0;
+      SignalRDiagnostics.instance.connection(
+        state: 'Connected',
+        id: connection.connectionId,
+      );
       _logger.i('Notifications SignalR connected.');
     } catch (error, stackTrace) {
       _logger.w(
@@ -183,6 +207,10 @@ class NotificationsSignalRService {
         stackTrace: stackTrace,
       );
       _connection = null;
+      SignalRDiagnostics.instance.connection(
+        state: 'Disconnected',
+        error: error,
+      );
       _scheduleReconnect();
     } finally {
       _isStarting = false;
@@ -265,16 +293,47 @@ class NotificationsSignalRService {
   }
 
   void _handleOrderStatusChanged(List<Object?>? args) {
+    final diagnostics = SignalRDiagnostics.instance;
+    diagnostics.add('ReceiveOrderStatusChanged callback received', {
+      'received': true,
+      'callbackArguments': args,
+      'payloadType': args?.isNotEmpty == true
+          ? args!.first.runtimeType.toString()
+          : 'none',
+    });
     final payload = _extractPayload(args);
-    if (payload == null || _orderStatusChangedController.isClosed) return;
+    if (payload == null || _orderStatusChangedController.isClosed) {
+      diagnostics.add('ReceiveOrderStatusChanged discarded', {
+        'accepted': false,
+        'reason': payload == null
+            ? 'No parseable payload.'
+            : 'Event stream closed.',
+      });
+      return;
+    }
     _logger.i(
       'Notifications SignalR order status event received from '
       '${NetworkConstants.receiveOrderStatusChangedSignalREvent}. '
       '${NotificationPayloadResolver.resolveDebugSummary(payload)}',
     );
-    _orderStatusChangedController.add(
-      OrderStatusChangedRealtimePayload.fromJson(payload),
-    );
+    try {
+      final parsed = OrderStatusChangedRealtimePayload.fromJson(payload);
+      diagnostics.add('ReceiveOrderStatusChanged parsed', {
+        'received': true,
+        'payloadType': payload.runtimeType.toString(),
+        'parsedPayload': payload,
+        'incomingOrderId': parsed.orderId,
+        'accepted': true,
+      });
+      _orderStatusChangedController.add(parsed);
+    } catch (error) {
+      diagnostics.add('ReceiveOrderStatusChanged parsing failure', {
+        'received': true,
+        'accepted': false,
+        'exception': error.toString(),
+      });
+      return;
+    }
     _emitSyntheticRealtimeNotificationFromOrderStatus(payload);
   }
 
@@ -352,7 +411,8 @@ class NotificationsSignalRService {
     }
 
     _isReconnectScheduled = true;
-    final delay = _reconnectDelay * (1 << _reconnectAttempts); // exponential backoff
+    final delay =
+        _reconnectDelay * (1 << _reconnectAttempts); // exponential backoff
     _reconnectAttempts++;
     Future<void>.delayed(delay, () async {
       _isReconnectScheduled = false;
@@ -376,7 +436,9 @@ class NotificationsSignalRService {
     }
 
     _isPresenceReconnectScheduled = true;
-    final delay = _reconnectDelay * (1 << _presenceReconnectAttempts); // exponential backoff
+    final delay =
+        _reconnectDelay *
+        (1 << _presenceReconnectAttempts); // exponential backoff
     _presenceReconnectAttempts++;
     Future<void>.delayed(delay, () async {
       _isPresenceReconnectScheduled = false;
@@ -525,8 +587,8 @@ class NotificationsSignalRService {
         (normalizedType.contains('driver_arrival') ||
             normalizedType.contains('arrival') ||
             normalizedType.isEmpty)) {
-      final driverArrivalPayload = DriverArrivalStateChangedRealtimePayload
-          .fromJson({
+      final driverArrivalPayload =
+          DriverArrivalStateChangedRealtimePayload.fromJson({
             'orderId': orderId,
             'orderNumber': normalizedPayload['orderNumber'],
             'arrivalState': arrivalState,
@@ -586,7 +648,8 @@ class NotificationsSignalRService {
   void _emitSyntheticRealtimeNotificationFromOrderStatus(
     Map<String, dynamic> rawPayload,
   ) {
-    if (_notificationsController.isClosed || !_notificationsController.hasListener) {
+    if (_notificationsController.isClosed ||
+        !_notificationsController.hasListener) {
       return;
     }
 
@@ -610,14 +673,8 @@ class NotificationsSignalRService {
       titleEn: 'Order update',
       bodyAr: _syntheticOrderStatusBodyAr(orderId: orderId, status: newStatus),
       bodyEn: _syntheticOrderStatusBodyEn(orderId: orderId, status: newStatus),
-      type: _firstNonEmptyString([
-        payload['type'],
-        'order_status_changed',
-      ]),
-      referenceId: _firstNonEmptyString([
-        payload['referenceId'],
-        orderId,
-      ]),
+      type: _firstNonEmptyString([payload['type'], 'order_status_changed']),
+      referenceId: _firstNonEmptyString([payload['referenceId'], orderId]),
       data: jsonEncode(payload),
       dataObject: payload,
       isRead: false,

@@ -28,6 +28,7 @@ import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_suppor
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notification_preferences_screen.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notifications_screen.dart';
+import 'package:zadana_user_v3/feature/notifications/presentation/pages/signalr_diagnostics_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/on_boarding_page.dart';
 import 'package:zadana_user_v3/feature/onboarding/presentation/splash_page.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
@@ -51,6 +52,11 @@ import 'package:zadana_user_v3/feature/track_order/presentation/pages/track_orde
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutes.signalrDiagnostics:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SignalRDiagnosticsPage(),
+        );
       case AppRoutes.login:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(

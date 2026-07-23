@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
+import 'package:zadana_user_v3/feature/notifications/data/services/signalr_diagnostics.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/usecase/get_order_tracking_usecase.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_state.dart';
@@ -24,6 +25,7 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
 
   void initialize(String orderId) {
     _orderId = orderId;
+    SignalRDiagnostics.instance.currentOrderId = orderId;
     _bindSupportCaseRealtime();
     load();
   }
@@ -88,6 +90,12 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
             clearFailure: true,
           ),
         );
+        SignalRDiagnostics.instance
+            .add('TrackOrderViewModel emitted new state', {
+              'currentOrderId': _orderId,
+              'viewModelEmittedNewState': true,
+              'trackedOrderId': result.data.order.id,
+            });
       case ApiErrorResult<OrderTrackingEntity>():
         emit(
           state.copyWith(
@@ -97,6 +105,11 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
             failure: result.failure,
           ),
         );
+        SignalRDiagnostics.instance.add('TrackOrderViewModel state failure', {
+          'currentOrderId': _orderId,
+          'viewModelEmittedNewState': true,
+          'exception': result.failure.toString(),
+        });
     }
   }
 
