@@ -1,11 +1,15 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 
-class DrawerHeader extends StatelessWidget {
+class DrawerHeader extends StatefulWidget {
   const DrawerHeader({
     super.key,
     required this.isGuest,
@@ -18,17 +22,45 @@ class DrawerHeader extends StatelessWidget {
   final String? secondaryText;
 
   @override
+  State<DrawerHeader> createState() => _DrawerHeaderState();
+}
+
+class _DrawerHeaderState extends State<DrawerHeader> {
+  static const _tapWindow = Duration(seconds: 2);
+  int _avatarTapCount = 0;
+  Timer? _tapResetTimer;
+
+  @override
+  void dispose() {
+    _tapResetTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onAvatarTap() {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return;
+    _avatarTapCount++;
+    _tapResetTimer?.cancel();
+    _tapResetTimer = Timer(_tapWindow, () => _avatarTapCount = 0);
+    if (_avatarTapCount != 3) return;
+
+    _avatarTapCount = 0;
+    _tapResetTimer?.cancel();
+    Navigator.of(context).pop();
+    Navigator.of(context).pushNamed(AppRoutes.signalrDiagnostics);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final color = context.colorScheme;
     final locale = context.localization;
-    final title = isGuest
+    final title = widget.isGuest
         ? locale.profile_guest_title
-        : (displayName?.trim().isNotEmpty == true
-              ? displayName!.trim()
+        : (widget.displayName?.trim().isNotEmpty == true
+              ? widget.displayName!.trim()
               : locale.nav_profile);
-    final subtitle = isGuest
+    final subtitle = widget.isGuest
         ? locale.profile_guest_subtitle
-        : secondaryText?.trim();
+        : widget.secondaryText?.trim();
 
     return Container(
       width: double.infinity,
@@ -44,22 +76,27 @@ class DrawerHeader extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.16),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.35),
-                    width: 1.6,
+              GestureDetector(
+                onTap: _onAvatarTap,
+                child: Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.16),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.35),
+                      width: 1.6,
+                    ),
                   ),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  isGuest ? Icons.person_outline_rounded : Icons.person_rounded,
-                  size: 30,
-                  color: Colors.white,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    widget.isGuest
+                        ? Icons.person_outline_rounded
+                        : Icons.person_rounded,
+                    size: 30,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: Spacing.md),
@@ -73,7 +110,9 @@ class DrawerHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  isGuest ? locale.profile_guest_title : locale.nav_profile,
+                  widget.isGuest
+                      ? locale.profile_guest_title
+                      : locale.nav_profile,
                   textAlign: TextAlign.center,
                   style: getSemiBoldStyle(
                     fontSize: FontSize.size11,
@@ -96,7 +135,7 @@ class DrawerHeader extends StatelessWidget {
                 const SizedBox(height: Spacing.xs),
                 Text(
                   subtitle,
-                  maxLines: isGuest ? 2 : 1,
+                  maxLines: widget.isGuest ? 2 : 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: getRegularStyle(

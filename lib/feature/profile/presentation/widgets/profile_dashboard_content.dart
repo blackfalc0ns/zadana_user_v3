@@ -19,6 +19,7 @@ class ProfileDashboardContent extends StatelessWidget {
     required this.onNotificationsChanged,
     required this.onLanguageTap,
     required this.onLogout,
+    required this.onCloseAccount,
     required this.onEditTap,
   });
 
@@ -29,6 +30,7 @@ class ProfileDashboardContent extends StatelessWidget {
   final ValueChanged<bool> onNotificationsChanged;
   final VoidCallback onLanguageTap;
   final VoidCallback onLogout;
+  final Future<void> Function() onCloseAccount;
   final Future<void> Function() onEditTap;
 
   @override
@@ -41,6 +43,7 @@ class ProfileDashboardContent extends StatelessWidget {
             name: profile.fullName,
             phone: profile.phone,
             email: profile.email,
+            profilePhotoUrl: profile.profilePhotoUrl,
             onEditTap: onEditTap,
           ),
         ),
@@ -135,6 +138,13 @@ class ProfileDashboardContent extends StatelessWidget {
               onTap: () =>
                   Navigator.of(context).pushNamed(AppRoutes.privacyPolicy),
             ),
+            _ProfileActionItem(
+              icon: Icons.description_outlined,
+              title: l10n.terms_conditions,
+              subtitle: _termsConditionsSubtitle(context),
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.termsConditions),
+            ),
           ],
         ),
         const SliverToBoxAdapter(child: SizedBox(height: Spacing.base)),
@@ -151,6 +161,69 @@ class ProfileDashboardContent extends StatelessWidget {
             ),
           ],
         ),
+        const SliverToBoxAdapter(child: SizedBox(height: Spacing.sm)),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
+            child: Semantics(
+              button: true,
+              label: l10n.account_close_action,
+              child: Material(
+                color: AppColors.error.withValues(alpha: 0.055),
+                borderRadius: BorderRadius.circular(20),
+                child: InkWell(
+                  onTap: onCloseAccount,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Spacing.md,
+                      vertical: Spacing.md,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColors.error.withValues(alpha: 0.24),
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: AppColors.error.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppColors.error,
+                            size: 22,
+                          ),
+                        ),
+                        const SizedBox(width: Spacing.md),
+                        Expanded(
+                          child: Text(
+                            l10n.account_close_action,
+                            style: AppTextStyles.labelLarge.copyWith(
+                              color: AppColors.error,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Directionality.of(context) == TextDirection.rtl
+                              ? Icons.keyboard_arrow_left_rounded
+                              : Icons.keyboard_arrow_right_rounded,
+                          color: AppColors.error.withValues(alpha: 0.7),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         const SliverToBoxAdapter(child: SizedBox(height: 120)),
       ],
     );
@@ -162,6 +235,12 @@ class ProfileDashboardContent extends StatelessWidget {
       return enabled ? 'مفعل' : 'غير مفعل';
     }
     return enabled ? 'Enabled' : 'Disabled';
+  }
+
+  String _termsConditionsSubtitle(BuildContext context) {
+    return Localizations.localeOf(context).languageCode == 'ar'
+        ? 'اطّلع على شروط وأحكام استخدام التطبيق'
+        : 'Review the app Terms and Conditions';
   }
 }
 
@@ -212,6 +291,15 @@ class GuestProfileDashboardContent extends StatelessWidget {
               title: l10n.about_app,
               subtitle: l10n.profile_about_subtitle,
               onTap: () => Navigator.of(context).pushNamed(AppRoutes.aboutApp),
+            ),
+            _ProfileActionItem(
+              icon: Icons.description_outlined,
+              title: l10n.terms_conditions,
+              subtitle: Localizations.localeOf(context).languageCode == 'ar'
+                  ? 'اطّلع على شروط وأحكام استخدام التطبيق'
+                  : 'Review the app Terms and Conditions',
+              onTap: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.termsConditions),
             ),
           ],
         ),

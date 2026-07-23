@@ -38,4 +38,5 @@ abstract class AppRoutes {
   static const String successOrder = '/success-order';
   static const String allCategories = '/all-categories';
   static const String notificationPreferences = '/notification-preferences';
+  static const String signalrDiagnostics = '/signalr-diagnostics';
 }

@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
+import 'package:zadana_user_v3/core/helpers/account_close_helper.dart';
 import 'package:zadana_user_v3/core/helpers/dialogue_utils.dart';
 import 'package:zadana_user_v3/core/helpers/logout_helper.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
@@ -21,6 +22,7 @@ import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_event.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_state.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/manager/profile_view_model.dart';
+import 'package:zadana_user_v3/feature/profile/presentation/pages/profile_details_screen.dart';
 import 'package:zadana_user_v3/feature/profile/presentation/widgets/profile_dashboard_content.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -68,6 +70,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (shouldLogout == true && context.mounted) {
       await LogoutHelper.performLogout(context);
+    }
+  }
+
+  Future<void> _showCloseAccountDialog(BuildContext context) async {
+    final closed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const AccountCloseDialog(),
+    );
+
+    if (closed == true && context.mounted) {
+      await AccountCloseHelper.complete(context);
     }
   }
 
@@ -178,9 +192,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         if (state.failure != null && state.profileResponse == null) {
           return ApiErrorWidget(
-              exception: state.failure!.exception,
-              onRetry: () =>
-                  context.read<ProfileViewModel>().doIntent(ProfileLoadEvent()),
+            exception: state.failure!.exception,
+            onRetry: () =>
+                context.read<ProfileViewModel>().doIntent(ProfileLoadEvent()),
           );
         }
 
@@ -198,16 +212,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final updatedProfile = await Navigator.of(
               context,
             ).pushNamed(AppRoutes.profileDetails, arguments: profile);
-            if (!context.mounted || updatedProfile is! ProfileResponseEntity) {
+            if (!context.mounted) {
               return;
             }
-            context.read<ProfileViewModel>().doIntent(
-              ProfileSetLocalDataEvent(updatedProfile),
-            );
+            if (updatedProfile is ProfileResponseEntity) {
+              context.read<ProfileViewModel>().doIntent(
+                ProfileSetLocalDataEvent(updatedProfile),
+              );
+            } else {
+              // Photo updates are handled in the details route. Reloading from
+              // GET /me keeps this dashboard in sync when that route closes.
+              context.read<ProfileViewModel>().doIntent(ProfileLoadEvent());
+            }
           },
           onNotificationsChanged: _handleNotificationsChanged,
           onLanguageTap: () => DrawerDialogs.showLanguageDialog(context),
           onLogout: () => _showLogoutDialog(context, l10n),
+          onCloseAccount: () => _showCloseAccountDialog(context),
         );
       },
     );

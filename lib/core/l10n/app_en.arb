@@ -906,6 +906,14 @@
   "profile_about_subtitle": "Learn more about the app and current version",
   "profile_privacy_subtitle": "Privacy, terms, and legal information",
   "profile_logout_subtitle": "Sign out from this device",
+  "account_deleted_message": "Account deleted.",
+  "account_close_action": "Delete account",
+  "account_close_title": "Delete account?",
+  "account_close_description": "You will no longer be able to sign in. Your personal data will be hidden, while order history remains available only to the platform.",
+  "account_close_confirmation_label": "Type DELETE to confirm",
+  "account_close_confirmation_required": "Type DELETE in uppercase to confirm.",
+  "account_close_password_required": "Enter your password.",
+  "account_close_invalid_password": "Incorrect password.",
 
   "delivery_unavailable_title": "Delivery Unavailable",
   "delivery_unavailable_hint": "Please choose another store or change your delivery address",
@@ -947,5 +955,14 @@
   "checkout_unavailable_items_confirm_title": "Some items are unavailable",
   "checkout_unavailable_items_confirm_message": "The selected vendor cannot provide all items in your cart. Continue and remove unavailable items from the order?",
   "checkout_unavailable_items_confirm_continue": "Continue",
-  "cart_items_unavailable_at_address_branch": "Some products are unavailable at the branch for your current address. Please remove them or change your address."
+  "cart_items_unavailable_at_address_branch": "Some products are unavailable at the branch for your current address. Please remove them or change your address.",
+  "profile_photo_camera": "Camera",
+  "profile_photo_library": "Photo library",
+  "profile_photo_invalid_format": "Choose a JPG, PNG, WEBP, GIF, or BMP image.",
+  "profile_photo_too_large": "Choose an image smaller than 5 MB.",
+  "profile_photo_updated": "Profile photo updated.",
+  "profile_photo_removed": "Profile photo removed.",
+  "profile_photo_edit_tooltip": "Edit profile photo",
+  "profile_updated": "Profile updated successfully",
+  "profile_update_action": "Update"
 }

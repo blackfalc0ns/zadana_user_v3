@@ -2333,6 +2333,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_logout_subtitle => 'Sign out from this device';
 
   @override
+  String get account_deleted_message => 'Account deleted.';
+
+  @override
+  String get account_close_action => 'Delete account';
+
+  @override
+  String get account_close_title => 'Delete account?';
+
+  @override
+  String get account_close_description =>
+      'You will no longer be able to sign in. Your personal data will be hidden, while order history remains available only to the platform.';
+
+  @override
+  String get account_close_confirmation_label => 'Type DELETE to confirm';
+
+  @override
+  String get account_close_confirmation_required =>
+      'Type DELETE in uppercase to confirm.';
+
+  @override
+  String get account_close_password_required => 'Enter your password.';
+
+  @override
+  String get account_close_invalid_password => 'Incorrect password.';
+
+  @override
   String get delivery_unavailable_title => 'Delivery Unavailable';
 
   @override
@@ -2450,4 +2476,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cart_items_unavailable_at_address_branch =>
       'Some products are unavailable at the branch for your current address. Please remove them or change your address.';
+
+  @override
+  String get profile_photo_camera => 'Camera';
+
+  @override
+  String get profile_photo_library => 'Photo library';
+
+  @override
+  String get profile_photo_invalid_format =>
+      'Choose a JPG, PNG, WEBP, GIF, or BMP image.';
+
+  @override
+  String get profile_photo_too_large => 'Choose an image smaller than 5 MB.';
+
+  @override
+  String get profile_photo_updated => 'Profile photo updated.';
+
+  @override
+  String get profile_photo_removed => 'Profile photo removed.';
+
+  @override
+  String get profile_photo_edit_tooltip => 'Edit profile photo';
+
+  @override
+  String get profile_updated => 'Profile updated successfully';
+
+  @override
+  String get profile_update_action => 'Update';
 }

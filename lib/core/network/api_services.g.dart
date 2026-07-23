@@ -688,6 +688,26 @@ class _ApiServices implements ApiServices {
   }
 
   @override
+  Future<void> closeAccount(Map<String, dynamic> request) async {
+    final _extra = <String, dynamic>{'skipTokenRefresh': true};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request);
+    final _options = _setStreamType<void>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/customers/auth/close-account',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    await _dio.fetch<void>(_options);
+  }
+
+  @override
   Future<ForgetPasswordResponseDto> forgetPassword(
     ForgetPasswordRequestDto request,
   ) async {
@@ -935,12 +955,12 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<void> deleteProfilePhoto() async {
+  Future<ProfileResponseModelDto> deleteProfilePhoto() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<ProfileResponseModelDto>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -950,7 +970,15 @@ class _ApiServices implements ApiServices {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ProfileResponseModelDto _value;
+    try {
+      _value = ProfileResponseModelDto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override

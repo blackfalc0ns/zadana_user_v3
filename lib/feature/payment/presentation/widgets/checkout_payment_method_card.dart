@@ -8,7 +8,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_loc
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/info_card_container.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/section_header.dart';
 
-class CheckoutPaymentMethodCard extends StatelessWidget {
+class CheckoutPaymentMethodCard extends StatefulWidget {
   const CheckoutPaymentMethodCard({
     super.key,
     required this.paymentMethods,
@@ -21,8 +21,20 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
   final ValueChanged<String> onMethodChanged;
 
   @override
+  State<CheckoutPaymentMethodCard> createState() =>
+      _CheckoutPaymentMethodCardState();
+}
+
+class _CheckoutPaymentMethodCardState extends State<CheckoutPaymentMethodCard> {
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final platform = Theme.of(context).platform;
+    final visiblePaymentMethods = widget.paymentMethods
+        .where((method) => _isVisibleOnCurrentPlatform(method, platform))
+        .toList();
+
+    if (visiblePaymentMethods.isEmpty) return const SizedBox.shrink();
 
     return InfoCardContainer(
       child: Column(
@@ -33,17 +45,32 @@ class CheckoutPaymentMethodCard extends StatelessWidget {
             title: l10n.payment_method,
           ),
           const SizedBox(height: Spacing.md),
-          for (final method in paymentMethods) ...[
+          for (final method in visiblePaymentMethods) ...[
             _PaymentMethodTile(
               method: method,
-              isSelected: selectedMethodCode == method.code,
-              onTap: method.isAvailable ? () => onMethodChanged(method.code) : null,
+              isSelected: widget.selectedMethodCode == method.code,
+              onTap: method.isAvailable
+                  ? () => widget.onMethodChanged(method.code)
+                  : null,
             ),
-            if (method != paymentMethods.last) const SizedBox(height: Spacing.xs),
+            if (method != visiblePaymentMethods.last)
+              const SizedBox(height: Spacing.xs),
           ],
         ],
       ),
     );
+  }
+
+  bool _isVisibleOnCurrentPlatform(
+    CheckoutPaymentMethodEntity method,
+    TargetPlatform platform,
+  ) {
+    if (method.code.trim().toLowerCase() != 'apple_pay') return true;
+
+    // Apple Pay is displayed on iOS whenever the checkout API enables it.
+    // Wallet/card availability is checked by the native payment flow only
+    // after the customer selects the method.
+    return method.isAvailable && platform == TargetPlatform.iOS;
   }
 }
 
@@ -138,7 +165,9 @@ class _PaymentMethodTile extends StatelessWidget {
                           style: getRegularStyle(
                             fontSize: FontSize.size11,
                             fontFamily: FontConstant.cairo,
-                            color: colors.onSurfaceVariant.withValues(alpha: 0.7),
+                            color: colors.onSurfaceVariant.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                       ],

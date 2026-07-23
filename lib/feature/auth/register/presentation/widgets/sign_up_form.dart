@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
 import 'package:zadana_user_v3/core/helpers/validators.dart';
@@ -28,6 +29,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _hasAcceptedTerms = false;
+  bool _showTermsError = false;
 
   @override
   void dispose() {
@@ -39,7 +42,13 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void _onSubmit(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
+    final isFormValid = _formKey.currentState!.validate();
+    if (!_hasAcceptedTerms) {
+      setState(() => _showTermsError = true);
+      return;
+    }
+
+    if (isFormValid) {
       widget.onEmailChanged?.call(_emailController.text);
 
       final location = widget.locationEntity;
@@ -68,6 +77,7 @@ class _SignUpFormState extends State<SignUpForm> {
   Widget build(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocBuilder<RegisterViewModel, RegisterState>(
       builder: (context, state) {
@@ -136,10 +146,24 @@ class _SignUpFormState extends State<SignUpForm> {
                   },
                 ),
               ),
+              const SizedBox(height: Spacing.md),
+              _TermsAcceptanceField(
+                value: _hasAcceptedTerms,
+                showError: _showTermsError,
+                isArabic: isArabic,
+                onChanged: (value) {
+                  setState(() {
+                    _hasAcceptedTerms = value ?? false;
+                    _showTermsError = !_hasAcceptedTerms;
+                  });
+                },
+                onOpenTerms: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.termsConditions),
+              ),
               const SizedBox(height: Spacing.xxl),
               AppButtonSwitch(
                 label: locale.btn_signup,
-                onPressed: () => _onSubmit(context),
+                onPressed: _hasAcceptedTerms ? () => _onSubmit(context) : null,
                 isLoading: state.isLoading,
               ),
               const SizedBox(height: Spacing.base),
@@ -147,6 +171,70 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         );
       },
+    );
+  }
+}
+
+class _TermsAcceptanceField extends StatelessWidget {
+  const _TermsAcceptanceField({
+    required this.value,
+    required this.showError,
+    required this.isArabic,
+    required this.onChanged,
+    required this.onOpenTerms,
+  });
+
+  final bool value;
+  final bool showError;
+  final bool isArabic;
+  final ValueChanged<bool?> onChanged;
+  final VoidCallback onOpenTerms;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Checkbox(value: value, onChanged: onChanged),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Wrap(
+                  children: [
+                    Text(isArabic ? 'أوافق على ' : 'I agree to the '),
+                    InkWell(
+                      onTap: onOpenTerms,
+                      child: Text(
+                        isArabic ? 'الشروط والأحكام' : 'Terms and Conditions',
+                        style: TextStyle(
+                          color: color.primary,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Text(isArabic ? ' الخاصة بتطبيق زدانا.' : ' of Zadana.'),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (showError)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 12),
+            child: Text(
+              isArabic
+                  ? 'يجب الموافقة على الشروط والأحكام لإنشاء الحساب.'
+                  : 'You must accept the Terms and Conditions to create an account.',
+              style: TextStyle(color: color.error, fontSize: 12),
+            ),
+          ),
+      ],
     );
   }
 }

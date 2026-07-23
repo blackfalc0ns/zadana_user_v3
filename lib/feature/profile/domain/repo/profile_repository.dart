@@ -11,9 +11,7 @@ abstract class ProfileRepository {
     UpdateProfileRequestEntity request,
   );
 
-  Future<ApiResult<ProfileResponseEntity>> updateProfilePhoto(
-    String filePath,
-  );
+  Future<ApiResult<ProfileResponseEntity>> updateProfilePhoto(String filePath);
 
-  Future<ApiResult<void>> deleteProfilePhoto();
+  Future<ApiResult<ProfileResponseEntity>> deleteProfilePhoto();
 }

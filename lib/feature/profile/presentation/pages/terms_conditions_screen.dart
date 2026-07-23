@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/font_manager.dart';
+import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
-import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/constants/assets.dart';
 import 'package:zadana_user_v3/core/extensions/extensions.dart';
-import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 
 class TermsConditionsScreen extends StatelessWidget {
@@ -11,85 +10,86 @@ class TermsConditionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final color = context.colorScheme;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-
-    final sections = isArabic
-        ? const [
-            (
-              'الاستخدام المقبول',
-              'يجب استخدام التطبيق بطريقة قانونية وعدم إساءة استخدام الخدمات أو محاولة الإضرار بالمنصة أو بالمستخدمين.',
-            ),
-            (
-              'الطلبات والدفع',
-              'تأكيد الطلب يعتمد على توفر المنتجات ونجاح عملية الدفع أو قبول الطلب حسب طريقة الدفع المختارة.',
-            ),
-            (
-              'الأسعار والتوافر',
-              'قد تختلف الأسعار والتوافر حسب المتجر أو المنطقة، ويحق للتطبيق تحديثها في أي وقت.',
-            ),
-            (
-              'الإلغاء والاسترجاع',
-              'تخضع عمليات الإلغاء والاسترجاع لسياسات المتجر والحالات المسموح بها داخل التطبيق.',
-            ),
-          ]
-        : const [
-            (
-              'Acceptable Use',
-              'The app must be used lawfully and without abusing services or attempting to harm the platform or other users.',
-            ),
-            (
-              'Orders and Payments',
-              'Order confirmation depends on product availability and successful payment or merchant acceptance.',
-            ),
-            (
-              'Pricing and Availability',
-              'Prices and availability may vary by store or area and may be updated at any time.',
-            ),
-            (
-              'Cancellation and Returns',
-              'Cancellation and return requests are subject to store policy and the supported in-app cases.',
-            ),
-          ];
-
+    final assetPath = isArabic
+        ? Assets.customerTermsAr
+        : Assets.customerTermsEn;
     return Scaffold(
       backgroundColor: color.surface,
-      appBar: CustomAppBar(title: l10n.terms_conditions),
-      body: ListView.separated(
+      appBar: CustomAppBar(
+        title: isArabic ? 'الشروط والأحكام' : 'Terms and Conditions',
+      ),
+      body: FutureBuilder<String>(
+        future: rootBundle.loadString(assetPath),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                isArabic
+                    ? 'تعذر تحميل الشروط والأحكام.'
+                    : 'Unable to load the terms and conditions.',
+              ),
+            );
+          }
+          return _TermsDocument(
+            markdown: snapshot.data ?? '',
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _TermsDocument extends StatelessWidget {
+  const _TermsDocument({required this.markdown, required this.textDirection});
+  final String markdown;
+  final TextDirection textDirection;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.colorScheme;
+    final lines = markdown.split('\n').where((line) {
+      // Notes for the mobile team are intentionally excluded from the
+      // customer-facing legal document.
+      return !line.trimLeft().startsWith('>');
+    }).toList();
+
+    return Directionality(
+      textDirection: textDirection,
+      child: ListView.builder(
         padding: const EdgeInsets.all(Spacing.lg),
-        itemCount: sections.length,
-        separatorBuilder: (_, _) => const SizedBox(height: Spacing.md),
+        itemCount: lines.length,
         itemBuilder: (context, index) {
-          final section = sections[index];
-          return Container(
-            padding: const EdgeInsets.all(Spacing.md),
-            decoration: BoxDecoration(
-              color: color.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(Spacing.md),
-              border: Border.all(color: color.outline.withValues(alpha: 0.12)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  section.$1,
-                  style: getBoldStyle(
-                    fontSize: FontSize.size15,
-                    fontFamily: FontConstant.cairo,
-                    color: color.onSurface,
-                  ),
-                ),
-                const SizedBox(height: Spacing.sm),
-                Text(
-                  section.$2,
-                  style: getRegularStyle(
-                    fontSize: FontSize.size13,
-                    fontFamily: FontConstant.cairo,
-                    color: color.onSurfaceVariant,
-                  ).copyWith(height: 1.6),
-                ),
-              ],
+          final line = lines[index].trim();
+          if (line.isEmpty || line == '---') {
+            return const SizedBox(height: Spacing.sm);
+          }
+          final isTitle = line.startsWith('# ');
+          final isHeading = line.startsWith('## ');
+          final text = line
+              .replaceFirst(RegExp(r'^#{1,2}\\s*'), '')
+              .replaceAll('**', '')
+              .replaceAll('`', '');
+          return Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.sm),
+            child: SelectableText(
+              text,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: isTitle || isHeading
+                    ? color.onSurface
+                    : color.onSurfaceVariant,
+                fontSize: isTitle ? 22 : (isHeading ? 18 : 14),
+                fontWeight: isTitle || isHeading
+                    ? FontWeight.w700
+                    : FontWeight.w400,
+                height: 1.7,
+              ),
             ),
           );
         },

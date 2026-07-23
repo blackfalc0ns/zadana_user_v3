@@ -26,16 +26,14 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  Future<ProfileResponseModelDto> updateProfilePhoto(
-    String profilePhotoUrl,
-  ) {
+  Future<ProfileResponseModelDto> updateProfilePhoto(String profilePhotoUrl) {
     return _apiServices.updateProfilePhoto(
       UpdateProfilePhotoRequestDto(profilePhotoUrl: profilePhotoUrl),
     );
   }
 
   @override
-  Future<void> deleteProfilePhoto() {
+  Future<ProfileResponseModelDto> deleteProfilePhoto() {
     return _apiServices.deleteProfilePhoto();
   }
 

@@ -4388,6 +4388,54 @@ abstract class AppLocalizations {
   /// **'Sign out from this device'**
   String get profile_logout_subtitle;
 
+  /// No description provided for @account_deleted_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted.'**
+  String get account_deleted_message;
+
+  /// No description provided for @account_close_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get account_close_action;
+
+  /// No description provided for @account_close_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account?'**
+  String get account_close_title;
+
+  /// No description provided for @account_close_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You will no longer be able to sign in. Your personal data will be hidden, while order history remains available only to the platform.'**
+  String get account_close_description;
+
+  /// No description provided for @account_close_confirmation_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Type DELETE to confirm'**
+  String get account_close_confirmation_label;
+
+  /// No description provided for @account_close_confirmation_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Type DELETE in uppercase to confirm.'**
+  String get account_close_confirmation_required;
+
+  /// No description provided for @account_close_password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password.'**
+  String get account_close_password_required;
+
+  /// No description provided for @account_close_invalid_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password.'**
+  String get account_close_invalid_password;
+
   /// No description provided for @delivery_unavailable_title.
   ///
   /// In en, this message translates to:
@@ -4603,6 +4651,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some products are unavailable at the branch for your current address. Please remove them or change your address.'**
   String get cart_items_unavailable_at_address_branch;
+
+  /// No description provided for @profile_photo_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get profile_photo_camera;
+
+  /// No description provided for @profile_photo_library.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library'**
+  String get profile_photo_library;
+
+  /// No description provided for @profile_photo_invalid_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a JPG, PNG, WEBP, GIF, or BMP image.'**
+  String get profile_photo_invalid_format;
+
+  /// No description provided for @profile_photo_too_large.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an image smaller than 5 MB.'**
+  String get profile_photo_too_large;
+
+  /// No description provided for @profile_photo_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo updated.'**
+  String get profile_photo_updated;
+
+  /// No description provided for @profile_photo_removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo removed.'**
+  String get profile_photo_removed;
+
+  /// No description provided for @profile_photo_edit_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile photo'**
+  String get profile_photo_edit_tooltip;
+
+  /// No description provided for @profile_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profile_updated;
+
+  /// No description provided for @profile_update_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get profile_update_action;
 }
 
 class _AppLocalizationsDelegate

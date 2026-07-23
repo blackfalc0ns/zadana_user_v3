@@ -30,6 +30,7 @@ dependencies:
   get_it: ^9.2.1
   iconsax: ^0.0.8
   injectable: ^2.7.1+4
+  image_picker: ^1.2.1
   intl: any
   json_annotation: ^4.11.0
   latlong2: ^0.9.1
@@ -73,6 +74,7 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie_animation/
+    - assets/legal/
   fonts:
     - family: Cairo
       fonts:

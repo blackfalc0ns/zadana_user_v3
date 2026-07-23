@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
+import 'package:zadana_user_v3/core/services/token_interceptor.dart';
 import 'package:zadana_user_v3/feature/addresses/data/models/add_customer_address_request_dto.dart';
 import 'package:zadana_user_v3/feature/addresses/data/models/customer_address_item_dto.dart';
 import 'package:zadana_user_v3/feature/addresses/data/models/update_customer_address_request_dto.dart';
@@ -210,6 +211,10 @@ abstract class ApiServices {
   @POST(EndPoints.logout)
   Future<void> logout(@Body() LogoutRequestDto request);
 
+  @POST(EndPoints.closeAccount)
+  @Extra({TokenInterceptor.skipTokenRefreshKey: true})
+  Future<void> closeAccount(@Body() Map<String, dynamic> request);
+
   @POST(EndPoints.forgetPassword)
   Future<ForgetPasswordResponseDto> forgetPassword(
     @Body() ForgetPasswordRequestDto request,
@@ -250,7 +255,7 @@ abstract class ApiServices {
   );
 
   @DELETE(EndPoints.profilePhoto)
-  Future<void> deleteProfilePhoto();
+  Future<ProfileResponseModelDto> deleteProfilePhoto();
 
   @MultiPart()
   @POST(EndPoints.fileUpload)
@@ -459,9 +464,7 @@ abstract class ApiServices {
   Future<NotificationPreferencesDto> getNotificationPreferences();
 
   @PUT(EndPoints.notificationPreferences)
-  Future<void> updateNotificationPreferences(
-    @Body() Map<String, dynamic> body,
-  );
+  Future<void> updateNotificationPreferences(@Body() Map<String, dynamic> body);
 
   @GET(EndPoints.notificationDevices)
   Future<NotificationDevicesResponseDto> getNotificationDevices();

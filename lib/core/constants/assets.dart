@@ -7,6 +7,11 @@ class Assets {
   static const String _icons = 'assets/icons';
   static const String _fonts = 'assets/fonts';
   static const String _lottie = 'assets/lottie_animation';
+  static const String _legal = 'assets/legal';
+
+  // Legal documents
+  static const String customerTermsAr = '$_legal/customer_terms_ar.md';
+  static const String customerTermsEn = '$_legal/customer_terms_en.md';
 
   // Images
   static const String banner = '$_root/banner.png';

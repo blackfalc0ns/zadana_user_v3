@@ -908,6 +908,14 @@
   "profile_about_subtitle": "اعرف أكثر عن التطبيق والإصدار الحالي",
   "profile_privacy_subtitle": "الخصوصية والشروط والأحكام",
   "profile_logout_subtitle": "تسجيل الخروج من هالجهاز",
+  "account_deleted_message": "تم حذف الحساب.",
+  "account_close_action": "حذف الحساب",
+  "account_close_title": "حذف الحساب؟",
+  "account_close_description": "لن تتمكن من تسجيل الدخول بهذا الحساب. ستُحذف بياناتك الشخصية من العرض، بينما يبقى سجل الطلبات للمنصة فقط.",
+  "account_close_confirmation_label": "اكتب DELETE للتأكيد",
+  "account_close_confirmation_required": "اكتب DELETE بحروف كبيرة للتأكيد.",
+  "account_close_password_required": "أدخل كلمة المرور.",
+  "account_close_invalid_password": "كلمة المرور غير صحيحة.",
 
   "delivery_unavailable_title": "التوصيل غير متاح",
   "delivery_unavailable_hint": "فضلاً اختر متجر ثاني أو غيّر عنوان التوصيل",
@@ -950,5 +958,14 @@
   "checkout_unavailable_items_confirm_title": "عندك منتجات مو متوفرة",
   "checkout_unavailable_items_confirm_message": "المتجر اللي اخترته ما يوفّر كل منتجات سلتك. تبي نشيل المنتجات اللي مو متوفرة ونكمّل طلبك؟",
   "checkout_unavailable_items_confirm_continue": "كمّل الطلب",
-  "cart_items_unavailable_at_address_branch": "بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان."
+  "cart_items_unavailable_at_address_branch": "بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.",
+  "profile_photo_camera": "الكاميرا",
+  "profile_photo_library": "المعرض",
+  "profile_photo_invalid_format": "اختر صورة بصيغة JPG أو PNG أو WEBP أو GIF أو BMP.",
+  "profile_photo_too_large": "اختر صورة بحجم أقل من 5 ميجابايت.",
+  "profile_photo_updated": "تم تحديث الصورة الشخصية.",
+  "profile_photo_removed": "تم حذف الصورة الشخصية.",
+  "profile_photo_edit_tooltip": "تعديل الصورة الشخصية",
+  "profile_updated": "تم تحديث البيانات بنجاح",
+  "profile_update_action": "تحديث"
 }
