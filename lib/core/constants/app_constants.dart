@@ -9,7 +9,7 @@ class AppConstants {
   static const String appNameAr = 'زادنا';
   static const String packageName = 'com.zadana.customer';
   static const String appVersion = '1.0.0';
-  static const String developerEmail = 'blackFalcons@gmail.com';
+  static const String developerEmail = 'support@zadna0.com';
 
   /// WhatsApp's `wa.me` URLs require the international number without `+`.
   static const String developerWhatsapp = '966569928163';

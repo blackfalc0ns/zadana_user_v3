@@ -87,7 +87,7 @@ void showDeveloperDialog(BuildContext context) {
                 ),
                 const SizedBox(height: Spacing.lg),
                 Text(
-                  'Thanks for using Zadana',
+                  'Thanks for using Zadna',
                   style: getMediumStyle(
                     fontSize: FontSize.size13,
                     fontFamily: FontConstant.cairo,
