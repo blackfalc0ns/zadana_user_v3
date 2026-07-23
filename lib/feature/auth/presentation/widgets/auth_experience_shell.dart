@@ -20,6 +20,7 @@ class AuthExperienceShell extends StatelessWidget {
     this.footer,
     this.showBackButton = false,
     this.isLoading = false,
+    this.centerContent = false,
   });
 
   final String heroBadge;
@@ -33,6 +34,7 @@ class AuthExperienceShell extends StatelessWidget {
   final Widget? footer;
   final bool showBackButton;
   final bool isLoading;
+  final bool centerContent;
 
   @override
   Widget build(BuildContext context) {
@@ -45,43 +47,74 @@ class AuthExperienceShell extends StatelessWidget {
           AbsorbPointer(
             absorbing: isLoading,
             child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  Spacing.base,
-                  Spacing.base,
-                  Spacing.base,
-                  Spacing.xl,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (showBackButton) ...[
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: _AuthBackButton(
-                          onTap: () => Navigator.of(context).maybePop(),
-                        ),
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.base,
+                    Spacing.base,
+                    Spacing.base,
+                    Spacing.xl,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight:
+                          constraints.maxHeight - Spacing.base - Spacing.xl,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (showBackButton) ...[
+                            Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: _AuthBackButton(
+                                onTap: () => Navigator.of(context).maybePop(),
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.xs),
+                          ],
+                          _HeroHeader(
+                            badge: heroBadge,
+                            title: heroTitle,
+                            subtitle: heroSubtitle,
+                          ),
+                          if (centerContent)
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _FormCard(
+                                    badge: sectionBadge,
+                                    title: sectionTitle,
+                                    description: sectionDescription,
+                                    icon: sectionIcon,
+                                    child: body,
+                                  ),
+                                  if (footer != null) ...[
+                                    const SizedBox(height: Spacing.base),
+                                    footer!,
+                                  ],
+                                ],
+                              ),
+                            )
+                          else ...[
+                            const SizedBox(height: Spacing.sm),
+                            _FormCard(
+                              badge: sectionBadge,
+                              title: sectionTitle,
+                              description: sectionDescription,
+                              icon: sectionIcon,
+                              child: body,
+                            ),
+                            if (footer != null) ...[
+                              const SizedBox(height: Spacing.base),
+                              Center(child: footer),
+                            ],
+                          ],
+                        ],
                       ),
-                      const SizedBox(height: Spacing.xs),
-                    ],
-                    _HeroHeader(
-                      badge: heroBadge,
-                      title: heroTitle,
-                      subtitle: heroSubtitle,
                     ),
-                    const SizedBox(height: Spacing.sm),
-                    _FormCard(
-                      badge: sectionBadge,
-                      title: sectionTitle,
-                      description: sectionDescription,
-                      icon: sectionIcon,
-                      child: body,
-                    ),
-                    if (footer != null) ...[
-                      const SizedBox(height: Spacing.base),
-                      Center(child: footer),
-                    ],
-                  ],
+                  ),
                 ),
               ),
             ),

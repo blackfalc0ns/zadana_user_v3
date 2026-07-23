@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
@@ -28,40 +26,12 @@ class CheckoutPaymentMethodCard extends StatefulWidget {
 }
 
 class _CheckoutPaymentMethodCardState extends State<CheckoutPaymentMethodCard> {
-  static const _applePayChannel = MethodChannel(
-    'flutter.moyasar.com/apple_pay',
-  );
-  bool? _canUseApplePay;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkApplePayAvailability();
-  }
-
-  Future<void> _checkApplePayAvailability() async {
-    if (defaultTargetPlatform != TargetPlatform.iOS) return;
-
-    try {
-      final isAvailable = await _applePayChannel.invokeMethod<bool>(
-        'isApplePayAvailable',
-        const {
-          'supportedNetworks': ['mada', 'visa', 'masterCard'],
-        },
-      );
-      if (mounted) setState(() => _canUseApplePay = isAvailable == true);
-    } on PlatformException {
-      if (mounted) setState(() => _canUseApplePay = false);
-    } catch (_) {
-      if (mounted) setState(() => _canUseApplePay = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final platform = Theme.of(context).platform;
     final visiblePaymentMethods = widget.paymentMethods
-        .where(_isVisibleOnCurrentPlatform)
+        .where((method) => _isVisibleOnCurrentPlatform(method, platform))
         .toList();
 
     if (visiblePaymentMethods.isEmpty) return const SizedBox.shrink();
@@ -91,14 +61,16 @@ class _CheckoutPaymentMethodCardState extends State<CheckoutPaymentMethodCard> {
     );
   }
 
-  bool _isVisibleOnCurrentPlatform(CheckoutPaymentMethodEntity method) {
+  bool _isVisibleOnCurrentPlatform(
+    CheckoutPaymentMethodEntity method,
+    TargetPlatform platform,
+  ) {
     if (method.code.trim().toLowerCase() != 'apple_pay') return true;
 
-    // Apple Pay must be enabled by the checkout API and can only be used on
-    // iOS. Unlike other unavailable methods, it is intentionally hidden.
-    return method.isAvailable &&
-        defaultTargetPlatform == TargetPlatform.iOS &&
-        _canUseApplePay == true;
+    // Apple Pay is displayed on iOS whenever the checkout API enables it.
+    // Wallet/card availability is checked by the native payment flow only
+    // after the customer selects the method.
+    return method.isAvailable && platform == TargetPlatform.iOS;
   }
 }
 

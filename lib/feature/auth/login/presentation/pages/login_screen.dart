@@ -112,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
           sectionTitle: locale.login_section_title,
           sectionDescription: locale.login_section_description,
           sectionIcon: Icons.lock_open_rounded,
+          centerContent: true,
           body: showGlobalError
               ? Padding(
                   padding: const EdgeInsets.symmetric(
