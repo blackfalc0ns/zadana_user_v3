@@ -45,11 +45,21 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
 
   Timer? _mapReverseDebounce;
   bool _isConfirmingLocation = false;
+  bool _hasCenteredOnCurrentLocation = false;
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+
+    // Ask for the device location as soon as this screen opens so the map
+    // pin starts at the user's current position instead of the fallback city.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<LocationViewModel>().doIntent(
+        const GetCurrentLocationEvent(),
+      );
+    });
   }
 
   @override
@@ -119,6 +129,15 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
     return Scaffold(
       body: BlocConsumer<LocationViewModel, LocationState>(
         listener: (context, state) {
+          final currentLocation = state.selectedLocation;
+          if (!_hasCenteredOnCurrentLocation && currentLocation != null) {
+            _hasCenteredOnCurrentLocation = true;
+            _mapController.move(
+              ll.LatLng(currentLocation.latitude, currentLocation.longitude),
+              16,
+            );
+          }
+
           if (_isConfirmingLocation && !state.isLoading) {
             if (state.selectedLocation != null) {
               _isConfirmingLocation = false;
@@ -146,9 +165,9 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
               child: Padding(
                 padding: const EdgeInsets.all(Spacing.screenH),
                 child: ApiErrorWidget(
-                    exception: state.failure!.exception,
-                    onRetry: () => _retryLastAction(context),
-                    onGoBack: () => Navigator.pop(context),
+                  exception: state.failure!.exception,
+                  onRetry: () => _retryLastAction(context),
+                  onGoBack: () => Navigator.pop(context),
                 ),
               ),
             );
