@@ -16,7 +16,10 @@ import 'network_constants.dart';
 abstract class ExternalModules {
   @preResolve
   Future<CacheStore> get provideCacheStore async {
-    return MemCacheStore(maxSize: 50 * 1024 * 1024, maxEntrySize: 2 * 1024 * 1024);
+    return MemCacheStore(
+      maxSize: 50 * 1024 * 1024,
+      maxEntrySize: 2 * 1024 * 1024,
+    );
   }
 
   @lazySingleton
@@ -48,10 +51,24 @@ abstract class ExternalModules {
     dio.interceptors.add(deviceIdInterceptor);
     dio.interceptors.add(guestCartSignatureInterceptor);
     dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (options.extra[NetworkConstants.skipCache] == true) {
+            options.extra.addAll(
+              CacheOptions(
+                store: cacheStore,
+                policy: CachePolicy.noCache,
+              ).toExtra(),
+            );
+          }
+          handler.next(options);
+        },
+      ),
+    );
+    dio.interceptors.add(
       DioCacheInterceptor(
         options: CacheOptions(
           store: cacheStore,
-          policy: CachePolicy.request,
           maxStale: const Duration(minutes: 5),
           hitCacheOnErrorExcept: [401, 403],
         ),

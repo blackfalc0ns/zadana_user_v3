@@ -23,6 +23,7 @@ abstract class NetworkConstants {
   static const String bearer = "Bearer";
   static const String deviceIdHeader = 'X-Device-Id';
   static const String deviceSignatureHeader = 'X-Device-Signature';
+  static const String skipCache = 'skipCache';
 }
 
 abstract class EndPoints {
@@ -100,4 +101,6 @@ abstract class EndPoints {
   static const String bankTransferProof =
       '/orders/{orderId}/bank-transfer-proof';
   static const String cartGuestToken = '/cart/guest-token';
+  static const String platformContact = '/public/platform-contact';
+  static const String legalDocument = '/public/legal/{documentType}';
 }

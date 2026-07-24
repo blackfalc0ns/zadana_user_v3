@@ -72,7 +72,6 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie_animation/
-    - assets/legal/
   fonts:
     - family: Cairo
       fonts:

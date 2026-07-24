@@ -68,6 +68,8 @@ import 'package:zadana_user_v3/feature/notifications/data/models/register_notifi
 import 'package:zadana_user_v3/feature/notifications/data/models/unregister_notification_device_request_dto.dart';
 import 'package:zadana_user_v3/feature/product_details/data/models/product_details_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/file_upload_response_dto.dart';
+import 'package:zadana_user_v3/feature/profile/data/models/legal_document_dto.dart';
+import 'package:zadana_user_v3/feature/profile/data/models/platform_contact_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/profile_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_photo_request_dto.dart';
 import 'package:zadana_user_v3/feature/profile/data/models/update_profile_request_dto.dart';
@@ -81,6 +83,24 @@ part 'api_services.g.dart';
 abstract class ApiServices {
   @factoryMethod
   factory ApiServices(Dio dio) = _ApiServices;
+
+  @GET(EndPoints.platformContact)
+  @Extra({
+    TokenInterceptor.skipAuthKey: true,
+    TokenInterceptor.skipTokenRefreshKey: true,
+    NetworkConstants.skipCache: true,
+  })
+  Future<PlatformContactDto> getPlatformContact();
+
+  @GET(EndPoints.legalDocument)
+  @Extra({
+    TokenInterceptor.skipAuthKey: true,
+    TokenInterceptor.skipTokenRefreshKey: true,
+    NetworkConstants.skipCache: true,
+  })
+  Future<LegalDocumentDto> getLegalDocument(
+    @Path('documentType') String documentType,
+  );
 
   @GET(EndPoints.home)
   Future<HomeAppBarModelDto> getHomeAppBar();

@@ -159,6 +159,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
                 onOpenTerms: () =>
                     Navigator.of(context).pushNamed(AppRoutes.termsConditions),
+                onOpenPrivacy: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.privacyPolicy),
               ),
               const SizedBox(height: Spacing.xxl),
               AppButtonSwitch(
@@ -182,6 +184,7 @@ class _TermsAcceptanceField extends StatelessWidget {
     required this.isArabic,
     required this.onChanged,
     required this.onOpenTerms,
+    required this.onOpenPrivacy,
   });
 
   final bool value;
@@ -189,6 +192,7 @@ class _TermsAcceptanceField extends StatelessWidget {
   final bool isArabic;
   final ValueChanged<bool?> onChanged;
   final VoidCallback onOpenTerms;
+  final VoidCallback onOpenPrivacy;
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +221,18 @@ class _TermsAcceptanceField extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Text(isArabic ? ' و' : ' and the '),
+                    InkWell(
+                      onTap: onOpenPrivacy,
+                      child: Text(
+                        isArabic ? 'سياسة الخصوصية' : 'Privacy Policy',
+                        style: TextStyle(
+                          color: color.primary,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                     Text(isArabic ? ' الخاصة بتطبيق زدانا.' : ' of Zadana.'),
                   ],
                 ),
@@ -229,8 +245,8 @@ class _TermsAcceptanceField extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: 12),
             child: Text(
               isArabic
-                  ? 'يجب الموافقة على الشروط والأحكام لإنشاء الحساب.'
-                  : 'You must accept the Terms and Conditions to create an account.',
+                  ? 'يجب الموافقة على الشروط والأحكام وسياسة الخصوصية لإنشاء الحساب.'
+                  : 'You must accept the Terms and Privacy Policy to create an account.',
               style: TextStyle(color: color.error, fontSize: 12),
             ),
           ),
