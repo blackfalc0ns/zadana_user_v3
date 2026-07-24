@@ -28,13 +28,15 @@ class MoyasarPaymentScreen extends StatelessWidget {
   final MoyasarProviderConfigEntity config;
   final String? orderId;
 
-  /// Supplied per build environment, e.g.
+  /// Can be overridden per build environment with
   /// `--dart-define=APPLE_PAY_MERCHANT_ID=merchant.com.example`.
   ///
-  /// This is intentionally not inferred from the API response: the Merchant
-  /// ID must match the Apple Pay capability and Moyasar certificate.
+  /// The default matches the Apple Pay capability in Runner.entitlements.
+  /// It is intentionally not inferred from the API response: the Merchant ID
+  /// must match the Apple Pay capability and Moyasar certificate.
   static const _applePayMerchantId = String.fromEnvironment(
     'APPLE_PAY_MERCHANT_ID',
+    defaultValue: 'merchant.com.blackfalcons.Zadna',
   );
 
   bool get _usesApplePay =>
