@@ -32,7 +32,7 @@ class PaymentLoadingView extends StatelessWidget {
                   SizedBox(height: Spacing.md),
                   _PaymentCardSkeleton(height: 164),
                   SizedBox(height: Spacing.md),
-                  _PaymentCardSkeleton(height: 110),
+                  _PaymentCardSkeleton(height: 120),
                   SizedBox(height: Spacing.md),
                   _PaymentCardSkeleton(height: 196),
                 ],
