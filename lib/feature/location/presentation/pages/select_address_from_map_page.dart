@@ -41,11 +41,11 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
   late final MapController _mapController;
   final TextEditingController _searchController = TextEditingController();
 
-  final ll.LatLng _initialPosition = const ll.LatLng(30.0444, 31.2357);
+  final ll.LatLng _initialPosition = const ll.LatLng(24.7136, 46.6753);
 
   Timer? _mapReverseDebounce;
   bool _isConfirmingLocation = false;
-  bool _hasCenteredOnCurrentLocation = false;
+  bool _shouldCenterOnCurrentLocation = false;
 
   @override
   void initState() {
@@ -56,9 +56,7 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
     // pin starts at the user's current position instead of the fallback city.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.read<LocationViewModel>().doIntent(
-        const GetCurrentLocationEvent(),
-      );
+      _showCurrentLocation();
     });
   }
 
@@ -103,6 +101,11 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
     });
   }
 
+  void _showCurrentLocation() {
+    _shouldCenterOnCurrentLocation = true;
+    context.read<LocationViewModel>().doIntent(const GetCurrentLocationEvent());
+  }
+
   void _retryLastAction(BuildContext context) {
     final viewModel = context.read<LocationViewModel>();
     viewModel.clearFeedback();
@@ -130,8 +133,10 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
       body: BlocConsumer<LocationViewModel, LocationState>(
         listener: (context, state) {
           final currentLocation = state.selectedLocation;
-          if (!_hasCenteredOnCurrentLocation && currentLocation != null) {
-            _hasCenteredOnCurrentLocation = true;
+          if (_shouldCenterOnCurrentLocation &&
+              !state.isLoading &&
+              currentLocation != null) {
+            _shouldCenterOnCurrentLocation = false;
             _mapController.move(
               ll.LatLng(currentLocation.latitude, currentLocation.longitude),
               16,
@@ -261,6 +266,14 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
                     child: CircularProgressIndicator(color: color.primary),
                   ),
                 ),
+              Positioned(
+                right: Spacing.base,
+                bottom: 210,
+                child: CircleActionButton(
+                  icon: Icons.my_location,
+                  onTap: _showCurrentLocation,
+                ),
+              ),
               Positioned(
                 bottom: 0,
                 left: 0,
