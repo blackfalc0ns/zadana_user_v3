@@ -10,6 +10,10 @@ class AppConstants {
   static const String packageName = 'com.zadana.customer';
   static const String appVersion = '1.0.0';
   static const String developerEmail = 'support@zadna0.com';
+  static const String instagramUrl =
+      'https://www.instagram.com/zadna0?igsh=Y2IzaHAwa3l0MDhl&utm_source=qr';
+  static const String xUrl =
+      'https://x.com/zadna0?s=11&t=DEY88wdjPxCQAa3l3Ta0Xg';
 
   /// WhatsApp's `wa.me` URLs require the international number without `+`.
   static const String developerWhatsapp = '966569928163';
