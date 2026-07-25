@@ -84,9 +84,30 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
         final result = await _fetchTrackingSnapshot(orderId);
         if (isDisposed || controller.isClosed) return;
         if (result case ApiSuccessResult<OrderTrackingEntity>()) {
-          currentTracking = result.data;
+          // A status SignalR event arrives before the read replica serving the
+          // tracking endpoint has necessarily caught up. Keep the realtime
+          // state while the snapshot is older or contains no newer progress;
+          // otherwise completed checkmarks can flicker and the whole screen
+          // rebuilds unnecessarily.
+          final snapshot = result.data;
+          final current = currentTracking;
+          final shouldKeepRealtimeState =
+              current != null &&
+              snapshot.order.status.isActive &&
+              snapshot.order.status == current.order.status &&
+              _visualProgress(snapshot) <= _visualProgress(current);
+          final nextTracking = shouldKeepRealtimeState ? current : snapshot;
+          currentTracking = nextTracking;
+          // The realtime entity is already on screen; emitting it again would
+          // cause an unnecessary full screen rebuild.
+          if (!identical(nextTracking, current)) {
+            controller.add(
+              ApiSuccessResult<OrderTrackingEntity>(data: nextTracking),
+            );
+          }
+        } else {
+          controller.add(result);
         }
-        controller.add(result);
         SignalRDiagnostics.instance
             .add('TrackOrderRepository REST refresh completed', {
               'currentOrderId': orderId,
@@ -349,6 +370,23 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
       default:
         return 0;
     }
+  }
+
+  /// Returns the furthest step displayed in the timeline.
+  ///
+  /// `processing` covers both vendor-confirmed and preparing in the API, so
+  /// comparing the order status alone cannot identify an older snapshot.
+  int _visualProgress(OrderTrackingEntity tracking) {
+    var progress = -1;
+    for (var index = 0; index < tracking.timeline.length; index++) {
+      final item = tracking.timeline[index];
+      if (item.isActive || item.isCompleted) {
+        progress = _stageIndexFromTimelineItem(item, index);
+      }
+    }
+    if (progress >= 0) return progress;
+
+    return _stageIndexFromRawStatus(tracking.order.status.name);
   }
 
   int _stageIndexFromTimelineItem(
