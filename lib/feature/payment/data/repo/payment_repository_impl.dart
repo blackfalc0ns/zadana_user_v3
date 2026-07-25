@@ -53,12 +53,16 @@ class PaymentRepositoryImpl implements PaymentRepository {
   Future<ApiResult<CheckoutPromoResultEntity>> applyPromoCode(
     String code, {
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   }) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.applyPromoCode(
         code,
         vendorId: vendorId,
+        fulfillmentType: fulfillmentType,
+        vendorBranchId: vendorBranchId,
         paymentMethod: paymentMethod,
       );
       return response.toEntity();
@@ -68,11 +72,15 @@ class PaymentRepositoryImpl implements PaymentRepository {
   @override
   Future<ApiResult<CheckoutPromoResultEntity>> removePromoCode({
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   }) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.removePromoCode(
         vendorId: vendorId,
+        fulfillmentType: fulfillmentType,
+        vendorBranchId: vendorBranchId,
         paymentMethod: paymentMethod,
       );
       return response.toEntity();

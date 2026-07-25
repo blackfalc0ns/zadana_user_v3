@@ -71,8 +71,7 @@ class OrderPaymentEntity {
 
   /// Returns true when the payment flow is manual bank transfer.
   bool get isBankTransfer =>
-      paymentFlow == 'manual_bank_transfer' ||
-      provider == 'banktransfer';
+      paymentFlow == 'manual_bank_transfer' || provider == 'banktransfer';
 
   /// Returns true when the payment flow is online gateway (card/Moyasar).
   bool get isOnlineGateway =>

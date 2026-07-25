@@ -13,7 +13,8 @@ class CheckoutConfigDto {
       deliveryEnabled: json['delivery_enabled'] == true,
       pickupEnabled: json['pickup_enabled'] == true,
       pickupCashOnPickupEnabled: json['pickup_cash_on_pickup_enabled'] == true,
-      allowedPaymentsForPickup: (json['allowed_payments_for_pickup'] as List?)
+      allowedPaymentsForPickup:
+          (json['allowed_payments_for_pickup'] as List?)
               ?.map((item) => item?.toString() ?? '')
               .where((item) => item.isNotEmpty)
               .toList() ??

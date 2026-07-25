@@ -105,8 +105,8 @@ class OrderPaymentDto {
     final paymentFlow = json['payment_flow']?.toString();
 
     // Determine if this is a bank transfer to parse provider_config correctly.
-    final isBankTransfer = paymentFlow == 'manual_bank_transfer' ||
-        provider == 'banktransfer';
+    final isBankTransfer =
+        paymentFlow == 'manual_bank_transfer' || provider == 'banktransfer';
 
     return OrderPaymentDto(
       id: json['id']?.toString() ?? '',
@@ -114,7 +114,8 @@ class OrderPaymentDto {
       status: json['status']?.toString() ?? '',
       iframeUrl: json['iframe_url']?.toString() ?? '',
       providerReference: json['provider_reference']?.toString() ?? '',
-      providerConfig: (!isBankTransfer && _nullableMap(json['provider_config']) != null)
+      providerConfig:
+          (!isBankTransfer && _nullableMap(json['provider_config']) != null)
           ? MoyasarProviderConfigDto.fromJson(_asMap(json['provider_config']))
           : null,
       paymentFlow: paymentFlow,
@@ -122,7 +123,8 @@ class OrderPaymentDto {
       requiresCustomerAction: json['requires_customer_action'] as bool?,
       customerAction: json['customer_action']?.toString(),
       confirmationMode: json['confirmation_mode']?.toString(),
-      bankTransferConfig: (isBankTransfer && _nullableMap(json['provider_config']) != null)
+      bankTransferConfig:
+          (isBankTransfer && _nullableMap(json['provider_config']) != null)
           ? BankTransferConfigDto.fromJson(_asMap(json['provider_config']))
           : null,
     );
@@ -288,14 +290,19 @@ int _asInt(dynamic value) {
 
 List<String> _asStringList(dynamic value) {
   if (value is List) {
-    return value.map((e) => e?.toString() ?? '').where((e) => e.isNotEmpty).toList();
+    return value
+        .map((e) => e?.toString() ?? '')
+        .where((e) => e.isNotEmpty)
+        .toList();
   }
   return const [];
 }
 
 Map<String, String> _asStringMap(dynamic value) {
   if (value is Map) {
-    return value.map((key, val) => MapEntry(key.toString(), val?.toString() ?? ''));
+    return value.map(
+      (key, val) => MapEntry(key.toString(), val?.toString() ?? ''),
+    );
   }
   return const {};
 }

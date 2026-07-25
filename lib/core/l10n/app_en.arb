@@ -560,6 +560,7 @@
   "back_to_home": "Back to Home",
   "track_order_order_placed": "Order placed",
   "track_order_vendor_confirmed": "Vendor confirmed",
+  "track_order_waiting_vendor_confirmation": "Waiting for vendor confirmation",
   "track_order_preparing": "Preparing order",
   "track_order_out_for_delivery": "Out for delivery",
   "my_orders_title": "My Orders",
@@ -979,4 +980,16 @@
   "profile_photo_edit_tooltip": "Edit profile photo",
   "profile_updated": "Profile updated successfully",
   "profile_update_action": "Update"
+  ,"pickup_branch_title": "Pickup branch"
+  ,"pickup_code_title": "Pickup code"
+  ,"pickup_code_instruction": "Show this code to the vendor when collecting your order."
+  ,"pickup_code_resend": "Resend code"
+  ,"pickup_code_expires": "Code expires: {dateTime}"
+  ,"@pickup_code_expires": {"placeholders": {"dateTime": {"type": "String"}}}
+  ,"pickup_deadline": "Pickup deadline: {dateTime}"
+  ,"@pickup_deadline": {"placeholders": {"dateTime": {"type": "String"}}}
+  ,"pickup_from_branch": "Pickup from branch"
+  ,"pickup_change_branch": "Change branch"
+  ,"pickup_select_branch_first": "Choose a pickup branch first to complete your order."
+  ,"pickup_complete_order_unavailable": "Choose a pickup branch to enable the Complete order button."
 }

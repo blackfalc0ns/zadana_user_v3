@@ -36,7 +36,9 @@ class _CheckoutPromoCodeCardState extends State<CheckoutPromoCodeCard> {
   @override
   void initState() {
     super.initState();
-    _promoController = TextEditingController(text: widget.promoCode?.code ?? '');
+    _promoController = TextEditingController(
+      text: widget.promoCode?.code ?? '',
+    );
   }
 
   @override
@@ -44,7 +46,8 @@ class _CheckoutPromoCodeCardState extends State<CheckoutPromoCodeCard> {
     super.didUpdateWidget(oldWidget);
 
     final nextCode = widget.promoCode?.code ?? '';
-    if (_promoController.text != nextCode && (widget.promoCode != null || oldWidget.promoCode != null)) {
+    if (_promoController.text != nextCode &&
+        (widget.promoCode != null || oldWidget.promoCode != null)) {
       _promoController.text = nextCode;
     }
   }

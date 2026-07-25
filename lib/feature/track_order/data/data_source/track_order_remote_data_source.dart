@@ -2,4 +2,6 @@ import 'package:zadana_user_v3/feature/track_order/data/models/order_tracking_re
 
 abstract class TrackOrderRemoteDataSource {
   Future<OrderTrackingResponseDto> getOrderTracking(String orderId);
+
+  Future<void> resendPickupOtp(String orderId);
 }

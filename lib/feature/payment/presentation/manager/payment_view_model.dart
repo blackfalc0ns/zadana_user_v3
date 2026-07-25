@@ -272,10 +272,14 @@ class PaymentViewModel extends Cubit<PaymentState> {
         final retainedPromoCode =
             result.data.promoCode?.code ?? promoCode ?? state.appliedPromoCode;
 
-        // Check if delivery is unavailable after address change
+        // A pickup summary without a selected branch reports
+        // `pickup_branch_required` with a non-deliverable check. That is an
+        // expected selection state, not a delivery failure dialog.
         final deliveryCheck = result.data.deliveryCheck;
         final isDeliveryUnavailable =
-            deliveryCheck != null && !deliveryCheck.isDeliverable;
+            !state.isPickup &&
+            deliveryCheck != null &&
+            !deliveryCheck.isDeliverable;
 
         emit(
           state.copyWith(
@@ -328,7 +332,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
     );
 
     if (normalized == 'pickup') {
-      emit(state.copyWith(isRefreshingSummary: false));
+      // Request a pickup summary even before a branch is chosen. This clears
+      // delivery-only pricing and methods while the branch selector is shown.
+      await _refreshSummary(vendorBranchId: state.vendorBranchId);
       await _loadPickupBranches(openSelectorIfNeeded: true);
       return;
     }
@@ -353,7 +359,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
             isChangingFulfillmentType: false,
             isLoadingPickupBranches: false,
             fulfillmentType: result.data.fulfillmentType,
-            vendorBranchId: null,
+            clearVendorBranchId: true,
             checkoutSummary: result.data,
             appliedPromoCode:
                 result.data.promoCode?.code ?? state.appliedPromoCode,
@@ -390,7 +396,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           isLoadingPickupBranches: false,
           isChangingFulfillmentType: false,
           pickupBranches: const [],
-          vendorBranchId: null,
+          clearVendorBranchId: true,
           actionFailure: Failure(
             errorMessage:
                 'Please select or add an address first so we can find pickup branches in your city.',
@@ -461,7 +467,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
             isLoadingPickupBranches: false,
             isChangingFulfillmentType: false,
             pickupBranches: const [],
-            vendorBranchId: null,
+            clearVendorBranchId: true,
             pickupBranchesFailure: result.failure,
           ),
         );
@@ -555,6 +561,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
     final result = await _applyCheckoutPromoCodeUseCase(
       trimmedCode,
       vendorId: state.vendorId,
+      fulfillmentType: state.fulfillmentType,
+      vendorBranchId: state.isPickup
+          ? (state.vendorBranchId ?? state.checkoutSummary?.pickupBranch?.id)
+          : null,
       paymentMethod: state.selectedPaymentMethodCode,
     );
 
@@ -598,6 +608,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     final result = await _removeCheckoutPromoCodeUseCase(
       vendorId: state.vendorId,
+      fulfillmentType: state.fulfillmentType,
+      vendorBranchId: state.isPickup
+          ? (state.vendorBranchId ?? state.checkoutSummary?.pickupBranch?.id)
+          : null,
       paymentMethod: state.selectedPaymentMethodCode,
     );
 
@@ -809,7 +823,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
     if (state.isPickup) {
       emit(
         state.copyWith(
-          vendorBranchId: null,
+          clearVendorBranchId: true,
           pickupBranches: const [],
           clearPickupBranchesFailure: true,
         ),

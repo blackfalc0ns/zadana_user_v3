@@ -21,9 +21,9 @@ class CheckoutPromoResultDto {
       deliveryQuote: _nullableMap(json['delivery_quote']) == null
           ? null
           : CheckoutDeliveryQuoteDto.fromJson(_asMap(json['delivery_quote'])),
-      shippingBreakdown: _asList(json['shipping_breakdown'])
-          .map((item) => CheckoutShippingLineDto.fromJson(_asMap(item)))
-          .toList(),
+      shippingBreakdown: _asList(
+        json['shipping_breakdown'],
+      ).map((item) => CheckoutShippingLineDto.fromJson(_asMap(item))).toList(),
       pricingMode: json['pricing_mode']?.toString(),
       summary: CheckoutTotalsDto.fromJson(_asMap(json['summary'])),
     );
@@ -41,7 +41,9 @@ class CheckoutPromoResultDto {
       message: message,
       promoCode: promoCode?.toEntity(),
       deliveryQuote: deliveryQuote?.toEntity(),
-      shippingBreakdown: shippingBreakdown.map((item) => item.toEntity()).toList(),
+      shippingBreakdown: shippingBreakdown
+          .map((item) => item.toEntity())
+          .toList(),
       pricingMode: pricingMode,
       summary: summary.toEntity(),
     );

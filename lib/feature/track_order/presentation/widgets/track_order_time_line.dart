@@ -19,23 +19,26 @@ class TrackOrderTimelineTile extends StatelessWidget {
   final bool completed;
   final bool last;
 
-  static const Color _pendingColor = Color(0xFFE58E1A);
+  bool get _isCurrent => active;
+  bool get _isCompleted => completed && !active;
 
   Color _indicatorColor(ColorScheme color) {
-    if (completed) return color.primary;
-    return _pendingColor;
+    if (_isCurrent) return color.primary;
+    if (_isCompleted) return color.primary.withValues(alpha: .55);
+    return color.onSurfaceVariant.withValues(alpha: .45);
   }
 
   Color _titleColor(ColorScheme color) {
-    if (completed) return color.onSurface;
-    return _pendingColor;
+    if (_isCurrent) return color.onSurface;
+    if (_isCompleted) return color.onSurface.withValues(alpha: .7);
+    return color.onSurface.withValues(alpha: .5);
   }
 
   IconData _indicatorIcon() {
-    if (completed) {
+    if (_isCurrent) {
       return Icons.radio_button_checked_rounded;
     }
-
+    if (_isCompleted) return Icons.check_circle_rounded;
     return Icons.radio_button_off_rounded;
   }
 
@@ -72,7 +75,7 @@ class TrackOrderTimelineTile extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
     final indicatorColor = _indicatorColor(color);
     final isRtl = Directionality.of(context) == TextDirection.rtl;
-    final shouldShowTime = completed && time.isNotEmpty;
+    final shouldShowTime = (_isCurrent || _isCompleted) && time.isNotEmpty;
     final displayTime = _displayTime(context);
 
     final timelineColumn = SizedBox(
@@ -86,9 +89,9 @@ class TrackOrderTimelineTile extends StatelessWidget {
               height: shouldShowTime ? 62 : 54,
               margin: const EdgeInsets.only(top: 4),
               decoration: BoxDecoration(
-                color: completed
-                    ? color.primary.withValues(alpha: .55)
-                    : _pendingColor.withValues(alpha: .32),
+                color: _isCompleted
+                    ? color.primary.withValues(alpha: .45)
+                    : color.onSurfaceVariant.withValues(alpha: .2),
                 borderRadius: BorderRadius.circular(999),
               ),
             ),
@@ -127,9 +130,7 @@ class TrackOrderTimelineTile extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: completed
-                          ? color.primary.withValues(alpha: .08)
-                          : _pendingColor.withValues(alpha: .08),
+                      color: color.primary.withValues(alpha: .08),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(

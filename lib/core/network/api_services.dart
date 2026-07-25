@@ -443,6 +443,9 @@ abstract class ApiServices {
     @Path('orderId') String orderId,
   );
 
+  @POST(EndPoints.resendPickupOtp)
+  Future<void> resendPickupOtp(@Path('orderId') String orderId);
+
   @GET(EndPoints.orderCancellationReasons)
   Future<List<OrderCancellationReasonDto>> getOrderCancellationReasons();
 

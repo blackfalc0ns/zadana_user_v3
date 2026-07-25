@@ -74,8 +74,7 @@ class CheckoutCardsSection extends StatelessWidget {
           AnimatedCardWrapper(
             delay: 250,
             child: CheckoutEtaCard(
-              estimatedDeliveryWindow:
-                  checkoutSummary.estimatedDeliveryWindow!,
+              estimatedDeliveryWindow: checkoutSummary.estimatedDeliveryWindow!,
             ),
           ),
           const SizedBox(height: Spacing.md),

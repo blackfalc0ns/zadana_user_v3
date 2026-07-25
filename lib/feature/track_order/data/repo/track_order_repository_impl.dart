@@ -158,6 +158,16 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
               }
 
               final tracking = currentTracking;
+              if (tracking?.isPickup ?? false) {
+                SignalRDiagnostics.instance.add(
+                  'TrackOrderRepository ignored driver arrival for pickup',
+                  {
+                    'currentOrderId': orderId,
+                    'incomingOrderId': payload.orderId,
+                  },
+                );
+                return;
+              }
               if (tracking == null || controller.isClosed) {
                 pendingDriverArrivalEvents.add(payload);
                 return;
@@ -179,6 +189,11 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     return controller.stream;
   }
 
+  @override
+  Future<ApiResult<void>> resendPickupOtp(String orderId) {
+    return safeApiCall(() => _remoteDataSource.resendPickupOtp(orderId));
+  }
+
   Future<ApiResult<OrderTrackingEntity>> _fetchTrackingSnapshot(
     String orderId,
   ) async {
@@ -193,9 +208,28 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
     OrderStatusChangedRealtimePayload payload,
   ) {
     final nextStatus = OrderStatus.fromApi(payload.newStatus);
+    final pickupBranch = payload.pickupBranch;
+    final shouldClearPickupOtp =
+        payload.isPickup &&
+        (nextStatus == OrderStatus.delivered ||
+            nextStatus.isCancelled ||
+            payload.pickupOtpCode == null);
     if (nextStatus.isCancelled || nextStatus.isReturning) {
       return current.copyWith(
         order: current.order.copyWith(status: nextStatus),
+        fulfillmentType: payload.isPickup ? 'pickup' : current.fulfillmentType,
+        pickupOtpCode: payload.pickupOtpCode,
+        pickupOtpExpiresAtUtc: payload.pickupOtpExpiresAtUtc,
+        pickupNoShowDeadlineUtc: payload.pickupNoShowDeadlineUtc,
+        pickupBranch: pickupBranch == null
+            ? null
+            : OrderPickupBranchEntity(
+                name: pickupBranch.name,
+                address: pickupBranch.address,
+                hoursToday: pickupBranch.hoursToday,
+              ),
+        clearPickupOtp: shouldClearPickupOtp,
+        clearPickupOtpExpiresAtUtc: shouldClearPickupOtp,
       );
     }
 
@@ -208,15 +242,19 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
         .map((entry) {
           final item = entry.value;
           final itemStageIndex = _stageIndexFromTimelineItem(item, entry.key);
-          final isReached = itemStageIndex <= currentStageIndex;
+          // The API distinguishes a completed step from the current one.
+          // This matters for pickup orders: `ready_for_pickup` is the next
+          // active step, not another alias for `preparing`.
+          final isCurrentStep = itemStageIndex == currentStageIndex;
+          final isCompletedStep = itemStageIndex < currentStageIndex;
           final shouldStampTime =
               realtimeTime.isNotEmpty &&
               itemStageIndex == currentStageIndex &&
               item.time.trim().isEmpty;
 
           return item.copyWith(
-            isActive: isReached,
-            isCompleted: isReached,
+            isActive: isCurrentStep,
+            isCompleted: isCompletedStep,
             time: shouldStampTime ? realtimeTime : item.time,
           );
         })
@@ -224,6 +262,19 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
 
     return current.copyWith(
       order: current.order.copyWith(status: nextStatus),
+      fulfillmentType: payload.isPickup ? 'pickup' : current.fulfillmentType,
+      pickupOtpCode: payload.pickupOtpCode,
+      pickupOtpExpiresAtUtc: payload.pickupOtpExpiresAtUtc,
+      pickupNoShowDeadlineUtc: payload.pickupNoShowDeadlineUtc,
+      pickupBranch: pickupBranch == null
+          ? null
+          : OrderPickupBranchEntity(
+              name: pickupBranch.name,
+              address: pickupBranch.address,
+              hoursToday: pickupBranch.hoursToday,
+            ),
+      clearPickupOtp: shouldClearPickupOtp,
+      clearPickupOtpExpiresAtUtc: shouldClearPickupOtp,
       timeline: updatedTimeline,
     );
   }
@@ -280,9 +331,10 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
         return 1;
       case 'preparing':
       case 'processing':
+        return 2;
       case 'ready_for_pickup':
       case 'readyforpickup':
-        return 2;
+        return 3;
       case 'driver_assigned':
       case 'driverassigned':
       case 'on_the_way':
@@ -367,7 +419,8 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
             requestedOrderId: requestedOrderId,
             payload: payload,
             tracking: tracking,
-          )) {
+          ) ||
+          tracking.isPickup) {
         continue;
       }
 

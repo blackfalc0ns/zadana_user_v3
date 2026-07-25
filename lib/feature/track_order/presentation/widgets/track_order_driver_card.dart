@@ -65,32 +65,18 @@ class TrackOrderDriverCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (_hasPhoneNumber) ...[
-            Container(
-              width: 45,
-              height: 45,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7EBDD),
-                borderRadius: BorderRadius.circular(999),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x1FE58E1A),
-                    blurRadius: 16,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                onPressed: _callDriver,
-                icon: const Icon(Icons.call_rounded, color: Color(0xFFE58E1A)),
-                tooltip: l10n.phone,
-              ),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: color.primary.withValues(alpha: .10),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(width: Spacing.sm),
-          ],
+            child: Icon(Icons.person_rounded, color: color.primary, size: 22),
+          ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
@@ -127,38 +113,33 @@ class TrackOrderDriverCard extends StatelessWidget {
                 ),
                 if (arrivalStateLabel.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  // Container(
-                  //   padding: const EdgeInsets.symmetric(
-                  //     horizontal: 10,
-                  //     vertical: 6,
-                  //   ),
-                  //   decoration: BoxDecoration(
-                  //     color: color.secondary.withValues(alpha: .12),
-                  //     borderRadius: BorderRadius.circular(999),
-                  //   ),
-                  //   child: Text(
-                  //     arrivalStateLabel,
-                  //     textAlign: TextAlign.end,
-                  //     style: getMediumStyle(
-                  //       fontFamily: FontConstant.cairo,
-                  //       color: color.secondary,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ],
             ),
           ),
-          const SizedBox(width: Spacing.sm),
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.primary.withValues(alpha: .10),
-              shape: BoxShape.circle,
+          if (_hasPhoneNumber) ...[
+            const SizedBox(width: Spacing.sm),
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7EBDD),
+                borderRadius: BorderRadius.circular(999),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x1FE58E1A),
+                    blurRadius: 16,
+                    offset: Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                onPressed: _callDriver,
+                icon: const Icon(Icons.call_rounded, color: Color(0xFFE58E1A)),
+                tooltip: l10n.phone,
+              ),
             ),
-            child: Icon(Icons.person_rounded, color: color.primary, size: 22),
-          ),
+          ],
         ],
       ),
     );

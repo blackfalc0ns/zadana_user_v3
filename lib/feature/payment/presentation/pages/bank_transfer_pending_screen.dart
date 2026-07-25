@@ -27,7 +27,8 @@ class BankTransferPendingScreen extends StatelessWidget {
   void _navigateBackToHome(BuildContext context) {
     var foundMainShell = false;
     Navigator.of(context).popUntil((route) {
-      final isMainShell = route.settings.name == AppRoutes.mainShell ||
+      final isMainShell =
+          route.settings.name == AppRoutes.mainShell ||
           route.settings.name == AppRoutes.home;
       if (isMainShell) foundMainShell = true;
       return isMainShell || route.isFirst;
@@ -48,7 +49,8 @@ class BankTransferPendingScreen extends StatelessWidget {
   void _navigateToOrders(BuildContext context) {
     var foundMainShell = false;
     Navigator.of(context).popUntil((route) {
-      final isMainShell = route.settings.name == AppRoutes.mainShell ||
+      final isMainShell =
+          route.settings.name == AppRoutes.mainShell ||
           route.settings.name == AppRoutes.home;
       if (isMainShell) foundMainShell = true;
       return isMainShell || route.isFirst;
@@ -69,10 +71,7 @@ class BankTransferPendingScreen extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
-    CustomSnackbar.showSuccess(
-      context: context,
-      message: '$label copied',
-    );
+    CustomSnackbar.showSuccess(context: context, message: '$label copied');
   }
 
   @override
@@ -296,9 +295,7 @@ class BankTransferPendingScreen extends StatelessWidget {
                   textColor: colors.onPrimary,
                   height: Spacing.buttonHeight,
                   borderRadius: 18,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.base,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
                 ),
                 const SizedBox(height: 12),
                 AppButton.outlined(
@@ -309,9 +306,7 @@ class BankTransferPendingScreen extends StatelessWidget {
                   textColor: colors.primary,
                   height: Spacing.buttonHeight,
                   borderRadius: 18,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.base,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
                 ),
                 const SizedBox(height: 24),
               ],
@@ -412,11 +407,7 @@ class BankTransferPendingScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: Padding(
               padding: const EdgeInsets.all(4),
-              child: Icon(
-                Icons.copy_rounded,
-                size: 18,
-                color: colors.primary,
-              ),
+              child: Icon(Icons.copy_rounded, size: 18, color: colors.primary),
             ),
           ),
         ],

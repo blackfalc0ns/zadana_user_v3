@@ -12,10 +12,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/widgets/section_head
 /// and [subtitle] as helper text. All text comes directly from the backend
 /// without local calculation.
 class CheckoutEtaCard extends StatelessWidget {
-  const CheckoutEtaCard({
-    super.key,
-    required this.estimatedDeliveryWindow,
-  });
+  const CheckoutEtaCard({super.key, required this.estimatedDeliveryWindow});
 
   final EstimatedDeliveryWindowEntity estimatedDeliveryWindow;
 
@@ -38,9 +35,7 @@ class CheckoutEtaCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: colors.primary.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(Spacing.sm + 2),
-              border: Border.all(
-                color: colors.primary.withValues(alpha: 0.12),
-              ),
+              border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

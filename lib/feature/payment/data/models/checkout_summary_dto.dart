@@ -628,9 +628,7 @@ Map<String, dynamic> _asMap(dynamic value) {
     return value;
   }
   if (value is Map) {
-    return value.map(
-      (key, mapValue) => MapEntry(key.toString(), mapValue),
-    );
+    return value.map((key, mapValue) => MapEntry(key.toString(), mapValue));
   }
   return <String, dynamic>{};
 }

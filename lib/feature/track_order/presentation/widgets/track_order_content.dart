@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_cards.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_primitives.dart';
@@ -12,6 +13,7 @@ import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_or
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_actions_section.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_delivery_otp_card.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_driver_card.dart';
+import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_pickup_cards.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_summary_card.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_timeline_section.dart';
 
@@ -30,6 +32,9 @@ class TrackOrderContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final localeCode = Localizations.localeOf(context).languageCode;
     final viewModel = context.read<TrackOrderViewModel>();
+    final isResendingPickupOtp = context.select(
+      (TrackOrderViewModel cubit) => cubit.state.isResendingPickupOtp,
+    );
 
     return RefreshIndicator(
       onRefresh: () async => viewModel.refresh(),
@@ -39,15 +44,22 @@ class TrackOrderContent extends StatelessWidget {
         children: [
           TrackOrderSummaryCard(
             tracking: tracking,
-            estimatedDeliveryText: viewModel.resolveEstimatedDeliveryText(
-              l10n: l10n,
-              localeCode: localeCode,
-              estimatedDelivery: tracking.estimatedDelivery,
-            ),
+            estimatedDeliveryText: tracking.isPickup
+                ? _pickupStatusText(context, tracking)
+                : viewModel.resolveEstimatedDeliveryText(
+                    l10n: l10n,
+                    localeCode: localeCode,
+                    estimatedDelivery: tracking.estimatedDelivery,
+                  ),
           ),
           const SizedBox(height: Spacing.base),
-          if ((tracking.assignedDriver?.hasContent ?? false) ||
-              (tracking.driver?.hasContent ?? false)) ...[
+          if (tracking.pickupBranch != null) ...[
+            TrackOrderPickupBranchCard(branch: tracking.pickupBranch!),
+            const SizedBox(height: Spacing.base),
+          ],
+          if (!tracking.isPickup &&
+              ((tracking.assignedDriver?.hasContent ?? false) ||
+                  (tracking.driver?.hasContent ?? false))) ...[
             TrackOrderDriverCard(
               driver: tracking.driver,
               assignedDriver: tracking.assignedDriver,
@@ -65,7 +77,33 @@ class TrackOrderContent extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.base),
           ],
-          if (tracking.showDeliveryOtp) ...[
+          if (tracking.shouldShowPickupOtp) ...[
+            TrackOrderPickupOtpCard(
+              tracking: tracking,
+              isResending: isResendingPickupOtp,
+              onResend: () async {
+                final success = await viewModel.resendPickupOtp();
+                if (!context.mounted) return;
+                final isArabic =
+                    Localizations.localeOf(context).languageCode == 'ar';
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      success
+                          ? (isArabic
+                                ? 'أرسلنا كود الاستلام من جديد'
+                                : 'Pickup code resent successfully')
+                          : (isArabic
+                                ? 'تعذر إعادة إرسال كود الاستلام'
+                                : 'Could not resend pickup code'),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: Spacing.base),
+          ],
+          if (!tracking.isPickup && tracking.showDeliveryOtp) ...[
             TrackOrderDeliveryOtpCard(
               onViewOtp: () => Navigator.pushNamed(
                 context,
@@ -92,6 +130,29 @@ class TrackOrderContent extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+String _pickupStatusText(BuildContext context, OrderTrackingEntity tracking) {
+  final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+  switch (tracking.order.status) {
+    case OrderStatus.delivered:
+      return isArabic ? 'تم الاستلام' : 'Picked up';
+    case OrderStatus.cancelled:
+    case OrderStatus.vendorRejected:
+    case OrderStatus.deliveryFailed:
+      return isArabic ? 'ملغي' : 'Cancelled';
+    case OrderStatus.processing:
+      return tracking.shouldShowPickupOtp
+          ? (isArabic ? 'جاهز للاستلام' : 'Ready for pickup')
+          : (isArabic ? 'جاري تجهيز الطلب' : 'Preparing order');
+    case OrderStatus.pending:
+      return isArabic ? 'بانتظار تأكيد المتجر' : 'Waiting for vendor';
+    case OrderStatus.returning:
+      return isArabic ? 'قيد المعالجة' : 'In progress';
+    case OrderStatus.shipped:
+    case OrderStatus.unknown:
+      return isArabic ? 'قيد المتابعة' : 'In progress';
   }
 }
 

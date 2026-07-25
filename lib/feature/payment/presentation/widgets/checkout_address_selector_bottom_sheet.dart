@@ -97,7 +97,10 @@ class CheckoutAddressSelectorBottomSheet extends StatelessWidget {
               ],
             ),
           ),
-          Divider(height: 1, color: colors.outlineVariant.withValues(alpha: 0.5)),
+          Divider(
+            height: 1,
+            color: colors.outlineVariant.withValues(alpha: 0.5),
+          ),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(Spacing.lg),
@@ -115,7 +118,10 @@ class CheckoutAddressSelectorBottomSheet extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () => Navigator.pop(context, addNewAddressResult),
-                icon: Icon(Icons.add_location_alt_outlined, color: colors.primary),
+                icon: Icon(
+                  Icons.add_location_alt_outlined,
+                  color: colors.primary,
+                ),
                 label: Text(
                   l10n.add_address,
                   style: getBoldStyle(

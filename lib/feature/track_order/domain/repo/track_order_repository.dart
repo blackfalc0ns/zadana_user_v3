@@ -3,4 +3,6 @@ import 'package:zadana_user_v3/feature/track_order/domain/entities/order_trackin
 
 abstract class TrackOrderRepository {
   Stream<ApiResult<OrderTrackingEntity>> watchOrderTracking(String orderId);
+
+  Future<ApiResult<void>> resendPickupOtp(String orderId);
 }

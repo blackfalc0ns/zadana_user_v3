@@ -84,6 +84,7 @@ abstract class EndPoints {
   static const String orderSupportReasons = '/orders/support-reasons/{type}';
   static const String orderRefundStatus = '/orders/{orderId}/refund-status';
   static const String orderTracking = '/orders/{orderId}/tracking';
+  static const String resendPickupOtp = '/orders/{orderId}/resend-pickup-otp';
   static const String orderCancellationReasons = '/orders/cancellation-reasons';
   static const String cancelOrder = '/orders/{orderId}/cancel';
   static const String retryOrderPayment = '/orders/{orderId}/retry-payment';

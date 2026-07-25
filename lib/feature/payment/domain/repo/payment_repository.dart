@@ -23,11 +23,15 @@ abstract class PaymentRepository {
   Future<ApiResult<CheckoutPromoResultEntity>> applyPromoCode(
     String code, {
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   });
 
   Future<ApiResult<CheckoutPromoResultEntity>> removePromoCode({
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   });
 

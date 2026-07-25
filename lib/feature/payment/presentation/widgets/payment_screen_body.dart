@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/errors/error_widgets/empty_state_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
@@ -111,12 +112,18 @@ class PaymentScreenBody extends StatelessWidget {
             ),
             if (shouldShowPickupHint)
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                padding: const EdgeInsets.symmetric(
+                  vertical: Spacing.md,
+                  horizontal: Spacing.md,
+                ),
                 child: Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     resolvePickupSelectionHint(context),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),

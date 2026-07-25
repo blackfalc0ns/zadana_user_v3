@@ -10,14 +10,18 @@ import 'package:zadana_user_v3/feature/notifications/data/services/notifications
 import 'package:zadana_user_v3/feature/notifications/data/services/signalr_diagnostics.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/entities/order_tracking_entity.dart';
 import 'package:zadana_user_v3/feature/track_order/domain/usecase/get_order_tracking_usecase.dart';
+import 'package:zadana_user_v3/feature/track_order/domain/usecase/resend_pickup_otp_usecase.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_state.dart';
 
 @injectable
 class TrackOrderViewModel extends Cubit<TrackOrderState> {
-  TrackOrderViewModel(this._getOrderTrackingUseCase)
-    : super(const TrackOrderState());
+  TrackOrderViewModel(
+    this._getOrderTrackingUseCase,
+    this._resendPickupOtpUseCase,
+  ) : super(const TrackOrderState());
 
   final GetOrderTrackingUseCase _getOrderTrackingUseCase;
+  final ResendPickupOtpUseCase _resendPickupOtpUseCase;
 
   StreamSubscription<ApiResult<OrderTrackingEntity>>? _trackingSubscription;
   StreamSubscription<dynamic>? _supportCaseChangedSubscription;
@@ -31,6 +35,27 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
   }
 
   void refresh() => load(isManualRefresh: true);
+
+  Future<bool> resendPickupOtp() async {
+    final orderId = _orderId;
+    if (orderId == null || orderId.isEmpty || state.isResendingPickupOtp) {
+      return false;
+    }
+
+    emit(state.copyWith(isResendingPickupOtp: true, clearFailure: true));
+    final result = await _resendPickupOtpUseCase(orderId);
+    switch (result) {
+      case ApiSuccessResult<void>():
+        emit(state.copyWith(isResendingPickupOtp: false));
+        refresh();
+        return true;
+      case ApiErrorResult<void>():
+        emit(
+          state.copyWith(isResendingPickupOtp: false, failure: result.failure),
+        );
+        return false;
+    }
+  }
 
   void load({bool isManualRefresh = false}) {
     final orderId = _orderId;
@@ -122,11 +147,18 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
       case 'order_placed':
         return l10n.track_order_order_placed;
       case 'vendor_confirmed':
-        return l10n.track_order_vendor_confirmed;
+        return item.isActive && !item.isCompleted
+            ? l10n.track_order_waiting_vendor_confirmation
+            : l10n.track_order_vendor_confirmed;
       case 'preparing':
         return l10n.track_order_preparing;
       case 'out_for_delivery':
         return l10n.track_order_out_for_delivery;
+      case 'ready_for_pickup':
+      case 'readyforpickup':
+        return l10n.localeName.startsWith('ar')
+            ? 'جاهز للاستلام من الفرع'
+            : 'Ready for pickup';
       case 'delivered':
         return l10n.order_delivered;
       default:

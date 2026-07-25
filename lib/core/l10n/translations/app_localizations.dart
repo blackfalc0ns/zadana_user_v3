@@ -2846,6 +2846,12 @@ abstract class AppLocalizations {
   /// **'Vendor confirmed'**
   String get track_order_vendor_confirmed;
 
+  /// No description provided for @track_order_waiting_vendor_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for vendor confirmation'**
+  String get track_order_waiting_vendor_confirmation;
+
   /// No description provided for @track_order_preparing.
   ///
   /// In en, this message translates to:
@@ -4747,6 +4753,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update'**
   String get profile_update_action;
+
+  /// No description provided for @pickup_branch_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup branch'**
+  String get pickup_branch_title;
+
+  /// No description provided for @pickup_code_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup code'**
+  String get pickup_code_title;
+
+  /// No description provided for @pickup_code_instruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this code to the vendor when collecting your order.'**
+  String get pickup_code_instruction;
+
+  /// No description provided for @pickup_code_resend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get pickup_code_resend;
+
+  /// No description provided for @pickup_code_expires.
+  ///
+  /// In en, this message translates to:
+  /// **'Code expires: {dateTime}'**
+  String pickup_code_expires(String dateTime);
+
+  /// No description provided for @pickup_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup deadline: {dateTime}'**
+  String pickup_deadline(String dateTime);
+
+  /// No description provided for @pickup_from_branch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup from branch'**
+  String get pickup_from_branch;
+
+  /// No description provided for @pickup_change_branch.
+  ///
+  /// In en, this message translates to:
+  /// **'Change branch'**
+  String get pickup_change_branch;
+
+  /// No description provided for @pickup_select_branch_first.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a pickup branch first to complete your order.'**
+  String get pickup_select_branch_first;
+
+  /// No description provided for @pickup_complete_order_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a pickup branch to enable the Complete order button.'**
+  String get pickup_complete_order_unavailable;
 }
 
 class _AppLocalizationsDelegate

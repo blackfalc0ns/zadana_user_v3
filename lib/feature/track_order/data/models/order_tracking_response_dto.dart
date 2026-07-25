@@ -12,6 +12,11 @@ class OrderTrackingResponseDto {
     required this.driverArrivalUpdatedAtUtc,
     required this.deliveryOtp,
     required this.showDeliveryOtp,
+    required this.fulfillmentType,
+    required this.pickupOtpCode,
+    required this.pickupOtpExpiresAtUtc,
+    required this.pickupNoShowDeadlineUtc,
+    required this.pickupBranch,
     required this.timeline,
     required this.activeCase,
   });
@@ -38,6 +43,30 @@ class OrderTrackingResponseDto {
       ),
       deliveryOtp: json['delivery_otp']?.toString() ?? '',
       showDeliveryOtp: json['show_delivery_otp'] as bool? ?? false,
+      fulfillmentType:
+          json['fulfillment_type']?.toString() ??
+          json['fulfillmentType']?.toString() ??
+          'delivery',
+      pickupOtpCode:
+          json['pickup_otp_code']?.toString() ??
+          json['pickupOtpCode']?.toString() ??
+          '',
+      pickupOtpExpiresAtUtc: DateTime.tryParse(
+        json['pickup_otp_expires_at_utc']?.toString() ??
+            json['pickupOtpExpiresAtUtc']?.toString() ??
+            '',
+      ),
+      pickupNoShowDeadlineUtc: DateTime.tryParse(
+        json['pickup_no_show_deadline_utc']?.toString() ??
+            json['pickupNoShowDeadlineUtc']?.toString() ??
+            '',
+      ),
+      pickupBranch:
+          _mapOrNull(json['pickup_branch'] ?? json['pickupBranch']) == null
+          ? null
+          : OrderPickupBranchDto.fromJson(
+              _map(json['pickup_branch'] ?? json['pickupBranch']),
+            ),
       timeline: _list(json['timeline'])
           .map((item) => OrderTrackingTimelineItemDto.fromJson(_map(item)))
           .toList(growable: false),
@@ -55,6 +84,11 @@ class OrderTrackingResponseDto {
   final DateTime? driverArrivalUpdatedAtUtc;
   final String deliveryOtp;
   final bool showDeliveryOtp;
+  final String fulfillmentType;
+  final String pickupOtpCode;
+  final DateTime? pickupOtpExpiresAtUtc;
+  final DateTime? pickupNoShowDeadlineUtc;
+  final OrderPickupBranchDto? pickupBranch;
   final List<OrderTrackingTimelineItemDto> timeline;
   final OrderSupportCaseSummaryDto? activeCase;
 
@@ -68,6 +102,11 @@ class OrderTrackingResponseDto {
       driverArrivalUpdatedAtUtc: driverArrivalUpdatedAtUtc,
       deliveryOtp: deliveryOtp,
       showDeliveryOtp: showDeliveryOtp,
+      fulfillmentType: fulfillmentType,
+      pickupOtpCode: pickupOtpCode,
+      pickupOtpExpiresAtUtc: pickupOtpExpiresAtUtc,
+      pickupNoShowDeadlineUtc: pickupNoShowDeadlineUtc,
+      pickupBranch: pickupBranch?.toEntity(),
       timeline: timeline.map((item) => item.toEntity()).toList(growable: false),
       activeCase: activeCase?.toEntity(),
     );
@@ -90,6 +129,44 @@ class OrderTrackingResponseDto {
   static List<dynamic> _list(dynamic value) {
     if (value is List) return value;
     return const <dynamic>[];
+  }
+}
+
+class OrderPickupBranchDto {
+  const OrderPickupBranchDto({
+    required this.name,
+    required this.address,
+    this.addressLine,
+    this.city,
+    this.hoursToday,
+  });
+
+  factory OrderPickupBranchDto.fromJson(Map<String, dynamic> json) {
+    return OrderPickupBranchDto(
+      name: json['name']?.toString() ?? '',
+      address: json['address']?.toString() ?? '',
+      addressLine:
+          json['address_line']?.toString() ?? json['addressLine']?.toString(),
+      city: json['city']?.toString(),
+      hoursToday:
+          json['hours_today']?.toString() ?? json['hoursToday']?.toString(),
+    );
+  }
+
+  final String name;
+  final String address;
+  final String? addressLine;
+  final String? city;
+  final String? hoursToday;
+
+  OrderPickupBranchEntity toEntity() {
+    return OrderPickupBranchEntity(
+      name: name,
+      address: address,
+      addressLine: addressLine,
+      city: city,
+      hoursToday: hoursToday,
+    );
   }
 }
 

@@ -11,6 +11,11 @@ class OrderTrackingEntity {
     required this.driverArrivalUpdatedAtUtc,
     required this.deliveryOtp,
     required this.showDeliveryOtp,
+    required this.fulfillmentType,
+    required this.pickupOtpCode,
+    required this.pickupOtpExpiresAtUtc,
+    required this.pickupNoShowDeadlineUtc,
+    required this.pickupBranch,
     required this.timeline,
     required this.activeCase,
   });
@@ -23,8 +28,16 @@ class OrderTrackingEntity {
   final DateTime? driverArrivalUpdatedAtUtc;
   final String deliveryOtp;
   final bool showDeliveryOtp;
+  final String fulfillmentType;
+  final String pickupOtpCode;
+  final DateTime? pickupOtpExpiresAtUtc;
+  final DateTime? pickupNoShowDeadlineUtc;
+  final OrderPickupBranchEntity? pickupBranch;
   final List<OrderTrackingTimelineItemEntity> timeline;
   final OrderSupportCaseSummaryEntity? activeCase;
+
+  bool get isPickup => fulfillmentType.trim().toLowerCase() == 'pickup';
+  bool get shouldShowPickupOtp => isPickup && pickupOtpCode.trim().isNotEmpty;
 
   OrderTrackingEntity copyWith({
     OrderTrackingOrderEntity? order,
@@ -35,8 +48,17 @@ class OrderTrackingEntity {
     DateTime? driverArrivalUpdatedAtUtc,
     String? deliveryOtp,
     bool? showDeliveryOtp,
+    String? fulfillmentType,
+    String? pickupOtpCode,
+    DateTime? pickupOtpExpiresAtUtc,
+    DateTime? pickupNoShowDeadlineUtc,
+    OrderPickupBranchEntity? pickupBranch,
     List<OrderTrackingTimelineItemEntity>? timeline,
     OrderSupportCaseSummaryEntity? activeCase,
+    bool clearPickupOtp = false,
+    bool clearPickupOtpExpiresAtUtc = false,
+    bool clearPickupNoShowDeadlineUtc = false,
+    bool clearPickupBranch = false,
   }) {
     return OrderTrackingEntity(
       order: order ?? this.order,
@@ -48,9 +70,46 @@ class OrderTrackingEntity {
           driverArrivalUpdatedAtUtc ?? this.driverArrivalUpdatedAtUtc,
       deliveryOtp: deliveryOtp ?? this.deliveryOtp,
       showDeliveryOtp: showDeliveryOtp ?? this.showDeliveryOtp,
+      fulfillmentType: fulfillmentType ?? this.fulfillmentType,
+      pickupOtpCode: clearPickupOtp ? '' : pickupOtpCode ?? this.pickupOtpCode,
+      pickupOtpExpiresAtUtc: clearPickupOtpExpiresAtUtc
+          ? null
+          : pickupOtpExpiresAtUtc ?? this.pickupOtpExpiresAtUtc,
+      pickupNoShowDeadlineUtc: clearPickupNoShowDeadlineUtc
+          ? null
+          : pickupNoShowDeadlineUtc ?? this.pickupNoShowDeadlineUtc,
+      pickupBranch: clearPickupBranch
+          ? null
+          : pickupBranch ?? this.pickupBranch,
       timeline: timeline ?? this.timeline,
       activeCase: activeCase ?? this.activeCase,
     );
+  }
+}
+
+class OrderPickupBranchEntity {
+  const OrderPickupBranchEntity({
+    required this.name,
+    required this.address,
+    this.addressLine,
+    this.city,
+    this.hoursToday,
+  });
+
+  final String name;
+  final String address;
+  final String? addressLine;
+  final String? city;
+  final String? hoursToday;
+
+  String get displayAddress {
+    final fullAddress = address.trim();
+    if (fullAddress.isNotEmpty) return fullAddress;
+    return [addressLine, city]
+        .whereType<String>()
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .join(', ');
   }
 }
 

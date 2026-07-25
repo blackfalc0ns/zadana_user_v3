@@ -1491,6 +1491,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get track_order_vendor_confirmed => 'Vendor confirmed';
 
   @override
+  String get track_order_waiting_vendor_confirmation =>
+      'Waiting for vendor confirmation';
+
+  @override
   String get track_order_preparing => 'Preparing order';
 
   @override
@@ -2530,4 +2534,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_update_action => 'Update';
+
+  @override
+  String get pickup_branch_title => 'Pickup branch';
+
+  @override
+  String get pickup_code_title => 'Pickup code';
+
+  @override
+  String get pickup_code_instruction =>
+      'Show this code to the vendor when collecting your order.';
+
+  @override
+  String get pickup_code_resend => 'Resend code';
+
+  @override
+  String pickup_code_expires(String dateTime) {
+    return 'Code expires: $dateTime';
+  }
+
+  @override
+  String pickup_deadline(String dateTime) {
+    return 'Pickup deadline: $dateTime';
+  }
+
+  @override
+  String get pickup_from_branch => 'Pickup from branch';
+
+  @override
+  String get pickup_change_branch => 'Change branch';
+
+  @override
+  String get pickup_select_branch_first =>
+      'Choose a pickup branch first to complete your order.';
+
+  @override
+  String get pickup_complete_order_unavailable =>
+      'Choose a pickup branch to enable the Complete order button.';
 }

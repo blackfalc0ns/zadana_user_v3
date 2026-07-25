@@ -13,4 +13,9 @@ class TrackOrderRemoteDataSourceImpl implements TrackOrderRemoteDataSource {
   Future<OrderTrackingResponseDto> getOrderTracking(String orderId) {
     return _apiServices.getOrderTracking(orderId);
   }
+
+  @override
+  Future<void> resendPickupOtp(String orderId) {
+    return _apiServices.resendPickupOtp(orderId);
+  }
 }

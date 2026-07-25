@@ -242,7 +242,9 @@ class _SelectedAddressTile extends StatelessWidget {
                     if (address.isDefault)
                       InfoBadge(
                         text: l10n.currently_selected,
-                        backgroundColor: colors.secondary.withValues(alpha: 0.1),
+                        backgroundColor: colors.secondary.withValues(
+                          alpha: 0.1,
+                        ),
                         textColor: colors.secondary,
                         fontSize: FontSize.size9,
                         padding: const EdgeInsets.symmetric(
@@ -283,7 +285,9 @@ class _MissingAddressTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.md),
       decoration: BoxDecoration(
-        color: (isPickup ? colors.primary : colors.error).withValues(alpha: 0.04),
+        color: (isPickup ? colors.primary : colors.error).withValues(
+          alpha: 0.04,
+        ),
         borderRadius: BorderRadius.circular(Spacing.sm + 2),
         border: Border.all(
           color: (isPickup ? colors.primary : colors.error).withValues(
@@ -295,7 +299,9 @@ class _MissingAddressTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            isPickup ? Icons.storefront_outlined : Icons.add_location_alt_outlined,
+            isPickup
+                ? Icons.storefront_outlined
+                : Icons.add_location_alt_outlined,
             color: isPickup ? colors.primary : colors.error,
           ),
           const SizedBox(width: Spacing.sm),
@@ -314,7 +320,7 @@ class _MissingAddressTile extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     isArabicPaymentLocale(context)
-                        ? 'لا يمكن إكمال الطلب حتى يتم اختيار فرع استلام متاح لكل منتجات السلة.'
+                        ? 'ما تقدر تكمّل طلبك إلا بعد ما تختار فرع استلام متاح لكل منتجات السلة.'
                         : 'Checkout stays disabled until an available pickup branch is selected.',
                     style: getRegularStyle(
                       fontSize: FontSize.size11,

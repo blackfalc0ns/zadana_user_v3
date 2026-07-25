@@ -95,7 +95,9 @@ class _DeliverySlotTile extends StatelessWidget {
           children: [
             Icon(
               slot.isAvailable ? Icons.schedule : Icons.block_outlined,
-              color: slot.isAvailable ? colors.primary : colors.onSurfaceVariant,
+              color: slot.isAvailable
+                  ? colors.primary
+                  : colors.onSurfaceVariant,
             ),
             const SizedBox(width: Spacing.sm),
             Expanded(
@@ -127,7 +129,11 @@ class _DeliverySlotTile extends StatelessWidget {
             if (isSelected)
               Icon(Icons.check_circle, color: colors.primary, size: 20)
             else if (!slot.isAvailable)
-              Icon(Icons.lock_outline, color: colors.onSurfaceVariant, size: 20),
+              Icon(
+                Icons.lock_outline,
+                color: colors.onSurfaceVariant,
+                size: 20,
+              ),
           ],
         ),
       ),

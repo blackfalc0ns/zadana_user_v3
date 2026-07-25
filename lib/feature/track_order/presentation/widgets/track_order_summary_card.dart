@@ -20,6 +20,10 @@ class TrackOrderSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final headlineLabel = tracking.isPickup
+        ? (isArabic ? 'حالة الاستلام' : 'Pickup status')
+        : l10n.estimated_delivery;
 
     return Container(
       decoration: BoxDecoration(
@@ -55,7 +59,7 @@ class TrackOrderSummaryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10n.estimated_delivery,
+                          headlineLabel,
                           textAlign: TextAlign.end,
                           style: getMediumStyle(
                             fontSize: FontSize.size13,

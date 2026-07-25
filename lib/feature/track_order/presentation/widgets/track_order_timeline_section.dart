@@ -69,7 +69,7 @@ class TrackOrderTimelineSection extends StatelessWidget {
               child: TrackOrderTimelineTile(
                 title: viewModel.localizedTimelineTitle(l10n, item, entry.key),
                 time: viewModel.sanitizeTimelineTime(item.time),
-                active: item.isCompleted,
+                active: item.isActive,
                 completed: item.isCompleted,
                 last: entry.key == tracking.timeline.length - 1,
               ),

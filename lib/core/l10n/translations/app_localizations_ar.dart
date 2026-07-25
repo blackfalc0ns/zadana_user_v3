@@ -1458,6 +1458,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get track_order_vendor_confirmed => 'المتجر أكد الطلب';
 
   @override
+  String get track_order_waiting_vendor_confirmation => 'بانتظار تأكيد المتجر';
+
+  @override
   String get track_order_preparing => 'جاري تجهيز الطلب';
 
   @override
@@ -2476,4 +2479,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profile_update_action => 'تحديث';
+
+  @override
+  String get pickup_branch_title => 'فرع الاستلام';
+
+  @override
+  String get pickup_code_title => 'كود الاستلام';
+
+  @override
+  String get pickup_code_instruction =>
+      'اعرض هذا الكود للتاجر عند استلام طلبك.';
+
+  @override
+  String get pickup_code_resend => 'إعادة إرسال الكود';
+
+  @override
+  String pickup_code_expires(String dateTime) {
+    return 'ينتهي الكود: $dateTime';
+  }
+
+  @override
+  String pickup_deadline(String dateTime) {
+    return 'مهلة الاستلام حتى: $dateTime';
+  }
+
+  @override
+  String get pickup_from_branch => 'الاستلام من الفرع';
+
+  @override
+  String get pickup_change_branch => 'غيّر الفرع';
+
+  @override
+  String get pickup_select_branch_first =>
+      'ياليت تختار الفرع اللي بتستلم منه طلبك أول، وبعدها تقدر تكمّل الطلب.';
+
+  @override
+  String get pickup_complete_order_unavailable =>
+      'اختَر فرع الاستلام أول لإكمال طلبك.';
 }

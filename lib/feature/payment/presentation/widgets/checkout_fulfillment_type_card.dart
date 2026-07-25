@@ -139,9 +139,7 @@ class _FulfillmentOptionTile extends StatelessWidget {
                       child: Icon(
                         icon,
                         size: 18,
-                        color: isSelected
-                            ? colors.onPrimary
-                            : colors.primary,
+                        color: isSelected ? colors.onPrimary : colors.primary,
                       ),
                     ),
                     const Spacer(),

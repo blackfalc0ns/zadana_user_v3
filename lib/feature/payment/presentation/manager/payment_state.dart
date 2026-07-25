@@ -231,6 +231,7 @@ class PaymentState {
     PlaceOrderResponseEntity? placedOrder,
     PaymentUiEffect? uiEffect,
     bool clearCheckoutSummary = false,
+    bool clearVendorBranchId = false,
     bool clearSummaryFailure = false,
     bool clearAddressesFailure = false,
     bool clearPickupBranchesFailure = false,
@@ -244,7 +245,9 @@ class PaymentState {
     return PaymentState(
       vendorId: vendorId ?? this.vendorId,
       fulfillmentType: fulfillmentType ?? this.fulfillmentType,
-      vendorBranchId: vendorBranchId ?? this.vendorBranchId,
+      vendorBranchId: clearVendorBranchId
+          ? null
+          : vendorBranchId ?? this.vendorBranchId,
       removeUnavailableItems:
           removeUnavailableItems ?? this.removeUnavailableItems,
       appliedPromoCode: clearAppliedPromoCode

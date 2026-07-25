@@ -92,7 +92,7 @@ class _OrderItemTile extends StatelessWidget {
               child: imageUrl != null && imageUrl.isNotEmpty
                   ? CachedNetworkImage(
                       imageUrl: imageUrl,
-                    
+
                       errorWidget: (_, _, _) => Icon(
                         Icons.shopping_bag_outlined,
                         color: colors.onSurfaceVariant,
@@ -169,8 +169,7 @@ class _OrderItemTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ] else if (item.unit != null &&
-                        item.unit!.isNotEmpty) ...[
+                    ] else if (item.unit != null && item.unit!.isNotEmpty) ...[
                       const SizedBox(width: Spacing.xs),
                       Text(
                         item.unit!,

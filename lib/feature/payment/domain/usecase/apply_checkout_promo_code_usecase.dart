@@ -12,11 +12,15 @@ class ApplyCheckoutPromoCodeUseCase {
   Future<ApiResult<CheckoutPromoResultEntity>> call(
     String code, {
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   }) {
     return _repository.applyPromoCode(
       code,
       vendorId: vendorId,
+      fulfillmentType: fulfillmentType,
+      vendorBranchId: vendorBranchId,
       paymentMethod: paymentMethod,
     );
   }

@@ -71,7 +71,9 @@ class CheckoutSummaryEntity {
       selectedAddress: clearSelectedAddress
           ? null
           : selectedAddress ?? this.selectedAddress,
-      pickupBranch: clearPickupBranch ? null : pickupBranch ?? this.pickupBranch,
+      pickupBranch: clearPickupBranch
+          ? null
+          : pickupBranch ?? this.pickupBranch,
       deliverySlots: deliverySlots ?? this.deliverySlots,
       paymentMethods: paymentMethods ?? this.paymentMethods,
       promoCode: clearPromoCode ? null : promoCode ?? this.promoCode,

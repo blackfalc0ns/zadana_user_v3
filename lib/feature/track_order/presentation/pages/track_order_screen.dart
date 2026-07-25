@@ -5,6 +5,7 @@ import 'package:zadana_user_v3/core/errors/error_widgets/api_error_widget.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
+import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_state.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/manager/track_order_view_model.dart';
 import 'package:zadana_user_v3/feature/track_order/presentation/widgets/track_order_content.dart';
@@ -35,21 +36,38 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
       ),
       body: BlocConsumer<TrackOrderViewModel, TrackOrderState>(
         listenWhen: (previous, current) {
+          final previousTracking = previous.orderTracking;
+          final currentTracking = current.orderTracking;
           final failureChanged =
               previous.failure != current.failure &&
               current.failure != null &&
-              previous.orderTracking != null;
-          final deliveryCompleted =
+              previousTracking != null;
+          final courierDeliveryCompleted =
               !_didNavigateToSuccess &&
-              previous.orderTracking?.showDeliveryOtp == true &&
-              current.orderTracking?.showDeliveryOtp == false;
-          return failureChanged || deliveryCompleted;
+              previousTracking?.showDeliveryOtp == true &&
+              currentTracking?.showDeliveryOtp == false;
+          final orderDelivered =
+              !_didNavigateToSuccess &&
+              previousTracking != null &&
+              previousTracking.order.status != OrderStatus.delivered &&
+              currentTracking?.order.status == OrderStatus.delivered;
+          return failureChanged || courierDeliveryCompleted || orderDelivered;
         },
         listener: (context, state) {
+          final failure = state.failure;
+          if (failure != null) {
+            CustomSnackbar.showError(
+              context: context,
+              message: failure.errorMessage,
+            );
+            return;
+          }
+
           final tracking = state.orderTracking;
           if (!_didNavigateToSuccess &&
               tracking != null &&
-              tracking.showDeliveryOtp == false) {
+              (tracking.showDeliveryOtp == false ||
+                  tracking.order.status == OrderStatus.delivered)) {
             _didNavigateToSuccess = true;
             Navigator.pushReplacementNamed(
               context,
@@ -62,14 +80,6 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
             );
             return;
           }
-
-          final failure = state.failure;
-          if (failure == null) return;
-
-          CustomSnackbar.showError(
-            context: context,
-            message: failure.errorMessage,
-          );
         },
         builder: (context, state) {
           if (state.isLoading && state.orderTracking == null) {

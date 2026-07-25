@@ -25,11 +25,8 @@ String localizeAddressLabel(AppLocalizations l10n, String label) {
   }
 }
 
-bool isArabicPaymentLocale(BuildContext context) {
-  return Localizations.localeOf(
-    context,
-  ).languageCode.toLowerCase().startsWith('ar');
-}
+bool isArabicPaymentLocale(BuildContext context) =>
+    Localizations.localeOf(context).languageCode.toLowerCase().startsWith('ar');
 
 bool isBankTransferPaymentMethod(String code) {
   switch (code.trim().toLowerCase()) {
@@ -43,47 +40,39 @@ bool isBankTransferPaymentMethod(String code) {
   }
 }
 
-bool isPickupFulfillmentType(String fulfillmentType) {
-  return fulfillmentType.trim().toLowerCase() == 'pickup';
-}
+bool isPickupFulfillmentType(String fulfillmentType) =>
+    fulfillmentType.trim().toLowerCase() == 'pickup';
 
 String resolveFulfillmentTitle(
   BuildContext context,
   AppLocalizations l10n,
   String fulfillmentType,
-) {
-  return isPickupFulfillmentType(fulfillmentType)
-      ? (isArabicPaymentLocale(context)
-            ? 'الاستلام من الفرع'
-            : 'Pickup from branch')
-      : l10n.shipping;
-}
+) => isPickupFulfillmentType(fulfillmentType)
+    ? l10n.pickup_from_branch
+    : l10n.shipping;
 
 String resolveFulfillmentActionLabel(
   BuildContext context,
   String fulfillmentType,
 ) {
+  final l10n = AppLocalizations.of(context)!;
   return isPickupFulfillmentType(fulfillmentType)
-      ? (isArabicPaymentLocale(context) ? 'تغيير الفرع' : 'Change branch')
-      : AppLocalizations.of(context)!.change_address;
+      ? l10n.pickup_change_branch
+      : l10n.change_address;
 }
 
 String resolveMissingFulfillmentLabel(
   BuildContext context,
   String fulfillmentType,
 ) {
+  final l10n = AppLocalizations.of(context)!;
   return isPickupFulfillmentType(fulfillmentType)
-      ? (isArabicPaymentLocale(context)
-            ? 'لازم تختار فرع الاستلام أولاً علشان تكمّل الطلب'
-            : 'Select a pickup branch first to complete the order')
-      : AppLocalizations.of(context)!.add_address;
+      ? l10n.pickup_select_branch_first
+      : l10n.add_address;
 }
 
-String resolvePickupSelectionHint(BuildContext context) {
-  return isArabicPaymentLocale(context)
-      ? 'زر إكمال الطلب غير متاح لأن فرع الاستلام لم يتم تحديده بعد.'
-      : 'Complete order is unavailable until a pickup branch is selected.';
-}
+String resolvePickupSelectionHint(BuildContext context) =>
+    AppLocalizations.of(context)!.pickup_complete_order_unavailable;
 
 String resolveBilingualValue(
   BuildContext context, {
@@ -93,7 +82,6 @@ String resolveBilingualValue(
 }) {
   final preferred = isArabicPaymentLocale(context) ? arabic : english;
   final secondary = isArabicPaymentLocale(context) ? english : arabic;
-
   if (preferred.trim().isNotEmpty) return preferred;
   if (secondary.trim().isNotEmpty) return secondary;
   return fallback;
@@ -112,7 +100,6 @@ String resolvePaymentMethodTitle(
     english: labelEn,
   );
   if (localized.trim().isNotEmpty) return localized;
-
   switch (code) {
     case 'card':
       return l10n.credit_debit_card;
@@ -140,7 +127,6 @@ String resolvePaymentMethodSubtitle(
     english: descriptionEn,
   );
   if (localized.trim().isNotEmpty) return localized;
-
   switch (code) {
     case 'card':
       return l10n.credit_card_subtitle;

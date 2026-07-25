@@ -22,11 +22,15 @@ abstract class PaymentRemoteDataSource {
   Future<CheckoutPromoResultDto> applyPromoCode(
     String code, {
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   });
 
   Future<CheckoutPromoResultDto> removePromoCode({
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   });
 

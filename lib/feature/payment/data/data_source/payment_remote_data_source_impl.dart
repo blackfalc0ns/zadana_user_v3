@@ -93,6 +93,8 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   Future<CheckoutPromoResultDto> applyPromoCode(
     String code, {
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   }) async {
     await _clearCheckoutSummaryCache();
@@ -101,6 +103,10 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
       _promoCodeEndpoint,
       queryParameters: {
         if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        if (fulfillmentType != null && fulfillmentType.isNotEmpty)
+          'fulfillment_type': fulfillmentType,
+        if (vendorBranchId != null && vendorBranchId.isNotEmpty)
+          'vendor_branch_id': vendorBranchId,
         if (paymentMethod != null && paymentMethod.isNotEmpty)
           'payment_method': paymentMethod,
       },
@@ -118,6 +124,8 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   @override
   Future<CheckoutPromoResultDto> removePromoCode({
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   }) async {
     await _clearCheckoutSummaryCache();
@@ -126,6 +134,10 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
       _promoCodeEndpoint,
       queryParameters: {
         if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        if (fulfillmentType != null && fulfillmentType.isNotEmpty)
+          'fulfillment_type': fulfillmentType,
+        if (vendorBranchId != null && vendorBranchId.isNotEmpty)
+          'vendor_branch_id': vendorBranchId,
         if (paymentMethod != null && paymentMethod.isNotEmpty)
           'payment_method': paymentMethod,
       },

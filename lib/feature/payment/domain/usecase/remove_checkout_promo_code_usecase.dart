@@ -11,10 +11,14 @@ class RemoveCheckoutPromoCodeUseCase {
 
   Future<ApiResult<CheckoutPromoResultEntity>> call({
     String? vendorId,
+    String? fulfillmentType,
+    String? vendorBranchId,
     String? paymentMethod,
   }) {
     return _repository.removePromoCode(
       vendorId: vendorId,
+      fulfillmentType: fulfillmentType,
+      vendorBranchId: vendorBranchId,
       paymentMethod: paymentMethod,
     );
   }

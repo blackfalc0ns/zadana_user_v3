@@ -379,6 +379,8 @@ import '../../feature/track_order/domain/repo/track_order_repository.dart'
     as _i556;
 import '../../feature/track_order/domain/usecase/get_order_tracking_usecase.dart'
     as _i633;
+import '../../feature/track_order/domain/usecase/resend_pickup_otp_usecase.dart'
+    as _i634;
 import '../../feature/track_order/presentation/manager/track_order_view_model.dart'
     as _i341;
 import '../general_cubit/local_cubit.dart' as _i794;
@@ -657,6 +659,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i633.GetOrderTrackingUseCase>(
       () => _i633.GetOrderTrackingUseCase(gh<_i556.TrackOrderRepository>()),
+    );
+    gh.factory<_i634.ResendPickupOtpUseCase>(
+      () => _i634.ResendPickupOtpUseCase(gh<_i556.TrackOrderRepository>()),
     );
     gh.factory<_i426.LogoutUseCase>(
       () => _i426.LogoutUseCase(repository: gh<_i31.LogoutRepository>()),
@@ -961,7 +966,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i341.TrackOrderViewModel>(
-      () => _i341.TrackOrderViewModel(gh<_i633.GetOrderTrackingUseCase>()),
+      () => _i341.TrackOrderViewModel(
+        gh<_i633.GetOrderTrackingUseCase>(),
+        gh<_i634.ResendPickupOtpUseCase>(),
+      ),
     );
     gh.factory<_i491.ResetPasswordRepository>(
       () => _i670.ResetPasswordRepositoryImpl(
