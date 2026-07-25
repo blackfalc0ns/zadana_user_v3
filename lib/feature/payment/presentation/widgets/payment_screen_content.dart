@@ -50,6 +50,8 @@ class _PaymentScreenContentState extends State<PaymentScreenContent>
           slideAnimation: slideAnimation,
           onRetry: _onRetry,
           onChangeAddress: _onChangeAddress,
+          onChangePickupBranch: _onChangePickupBranch,
+          onFulfillmentTypeChanged: _onFulfillmentTypeChanged,
           onDeliverySlotChanged: _onDeliverySlotChanged,
           onPaymentMethodChanged: _onPaymentMethodChanged,
           onApplyPromoCode: _onApplyPromoCode,
@@ -80,6 +82,14 @@ class _PaymentScreenContentState extends State<PaymentScreenContent>
 
   void _onChangeAddress() {
     _viewModel.doIntent(const PaymentRequestAddressSelectionEvent());
+  }
+
+  void _onChangePickupBranch() {
+    _viewModel.doIntent(const PaymentRequestPickupBranchSelectionEvent());
+  }
+
+  void _onFulfillmentTypeChanged(String fulfillmentType) {
+    _viewModel.doIntent(PaymentSelectFulfillmentTypeEvent(fulfillmentType));
   }
 
   void _onDeliverySlotChanged(String slotId) {

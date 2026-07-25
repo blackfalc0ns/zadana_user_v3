@@ -15,6 +15,7 @@ class CheckoutCardsSection extends StatelessWidget {
   const CheckoutCardsSection({
     super.key,
     required this.checkoutSummary,
+    required this.selectedFulfillmentType,
     required this.addresses,
     required this.selectedPaymentMethodCode,
     required this.isLoadingAddresses,
@@ -22,6 +23,7 @@ class CheckoutCardsSection extends StatelessWidget {
     required this.isRefreshingSummary,
     required this.isPromoLoading,
     required this.onChangeAddress,
+    required this.onChangePickupBranch,
     required this.onDeliverySlotChanged,
     required this.onPaymentMethodChanged,
     required this.onApplyPromoCode,
@@ -29,6 +31,7 @@ class CheckoutCardsSection extends StatelessWidget {
   });
 
   final CheckoutSummaryEntity checkoutSummary;
+  final String selectedFulfillmentType;
   final List<CustomerAddressEntity> addresses;
   final String? selectedPaymentMethodCode;
   final bool isLoadingAddresses;
@@ -36,6 +39,7 @@ class CheckoutCardsSection extends StatelessWidget {
   final bool isRefreshingSummary;
   final bool isPromoLoading;
   final VoidCallback onChangeAddress;
+  final VoidCallback onChangePickupBranch;
   final ValueChanged<String> onDeliverySlotChanged;
   final ValueChanged<String> onPaymentMethodChanged;
   final ValueChanged<String> onApplyPromoCode;
@@ -56,13 +60,17 @@ class CheckoutCardsSection extends StatelessWidget {
         AnimatedCardWrapper(
           delay: 200,
           child: CheckoutDeliveryInfoCard(
+            fulfillmentType: selectedFulfillmentType,
             selectedAddress: checkoutSummary.selectedAddress,
+            pickupBranch: checkoutSummary.pickupBranch,
             onChangeAddress: onChangeAddress,
+            onChangePickupBranch: onChangePickupBranch,
             isRefreshing: isRefreshingSummary || isLoadingAddresses,
           ),
         ),
         const SizedBox(height: Spacing.md),
-        if (checkoutSummary.estimatedDeliveryWindow != null) ...[
+        if (selectedFulfillmentType != 'pickup' &&
+            checkoutSummary.estimatedDeliveryWindow != null) ...[
           AnimatedCardWrapper(
             delay: 250,
             child: CheckoutEtaCard(

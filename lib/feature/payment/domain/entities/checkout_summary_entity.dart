@@ -9,7 +9,9 @@ class CheckoutSummaryEntity {
     required this.paymentMethods,
     required this.summary,
     required this.shippingBreakdown,
+    this.fulfillmentType = 'delivery',
     this.selectedAddress,
+    this.pickupBranch,
     this.promoCode,
     this.deliveryQuote,
     this.pricingMode,
@@ -19,7 +21,9 @@ class CheckoutSummaryEntity {
 
   final CheckoutCartEntity cart;
   final List<CheckoutAddressEntity> availableAddresses;
+  final String fulfillmentType;
   final CheckoutAddressEntity? selectedAddress;
+  final CheckoutBranchEntity? pickupBranch;
   final List<CheckoutDeliverySlotEntity> deliverySlots;
   final List<CheckoutPaymentMethodEntity> paymentMethods;
   final CheckoutPromoCodeEntity? promoCode;
@@ -35,11 +39,16 @@ class CheckoutSummaryEntity {
   bool get isDeliveryValid =>
       deliveryCheck == null || deliveryCheck!.canProceedToCheckout;
 
+  bool get isPickup => fulfillmentType.trim().toLowerCase() == 'pickup';
+
   CheckoutSummaryEntity copyWith({
     CheckoutCartEntity? cart,
     List<CheckoutAddressEntity>? availableAddresses,
+    String? fulfillmentType,
     CheckoutAddressEntity? selectedAddress,
     bool clearSelectedAddress = false,
+    CheckoutBranchEntity? pickupBranch,
+    bool clearPickupBranch = false,
     List<CheckoutDeliverySlotEntity>? deliverySlots,
     List<CheckoutPaymentMethodEntity>? paymentMethods,
     CheckoutPromoCodeEntity? promoCode,
@@ -58,9 +67,11 @@ class CheckoutSummaryEntity {
     return CheckoutSummaryEntity(
       cart: cart ?? this.cart,
       availableAddresses: availableAddresses ?? this.availableAddresses,
+      fulfillmentType: fulfillmentType ?? this.fulfillmentType,
       selectedAddress: clearSelectedAddress
           ? null
           : selectedAddress ?? this.selectedAddress,
+      pickupBranch: clearPickupBranch ? null : pickupBranch ?? this.pickupBranch,
       deliverySlots: deliverySlots ?? this.deliverySlots,
       paymentMethods: paymentMethods ?? this.paymentMethods,
       promoCode: clearPromoCode ? null : promoCode ?? this.promoCode,
@@ -169,6 +180,37 @@ class CheckoutAddressEntity {
   final String label;
   final String addressLine;
   final bool isDefault;
+}
+
+class CheckoutBranchEntity {
+  const CheckoutBranchEntity({
+    required this.id,
+    required this.name,
+    this.addressLine,
+    this.city,
+    this.address,
+    this.hoursToday,
+  });
+
+  final String id;
+  final String name;
+  final String? addressLine;
+  final String? city;
+  final String? address;
+  final String? hoursToday;
+
+  String get displayAddress {
+    if (address != null && address!.trim().isNotEmpty) {
+      return address!.trim();
+    }
+
+    final parts = <String>[
+      if (addressLine != null && addressLine!.trim().isNotEmpty)
+        addressLine!.trim(),
+      if (city != null && city!.trim().isNotEmpty) city!.trim(),
+    ];
+    return parts.join(', ');
+  }
 }
 
 class CheckoutDeliverySlotEntity {

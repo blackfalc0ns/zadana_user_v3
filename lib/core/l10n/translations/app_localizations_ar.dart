@@ -2424,6 +2424,32 @@ class AppLocalizationsAr extends AppLocalizations {
       'بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.';
 
   @override
+  String get pickup_branch_selector_title => 'اختر فرع الاستلام';
+
+  @override
+  String get pickup_branch_selector_hint =>
+      'تظهر الفروع المتاحة في مدينتك فقط، ويمكن اختيار الفروع التي تتوفر بها جميع منتجات السلة.';
+
+  @override
+  String get pickup_branch_selector_empty =>
+      'لا توجد فروع استلام متاحة في هذه المدينة حاليًا.';
+
+  @override
+  String get pickup_branch_selector_cart_unavailable =>
+      'لا يوجد فرع في هذه المدينة يوفر جميع منتجات السلة حاليًا.';
+
+  @override
+  String get pickup_branch_primary => 'الفرع الرئيسي';
+
+  @override
+  String get pickup_branch_cart_available => 'متاح لجميع منتجات السلة';
+
+  @override
+  String pickup_branch_cart_unavailable(int count) {
+    return 'غير متاح لـ $count من منتجات السلة';
+  }
+
+  @override
   String get profile_photo_camera => 'الكاميرا';
 
   @override

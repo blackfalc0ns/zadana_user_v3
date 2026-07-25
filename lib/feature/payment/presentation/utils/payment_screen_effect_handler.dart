@@ -12,6 +12,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callb
 import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_payment_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/moyasar_payment_confirmer.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_address_selector_bottom_sheet.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/pickup_branch_selector_bottom_sheet.dart';
 
 class PaymentScreenEffectHandler {
   const PaymentScreenEffectHandler._();
@@ -225,6 +226,21 @@ class PaymentScreenEffectHandler {
       );
       if (!context.mounted) return;
       viewModel.doIntent(const PaymentHandleAddAddressCompletedEvent());
+      return;
+    }
+
+    if (effect is OpenPickupBranchSelectorEffect) {
+      viewModel.doIntent(const PaymentClearUiEffectEvent());
+      final result = await PickupBranchSelectorBottomSheet.show(
+        context,
+        branches: state.pickupBranches,
+        selectedBranchId:
+            state.vendorBranchId ?? state.checkoutSummary?.pickupBranch?.id,
+        isLoading: state.isLoadingPickupBranches,
+        failure: state.pickupBranchesFailure,
+      );
+      if (!context.mounted || result == null) return;
+      viewModel.doIntent(PaymentSelectPickupBranchEvent(result));
       return;
     }
 

@@ -956,6 +956,20 @@
   "checkout_unavailable_items_confirm_message": "The selected vendor cannot provide all items in your cart. Continue and remove unavailable items from the order?",
   "checkout_unavailable_items_confirm_continue": "Continue",
   "cart_items_unavailable_at_address_branch": "Some products are unavailable at the branch for your current address. Please remove them or change your address.",
+  "pickup_branch_selector_title": "Select pickup branch",
+  "pickup_branch_selector_hint": "Branches are filtered by your city. Only branches that can fulfill the cart are selectable.",
+  "pickup_branch_selector_empty": "No pickup branches are available in this city yet.",
+  "pickup_branch_selector_cart_unavailable": "No branch in this city can fulfill all cart items right now.",
+  "pickup_branch_primary": "Primary",
+  "pickup_branch_cart_available": "Available for all cart items",
+  "pickup_branch_cart_unavailable": "Unavailable for {count} cart item(s)",
+  "@pickup_branch_cart_unavailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "profile_photo_camera": "Camera",
   "profile_photo_library": "Photo library",
   "profile_photo_invalid_format": "Choose a JPG, PNG, WEBP, GIF, or BMP image.",

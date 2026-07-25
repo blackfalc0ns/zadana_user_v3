@@ -22,6 +22,12 @@ class PaymentSelectDeliverySlotEvent extends PaymentEvent {
   final String deliverySlotId;
 }
 
+class PaymentSelectFulfillmentTypeEvent extends PaymentEvent {
+  const PaymentSelectFulfillmentTypeEvent(this.fulfillmentType);
+
+  final String fulfillmentType;
+}
+
 class PaymentSelectPaymentMethodEvent extends PaymentEvent {
   const PaymentSelectPaymentMethodEvent(this.paymentMethodCode);
 
@@ -48,10 +54,20 @@ class PaymentRequestAddressSelectionEvent extends PaymentEvent {
   const PaymentRequestAddressSelectionEvent();
 }
 
+class PaymentRequestPickupBranchSelectionEvent extends PaymentEvent {
+  const PaymentRequestPickupBranchSelectionEvent();
+}
+
 class PaymentHandleAddressSelectionResultEvent extends PaymentEvent {
   const PaymentHandleAddressSelectionResultEvent(this.result);
 
   final String? result;
+}
+
+class PaymentSelectPickupBranchEvent extends PaymentEvent {
+  const PaymentSelectPickupBranchEvent(this.branchId);
+
+  final String branchId;
 }
 
 class PaymentHandleAddAddressCompletedEvent extends PaymentEvent {

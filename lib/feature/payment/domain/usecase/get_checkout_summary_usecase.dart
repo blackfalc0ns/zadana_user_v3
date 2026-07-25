@@ -11,15 +11,19 @@ class GetCheckoutSummaryUseCase {
 
   Future<ApiResult<CheckoutSummaryEntity>> call({
     String? vendorId,
+    String? fulfillmentType,
     String? addressId,
     String? deliverySlotId,
+    String? vendorBranchId,
     String? paymentMethod,
     String? promoCode,
   }) {
     return _repository.getCheckoutSummary(
       vendorId: vendorId,
+      fulfillmentType: fulfillmentType,
       addressId: addressId,
       deliverySlotId: deliverySlotId,
+      vendorBranchId: vendorBranchId,
       paymentMethod: paymentMethod,
       promoCode: promoCode,
     );

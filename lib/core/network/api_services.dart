@@ -29,6 +29,7 @@ import 'package:zadana_user_v3/feature/cart/data/models/response/add_cart_item_r
 import 'package:zadana_user_v3/feature/cart/data/models/response/clear_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/get_cart_response_dto.dart';
 import 'package:zadana_user_v3/feature/cart/data/models/response/remove_cart_item_response_dto.dart';
+import 'package:zadana_user_v3/feature/payment/data/models/checkout_config_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_filters_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_products_response_model_dto.dart';
 import 'package:zadana_user_v3/feature/category/data/models/category_subcategory_item_dto.dart';
@@ -352,6 +353,14 @@ abstract class ApiServices {
   Future<RemoveCartItemResponseDto> removeCartItem(
     @Path('itemId') String itemId,
   );
+
+  @GET(EndPoints.checkoutConfig)
+  @Extra({
+    TokenInterceptor.skipAuthKey: true,
+    TokenInterceptor.skipTokenRefreshKey: true,
+    NetworkConstants.skipCache: true,
+  })
+  Future<CheckoutConfigDto> getCheckoutConfig();
 
   @PATCH('${EndPoints.cartItems}/{itemId}')
   Future<AddCartItemResponseDto> updateCartItemQuantity(

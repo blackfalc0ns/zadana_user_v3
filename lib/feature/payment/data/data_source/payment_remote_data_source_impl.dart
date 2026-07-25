@@ -5,11 +5,13 @@ import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/network/network_constants.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
 import 'package:zadana_user_v3/feature/payment/data/data_source/payment_remote_data_source.dart';
+import 'package:zadana_user_v3/feature/payment/data/models/checkout_config_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_promo_result_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/checkout_summary_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/confirm_payment_response_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/place_order_request_dto.dart';
 import 'package:zadana_user_v3/feature/payment/data/models/place_order_response_dto.dart';
+import 'package:zadana_user_v3/feature/payment/data/models/pickup_branch_options_dto.dart';
 
 @Injectable(as: PaymentRemoteDataSource)
 class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
@@ -45,10 +47,22 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   }
 
   @override
+  Future<CheckoutConfigDto> getCheckoutConfig() async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      EndPoints.checkoutConfig,
+      options: _noCacheOptions(),
+    );
+
+    return CheckoutConfigDto.fromJson(response.data ?? <String, dynamic>{});
+  }
+
+  @override
   Future<CheckoutSummaryDto> getCheckoutSummary({
     String? vendorId,
+    String? fulfillmentType,
     String? addressId,
     String? deliverySlotId,
+    String? vendorBranchId,
     String? paymentMethod,
     String? promoCode,
   }) async {
@@ -58,9 +72,13 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
       _checkoutSummaryEndpoint,
       queryParameters: {
         if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        if (fulfillmentType != null && fulfillmentType.isNotEmpty)
+          'fulfillment_type': fulfillmentType,
         if (addressId != null && addressId.isNotEmpty) 'address_id': addressId,
         if (deliverySlotId != null && deliverySlotId.isNotEmpty)
           'delivery_slot_id': deliverySlotId,
+        if (vendorBranchId != null && vendorBranchId.isNotEmpty)
+          'vendor_branch_id': vendorBranchId,
         if (paymentMethod != null && paymentMethod.isNotEmpty)
           'payment_method': paymentMethod,
         if (promoCode != null && promoCode.isNotEmpty) 'promo_code': promoCode,
@@ -134,6 +152,30 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     await _clearCheckoutSummaryCache();
 
     return PlaceOrderResponseDto.fromJson(response.data ?? <String, dynamic>{});
+  }
+
+  @override
+  Future<PickupBranchOptionsDto> getPickupBranches({
+    String? vendorId,
+    String? addressId,
+    String? city,
+  }) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      EndPoints.checkoutPickupBranches,
+      queryParameters: {
+        if (vendorId != null && vendorId.isNotEmpty) 'vendor_id': vendorId,
+        if (addressId != null && addressId.isNotEmpty) 'address_id': addressId,
+        if ((addressId == null || addressId.isEmpty) &&
+            city != null &&
+            city.isNotEmpty)
+          'city': city,
+      },
+      options: _noCacheOptions(),
+    );
+
+    return PickupBranchOptionsDto.fromJson(
+      response.data ?? <String, dynamic>{},
+    );
   }
 
   @override

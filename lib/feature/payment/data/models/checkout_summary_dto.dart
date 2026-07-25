@@ -10,7 +10,9 @@ class CheckoutSummaryDto {
     required this.paymentMethods,
     required this.summary,
     required this.shippingBreakdown,
+    this.fulfillmentType = 'delivery',
     this.selectedAddress,
+    this.pickupBranch,
     this.promoCode,
     this.deliveryQuote,
     this.pricingMode,
@@ -21,9 +23,13 @@ class CheckoutSummaryDto {
   factory CheckoutSummaryDto.fromJson(Map<String, dynamic> json) {
     return CheckoutSummaryDto(
       cart: CheckoutCartDto.fromJson(_asMap(json['cart'])),
+      fulfillmentType: json['fulfillment_type']?.toString() ?? 'delivery',
       selectedAddress: _nullableMap(json['selected_address']) == null
           ? null
           : CheckoutAddressDto.fromJson(_asMap(json['selected_address'])),
+      pickupBranch: _nullableMap(json['pickup_branch']) == null
+          ? null
+          : CheckoutBranchDto.fromJson(_asMap(json['pickup_branch'])),
       availableAddresses: _asList(
         json['available_addresses'],
       ).map((item) => CheckoutAddressDto.fromJson(_asMap(item))).toList(),
@@ -58,7 +64,9 @@ class CheckoutSummaryDto {
 
   final CheckoutCartDto cart;
   final List<CheckoutAddressDto> availableAddresses;
+  final String fulfillmentType;
   final CheckoutAddressDto? selectedAddress;
+  final CheckoutBranchDto? pickupBranch;
   final List<CheckoutDeliverySlotDto> deliverySlots;
   final List<CheckoutPaymentMethodDto> paymentMethods;
   final CheckoutPromoCodeDto? promoCode;
@@ -75,7 +83,9 @@ class CheckoutSummaryDto {
       availableAddresses: availableAddresses
           .map((item) => item.toEntity())
           .toList(),
+      fulfillmentType: fulfillmentType,
       selectedAddress: selectedAddress?.toEntity(),
+      pickupBranch: pickupBranch?.toEntity(),
       deliverySlots: deliverySlots.map((item) => item.toEntity()).toList(),
       paymentMethods: paymentMethods.map((item) => item.toEntity()).toList(),
       promoCode: promoCode?.toEntity(),
@@ -281,6 +291,46 @@ class CheckoutAddressDto {
       label: label,
       addressLine: addressLine,
       isDefault: isDefault,
+    );
+  }
+}
+
+class CheckoutBranchDto {
+  const CheckoutBranchDto({
+    required this.id,
+    required this.name,
+    this.addressLine,
+    this.city,
+    this.address,
+    this.hoursToday,
+  });
+
+  factory CheckoutBranchDto.fromJson(Map<String, dynamic> json) {
+    return CheckoutBranchDto(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      addressLine: json['address_line']?.toString(),
+      city: json['city']?.toString(),
+      address: json['address']?.toString(),
+      hoursToday: json['hours_today']?.toString(),
+    );
+  }
+
+  final String id;
+  final String name;
+  final String? addressLine;
+  final String? city;
+  final String? address;
+  final String? hoursToday;
+
+  CheckoutBranchEntity toEntity() {
+    return CheckoutBranchEntity(
+      id: id,
+      name: name,
+      addressLine: addressLine,
+      city: city,
+      address: address,
+      hoursToday: hoursToday,
     );
   }
 }
@@ -574,11 +624,22 @@ class CheckoutTotalsDto {
 }
 
 Map<String, dynamic> _asMap(dynamic value) {
-  return value is Map<String, dynamic> ? value : <String, dynamic>{};
+  if (value is Map<String, dynamic>) {
+    return value;
+  }
+  if (value is Map) {
+    return value.map(
+      (key, mapValue) => MapEntry(key.toString(), mapValue),
+    );
+  }
+  return <String, dynamic>{};
 }
 
 Map<String, dynamic>? _nullableMap(dynamic value) {
-  return value is Map<String, dynamic> ? value : null;
+  if (value == null) return null;
+
+  final normalized = _asMap(value);
+  return normalized.isEmpty ? null : normalized;
 }
 
 List<dynamic> _asList(dynamic value) {

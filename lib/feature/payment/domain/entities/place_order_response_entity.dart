@@ -1,3 +1,5 @@
+import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
+
 class PlaceOrderResponseEntity {
   const PlaceOrderResponseEntity({
     required this.message,
@@ -18,6 +20,8 @@ class PlacedOrderEntity {
     required this.paymentMethod,
     required this.paymentStatus,
     required this.totalPrice,
+    this.fulfillmentType,
+    this.pickupBranch,
   });
 
   final String id;
@@ -26,6 +30,8 @@ class PlacedOrderEntity {
   final String paymentMethod;
   final String paymentStatus;
   final double totalPrice;
+  final String? fulfillmentType;
+  final CheckoutBranchEntity? pickupBranch;
 }
 
 class OrderPaymentEntity {

@@ -10,7 +10,10 @@ import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_addres
 import 'package:zadana_user_v3/feature/addresses/domain/usecase/get_customer_addresses_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_request_entity.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/pickup_branch_option_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/apply_checkout_promo_code_usecase.dart';
+import 'package:zadana_user_v3/feature/payment/domain/usecase/get_checkout_config_usecase.dart';
+import 'package:zadana_user_v3/feature/payment/domain/usecase/get_pickup_branches_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/get_checkout_summary_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/place_order_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/remove_checkout_promo_code_usecase.dart';
@@ -22,14 +25,18 @@ import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_add
 @injectable
 class PaymentViewModel extends Cubit<PaymentState> {
   PaymentViewModel(
+    this._getCheckoutConfigUseCase,
     this._getCheckoutSummaryUseCase,
+    this._getPickupBranchesUseCase,
     this._applyCheckoutPromoCodeUseCase,
     this._removeCheckoutPromoCodeUseCase,
     this._placeOrderUseCase,
     this._getCustomerAddressesUseCase,
   ) : super(const PaymentState());
 
+  final GetCheckoutConfigUseCase _getCheckoutConfigUseCase;
   final GetCheckoutSummaryUseCase _getCheckoutSummaryUseCase;
+  final GetPickupBranchesUseCase _getPickupBranchesUseCase;
   final ApplyCheckoutPromoCodeUseCase _applyCheckoutPromoCodeUseCase;
   final RemoveCheckoutPromoCodeUseCase _removeCheckoutPromoCodeUseCase;
   final PlaceOrderUseCase _placeOrderUseCase;
@@ -48,6 +55,29 @@ class PaymentViewModel extends Cubit<PaymentState> {
     );
   }
 
+  void initializeCheckout({
+    String? vendorId,
+    String fulfillmentType = 'delivery',
+    String? vendorBranchId,
+    bool removeUnavailableItems = false,
+  }) {
+    if (state.vendorId == vendorId &&
+        state.fulfillmentType == fulfillmentType &&
+        state.vendorBranchId == vendorBranchId &&
+        state.removeUnavailableItems == removeUnavailableItems) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        vendorId: vendorId,
+        fulfillmentType: fulfillmentType,
+        vendorBranchId: vendorBranchId,
+        removeUnavailableItems: removeUnavailableItems,
+      ),
+    );
+  }
+
   void doIntent(PaymentEvent event) {
     switch (event) {
       case PaymentLoadEvent():
@@ -55,6 +85,12 @@ class PaymentViewModel extends Cubit<PaymentState> {
         _loadCheckoutData();
       case PaymentSelectAddressEvent():
         _refreshSummary(addressId: event.addressId);
+      case PaymentSelectFulfillmentTypeEvent():
+        _changeFulfillmentType(event.fulfillmentType);
+      case PaymentRequestPickupBranchSelectionEvent():
+        _openPickupBranchSelector();
+      case PaymentSelectPickupBranchEvent():
+        _selectPickupBranch(event.branchId);
       case PaymentSelectDeliverySlotEvent():
         _refreshSummary(
           addressId: state.selectedAddressId,
@@ -91,9 +127,12 @@ class PaymentViewModel extends Cubit<PaymentState> {
     emit(
       state.copyWith(
         isLoadingSummary: true,
+        isLoadingConfig: true,
         isLoadingAddresses: true,
+        isLoadingPickupBranches: state.isPickup,
         clearSummaryFailure: true,
         clearAddressesFailure: true,
+        clearPickupBranchesFailure: true,
         clearActionFailure: true,
         clearFeedbackMessage: true,
       ),
@@ -105,20 +144,33 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     developer.log('Loading checkout summary', name: 'PaymentViewModel');
 
+    final configFuture = _getCheckoutConfigUseCase();
     final checkoutFuture = _getCheckoutSummaryUseCase(
       vendorId: state.vendorId,
+      fulfillmentType: state.fulfillmentType,
+      vendorBranchId: state.vendorBranchId,
       paymentMethod: state.selectedPaymentMethodCode,
       promoCode: requestedPromoCode,
     );
     final addressesFuture = _getCustomerAddressesUseCase();
 
+    final configResult = await configFuture;
     final checkoutResult = await checkoutFuture;
     final addressesResult = await addressesFuture;
 
     var nextState = state.copyWith(
       isLoadingSummary: false,
+      isLoadingConfig: false,
       isLoadingAddresses: false,
     );
+
+    switch (configResult) {
+      case ApiSuccessResult():
+        nextState = nextState.copyWith(checkoutConfig: configResult.data);
+      case ApiErrorResult():
+        // Keep defaults if config fails.
+        break;
+    }
 
     switch (checkoutResult) {
       case ApiSuccessResult<CheckoutSummaryEntity>():
@@ -131,6 +183,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
           appliedPromoCode:
               checkoutResult.data.promoCode?.code ?? requestedPromoCode,
           selectedPaymentMethodCode: resolvedPaymentMethod,
+          vendorBranchId:
+              state.vendorBranchId ?? checkoutResult.data.pickupBranch?.id,
           clearSummaryFailure: true,
         );
       case ApiErrorResult<CheckoutSummaryEntity>():
@@ -149,7 +203,25 @@ class PaymentViewModel extends Cubit<PaymentState> {
         );
     }
 
+    final config = nextState.checkoutConfig;
+    if (config != null) {
+      final currentType = nextState.fulfillmentType.trim().toLowerCase();
+      if (currentType == 'pickup' &&
+          !config.pickupEnabled &&
+          config.deliveryEnabled) {
+        nextState = nextState.copyWith(fulfillmentType: 'delivery');
+      } else if (currentType == 'delivery' &&
+          !config.deliveryEnabled &&
+          config.pickupEnabled) {
+        nextState = nextState.copyWith(fulfillmentType: 'pickup');
+      }
+    }
+
     emit(nextState);
+
+    if (nextState.isPickup) {
+      await _loadPickupBranches();
+    }
 
     if (checkoutResult case ApiSuccessResult<CheckoutSummaryEntity>()) {
       final resolvedPaymentMethod = nextState.selectedPaymentMethodCode;
@@ -161,6 +233,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
           deliverySlotId: _selectedDeliverySlotIdFromSummary(
             checkoutResult.data,
           ),
+          vendorBranchId:
+              state.vendorBranchId ?? checkoutResult.data.pickupBranch?.id,
           paymentMethod: resolvedPaymentMethod,
           promoCode: nextState.appliedPromoCode,
         );
@@ -171,6 +245,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
   Future<void> _refreshSummary({
     String? addressId,
     String? deliverySlotId,
+    String? vendorBranchId,
     String? paymentMethod,
     String? promoCode,
   }) async {
@@ -184,8 +259,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     final result = await _getCheckoutSummaryUseCase(
       vendorId: state.vendorId,
+      fulfillmentType: state.fulfillmentType,
       addressId: addressId,
       deliverySlotId: deliverySlotId,
+      vendorBranchId: vendorBranchId ?? state.vendorBranchId,
       paymentMethod: paymentMethod ?? state.selectedPaymentMethodCode,
       promoCode: promoCode ?? state.appliedPromoCode,
     );
@@ -203,6 +280,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
         emit(
           state.copyWith(
             isRefreshingSummary: false,
+            isChangingFulfillmentType: false,
+            vendorBranchId: vendorBranchId ?? result.data.pickupBranch?.id,
             checkoutSummary: result.data,
             appliedPromoCode: retainedPromoCode,
             selectedPaymentMethodCode: _resolvePaymentMethodCode(
@@ -224,10 +303,205 @@ class PaymentViewModel extends Cubit<PaymentState> {
         emit(
           state.copyWith(
             isRefreshingSummary: false,
+            isChangingFulfillmentType: false,
             actionFailure: result.failure,
           ),
         );
     }
+  }
+
+  Future<void> _changeFulfillmentType(String fulfillmentType) async {
+    final normalized = fulfillmentType.trim().toLowerCase();
+    if (normalized.isEmpty || normalized == state.fulfillmentType) return;
+
+    final previousFulfillmentType = state.fulfillmentType;
+
+    emit(
+      state.copyWith(
+        fulfillmentType: normalized,
+        isRefreshingSummary: true,
+        isChangingFulfillmentType: true,
+        isLoadingPickupBranches: normalized == 'pickup',
+        clearActionFailure: true,
+        clearFeedbackMessage: true,
+      ),
+    );
+
+    if (normalized == 'pickup') {
+      emit(state.copyWith(isRefreshingSummary: false));
+      await _loadPickupBranches(openSelectorIfNeeded: true);
+      return;
+    }
+
+    final result = await _getCheckoutSummaryUseCase(
+      vendorId: state.vendorId,
+      fulfillmentType: normalized,
+      addressId: normalized == 'pickup' ? null : state.selectedAddressId,
+      deliverySlotId: normalized == 'pickup'
+          ? null
+          : state.selectedDeliverySlotId,
+      vendorBranchId: normalized == 'pickup' ? state.vendorBranchId : null,
+      paymentMethod: state.selectedPaymentMethodCode,
+      promoCode: state.appliedPromoCode,
+    );
+
+    switch (result) {
+      case ApiSuccessResult<CheckoutSummaryEntity>():
+        emit(
+          state.copyWith(
+            isRefreshingSummary: false,
+            isChangingFulfillmentType: false,
+            isLoadingPickupBranches: false,
+            fulfillmentType: result.data.fulfillmentType,
+            vendorBranchId: null,
+            checkoutSummary: result.data,
+            appliedPromoCode:
+                result.data.promoCode?.code ?? state.appliedPromoCode,
+            selectedPaymentMethodCode: _resolvePaymentMethodCode(
+              result.data,
+              preferredCode: state.selectedPaymentMethodCode,
+            ),
+            clearSummaryFailure: true,
+            clearActionFailure: true,
+          ),
+        );
+      case ApiErrorResult<CheckoutSummaryEntity>():
+        emit(
+          state.copyWith(
+            isRefreshingSummary: false,
+            isChangingFulfillmentType: false,
+            isLoadingPickupBranches: false,
+            fulfillmentType: previousFulfillmentType,
+            actionFailure: result.failure,
+          ),
+        );
+    }
+  }
+
+  Future<void> _loadPickupBranches({bool openSelectorIfNeeded = false}) async {
+    final targetAddress = _resolvePickupAddress();
+    final city = targetAddress?.city.trim();
+    final hasAddressId = targetAddress?.id.trim().isNotEmpty == true;
+    final hasCity = city != null && city.isNotEmpty;
+
+    if (!hasAddressId && !hasCity) {
+      emit(
+        state.copyWith(
+          isLoadingPickupBranches: false,
+          isChangingFulfillmentType: false,
+          pickupBranches: const [],
+          vendorBranchId: null,
+          actionFailure: Failure(
+            errorMessage:
+                'Please select or add an address first so we can find pickup branches in your city.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        isLoadingPickupBranches: true,
+        clearPickupBranchesFailure: true,
+        clearActionFailure: true,
+      ),
+    );
+
+    final result = await _getPickupBranchesUseCase(
+      vendorId: state.vendorId,
+      addressId: hasAddressId ? targetAddress!.id : null,
+      city: hasAddressId ? null : city,
+    );
+
+    switch (result) {
+      case ApiSuccessResult<List<PickupBranchOptionEntity>>():
+        final allBranches = result.data;
+        final eligibleBranches = allBranches
+            .where((branch) => branch.canFulfillCart)
+            .toList();
+        final selectedBranchId = state.vendorBranchId;
+        final selectedStillValid =
+            selectedBranchId != null &&
+            eligibleBranches.any((branch) => branch.id == selectedBranchId);
+
+        if (eligibleBranches.length == 1) {
+          final autoSelectedBranch = eligibleBranches.first;
+          emit(
+            state.copyWith(
+              pickupBranches: allBranches,
+              vendorBranchId: autoSelectedBranch.id,
+              isLoadingPickupBranches: false,
+              isChangingFulfillmentType: false,
+              clearPickupBranchesFailure: true,
+            ),
+          );
+          await _refreshSummary(vendorBranchId: autoSelectedBranch.id);
+          return;
+        }
+
+        emit(
+          state.copyWith(
+            pickupBranches: allBranches,
+            vendorBranchId: selectedStillValid ? selectedBranchId : null,
+            isLoadingPickupBranches: false,
+            isChangingFulfillmentType: false,
+            clearPickupBranchesFailure: true,
+            uiEffect:
+                openSelectorIfNeeded &&
+                    eligibleBranches.isNotEmpty &&
+                    !selectedStillValid
+                ? const OpenPickupBranchSelectorEffect()
+                : null,
+          ),
+        );
+      case ApiErrorResult<List<PickupBranchOptionEntity>>():
+        emit(
+          state.copyWith(
+            isLoadingPickupBranches: false,
+            isChangingFulfillmentType: false,
+            pickupBranches: const [],
+            vendorBranchId: null,
+            pickupBranchesFailure: result.failure,
+          ),
+        );
+    }
+  }
+
+  CustomerAddressEntity? _resolvePickupAddress() {
+    final selectedAddressId = state.selectedAddressId;
+
+    if (selectedAddressId != null) {
+      for (final address in state.addresses) {
+        if (address.id == selectedAddressId) {
+          return address;
+        }
+      }
+    }
+
+    for (final address in state.addresses) {
+      if (address.isDefault) {
+        return address;
+      }
+    }
+
+    return state.addresses.isNotEmpty ? state.addresses.first : null;
+  }
+
+  void _openPickupBranchSelector() {
+    if (state.pickupBranches.isEmpty) {
+      _loadPickupBranches(openSelectorIfNeeded: true);
+      return;
+    }
+
+    emit(state.copyWith(uiEffect: const OpenPickupBranchSelectorEffect()));
+  }
+
+  Future<void> _selectPickupBranch(String branchId) async {
+    if (branchId.trim().isEmpty || branchId == state.vendorBranchId) return;
+
+    emit(state.copyWith(vendorBranchId: branchId, clearActionFailure: true));
+    await _refreshSummary(vendorBranchId: branchId);
   }
 
   void _selectPaymentMethod(String paymentMethodCode) {
@@ -251,8 +525,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
     );
 
     _refreshSummary(
-      addressId: state.selectedAddressId,
-      deliverySlotId: state.selectedDeliverySlotId,
+      addressId: state.isPickup ? null : state.selectedAddressId,
+      deliverySlotId: state.isPickup ? null : state.selectedDeliverySlotId,
+      vendorBranchId: state.vendorBranchId,
       paymentMethod: paymentMethodCode,
       promoCode: state.appliedPromoCode,
     );
@@ -357,11 +632,14 @@ class PaymentViewModel extends Cubit<PaymentState> {
     final selectedPaymentMethodCode = state.selectedPaymentMethodCode;
     final selectedAddressId = state.selectedAddressId;
     final selectedDeliverySlotId = state.selectedDeliverySlotId;
+    final selectedVendorBranchId =
+        state.vendorBranchId ?? checkoutSummary?.pickupBranch?.id;
 
     if (checkoutSummary == null ||
         selectedPaymentMethodCode == null ||
-        selectedAddressId == null ||
-        selectedDeliverySlotId == null) {
+        (!state.isPickup &&
+            (selectedAddressId == null || selectedDeliverySlotId == null)) ||
+        (state.isPickup && selectedVendorBranchId == null)) {
       emit(
         state.copyWith(
           actionFailure: Failure(
@@ -373,7 +651,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
     }
 
     // Block order placement if delivery check indicates invalid delivery.
-    if (!checkoutSummary.isDeliveryValid) {
+    if (!state.isPickup && !checkoutSummary.isDeliveryValid) {
       final message =
           checkoutSummary.deliveryCheck?.messageAr.isNotEmpty == true
           ? checkoutSummary.deliveryCheck!.messageAr
@@ -407,8 +685,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
     final result = await _placeOrderUseCase(
       PlaceOrderRequestEntity(
         vendorId: state.vendorId,
-        addressId: selectedAddressId,
-        deliverySlotId: selectedDeliverySlotId,
+        fulfillmentType: state.fulfillmentType,
+        addressId: state.isPickup ? null : selectedAddressId,
+        deliverySlotId: state.isPickup ? null : selectedDeliverySlotId,
+        vendorBranchId: state.isPickup ? selectedVendorBranchId : null,
         paymentMethod: selectedPaymentMethodCode,
         promoCode:
             state.appliedPromoCode ?? checkoutSummary.promoCode?.code ?? '',
@@ -503,8 +783,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
             isCartItemsUnavailable) {
           // Reload checkout summary to get updated payment methods.
           _refreshSummary(
-            addressId: state.selectedAddressId,
-            deliverySlotId: state.selectedDeliverySlotId,
+            addressId: state.isPickup ? null : state.selectedAddressId,
+            deliverySlotId: state.isPickup
+                ? null
+                : state.selectedDeliverySlotId,
+            vendorBranchId: state.vendorBranchId,
             promoCode: state.appliedPromoCode,
           );
         }
@@ -523,6 +806,18 @@ class PaymentViewModel extends Cubit<PaymentState> {
     }
 
     emit(state.copyWith(clearUiEffect: true));
+    if (state.isPickup) {
+      emit(
+        state.copyWith(
+          vendorBranchId: null,
+          pickupBranches: const [],
+          clearPickupBranchesFailure: true,
+        ),
+      );
+      _loadPickupBranches(openSelectorIfNeeded: true);
+      return;
+    }
+
     _refreshSummary(addressId: result);
   }
 

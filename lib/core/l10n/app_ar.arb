@@ -959,6 +959,20 @@
   "checkout_unavailable_items_confirm_message": "المتجر اللي اخترته ما يوفّر كل منتجات سلتك. تبي نشيل المنتجات اللي مو متوفرة ونكمّل طلبك؟",
   "checkout_unavailable_items_confirm_continue": "كمّل الطلب",
   "cart_items_unavailable_at_address_branch": "بعض المنتجات غير متوفرة في فرع عنوانك الحالي. يرجى حذفها أو تغيير العنوان.",
+  "pickup_branch_selector_title": "اختر فرع الاستلام",
+  "pickup_branch_selector_hint": "تظهر الفروع المتاحة في مدينتك فقط، ويمكن اختيار الفروع التي تتوفر بها جميع منتجات السلة.",
+  "pickup_branch_selector_empty": "لا توجد فروع استلام متاحة في هذه المدينة حاليًا.",
+  "pickup_branch_selector_cart_unavailable": "لا يوجد فرع في هذه المدينة يوفر جميع منتجات السلة حاليًا.",
+  "pickup_branch_primary": "الفرع الرئيسي",
+  "pickup_branch_cart_available": "متاح لجميع منتجات السلة",
+  "pickup_branch_cart_unavailable": "غير متاح لـ {count} من منتجات السلة",
+  "@pickup_branch_cart_unavailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "profile_photo_camera": "الكاميرا",
   "profile_photo_library": "المعرض",
   "profile_photo_invalid_format": "اختر صورة بصيغة JPG أو PNG أو WEBP أو GIF أو BMP.",

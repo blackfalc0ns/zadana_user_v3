@@ -107,16 +107,61 @@ class _PaymentCardSkeleton extends StatelessWidget {
           ),
         ],
       ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const titleHeight = 18.0;
+          const lineHeight = 16.0;
+          const lineCount = 3;
+          const totalBoneHeight = titleHeight + (lineHeight * lineCount);
+          final availableGapSpace = (constraints.maxHeight - totalBoneHeight)
+              .clamp(0.0, 40.0);
+          final largeGap = availableGapSpace >= 20 ? Spacing.md : Spacing.sm;
+          final smallGap = ((availableGapSpace - largeGap) / 2).clamp(4.0, 8.0);
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Bone(width: 140, height: titleHeight, radius: 999),
+              SizedBox(height: largeGap),
+              const Bone(
+                width: double.infinity,
+                height: lineHeight,
+                radius: 999,
+              ),
+              SizedBox(height: smallGap),
+              const Bone(
+                width: double.infinity,
+                height: lineHeight,
+                radius: 999,
+              ),
+              SizedBox(height: smallGap),
+              const Bone(width: 180, height: lineHeight, radius: 999),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Replaces checkout details while a fulfillment-type change is in flight.
+class CheckoutRefreshShimmer extends StatelessWidget {
+  const CheckoutRefreshShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const ShimmerEffect(
+      child: Column(
         children: [
-          Bone(width: 140, height: 18, radius: 999),
+          _PaymentCardSkeleton(height: 118),
           SizedBox(height: Spacing.md),
-          Bone(width: double.infinity, height: 16, radius: 999),
-          SizedBox(height: Spacing.sm),
-          Bone(width: double.infinity, height: 16, radius: 999),
-          SizedBox(height: Spacing.sm),
-          Bone(width: 180, height: 16, radius: 999),
+          _PaymentCardSkeleton(height: 132),
+          SizedBox(height: Spacing.md),
+          _PaymentCardSkeleton(height: 164),
+          SizedBox(height: Spacing.md),
+          _PaymentCardSkeleton(height: 120),
+          SizedBox(height: Spacing.md),
+          _PaymentCardSkeleton(height: 196),
         ],
       ),
     );

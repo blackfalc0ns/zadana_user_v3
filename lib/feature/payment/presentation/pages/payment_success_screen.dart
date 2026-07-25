@@ -37,7 +37,9 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
   @override
   void initState() {
     super.initState();
-    CartNavigationService().notifyTabChanged(clearState: true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      CartNavigationService().notifyTabChanged(clearState: true);
+    });
     _initAnimations();
     _startAnimations();
   }

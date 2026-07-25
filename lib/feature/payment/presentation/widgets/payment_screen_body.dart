@@ -17,6 +17,8 @@ class PaymentScreenBody extends StatelessWidget {
     required this.slideAnimation,
     required this.onRetry,
     required this.onChangeAddress,
+    required this.onChangePickupBranch,
+    required this.onFulfillmentTypeChanged,
     required this.onDeliverySlotChanged,
     required this.onPaymentMethodChanged,
     required this.onApplyPromoCode,
@@ -29,6 +31,8 @@ class PaymentScreenBody extends StatelessWidget {
   final Animation<Offset> slideAnimation;
   final VoidCallback onRetry;
   final VoidCallback onChangeAddress;
+  final VoidCallback onChangePickupBranch;
+  final ValueChanged<String> onFulfillmentTypeChanged;
   final ValueChanged<String> onDeliverySlotChanged;
   final ValueChanged<String> onPaymentMethodChanged;
   final ValueChanged<String> onApplyPromoCode;
@@ -49,9 +53,9 @@ class PaymentScreenBody extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: ApiErrorWidget(
-              exception: state.summaryFailure!.exception,
-              onRetry: onRetry,
-            ),
+            exception: state.summaryFailure!.exception,
+            onRetry: onRetry,
+          ),
         ),
       );
     }
@@ -68,6 +72,10 @@ class PaymentScreenBody extends StatelessWidget {
       l10n,
       checkoutSummary.summary.currency,
     );
+    final shouldShowPickupHint =
+        state.isPickup &&
+        !state.canPlaceOrder &&
+        (state.vendorBranchId ?? checkoutSummary.pickupBranch?.id) == null;
 
     return Stack(
       children: [
@@ -80,13 +88,19 @@ class PaymentScreenBody extends StatelessWidget {
                   position: slideAnimation,
                   child: CheckoutContentSection(
                     checkoutSummary: checkoutSummary,
+                    checkoutConfig: state.checkoutConfig,
+                    selectedFulfillmentType: state.fulfillmentType,
                     addresses: state.availableAddresses,
                     selectedPaymentMethodCode: state.selectedPaymentMethodCode,
                     isLoadingAddresses: state.isLoadingAddresses,
                     addressesFailure: state.addressesFailure,
                     isRefreshingSummary: state.isRefreshingSummary,
-                    isPromoLoading: state.isApplyingPromo || state.isRemovingPromo,
+                    isChangingFulfillmentType: state.isChangingFulfillmentType,
+                    isPromoLoading:
+                        state.isApplyingPromo || state.isRemovingPromo,
                     onChangeAddress: onChangeAddress,
+                    onChangePickupBranch: onChangePickupBranch,
+                    onFulfillmentTypeChanged: onFulfillmentTypeChanged,
                     onDeliverySlotChanged: onDeliverySlotChanged,
                     onPaymentMethodChanged: onPaymentMethodChanged,
                     onApplyPromoCode: onApplyPromoCode,
@@ -95,6 +109,19 @@ class PaymentScreenBody extends StatelessWidget {
                 ),
               ),
             ),
+            if (shouldShowPickupHint)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    resolvePickupSelectionHint(context),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              ),
             PaymentBottomAction(
               buttonText: state.isPlacingOrder
                   ? l10n.processing

@@ -1,8 +1,10 @@
 class PlaceOrderRequestEntity {
   const PlaceOrderRequestEntity({
     this.vendorId,
-    required this.addressId,
-    required this.deliverySlotId,
+    this.fulfillmentType = 'delivery',
+    this.addressId,
+    this.deliverySlotId,
+    this.vendorBranchId,
     required this.paymentMethod,
     required this.promoCode,
     this.notes,
@@ -10,8 +12,10 @@ class PlaceOrderRequestEntity {
   });
 
   final String? vendorId;
-  final String addressId;
-  final String deliverySlotId;
+  final String fulfillmentType;
+  final String? addressId;
+  final String? deliverySlotId;
+  final String? vendorBranchId;
   final String paymentMethod;
   final String promoCode;
   final String? notes;

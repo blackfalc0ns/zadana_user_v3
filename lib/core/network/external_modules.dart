@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart' as pretty_dio;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zadana_user_v3/core/services/captcha_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
@@ -72,6 +73,17 @@ abstract class ExternalModules {
           maxStale: const Duration(minutes: 5),
           hitCacheOnErrorExcept: [401, 403],
         ),
+      ),
+    );
+    dio.interceptors.add(
+      pretty_dio.PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: false,
+        responseBody: true,
+        error: true,
+        compact: true,
+        maxWidth: 120,
       ),
     );
     dio.interceptors.add(retryInterceptor);

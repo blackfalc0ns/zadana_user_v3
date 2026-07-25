@@ -68,6 +68,8 @@ abstract class EndPoints {
   static const String cartVendors = '/cart/vendors';
   static const String cartItems = '/cart/items';
   static const String cart = '/cart';
+  static const String checkoutConfig = '/checkout/config';
+  static const String checkoutPickupBranches = '/checkout/pickup-branches';
   static const String activeOrders = '/orders/active';
   static const String completedOrders = '/orders/completed';
   static const String returnedOrders = '/orders/returns';

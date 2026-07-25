@@ -43,6 +43,48 @@ bool isBankTransferPaymentMethod(String code) {
   }
 }
 
+bool isPickupFulfillmentType(String fulfillmentType) {
+  return fulfillmentType.trim().toLowerCase() == 'pickup';
+}
+
+String resolveFulfillmentTitle(
+  BuildContext context,
+  AppLocalizations l10n,
+  String fulfillmentType,
+) {
+  return isPickupFulfillmentType(fulfillmentType)
+      ? (isArabicPaymentLocale(context)
+            ? 'الاستلام من الفرع'
+            : 'Pickup from branch')
+      : l10n.shipping;
+}
+
+String resolveFulfillmentActionLabel(
+  BuildContext context,
+  String fulfillmentType,
+) {
+  return isPickupFulfillmentType(fulfillmentType)
+      ? (isArabicPaymentLocale(context) ? 'تغيير الفرع' : 'Change branch')
+      : AppLocalizations.of(context)!.change_address;
+}
+
+String resolveMissingFulfillmentLabel(
+  BuildContext context,
+  String fulfillmentType,
+) {
+  return isPickupFulfillmentType(fulfillmentType)
+      ? (isArabicPaymentLocale(context)
+            ? 'لازم تختار فرع الاستلام أولاً علشان تكمّل الطلب'
+            : 'Select a pickup branch first to complete the order')
+      : AppLocalizations.of(context)!.add_address;
+}
+
+String resolvePickupSelectionHint(BuildContext context) {
+  return isArabicPaymentLocale(context)
+      ? 'زر إكمال الطلب غير متاح لأن فرع الاستلام لم يتم تحديده بعد.'
+      : 'Complete order is unavailable until a pickup branch is selected.';
+}
+
 String resolveBilingualValue(
   BuildContext context, {
   required String arabic,

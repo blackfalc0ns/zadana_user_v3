@@ -175,9 +175,20 @@ class RouteGenerator {
             map['removeUnavailableItems'] as bool? ?? false,
           _ => false,
         };
+        final fulfillmentType = switch (arguments) {
+          final Map<dynamic, dynamic> map =>
+            map['fulfillmentType']?.toString() ?? 'delivery',
+          _ => 'delivery',
+        };
+        final vendorBranchId = switch (arguments) {
+          final Map<dynamic, dynamic> map => map['vendorBranchId']?.toString(),
+          _ => null,
+        };
         return MaterialPageRoute(
           builder: (_) => PaymentScreen(
             vendorId: vendorId,
+            fulfillmentType: fulfillmentType,
+            vendorBranchId: vendorBranchId,
             removeUnavailableItems: removeUnavailableItems,
           ),
         );

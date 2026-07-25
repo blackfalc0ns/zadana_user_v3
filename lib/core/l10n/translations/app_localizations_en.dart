@@ -2478,6 +2478,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'Some products are unavailable at the branch for your current address. Please remove them or change your address.';
 
   @override
+  String get pickup_branch_selector_title => 'Select pickup branch';
+
+  @override
+  String get pickup_branch_selector_hint =>
+      'Branches are filtered by your city. Only branches that can fulfill the cart are selectable.';
+
+  @override
+  String get pickup_branch_selector_empty =>
+      'No pickup branches are available in this city yet.';
+
+  @override
+  String get pickup_branch_selector_cart_unavailable =>
+      'No branch in this city can fulfill all cart items right now.';
+
+  @override
+  String get pickup_branch_primary => 'Primary';
+
+  @override
+  String get pickup_branch_cart_available => 'Available for all cart items';
+
+  @override
+  String pickup_branch_cart_unavailable(int count) {
+    return 'Unavailable for $count cart item(s)';
+  }
+
+  @override
   String get profile_photo_camera => 'Camera';
 
   @override

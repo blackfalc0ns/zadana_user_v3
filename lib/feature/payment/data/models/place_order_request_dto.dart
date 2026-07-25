@@ -3,8 +3,10 @@ import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_reque
 class PlaceOrderRequestDto {
   const PlaceOrderRequestDto({
     this.vendorId,
-    required this.addressId,
-    required this.deliverySlotId,
+    this.fulfillmentType = 'delivery',
+    this.addressId,
+    this.deliverySlotId,
+    this.vendorBranchId,
     required this.paymentMethod,
     required this.promoCode,
     this.notes,
@@ -12,8 +14,10 @@ class PlaceOrderRequestDto {
   });
 
   final String? vendorId;
-  final String addressId;
-  final String deliverySlotId;
+  final String fulfillmentType;
+  final String? addressId;
+  final String? deliverySlotId;
+  final String? vendorBranchId;
   final String paymentMethod;
   final String promoCode;
   final String? notes;
@@ -22,8 +26,12 @@ class PlaceOrderRequestDto {
   Map<String, dynamic> toJson() {
     return {
       'vendor_id': vendorId,
-      'address_id': addressId,
-      'delivery_slot_id': deliverySlotId,
+      'fulfillment_type': fulfillmentType,
+      if (addressId != null && addressId!.isNotEmpty) 'address_id': addressId,
+      if (deliverySlotId != null && deliverySlotId!.isNotEmpty)
+        'delivery_slot_id': deliverySlotId,
+      if (vendorBranchId != null && vendorBranchId!.isNotEmpty)
+        'vendor_branch_id': vendorBranchId,
       'payment_method': _normalizePaymentMethod(paymentMethod),
       'promo_code': promoCode,
       'notes': notes,
@@ -36,8 +44,10 @@ extension PlaceOrderRequestMapper on PlaceOrderRequestEntity {
   PlaceOrderRequestDto toDto() {
     return PlaceOrderRequestDto(
       vendorId: vendorId,
+      fulfillmentType: fulfillmentType,
       addressId: addressId,
       deliverySlotId: deliverySlotId,
+      vendorBranchId: vendorBranchId,
       paymentMethod: paymentMethod,
       promoCode: promoCode,
       notes: notes,

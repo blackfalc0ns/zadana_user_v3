@@ -1,4 +1,5 @@
 import 'package:zadana_user_v3/core/utils/localized_api_message.dart';
+import 'package:zadana_user_v3/feature/payment/data/models/checkout_summary_dto.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 
 class PlaceOrderResponseDto {
@@ -39,6 +40,8 @@ class PlacedOrderDto {
     required this.paymentMethod,
     required this.paymentStatus,
     required this.totalPrice,
+    this.fulfillmentType,
+    this.pickupBranch,
   });
 
   factory PlacedOrderDto.fromJson(Map<String, dynamic> json) {
@@ -51,6 +54,10 @@ class PlacedOrderDto {
       paymentMethod: json['payment_method']?.toString() ?? '',
       paymentStatus: json['payment_status']?.toString() ?? '',
       totalPrice: _asDouble(json['total_price']),
+      fulfillmentType: json['fulfillment_type']?.toString(),
+      pickupBranch: _nullableMap(json['pickup_branch']) == null
+          ? null
+          : CheckoutBranchDto.fromJson(_asMap(json['pickup_branch'])),
     );
   }
 
@@ -60,6 +67,8 @@ class PlacedOrderDto {
   final String paymentMethod;
   final String paymentStatus;
   final double totalPrice;
+  final String? fulfillmentType;
+  final CheckoutBranchDto? pickupBranch;
 
   PlacedOrderEntity toEntity() {
     return PlacedOrderEntity(
@@ -69,6 +78,8 @@ class PlacedOrderDto {
       paymentMethod: paymentMethod,
       paymentStatus: paymentStatus,
       totalPrice: totalPrice,
+      fulfillmentType: fulfillmentType,
+      pickupBranch: pickupBranch?.toEntity(),
     );
   }
 }

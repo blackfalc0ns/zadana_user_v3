@@ -4652,6 +4652,48 @@ abstract class AppLocalizations {
   /// **'Some products are unavailable at the branch for your current address. Please remove them or change your address.'**
   String get cart_items_unavailable_at_address_branch;
 
+  /// No description provided for @pickup_branch_selector_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Select pickup branch'**
+  String get pickup_branch_selector_title;
+
+  /// No description provided for @pickup_branch_selector_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches are filtered by your city. Only branches that can fulfill the cart are selectable.'**
+  String get pickup_branch_selector_hint;
+
+  /// No description provided for @pickup_branch_selector_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No pickup branches are available in this city yet.'**
+  String get pickup_branch_selector_empty;
+
+  /// No description provided for @pickup_branch_selector_cart_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No branch in this city can fulfill all cart items right now.'**
+  String get pickup_branch_selector_cart_unavailable;
+
+  /// No description provided for @pickup_branch_primary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get pickup_branch_primary;
+
+  /// No description provided for @pickup_branch_cart_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available for all cart items'**
+  String get pickup_branch_cart_available;
+
+  /// No description provided for @pickup_branch_cart_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable for {count} cart item(s)'**
+  String pickup_branch_cart_unavailable(int count);
+
   /// No description provided for @profile_photo_camera.
   ///
   /// In en, this message translates to:

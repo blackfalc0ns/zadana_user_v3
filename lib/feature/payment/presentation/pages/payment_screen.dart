@@ -9,18 +9,24 @@ class PaymentScreen extends StatelessWidget {
   const PaymentScreen({
     super.key,
     this.vendorId,
+    this.fulfillmentType = 'delivery',
+    this.vendorBranchId,
     this.removeUnavailableItems = false,
   });
 
   final String? vendorId;
+  final String fulfillmentType;
+  final String? vendorBranchId;
   final bool removeUnavailableItems;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<PaymentViewModel>()
-        ..initialize(
+        ..initializeCheckout(
           vendorId: vendorId,
+          fulfillmentType: fulfillmentType,
+          vendorBranchId: vendorBranchId,
           removeUnavailableItems: removeUnavailableItems,
         )
         ..doIntent(const PaymentLoadEvent()),

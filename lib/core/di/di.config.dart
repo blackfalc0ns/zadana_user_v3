@@ -311,6 +311,10 @@ import '../../feature/payment/domain/usecase/apply_checkout_promo_code_usecase.d
     as _i492;
 import '../../feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart'
     as _i450;
+import '../../feature/payment/domain/usecase/get_checkout_config_usecase.dart'
+    as _i996;
+import '../../feature/payment/domain/usecase/get_pickup_branches_usecase.dart'
+    as _i468;
 import '../../feature/payment/domain/usecase/get_checkout_summary_usecase.dart'
     as _i867;
 import '../../feature/payment/domain/usecase/place_order_usecase.dart' as _i859;
@@ -1013,6 +1017,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i450.ConfirmMoyasarPaymentUseCase>(
       () => _i450.ConfirmMoyasarPaymentUseCase(gh<_i420.PaymentRepository>()),
     );
+    gh.factory<_i996.GetCheckoutConfigUseCase>(
+      () => _i996.GetCheckoutConfigUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i468.GetPickupBranchesUseCase>(
+      () => _i468.GetPickupBranchesUseCase(gh<_i420.PaymentRepository>()),
+    );
     gh.factory<_i867.GetCheckoutSummaryUseCase>(
       () => _i867.GetCheckoutSummaryUseCase(gh<_i420.PaymentRepository>()),
     );
@@ -1103,7 +1113,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i566.PaymentViewModel>(
       () => _i566.PaymentViewModel(
+        gh<_i996.GetCheckoutConfigUseCase>(),
         gh<_i867.GetCheckoutSummaryUseCase>(),
+        gh<_i468.GetPickupBranchesUseCase>(),
         gh<_i492.ApplyCheckoutPromoCodeUseCase>(),
         gh<_i1066.RemoveCheckoutPromoCodeUseCase>(),
         gh<_i859.PlaceOrderUseCase>(),
