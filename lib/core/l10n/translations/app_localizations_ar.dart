@@ -972,7 +972,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get subtotal => 'المجموع';
 
   @override
-  String get shipping => 'الشحن';
+  String get shipping => 'التوصيل';
 
   @override
   String get discount => 'الخصم';

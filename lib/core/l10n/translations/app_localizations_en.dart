@@ -995,7 +995,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subtotal => 'Subtotal';
 
   @override
-  String get shipping => 'Shipping';
+  String get shipping => 'Delivery';
 
   @override
   String get discount => 'Discount';

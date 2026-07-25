@@ -1901,7 +1901,7 @@ abstract class AppLocalizations {
   /// No description provided for @shipping.
   ///
   /// In en, this message translates to:
-  /// **'Shipping'**
+  /// **'Delivery'**
   String get shipping;
 
   /// No description provided for @discount.
