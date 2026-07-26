@@ -349,7 +349,9 @@ class PushNotificationService {
         orderId != null &&
         orderId.isNotEmpty) {
       await appNavigatorService.pushNamedWhenReady(
-        AppRoutes.trackOrder,
+        NotificationPayloadResolver.shouldOpenOrderTracking(type)
+            ? AppRoutes.trackOrder
+            : AppRoutes.orderDetails,
         arguments: {'orderId': orderId},
       );
       return;

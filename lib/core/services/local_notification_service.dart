@@ -186,7 +186,9 @@ class LocalNotificationService {
         orderId != null &&
         orderId.isNotEmpty) {
       await _appNavigatorService.pushNamedWhenReady(
-        AppRoutes.trackOrder,
+        NotificationPayloadResolver.shouldOpenOrderTracking(type)
+            ? AppRoutes.trackOrder
+            : AppRoutes.orderDetails,
         arguments: {'orderId': orderId},
       );
       return;

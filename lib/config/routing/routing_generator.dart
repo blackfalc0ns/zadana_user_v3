@@ -22,8 +22,10 @@ import 'package:zadana_user_v3/feature/location/presentation/pages/manual_addres
 import 'package:zadana_user_v3/feature/location/presentation/pages/select_address_from_map_page.dart';
 import 'package:zadana_user_v3/feature/location/presentation/pages/start_select_location_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/repo/my_orders_repository.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_details_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/manager/order_support_case_view_model.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/my_orders_page.dart';
+import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_details_page.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/pages/order_support_case_page.dart';
 import 'package:zadana_user_v3/feature/notifications/data/services/notifications_signalr_service.dart';
 import 'package:zadana_user_v3/feature/notifications/presentation/pages/notification_preferences_screen.dart';
@@ -251,6 +253,19 @@ class RouteGenerator {
         );
       case AppRoutes.orders:
         return MaterialPageRoute(builder: (_) => const MyOrdersPage());
+      case AppRoutes.orderDetails:
+        final arguments = settings.arguments;
+        final orderId = switch (arguments) {
+          final String id => id,
+          final Map<dynamic, dynamic> map => map['orderId']?.toString() ?? '',
+          _ => '',
+        };
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<OrderDetailsViewModel>()..load(orderId),
+            child: OrderDetailsPage(orderId: orderId),
+          ),
+        );
       case AppRoutes.trackOrder:
         final arguments = settings.arguments;
         final orderId = switch (arguments) {

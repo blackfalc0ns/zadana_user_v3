@@ -220,7 +220,7 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
   ) async {
     return safeApiCall(() async {
       final response = await _remoteDataSource.getOrderTracking(orderId);
-      return response.toEntity();
+      return _fillMissingCompletedTimelineTimes(response.toEntity());
     });
   }
 
@@ -270,7 +270,8 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
           final isCompletedStep = itemStageIndex < currentStageIndex;
           final shouldStampTime =
               realtimeTime.isNotEmpty &&
-              itemStageIndex == currentStageIndex &&
+              itemStageIndex <= currentStageIndex &&
+              (isCurrentStep || isCompletedStep) &&
               item.time.trim().isEmpty;
 
           return item.copyWith(
@@ -297,6 +298,30 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
       clearPickupOtp: shouldClearPickupOtp,
       clearPickupOtpExpiresAtUtc: shouldClearPickupOtp,
       timeline: updatedTimeline,
+    );
+  }
+
+  OrderTrackingEntity _fillMissingCompletedTimelineTimes(
+    OrderTrackingEntity tracking,
+  ) {
+    String? nextKnownTime;
+    final reversedTimeline = <OrderTrackingTimelineItemEntity>[];
+
+    for (final item in tracking.timeline.reversed) {
+      final itemTime = item.time.trim();
+      if (itemTime.isNotEmpty && (item.isActive || item.isCompleted)) {
+        nextKnownTime = itemTime;
+      }
+
+      final shouldBackfill =
+          item.isCompleted && itemTime.isEmpty && nextKnownTime != null;
+      reversedTimeline.add(
+        shouldBackfill ? item.copyWith(time: nextKnownTime) : item,
+      );
+    }
+
+    return tracking.copyWith(
+      timeline: reversedTimeline.reversed.toList(growable: false),
     );
   }
 
@@ -411,7 +436,7 @@ class TrackOrderRepositoryImpl implements TrackOrderRepository {
 
   String _formatRealtimeTime(DateTime? changedAtUtc) {
     if (changedAtUtc == null) return '';
-    return DateFormat('yyyy-MM-dd HH:mm').format(changedAtUtc.toLocal());
+    return DateFormat('hh:mm a').format(changedAtUtc.toLocal());
   }
 
   void _drainPendingRealtimeEvents({

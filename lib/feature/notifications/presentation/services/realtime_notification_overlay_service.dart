@@ -170,7 +170,9 @@ class RealtimeNotificationOverlayService {
         orderId != null &&
         orderId.isNotEmpty) {
       await _appNavigatorService.pushNamedWhenReady(
-        AppRoutes.trackOrder,
+        NotificationPayloadResolver.shouldOpenOrderTracking(notification.type)
+            ? AppRoutes.trackOrder
+            : AppRoutes.orderDetails,
         arguments: {'orderId': orderId},
       );
       return;

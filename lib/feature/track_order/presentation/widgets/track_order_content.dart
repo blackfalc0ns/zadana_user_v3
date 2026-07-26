@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_status.dart';
 import 'package:zadana_user_v3/feature/my_orders/domain/entities/order_support_case_entity.dart';
 import 'package:zadana_user_v3/feature/my_orders/presentation/widgets/order_details_cards.dart';
@@ -86,19 +87,24 @@ class TrackOrderContent extends StatelessWidget {
                 if (!context.mounted) return;
                 final isArabic =
                     Localizations.localeOf(context).languageCode == 'ar';
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success
-                          ? (isArabic
-                                ? 'أرسلنا كود الاستلام من جديد'
-                                : 'Pickup code resent successfully')
-                          : (isArabic
-                                ? 'تعذر إعادة إرسال كود الاستلام'
-                                : 'Could not resend pickup code'),
-                    ),
-                  ),
-                );
+                final message = success
+                    ? (isArabic
+                          ? 'أرسلنا كود الاستلام من جديد'
+                          : 'Pickup code resent successfully')
+                    : (isArabic
+                          ? 'تعذر إعادة إرسال كود الاستلام'
+                          : 'Could not resend pickup code');
+                if (success) {
+                  CustomSnackbar.showSuccess(
+                    context: context,
+                    message: message,
+                  );
+                } else {
+                  CustomSnackbar.showError(
+                    context: context,
+                    message: message,
+                  );
+                }
               },
             ),
             const SizedBox(height: Spacing.base),

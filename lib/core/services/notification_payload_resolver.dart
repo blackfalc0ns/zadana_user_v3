@@ -20,6 +20,7 @@ class NotificationPayloadResolver {
     }
 
     return normalizedType.contains('order') ||
+        normalizedType.contains('pickup') ||
         normalizedType.contains('delivery-otp') ||
         normalizedType.contains('delivery_otp') ||
         normalizedType.contains('driver') ||
@@ -37,6 +38,11 @@ class NotificationPayloadResolver {
         normalizedType.contains('return_request') ||
         normalizedType.contains('return-request') ||
         normalizedType.contains('case');
+  }
+
+  static bool shouldOpenOrderTracking(String? type) {
+    final normalizedType = type?.trim().toLowerCase();
+    return normalizedType != null && normalizedType.contains('pickup');
   }
 
   static Map<String, dynamic> normalize(Map<String, dynamic> rawPayload) {

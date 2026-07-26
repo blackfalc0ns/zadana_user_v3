@@ -234,6 +234,16 @@ class _NotificationsView extends StatelessWidget {
 
     if (NotificationPayloadResolver.isOrderRelatedType(notification.type)) {
       if (orderId != null && orderId.isNotEmpty) {
+        if (NotificationPayloadResolver.shouldOpenOrderTracking(
+          notification.type,
+        )) {
+          await Navigator.of(context).pushNamed(
+            AppRoutes.trackOrder,
+            arguments: {'orderId': orderId},
+          );
+          return;
+        }
+
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => BlocProvider(
