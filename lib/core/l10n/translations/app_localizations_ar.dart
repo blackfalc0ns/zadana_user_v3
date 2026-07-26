@@ -656,7 +656,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get best_selling_unavailable => 'ما فيه منتجات أكثر مبيعًا متاحة';
 
   @override
-  String get section_brands => 'البراندات';
+  String get section_brands => 'العلامات التجارية';
 
   @override
   String get brands_unavailable => 'ما فيه براندات متاحة';

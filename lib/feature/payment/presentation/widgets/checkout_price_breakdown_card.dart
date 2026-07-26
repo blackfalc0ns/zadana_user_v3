@@ -19,11 +19,12 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
     final summary = checkoutSummary.summary;
     final shippingBreakdown = checkoutSummary.shippingBreakdown;
     final vatLine = _findLine(shippingBreakdown, _isVatLine);
-    final codLine = _findLine(shippingBreakdown, _isCodLine);
     final vatAmount = summary.vatAmount ?? vatLine?.amount;
-    final codFee = summary.codFee ?? codLine?.amount;
+    // Checkout totals are authoritative. In particular, do not derive COD
+    // from shipping_breakdown or calculate either fee on device.
+    final codFee = summary.codFee;
     final shouldShowVat = (vatAmount ?? 0) > 0;
-    final shouldShowCodFee = (codFee ?? 0) > 0;
+    final shouldShowCodFee = !checkoutSummary.isPickup && (codFee ?? 0) > 0;
     final currency = localizePaymentCurrency(l10n, summary.currency);
 
     return Container(
@@ -77,12 +78,15 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
             currency: currency,
           ),
           const SizedBox(height: Spacing.xs),
-          _PriceRow(
-            label: l10n.shipping,
-            value: PriceFormatter.formatPrice(summary.shippingCost),
-            currency: currency,
-          ),
-          const SizedBox(height: Spacing.xs),
+          if (!checkoutSummary.isPickup) ...[
+            _PriceRow(
+              label: l10n.shipping,
+              value: PriceFormatter.formatPrice(summary.shippingCost),
+              currency: currency,
+            ),
+            const SizedBox(height: Spacing.xs),
+          ] else
+            const SizedBox(height: Spacing.xs),
           _PriceRow(
             label: l10n.discount,
             value: PriceFormatter.formatPrice(summary.discount),
@@ -100,7 +104,7 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
           if (shouldShowCodFee) ...[
             const SizedBox(height: Spacing.xs),
             _PriceRow(
-              label: _resolveCodLabel(context, codLine),
+              label: _resolveCodLabel(context, null),
               value: PriceFormatter.formatPrice(codFee),
               currency: currency,
             ),
@@ -180,13 +184,6 @@ class CheckoutPriceBreakdownCard extends StatelessWidget {
   bool _isVatLine(String code) {
     final normalized = code.trim().toLowerCase();
     return normalized == 'vat' || normalized == 'vat_amount';
-  }
-
-  bool _isCodLine(String code) {
-    final normalized = code.trim().toLowerCase();
-    return normalized == 'cod_fee' ||
-        normalized == 'cod' ||
-        normalized == 'cash_on_delivery_fee';
   }
 }
 

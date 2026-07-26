@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
+import 'package:pay/pay.dart' show ApplePayButtonType;
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_scaffold.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
@@ -159,6 +160,10 @@ class MoyasarPaymentScreen extends StatelessWidget {
           child: _usesApplePay
               ? ApplePay(
                   config: paymentConfig,
+                  // Apple requires an approved purchase button, not the
+                  // standalone Apple Pay mark used by the previous in-store
+                  // button style.
+                  buttonType: ApplePayButtonType.buy,
                   onPaymentResult: (result) =>
                       _onPaymentResult(context, result),
                 )
