@@ -361,6 +361,7 @@
   "apply": "Apply",
   "subtotal": "Subtotal",
   "shipping": "Delivery",
+  "fulfillment": "Fulfillment",
   "discount": "Discount",
   "vat": "VAT",
   "cod_fee": "COD Fee",
@@ -989,6 +990,8 @@
   ,"pickup_deadline": "Pickup deadline: {dateTime}"
   ,"@pickup_deadline": {"placeholders": {"dateTime": {"type": "String"}}}
   ,"pickup_from_branch": "Pickup from branch"
+  ,"fulfillment_pickup_label": "Pickup"
+  ,"fulfillment_pickup_subtitle": "Collect your order from the branch"
   ,"pickup_change_branch": "Change branch"
   ,"pickup_select_branch_first": "Choose a pickup branch first to complete your order."
   ,"pickup_complete_order_unavailable": "Choose a pickup branch to enable the Complete order button."

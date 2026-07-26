@@ -3,18 +3,19 @@ import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:zadana_user_v3/core/errors/api_error_type.dart';
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
 import 'package:zadana_user_v3/core/services/checkout_flow_service.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/entities/customer_address_entity.dart';
 import 'package:zadana_user_v3/feature/addresses/domain/usecase/get_customer_addresses_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_summary_entity.dart';
-import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_request_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/pickup_branch_option_entity.dart';
+import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_request_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/apply_checkout_promo_code_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/get_checkout_config_usecase.dart';
-import 'package:zadana_user_v3/feature/payment/domain/usecase/get_pickup_branches_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/get_checkout_summary_usecase.dart';
+import 'package:zadana_user_v3/feature/payment/domain/usecase/get_pickup_branches_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/place_order_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/remove_checkout_promo_code_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_event.dart';
@@ -144,17 +145,39 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     developer.log('Loading checkout summary', name: 'PaymentViewModel');
 
+    // Load the fulfillment configuration before the checkout summary so the
+    // summary is never requested with a fulfillment type disabled by admin.
     final configFuture = _getCheckoutConfigUseCase();
-    final checkoutFuture = _getCheckoutSummaryUseCase(
-      vendorId: state.vendorId,
-      fulfillmentType: state.fulfillmentType,
-      vendorBranchId: state.vendorBranchId,
-      paymentMethod: state.selectedPaymentMethodCode,
-      promoCode: requestedPromoCode,
-    );
     final addressesFuture = _getCustomerAddressesUseCase();
 
     final configResult = await configFuture;
+    switch (configResult) {
+      case ApiSuccessResult():
+        final config = configResult.data;
+        final currentType = state.fulfillmentType.trim().toLowerCase();
+        var resolvedType = currentType;
+
+        if (currentType == 'pickup' &&
+            !config.pickupEnabled &&
+            config.deliveryEnabled) {
+          resolvedType = 'delivery';
+        } else if (currentType == 'delivery' &&
+            !config.deliveryEnabled &&
+            config.pickupEnabled) {
+          resolvedType = 'pickup';
+        }
+
+        emit(
+          state.copyWith(checkoutConfig: config, fulfillmentType: resolvedType),
+        );
+      case ApiErrorResult():
+        // Keep the requested fulfillment type if the config cannot be loaded.
+        break;
+    }
+
+    final checkoutFuture = _loadInitialCheckoutSummary(
+      requestedPromoCode: requestedPromoCode,
+    );
     final checkoutResult = await checkoutFuture;
     final addressesResult = await addressesFuture;
 
@@ -163,14 +186,6 @@ class PaymentViewModel extends Cubit<PaymentState> {
       isLoadingConfig: false,
       isLoadingAddresses: false,
     );
-
-    switch (configResult) {
-      case ApiSuccessResult():
-        nextState = nextState.copyWith(checkoutConfig: configResult.data);
-      case ApiErrorResult():
-        // Keep defaults if config fails.
-        break;
-    }
 
     switch (checkoutResult) {
       case ApiSuccessResult<CheckoutSummaryEntity>():
@@ -203,20 +218,6 @@ class PaymentViewModel extends Cubit<PaymentState> {
         );
     }
 
-    final config = nextState.checkoutConfig;
-    if (config != null) {
-      final currentType = nextState.fulfillmentType.trim().toLowerCase();
-      if (currentType == 'pickup' &&
-          !config.pickupEnabled &&
-          config.deliveryEnabled) {
-        nextState = nextState.copyWith(fulfillmentType: 'delivery');
-      } else if (currentType == 'delivery' &&
-          !config.deliveryEnabled &&
-          config.pickupEnabled) {
-        nextState = nextState.copyWith(fulfillmentType: 'pickup');
-      }
-    }
-
     emit(nextState);
 
     if (nextState.isPickup) {
@@ -240,6 +241,37 @@ class PaymentViewModel extends Cubit<PaymentState> {
         );
       }
     }
+  }
+
+  Future<ApiResult<CheckoutSummaryEntity>> _loadInitialCheckoutSummary({
+    required String? requestedPromoCode,
+  }) async {
+    var result = await _getCheckoutSummaryUseCase(
+      vendorId: state.vendorId,
+      fulfillmentType: state.fulfillmentType,
+      vendorBranchId: state.vendorBranchId,
+      paymentMethod: state.selectedPaymentMethodCode,
+      promoCode: requestedPromoCode,
+    );
+
+    if (result case ApiErrorResult<CheckoutSummaryEntity>(
+      failure: final failure,
+    )) {
+      if (failure.exception.errorType == ApiErrorType.conflict) {
+        // Cart/delivery state can take a moment to settle after the
+        // pre-check. Retry this idempotent read once before showing an error.
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+        result = await _getCheckoutSummaryUseCase(
+          vendorId: state.vendorId,
+          fulfillmentType: state.fulfillmentType,
+          vendorBranchId: state.vendorBranchId,
+          paymentMethod: state.selectedPaymentMethodCode,
+          promoCode: requestedPromoCode,
+        );
+      }
+    }
+
+    return result;
   }
 
   Future<void> _refreshSummary({

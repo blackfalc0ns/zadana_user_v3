@@ -362,6 +362,7 @@
   "apply": "تطبيق",
   "subtotal": "المجموع",
   "shipping": "التوصيل",
+  "fulfillment": "طريقة الاستلام",
   "discount": "الخصم",
   "vat": "ضريبة القيمة المضافة",
   "cod_fee": "رسوم الدفع وقت الاستلام",
@@ -992,6 +993,8 @@
   ,"pickup_deadline": "\u0645\u0647\u0644\u0629 \u0627\u0644\u0627\u0633\u062a\u0644\u0627\u0645 \u062d\u062a\u0649: {dateTime}"
   ,"@pickup_deadline": {"placeholders": {"dateTime": {"type": "String"}}}
   ,"pickup_from_branch": "الاستلام من الفرع"
+  ,"fulfillment_pickup_label": "استلام من الفرع"
+  ,"fulfillment_pickup_subtitle": "تسليم الطلب من الفرع"
   ,"pickup_change_branch": "غيّر الفرع"
   ,"pickup_select_branch_first": "ياليت تختار الفرع اللي بتستلم منه طلبك أول، وبعدها تقدر تكمّل الطلب."
   ,"pickup_complete_order_unavailable": "اختَر فرع الاستلام أول لإكمال طلبك."

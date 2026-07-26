@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/theme/font_manager.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/styles_manager.dart';
+import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/checkout_config_entity.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/info_card_container.dart';
@@ -24,6 +25,7 @@ class CheckoutFulfillmentTypeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final isPickup = isPickupFulfillmentType(selectedFulfillmentType);
     final isArabic = isArabicPaymentLocale(context);
     final showDelivery = checkoutConfig?.deliveryEnabled ?? true;
@@ -39,7 +41,7 @@ class CheckoutFulfillmentTypeCard extends StatelessWidget {
         children: [
           SectionHeader(
             icon: Icons.swap_horiz_rounded,
-            title: isArabic ? 'طريقة الاستلام' : 'Fulfillment',
+            title: l10n.fulfillment,
             backgroundColor: colors.primary,
           ),
           const SizedBox(height: Spacing.md),
@@ -62,10 +64,8 @@ class CheckoutFulfillmentTypeCard extends StatelessWidget {
               if (showPickup)
                 Expanded(
                   child: _FulfillmentOptionTile(
-                    label: isArabic ? 'استلام من الفرع' : 'Pickup',
-                    subtitle: isArabic
-                        ? 'تستلم الطلب من المطعم'
-                        : 'Collect from restaurant',
+                    label: l10n.fulfillment_pickup_label,
+                    subtitle: l10n.fulfillment_pickup_subtitle,
                     icon: Icons.storefront_outlined,
                     isSelected: isPickup,
                     isDisabled: isRefreshing,

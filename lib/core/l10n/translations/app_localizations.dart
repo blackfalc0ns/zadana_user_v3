@@ -1904,6 +1904,12 @@ abstract class AppLocalizations {
   /// **'Delivery'**
   String get shipping;
 
+  /// No description provided for @fulfillment.
+  ///
+  /// In en, this message translates to:
+  /// **'Fulfillment'**
+  String get fulfillment;
+
   /// No description provided for @discount.
   ///
   /// In en, this message translates to:
@@ -4795,6 +4801,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pickup from branch'**
   String get pickup_from_branch;
+
+  /// No description provided for @fulfillment_pickup_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup'**
+  String get fulfillment_pickup_label;
+
+  /// No description provided for @fulfillment_pickup_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect your order from the branch'**
+  String get fulfillment_pickup_subtitle;
 
   /// No description provided for @pickup_change_branch.
   ///

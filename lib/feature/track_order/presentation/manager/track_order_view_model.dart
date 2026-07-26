@@ -188,7 +188,35 @@ class TrackOrderViewModel extends Cubit<TrackOrderState> {
     return formatted.isNotEmpty ? formatted : l10n.order_pending;
   }
 
-  String sanitizeTimelineTime(String value) => value.trim();
+  String sanitizeTimelineTime(String value, {required String localeCode}) {
+    final trimmedValue = value.trim();
+    if (trimmedValue.isEmpty) return trimmedValue;
+
+    final timeMatch = RegExp(
+      r'(?<!\d)([01]?\d|2[0-3]):([0-5]\d)(?:\s*([AaPp][Mm]|[صم]))?',
+    ).firstMatch(trimmedValue);
+    if (timeMatch == null) return trimmedValue;
+
+    var hour = int.parse(timeMatch.group(1)!);
+    final minute = timeMatch.group(2)!;
+    final suppliedPeriod = timeMatch.group(3)?.toLowerCase();
+
+    final isPm =
+        suppliedPeriod == 'pm' ||
+        suppliedPeriod == 'م' ||
+        (suppliedPeriod == null && hour >= 12);
+    final is12HourValue = suppliedPeriod != null;
+
+    if (!is12HourValue) {
+      hour %= 12;
+      if (hour == 0) hour = 12;
+    }
+
+    final period = localeCode.startsWith('ar')
+        ? (isPm ? 'م' : 'ص')
+        : (isPm ? 'PM' : 'AM');
+    return '${hour.toString().padLeft(2, '0')}:$minute $period';
+  }
 
   String? resolveDriverArrivalStateLabel(
     AppLocalizations l10n,

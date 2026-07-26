@@ -975,6 +975,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shipping => 'التوصيل';
 
   @override
+  String get fulfillment => 'طريقة الاستلام';
+
+  @override
   String get discount => 'الخصم';
 
   @override
@@ -2505,6 +2508,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pickup_from_branch => 'الاستلام من الفرع';
+
+  @override
+  String get fulfillment_pickup_label => 'استلام من الفرع';
+
+  @override
+  String get fulfillment_pickup_subtitle => 'تسليم الطلب من الفرع';
 
   @override
   String get pickup_change_branch => 'غيّر الفرع';

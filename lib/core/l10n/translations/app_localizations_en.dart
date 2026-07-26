@@ -998,6 +998,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shipping => 'Delivery';
 
   @override
+  String get fulfillment => 'Fulfillment';
+
+  @override
   String get discount => 'Discount';
 
   @override
@@ -2560,6 +2563,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pickup_from_branch => 'Pickup from branch';
+
+  @override
+  String get fulfillment_pickup_label => 'Pickup';
+
+  @override
+  String get fulfillment_pickup_subtitle =>
+      'Collect your order from the branch';
 
   @override
   String get pickup_change_branch => 'Change branch';

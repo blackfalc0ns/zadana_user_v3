@@ -20,6 +20,7 @@ class TrackOrderTimelineSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final viewModel = context.read<TrackOrderViewModel>();
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final localeCode = Localizations.localeOf(context).languageCode;
 
     return SurfaceCard(
       borderRadius: 28,
@@ -68,7 +69,10 @@ class TrackOrderTimelineSection extends StatelessWidget {
               ),
               child: TrackOrderTimelineTile(
                 title: viewModel.localizedTimelineTitle(l10n, item, entry.key),
-                time: viewModel.sanitizeTimelineTime(item.time),
+                time: viewModel.sanitizeTimelineTime(
+                  item.time,
+                  localeCode: localeCode,
+                ),
                 active: item.isActive,
                 completed: item.isCompleted,
                 last: entry.key == tracking.timeline.length - 1,
