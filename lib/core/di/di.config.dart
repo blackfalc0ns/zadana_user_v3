@@ -312,11 +312,11 @@ import '../../feature/payment/domain/usecase/apply_checkout_promo_code_usecase.d
 import '../../feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart'
     as _i450;
 import '../../feature/payment/domain/usecase/get_checkout_config_usecase.dart'
-    as _i996;
-import '../../feature/payment/domain/usecase/get_pickup_branches_usecase.dart'
-    as _i468;
+    as _i5;
 import '../../feature/payment/domain/usecase/get_checkout_summary_usecase.dart'
     as _i867;
+import '../../feature/payment/domain/usecase/get_pickup_branches_usecase.dart'
+    as _i134;
 import '../../feature/payment/domain/usecase/place_order_usecase.dart' as _i859;
 import '../../feature/payment/domain/usecase/remove_checkout_promo_code_usecase.dart'
     as _i1066;
@@ -380,7 +380,7 @@ import '../../feature/track_order/domain/repo/track_order_repository.dart'
 import '../../feature/track_order/domain/usecase/get_order_tracking_usecase.dart'
     as _i633;
 import '../../feature/track_order/domain/usecase/resend_pickup_otp_usecase.dart'
-    as _i634;
+    as _i243;
 import '../../feature/track_order/presentation/manager/track_order_view_model.dart'
     as _i341;
 import '../general_cubit/local_cubit.dart' as _i794;
@@ -660,8 +660,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i633.GetOrderTrackingUseCase>(
       () => _i633.GetOrderTrackingUseCase(gh<_i556.TrackOrderRepository>()),
     );
-    gh.factory<_i634.ResendPickupOtpUseCase>(
-      () => _i634.ResendPickupOtpUseCase(gh<_i556.TrackOrderRepository>()),
+    gh.factory<_i243.ResendPickupOtpUseCase>(
+      () => _i243.ResendPickupOtpUseCase(gh<_i556.TrackOrderRepository>()),
     );
     gh.factory<_i426.LogoutUseCase>(
       () => _i426.LogoutUseCase(repository: gh<_i31.LogoutRepository>()),
@@ -750,8 +750,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i148.DeviceIdService>(),
       ),
     );
+    gh.factory<_i399.RegisterRepository>(
+      () => _i466.RegisterRepositoryImpl(
+        gh<_i334.RegisterRemoteDataSource>(),
+        gh<_i227.TokenService>(),
+      ),
+    );
     gh.factory<_i131.CategoryRepository>(
       () => _i473.CategoryRepositoryImpl(gh<_i601.CategoryRemoteDataSource>()),
+    );
+    gh.factory<_i341.TrackOrderViewModel>(
+      () => _i341.TrackOrderViewModel(
+        gh<_i633.GetOrderTrackingUseCase>(),
+        gh<_i243.ResendPickupOtpUseCase>(),
+      ),
     );
     gh.factory<_i685.ProductSearchRepository>(
       () => _i333.ProductSearchRepositoryImpl(
@@ -760,6 +772,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1006.ProfileRepository>(
       () => _i771.ProfileRepositoryImpl(gh<_i371.ProfileRemoteDataSource>()),
+    );
+    gh.factory<_i166.RegisterUseCase>(
+      () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
     );
     gh.factory<_i552.SearchProductsUseCase>(
       () => _i552.SearchProductsUseCase(gh<_i685.ProductSearchRepository>()),
@@ -965,12 +980,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i563.UpdateCustomerAddressUseCase>(),
       ),
     );
-    gh.factory<_i341.TrackOrderViewModel>(
-      () => _i341.TrackOrderViewModel(
-        gh<_i633.GetOrderTrackingUseCase>(),
-        gh<_i634.ResendPickupOtpUseCase>(),
-      ),
-    );
     gh.factory<_i491.ResetPasswordRepository>(
       () => _i670.ResetPasswordRepositoryImpl(
         gh<_i122.ResetPasswordRemoteDataSource>(),
@@ -1025,14 +1034,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i450.ConfirmMoyasarPaymentUseCase>(
       () => _i450.ConfirmMoyasarPaymentUseCase(gh<_i420.PaymentRepository>()),
     );
-    gh.factory<_i996.GetCheckoutConfigUseCase>(
-      () => _i996.GetCheckoutConfigUseCase(gh<_i420.PaymentRepository>()),
-    );
-    gh.factory<_i468.GetPickupBranchesUseCase>(
-      () => _i468.GetPickupBranchesUseCase(gh<_i420.PaymentRepository>()),
+    gh.factory<_i5.GetCheckoutConfigUseCase>(
+      () => _i5.GetCheckoutConfigUseCase(gh<_i420.PaymentRepository>()),
     );
     gh.factory<_i867.GetCheckoutSummaryUseCase>(
       () => _i867.GetCheckoutSummaryUseCase(gh<_i420.PaymentRepository>()),
+    );
+    gh.factory<_i134.GetPickupBranchesUseCase>(
+      () => _i134.GetPickupBranchesUseCase(gh<_i420.PaymentRepository>()),
     );
     gh.factory<_i859.PlaceOrderUseCase>(
       () => _i859.PlaceOrderUseCase(gh<_i420.PaymentRepository>()),
@@ -1066,17 +1075,25 @@ extension GetItInjectableX on _i174.GetIt {
         title,
       ),
     );
-    gh.factory<_i399.RegisterRepository>(
-      () => _i466.RegisterRepositoryImpl(gh<_i334.RegisterRemoteDataSource>()),
-    );
     gh.factory<_i934.ForgetPasswordViewModel>(
       () => _i934.ForgetPasswordViewModel(gh<_i732.ForgetPasswordUseCase>()),
     );
     gh.factory<_i248.LoginUseCase>(
       () => _i248.LoginUseCase(gh<_i558.LoginRepository>()),
     );
-    gh.factory<_i166.RegisterUseCase>(
-      () => _i166.RegisterUseCase(repository: gh<_i399.RegisterRepository>()),
+    gh.factory<_i330.RegisterViewModel>(
+      () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
+    );
+    gh.factory<_i566.PaymentViewModel>(
+      () => _i566.PaymentViewModel(
+        gh<_i5.GetCheckoutConfigUseCase>(),
+        gh<_i867.GetCheckoutSummaryUseCase>(),
+        gh<_i134.GetPickupBranchesUseCase>(),
+        gh<_i492.ApplyCheckoutPromoCodeUseCase>(),
+        gh<_i1066.RemoveCheckoutPromoCodeUseCase>(),
+        gh<_i859.PlaceOrderUseCase>(),
+        gh<_i525.GetCustomerAddressesUseCase>(),
+      ),
     );
     gh.factory<_i393.OrderDetailsViewModel>(
       () => _i393.OrderDetailsViewModel(
@@ -1119,17 +1136,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i314.RemoveFavoriteUseCase>(
       () => _i314.RemoveFavoriteUseCase(gh<_i140.FavoritesRepository>()),
     );
-    gh.factory<_i566.PaymentViewModel>(
-      () => _i566.PaymentViewModel(
-        gh<_i996.GetCheckoutConfigUseCase>(),
-        gh<_i867.GetCheckoutSummaryUseCase>(),
-        gh<_i468.GetPickupBranchesUseCase>(),
-        gh<_i492.ApplyCheckoutPromoCodeUseCase>(),
-        gh<_i1066.RemoveCheckoutPromoCodeUseCase>(),
-        gh<_i859.PlaceOrderUseCase>(),
-        gh<_i525.GetCustomerAddressesUseCase>(),
-      ),
-    );
     gh.factory<_i228.CategoryViewModel>(
       () => _i228.CategoryViewModel(
         getCategoriesUseCase: gh<_i17.GetCategoriesUseCase>(),
@@ -1171,9 +1177,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i954.ClearFavoritesUseCase>(),
       ),
     );
-    gh.factory<_i330.RegisterViewModel>(
-      () => _i330.RegisterViewModel(gh<_i166.RegisterUseCase>()),
-    );
     gh.factory<_i62.ResendOtpUseCase>(
       () => _i62.ResendOtpUseCase(gh<_i415.VerifyOtpRepository>()),
     );
@@ -1204,6 +1207,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i718.VerifyOtpViewModel(
         gh<_i851.VerifyOtpUseCase>(),
         gh<_i62.ResendOtpUseCase>(),
+        gh<_i227.TokenService>(),
       ),
     );
     return this;

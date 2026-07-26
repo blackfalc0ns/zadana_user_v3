@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/keys.dart';
 import '../utils/constants.dart';
 
 @injectable
@@ -51,6 +52,21 @@ class TokenService {
   Future<void> deleteRefreshToken() async {
     await _sharedPreferences.setBool(AppConstants.isRefreshTokenSaved, false);
     await _prefs.delete(key: AppConstants.refreshToken);
+  }
+
+  // ---------------- REGISTRATION OTP TOKEN ----------------
+
+  Future<void> saveRegistrationToken(String? token) async {
+    if (token == null || token.trim().isEmpty) return;
+    await _prefs.write(key: StorageKeys.registrationToken, value: token);
+  }
+
+  Future<String?> getRegistrationToken() async {
+    return _prefs.read(key: StorageKeys.registrationToken);
+  }
+
+  Future<void> deleteRegistrationToken() async {
+    await _prefs.delete(key: StorageKeys.registrationToken);
   }
 
   Future<void> saveCurrentUserId(String userId) async {

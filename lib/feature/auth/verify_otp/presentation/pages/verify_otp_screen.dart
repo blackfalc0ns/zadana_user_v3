@@ -32,8 +32,23 @@ class VerifyOtpScreen extends StatelessWidget {
             previous.isSuccess != current.isSuccess ||
             previous.failure != current.failure ||
             previous.resendSuccess != current.resendSuccess ||
-            previous.resendError != current.resendError,
+            previous.resendError != current.resendError ||
+            previous.registrationSessionExpired !=
+                current.registrationSessionExpired,
         listener: (context, state) {
+          if (state.registrationSessionExpired) {
+            CustomSnackbar.showError(
+              context: context,
+              message:
+                  state.errorMessage ??
+                  'Registration session has expired. Please register again.',
+            );
+            context.pushNamedAndRemoveUntil(
+              AppRoutes.signUp,
+              predicate: (Route<dynamic> route) => false,
+            );
+            return;
+          }
           _handleStateChanges(context, state);
 
           if (state.resendSuccess) {

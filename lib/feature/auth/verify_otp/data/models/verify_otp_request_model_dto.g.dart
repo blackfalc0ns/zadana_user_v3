@@ -11,6 +11,7 @@ VerifyOtpRequestModelDto _$VerifyOtpRequestModelDtoFromJson(
 ) => VerifyOtpRequestModelDto(
   identifier: json['identifier'] as String,
   otpCode: json['otpCode'] as String,
+  registrationToken: json['registrationToken'] as String,
 );
 
 Map<String, dynamic> _$VerifyOtpRequestModelDtoToJson(
@@ -18,4 +19,5 @@ Map<String, dynamic> _$VerifyOtpRequestModelDtoToJson(
 ) => <String, dynamic>{
   'identifier': instance.identifier,
   'otpCode': instance.otpCode,
+  'registrationToken': instance.registrationToken,
 };

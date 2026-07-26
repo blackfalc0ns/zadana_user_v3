@@ -17,6 +17,7 @@ VerifyOtpResponseModelDto _$VerifyOtpResponseModelDtoFromJson(
       : UserModelVerifyDto.fromJson(json['user'] as Map<String, dynamic>),
   isVerified: json['isVerified'] as bool?,
   message: json['message'] as String?,
+  registrationToken: json['registrationToken'] as String?,
 );
 
 Map<String, dynamic> _$VerifyOtpResponseModelDtoToJson(
@@ -26,4 +27,5 @@ Map<String, dynamic> _$VerifyOtpResponseModelDtoToJson(
   'user': instance.user,
   'isVerified': instance.isVerified,
   'message': instance.message,
+  'registrationToken': instance.registrationToken,
 };

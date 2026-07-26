@@ -42,22 +42,31 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
       final result = await _remoteDataSource.verifyOtp(dto);
       final accessToken = result.tokens?.accessToken;
       final refreshToken = result.tokens?.refreshToken;
-      if (accessToken != null && refreshToken != null) {
-        await _tokenService.saveAccessToken(accessToken);
-        await _tokenService.saveRefreshToken(refreshToken);
-        final customerId = result.user?.id?.trim() ?? '';
-        if (customerId.isNotEmpty) {
-          await _tokenService.saveCurrentUserId(customerId);
-        }
-        runPostAuthSideEffects(
-          logName: 'VerifyOtpRepositoryImpl',
-          cartRepository: _cartRepository,
-          favoritesRepository: _favoritesRepository,
-          notificationsSignalRService: _notificationsSignalRService,
-          notificationDeviceService: _notificationDeviceService,
-          customerId: customerId,
+      if (result.isVerified != true ||
+          accessToken == null ||
+          accessToken.isEmpty ||
+          refreshToken == null ||
+          refreshToken.isEmpty) {
+        throw StateError(
+          'OTP verification did not create an authenticated session.',
         );
       }
+
+      await _tokenService.saveAccessToken(accessToken);
+      await _tokenService.saveRefreshToken(refreshToken);
+      final customerId = result.user?.id?.trim() ?? '';
+      if (customerId.isNotEmpty) {
+        await _tokenService.saveCurrentUserId(customerId);
+      }
+      runPostAuthSideEffects(
+        logName: 'VerifyOtpRepositoryImpl',
+        cartRepository: _cartRepository,
+        favoritesRepository: _favoritesRepository,
+        notificationsSignalRService: _notificationsSignalRService,
+        notificationDeviceService: _notificationDeviceService,
+        customerId: customerId,
+      );
+      await _tokenService.deleteRegistrationToken();
 
       return result.toEntity();
     });
@@ -66,8 +75,18 @@ class VerifyOtpRepositoryImpl implements VerifyOtpRepository {
   @override
   Future<ApiResult<void>> resendOtp(String identifier) async {
     return safeApiCall(() async {
-      final dto = ResendOtpRequestModelDto(identifier: identifier);
-      await _remoteDataSource.resendOtp(dto);
+      final registrationToken = await _tokenService.getRegistrationToken();
+      if (registrationToken == null || registrationToken.isEmpty) {
+        throw StateError(
+          'Registration session has expired. Please register again.',
+        );
+      }
+      final dto = ResendOtpRequestModelDto(
+        identifier: identifier,
+        registrationToken: registrationToken,
+      );
+      final response = await _remoteDataSource.resendOtp(dto);
+      await _tokenService.saveRegistrationToken(response.registrationToken);
     });
   }
 

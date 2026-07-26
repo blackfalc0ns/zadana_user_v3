@@ -20,7 +20,9 @@ class VerifyOtpRemoteDataSourceImpl implements VerifyOtpRemoteDataSource {
   }
 
   @override
-  Future<void> resendOtp(ResendOtpRequestModelDto request) {
+  Future<VerifyOtpResponseModelDto> resendOtp(
+    ResendOtpRequestModelDto request,
+  ) {
     return _apiServices.resendOtp(request);
   }
 

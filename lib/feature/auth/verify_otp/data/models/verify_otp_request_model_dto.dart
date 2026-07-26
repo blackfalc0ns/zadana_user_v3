@@ -10,6 +10,7 @@ class VerifyOtpRequestModelDto {
   const VerifyOtpRequestModelDto({
     required this.identifier,
     required this.otpCode,
+    required this.registrationToken,
   });
 
   factory VerifyOtpRequestModelDto.fromJson(Map<String, dynamic> json) =>
@@ -20,10 +21,12 @@ class VerifyOtpRequestModelDto {
     return VerifyOtpRequestModelDto(
       identifier: entity.identifier,
       otpCode: entity.otpCode,
+      registrationToken: entity.registrationToken,
     );
   }
   final String identifier;
   final String otpCode;
+  final String registrationToken;
 
   Map<String, dynamic> toJson() => _$VerifyOtpRequestModelDtoToJson(this);
 }

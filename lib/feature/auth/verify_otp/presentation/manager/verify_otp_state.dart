@@ -13,6 +13,7 @@ class VerifyOtpState {
     this.isResending = false,
     this.resendSuccess = false,
     this.resendError,
+    this.registrationSessionExpired = false,
   });
   final bool isLoading;
   final String? errorMessage;
@@ -22,6 +23,7 @@ class VerifyOtpState {
   final bool isResending;
   final bool resendSuccess;
   final String? resendError;
+  final bool registrationSessionExpired;
 
   VerifyOtpState copyWith({
     bool? isLoading,
@@ -32,6 +34,7 @@ class VerifyOtpState {
     bool? isResending,
     bool? resendSuccess,
     String? resendError,
+    bool? registrationSessionExpired,
   }) {
     return VerifyOtpState(
       isLoading: isLoading ?? this.isLoading,
@@ -42,6 +45,8 @@ class VerifyOtpState {
       isResending: isResending ?? this.isResending,
       resendSuccess: resendSuccess ?? this.resendSuccess,
       resendError: resendError,
+      registrationSessionExpired:
+          registrationSessionExpired ?? this.registrationSessionExpired,
     );
   }
 
@@ -56,7 +61,8 @@ class VerifyOtpState {
         other.failure == failure &&
         other.isResending == isResending &&
         other.resendSuccess == resendSuccess &&
-        other.resendError == resendError;
+        other.resendError == resendError &&
+        other.registrationSessionExpired == registrationSessionExpired;
   }
 
   @override
@@ -69,5 +75,6 @@ class VerifyOtpState {
     isResending,
     resendSuccess,
     resendError,
+    registrationSessionExpired,
   );
 }

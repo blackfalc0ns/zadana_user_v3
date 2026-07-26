@@ -31,6 +31,7 @@ class RegisterMapper {
       role: dto.user?.role ?? '',
       message: dto.message ?? '',
       isVerified: dto.isVerified ?? false,
+      registrationToken: dto.registrationToken,
     );
   }
 }

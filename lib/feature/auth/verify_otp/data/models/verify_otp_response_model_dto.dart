@@ -14,6 +14,7 @@ class VerifyOtpResponseModelDto {
     this.user,
     this.isVerified,
     this.message,
+    this.registrationToken,
   });
 
   factory VerifyOtpResponseModelDto.fromJson(Map<String, dynamic> json) =>
@@ -22,6 +23,7 @@ class VerifyOtpResponseModelDto {
   final UserModelVerifyDto? user;
   final bool? isVerified;
   final String? message;
+  final String? registrationToken;
 
   Map<String, dynamic> toJson() => _$VerifyOtpResponseModelDtoToJson(this);
 

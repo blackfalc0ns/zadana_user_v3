@@ -8,8 +8,14 @@ part of 'resend_otp_request_model_dto.dart';
 
 ResendOtpRequestModelDto _$ResendOtpRequestModelDtoFromJson(
   Map<String, dynamic> json,
-) => ResendOtpRequestModelDto(identifier: json['identifier'] as String);
+) => ResendOtpRequestModelDto(
+  identifier: json['identifier'] as String,
+  registrationToken: json['registrationToken'] as String?,
+);
 
 Map<String, dynamic> _$ResendOtpRequestModelDtoToJson(
   ResendOtpRequestModelDto instance,
-) => <String, dynamic>{'identifier': instance.identifier};
+) => <String, dynamic>{
+  'identifier': instance.identifier,
+  'registrationToken': ?instance.registrationToken,
+};

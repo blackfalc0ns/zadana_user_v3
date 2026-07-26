@@ -9,6 +9,9 @@ class StorageKeys {
   static const String authToken = 'auth_token';
   static const String accessToken = 'access_token';
   static const String refreshToken = 'refresh_token';
+
+  /// Short-lived JWT used only while a newly registered customer verifies OTP.
+  static const String registrationToken = 'registration_token';
   static const String userId = 'user_id';
   static const String userData = 'user_data';
 

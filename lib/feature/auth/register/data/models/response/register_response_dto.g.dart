@@ -13,6 +13,7 @@ RegisterResponseDto _$RegisterResponseDtoFromJson(Map<String, dynamic> json) =>
           : UserModelRegisterDto.fromJson(json['user'] as Map<String, dynamic>),
       isVerified: json['isVerified'] as bool?,
       message: json['message'] as String?,
+      registrationToken: json['registrationToken'] as String?,
     );
 
 Map<String, dynamic> _$RegisterResponseDtoToJson(
@@ -21,4 +22,5 @@ Map<String, dynamic> _$RegisterResponseDtoToJson(
   'user': instance.user,
   'isVerified': instance.isVerified,
   'message': instance.message,
+  'registrationToken': instance.registrationToken,
 };

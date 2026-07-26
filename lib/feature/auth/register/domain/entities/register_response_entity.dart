@@ -7,6 +7,7 @@ class RegisterResponseEntity {
     required this.email,
     required this.phone,
     required this.role,
+    this.registrationToken,
   });
   final String id;
   final String fullName;
@@ -15,4 +16,5 @@ class RegisterResponseEntity {
   final String role;
   final bool isVerified;
   final String message;
+  final String? registrationToken;
 }
