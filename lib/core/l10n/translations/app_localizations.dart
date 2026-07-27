@@ -3644,6 +3644,12 @@ abstract class AppLocalizations {
   /// **'Fast and secure payment'**
   String get apple_pay_subtitle;
 
+  /// No description provided for @apple_pay_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay is not available with an eligible card on this device. Add a supported card to Wallet or go back and choose another payment method.'**
+  String get apple_pay_unavailable;
+
   /// No description provided for @cash_on_delivery.
   ///
   /// In en, this message translates to:

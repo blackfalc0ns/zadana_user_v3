@@ -43,12 +43,19 @@ class PaymentViewModel extends Cubit<PaymentState> {
   final PlaceOrderUseCase _placeOrderUseCase;
   final GetCustomerAddressesUseCase _getCustomerAddressesUseCase;
 
+  void _emitIfOpen(PaymentState nextState) {
+    if (isClosed) return;
+    super.emit(nextState);
+  }
+
   void initialize({String? vendorId, bool removeUnavailableItems = false}) {
+    if (isClosed) return;
+
     if (state.vendorId == vendorId &&
         state.removeUnavailableItems == removeUnavailableItems) {
       return;
     }
-    emit(
+    _emitIfOpen(
       state.copyWith(
         vendorId: vendorId,
         removeUnavailableItems: removeUnavailableItems,
@@ -62,6 +69,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
     String? vendorBranchId,
     bool removeUnavailableItems = false,
   }) {
+    if (isClosed) return;
+
     if (state.vendorId == vendorId &&
         state.fulfillmentType == fulfillmentType &&
         state.vendorBranchId == vendorBranchId &&
@@ -69,7 +78,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       return;
     }
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         vendorId: vendorId,
         fulfillmentType: fulfillmentType,
@@ -80,6 +89,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
   }
 
   void doIntent(PaymentEvent event) {
+    if (isClosed) return;
+
     switch (event) {
       case PaymentLoadEvent():
       case PaymentRetryEvent():
@@ -106,26 +117,30 @@ class PaymentViewModel extends Cubit<PaymentState> {
       case PaymentPlaceOrderEvent():
         _placeOrder(removeUnavailableItems: event.removeUnavailableItems);
       case PaymentRequestAddressSelectionEvent():
-        emit(state.copyWith(uiEffect: const OpenAddressSelectorEffect()));
+        _emitIfOpen(
+          state.copyWith(uiEffect: const OpenAddressSelectorEffect()),
+        );
       case PaymentHandleAddressSelectionResultEvent():
         _handleAddressSelectionResult(event.result);
       case PaymentHandleAddAddressCompletedEvent():
         _loadCheckoutData();
       case PaymentClearFeedbackEvent():
-        emit(
+        _emitIfOpen(
           state.copyWith(clearActionFailure: true, clearFeedbackMessage: true),
         );
       case PaymentClearPlacedOrderEvent():
-        emit(state.copyWith(clearPlacedOrder: true));
+        _emitIfOpen(state.copyWith(clearPlacedOrder: true));
       case PaymentClearUiEffectEvent():
-        emit(state.copyWith(clearUiEffect: true));
+        _emitIfOpen(state.copyWith(clearUiEffect: true));
     }
   }
 
   Future<void> _loadCheckoutData() async {
+    if (isClosed) return;
+
     final requestedPaymentMethod = state.selectedPaymentMethodCode;
     final requestedPromoCode = state.appliedPromoCode;
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isLoadingSummary: true,
         isLoadingConfig: true,
@@ -142,6 +157,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
     // Wait for any pending cart sync (e.g. guest cart → authenticated cart)
     // to complete before fetching the checkout summary.
     await CheckoutFlowService().awaitCartSyncIfPending();
+    if (isClosed) return;
 
     developer.log('Loading checkout summary', name: 'PaymentViewModel');
 
@@ -151,6 +167,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
     final addressesFuture = _getCustomerAddressesUseCase();
 
     final configResult = await configFuture;
+    if (isClosed) return;
+
     switch (configResult) {
       case ApiSuccessResult():
         final config = configResult.data;
@@ -167,7 +185,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           resolvedType = 'pickup';
         }
 
-        emit(
+        _emitIfOpen(
           state.copyWith(checkoutConfig: config, fulfillmentType: resolvedType),
         );
       case ApiErrorResult():
@@ -179,7 +197,10 @@ class PaymentViewModel extends Cubit<PaymentState> {
       requestedPromoCode: requestedPromoCode,
     );
     final checkoutResult = await checkoutFuture;
+    if (isClosed) return;
+
     final addressesResult = await addressesFuture;
+    if (isClosed) return;
 
     var nextState = state.copyWith(
       isLoadingSummary: false,
@@ -218,10 +239,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
         );
     }
 
-    emit(nextState);
+    _emitIfOpen(nextState);
 
     if (nextState.isPickup) {
       await _loadPickupBranches();
+      if (isClosed) return;
     }
 
     if (checkoutResult case ApiSuccessResult<CheckoutSummaryEntity>()) {
@@ -253,6 +275,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       paymentMethod: state.selectedPaymentMethodCode,
       promoCode: requestedPromoCode,
     );
+    if (isClosed) return result;
 
     if (result case ApiErrorResult<CheckoutSummaryEntity>(
       failure: final failure,
@@ -261,6 +284,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
         // Cart/delivery state can take a moment to settle after the
         // pre-check. Retry this idempotent read once before showing an error.
         await Future<void>.delayed(const Duration(milliseconds: 500));
+        if (isClosed) return result;
+
         result = await _getCheckoutSummaryUseCase(
           vendorId: state.vendorId,
           fulfillmentType: state.fulfillmentType,
@@ -281,7 +306,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
     String? paymentMethod,
     String? promoCode,
   }) async {
-    emit(
+    if (isClosed) return;
+
+    _emitIfOpen(
       state.copyWith(
         isRefreshingSummary: true,
         clearActionFailure: true,
@@ -298,6 +325,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       paymentMethod: paymentMethod ?? state.selectedPaymentMethodCode,
       promoCode: promoCode ?? state.appliedPromoCode,
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult<CheckoutSummaryEntity>():
@@ -313,7 +341,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
             deliveryCheck != null &&
             !deliveryCheck.isDeliverable;
 
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRefreshingSummary: false,
             isChangingFulfillmentType: false,
@@ -336,7 +364,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
       case ApiErrorResult<CheckoutSummaryEntity>():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRefreshingSummary: false,
             isChangingFulfillmentType: false,
@@ -347,12 +375,14 @@ class PaymentViewModel extends Cubit<PaymentState> {
   }
 
   Future<void> _changeFulfillmentType(String fulfillmentType) async {
+    if (isClosed) return;
+
     final normalized = fulfillmentType.trim().toLowerCase();
     if (normalized.isEmpty || normalized == state.fulfillmentType) return;
 
     final previousFulfillmentType = state.fulfillmentType;
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         fulfillmentType: normalized,
         isRefreshingSummary: true,
@@ -367,6 +397,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
       // Request a pickup summary even before a branch is chosen. This clears
       // delivery-only pricing and methods while the branch selector is shown.
       await _refreshSummary(vendorBranchId: state.vendorBranchId);
+      if (isClosed) return;
+
       await _loadPickupBranches(openSelectorIfNeeded: true);
       return;
     }
@@ -382,10 +414,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
       paymentMethod: state.selectedPaymentMethodCode,
       promoCode: state.appliedPromoCode,
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult<CheckoutSummaryEntity>():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRefreshingSummary: false,
             isChangingFulfillmentType: false,
@@ -404,7 +437,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
       case ApiErrorResult<CheckoutSummaryEntity>():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRefreshingSummary: false,
             isChangingFulfillmentType: false,
@@ -417,13 +450,15 @@ class PaymentViewModel extends Cubit<PaymentState> {
   }
 
   Future<void> _loadPickupBranches({bool openSelectorIfNeeded = false}) async {
+    if (isClosed) return;
+
     final targetAddress = _resolvePickupAddress();
     final city = targetAddress?.city.trim();
     final hasAddressId = targetAddress?.id.trim().isNotEmpty == true;
     final hasCity = city != null && city.isNotEmpty;
 
     if (!hasAddressId && !hasCity) {
-      emit(
+      _emitIfOpen(
         state.copyWith(
           isLoadingPickupBranches: false,
           isChangingFulfillmentType: false,
@@ -438,7 +473,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       return;
     }
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isLoadingPickupBranches: true,
         clearPickupBranchesFailure: true,
@@ -451,6 +486,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       addressId: hasAddressId ? targetAddress!.id : null,
       city: hasAddressId ? null : city,
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult<List<PickupBranchOptionEntity>>():
@@ -465,7 +501,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
         if (eligibleBranches.length == 1) {
           final autoSelectedBranch = eligibleBranches.first;
-          emit(
+          _emitIfOpen(
             state.copyWith(
               pickupBranches: allBranches,
               vendorBranchId: autoSelectedBranch.id,
@@ -478,7 +514,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           return;
         }
 
-        emit(
+        _emitIfOpen(
           state.copyWith(
             pickupBranches: allBranches,
             vendorBranchId: selectedStillValid ? selectedBranchId : null,
@@ -494,7 +530,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
       case ApiErrorResult<List<PickupBranchOptionEntity>>():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingPickupBranches: false,
             isChangingFulfillmentType: false,
@@ -532,13 +568,19 @@ class PaymentViewModel extends Cubit<PaymentState> {
       return;
     }
 
-    emit(state.copyWith(uiEffect: const OpenPickupBranchSelectorEffect()));
+    _emitIfOpen(
+      state.copyWith(uiEffect: const OpenPickupBranchSelectorEffect()),
+    );
   }
 
   Future<void> _selectPickupBranch(String branchId) async {
+    if (isClosed) return;
+
     if (branchId.trim().isEmpty || branchId == state.vendorBranchId) return;
 
-    emit(state.copyWith(vendorBranchId: branchId, clearActionFailure: true));
+    _emitIfOpen(
+      state.copyWith(vendorBranchId: branchId, clearActionFailure: true),
+    );
     await _refreshSummary(vendorBranchId: branchId);
   }
 
@@ -555,7 +597,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
     if (isAvailable != true) return;
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         selectedPaymentMethodCode: paymentMethodCode,
         clearActionFailure: true,
@@ -579,10 +621,12 @@ class PaymentViewModel extends Cubit<PaymentState> {
   }
 
   Future<void> _applyPromoCode(String code) async {
+    if (isClosed) return;
+
     final trimmedCode = code.trim();
     if (trimmedCode.isEmpty || state.checkoutSummary == null) return;
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isApplyingPromo: true,
         clearActionFailure: true,
@@ -599,10 +643,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
           : null,
       paymentMethod: state.selectedPaymentMethodCode,
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isApplyingPromo: false,
             appliedPromoCode: result.data.promoCode?.code ?? trimmedCode,
@@ -621,16 +666,18 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
       case ApiErrorResult():
-        emit(
+        _emitIfOpen(
           state.copyWith(isApplyingPromo: false, actionFailure: result.failure),
         );
     }
   }
 
   Future<void> _removePromoCode() async {
+    if (isClosed) return;
+
     if (state.checkoutSummary?.promoCode == null) return;
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isRemovingPromo: true,
         clearActionFailure: true,
@@ -646,10 +693,11 @@ class PaymentViewModel extends Cubit<PaymentState> {
           : null,
       paymentMethod: state.selectedPaymentMethodCode,
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRemovingPromo: false,
             clearAppliedPromoCode: true,
@@ -667,13 +715,15 @@ class PaymentViewModel extends Cubit<PaymentState> {
           ),
         );
       case ApiErrorResult():
-        emit(
+        _emitIfOpen(
           state.copyWith(isRemovingPromo: false, actionFailure: result.failure),
         );
     }
   }
 
   Future<void> _placeOrder({bool removeUnavailableItems = false}) async {
+    if (isClosed) return;
+
     final checkoutSummary = state.checkoutSummary;
     final selectedPaymentMethodCode = state.selectedPaymentMethodCode;
     final selectedAddressId = state.selectedAddressId;
@@ -686,7 +736,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
         (!state.isPickup &&
             (selectedAddressId == null || selectedDeliverySlotId == null)) ||
         (state.isPickup && selectedVendorBranchId == null)) {
-      emit(
+      _emitIfOpen(
         state.copyWith(
           actionFailure: Failure(
             errorMessage: 'Please complete the checkout details first.',
@@ -702,7 +752,9 @@ class PaymentViewModel extends Cubit<PaymentState> {
           checkoutSummary.deliveryCheck?.messageAr.isNotEmpty == true
           ? checkoutSummary.deliveryCheck!.messageAr
           : 'Delivery is not available for the selected address.';
-      emit(state.copyWith(actionFailure: Failure(errorMessage: message)));
+      _emitIfOpen(
+        state.copyWith(actionFailure: Failure(errorMessage: message)),
+      );
       return;
     }
 
@@ -710,7 +762,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
         removeUnavailableItems || state.removeUnavailableItems;
     if (checkoutSummary.cart.requiresUnavailableItemsConfirmation &&
         !shouldRemoveUnavailableItems) {
-      emit(
+      _emitIfOpen(
         state.copyWith(
           uiEffect: ConfirmUnavailableItemsEffect(
             unavailableItemsCount: checkoutSummary.cart.unavailableItemsCount,
@@ -720,7 +772,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
       return;
     }
 
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isPlacingOrder: true,
         clearActionFailure: true,
@@ -741,6 +793,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
         removeUnavailableItems: shouldRemoveUnavailableItems,
       ),
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
@@ -777,7 +830,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
           );
         }
 
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isPlacingOrder: false,
             placedOrder: result.data,
@@ -802,7 +855,7 @@ class PaymentViewModel extends Cubit<PaymentState> {
             result.failure.code == 'INSUFFICIENT_STOCK' ||
             result.failure.code == 'insufficient_stock';
 
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isPlacingOrder: false,
             actionFailure:
@@ -842,18 +895,18 @@ class PaymentViewModel extends Cubit<PaymentState> {
 
   void _handleAddressSelectionResult(String? result) {
     if (result == null) {
-      emit(state.copyWith(clearUiEffect: true));
+      _emitIfOpen(state.copyWith(clearUiEffect: true));
       return;
     }
 
     if (result == CheckoutAddressSelectorBottomSheet.addNewAddressResult) {
-      emit(state.copyWith(uiEffect: const OpenAddAddressEffect()));
+      _emitIfOpen(state.copyWith(uiEffect: const OpenAddAddressEffect()));
       return;
     }
 
-    emit(state.copyWith(clearUiEffect: true));
+    _emitIfOpen(state.copyWith(clearUiEffect: true));
     if (state.isPickup) {
-      emit(
+      _emitIfOpen(
         state.copyWith(
           clearVendorBranchId: true,
           pickupBranches: const [],

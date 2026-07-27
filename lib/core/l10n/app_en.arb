@@ -722,6 +722,7 @@
   "credit_card_subtitle": "Visa, Mastercard, Mada",
   "apple_pay": "Apple Pay",
   "apple_pay_subtitle": "Fast and secure payment",
+  "apple_pay_unavailable": "Apple Pay is not available with an eligible card on this device. Add a supported card to Wallet or go back and choose another payment method.",
   "cash_on_delivery": "Cash on Delivery",
   "cash_on_delivery_subtitle": "Pay cash when order arrives",
   "bank_transfer": "Bank Transfer",

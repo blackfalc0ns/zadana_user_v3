@@ -1879,6 +1879,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get apple_pay_subtitle => 'دفع سريع وآمن';
 
   @override
+  String get apple_pay_unavailable =>
+      'أبل باي غير متاح ببطاقة مؤهلة على هذا الجهاز. أضف بطاقة مدعومة إلى المحفظة أو ارجع واختر طريقة دفع أخرى.';
+
+  @override
   String get cash_on_delivery => 'الدفع وقت الاستلام';
 
   @override

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
-import 'package:pay/pay.dart' show ApplePayButtonType;
+import 'package:pay/pay.dart'
+    show ApplePayButton, ApplePayButtonType, PaymentConfiguration, PaymentItem;
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/core/widgets/app_scaffold.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
@@ -158,12 +161,8 @@ class MoyasarPaymentScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: _usesApplePay
-              ? ApplePay(
+              ? _ApplePayPurchaseButton(
                   config: paymentConfig,
-                  // Apple requires an approved purchase button, not the
-                  // standalone Apple Pay mark used by the previous in-store
-                  // button style.
-                  buttonType: ApplePayButtonType.buy,
                   onPaymentResult: (result) =>
                       _onPaymentResult(context, result),
                 )
@@ -173,6 +172,145 @@ class MoyasarPaymentScreen extends StatelessWidget {
                       _onPaymentResult(context, result),
                 ),
         ),
+      ),
+    );
+  }
+}
+
+/// Uses Apple's native purchase button while keeping Moyasar's token payment
+/// flow. This intentionally avoids Moyasar's `.inStore` fallback, which can
+/// display an Apple Pay mark as the payment action when no eligible card is
+/// available.
+class _ApplePayPurchaseButton extends StatefulWidget {
+  const _ApplePayPurchaseButton({
+    required this.config,
+    required this.onPaymentResult,
+  });
+
+  final PaymentConfig config;
+  final ValueChanged<dynamic> onPaymentResult;
+
+  @override
+  State<_ApplePayPurchaseButton> createState() =>
+      _ApplePayPurchaseButtonState();
+}
+
+class _ApplePayPurchaseButtonState extends State<_ApplePayPurchaseButton> {
+  bool _isProcessing = false;
+
+  PaymentConfiguration _paymentConfiguration() {
+    final applePay = widget.config.applePay!;
+    return PaymentConfiguration.fromJsonString(
+      jsonEncode({
+        'provider': 'apple_pay',
+        'data': {
+          'merchantIdentifier': applePay.merchantId,
+          'displayName': applePay.label,
+          'merchantCapabilities': applePay.merchantCapabilities,
+          'supportedCountries': applePay.supportedCountries,
+          'supportedNetworks': widget.config.supportedNetworks
+              .map((network) => network.toJson())
+              .toList(),
+          'countryCode': 'SA',
+          'currencyCode': widget.config.currency,
+        },
+      }),
+    );
+  }
+
+  Future<void> _submitPayment(Map<String, dynamic> paymentResult) async {
+    if (_isProcessing) return;
+
+    final token = paymentResult['token'];
+    if (token is! String || token.isEmpty) {
+      widget.onPaymentResult(UnprocessableTokenError());
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+
+    final applePay = widget.config.applePay!;
+    final source = ApplePayPaymentRequestSource(
+      token,
+      applePay.manual,
+      applePay.saveCard,
+    );
+    final request = PaymentRequest(widget.config, source);
+    final result = await Moyasar.pay(
+      apiKey: widget.config.publishableApiKey,
+      paymentRequest: request,
+    );
+
+    if (!mounted) return;
+    widget.onPaymentResult(result);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_isProcessing) {
+      return const SizedBox(
+        height: 48,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return ApplePayButton(
+      paymentConfiguration: _paymentConfiguration(),
+      paymentItems: [
+        PaymentItem(
+          label: widget.config.applePay!.label,
+          amount: (widget.config.amount / 100).toStringAsFixed(2),
+        ),
+      ],
+      // `buy` renders Apple's localized "Buy with Apple Pay" PKPaymentButton.
+      type: ApplePayButtonType.buy,
+      width: MediaQuery.sizeOf(context).width - 32,
+      height: 48,
+      onPaymentResult: _submitPayment,
+      onError: widget.onPaymentResult,
+      loadingIndicator: const SizedBox(
+        height: 48,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      childOnError: _ApplePayUnavailableMessage(
+        message: l10n.apple_pay_unavailable,
+      ),
+    );
+  }
+}
+
+class _ApplePayUnavailableMessage extends StatelessWidget {
+  const _ApplePayUnavailableMessage({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.errorContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.account_balance_wallet_outlined,
+            color: colors.onErrorContainer,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(color: colors.onErrorContainer),
+            ),
+          ),
+        ],
       ),
     );
   }

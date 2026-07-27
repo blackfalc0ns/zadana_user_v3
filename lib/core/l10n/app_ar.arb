@@ -617,6 +617,7 @@
   "bank_transfer": "تحويل بنكي",
   "all_categories": "الكل",
   "apple_pay_subtitle": "دفع سريع وآمن",
+  "apple_pay_unavailable": "أبل باي غير متاح ببطاقة مؤهلة على هذا الجهاز. أضف بطاقة مدعومة إلى المحفظة أو ارجع واختر طريقة دفع أخرى.",
   "available": "متوفر",
   "bank_transfer_subtitle": "تحويل مباشر من البنك",
   "cart": "سلة التسوق",
