@@ -129,12 +129,19 @@ class PaymentScreenBody extends StatelessWidget {
                   ),
                 ),
               ),
-            PaymentBottomAction(
-              buttonText: state.isPlacingOrder
-                  ? l10n.processing
-                  : '${l10n.checkout} - ${checkoutSummary.summary.total.toStringAsFixed(2)} $currency',
-              onPressed: state.canPlaceOrder ? onPlaceOrder : null,
-            ),
+            if (Theme.of(context).platform == TargetPlatform.iOS &&
+                state.selectedPaymentMethodCode?.trim().toLowerCase() ==
+                    'apple_pay')
+              ApplePayBottomAction(
+                onPressed: state.canPlaceOrder ? onPlaceOrder : null,
+              )
+            else
+              PaymentBottomAction(
+                buttonText: state.isPlacingOrder
+                    ? l10n.processing
+                    : '${l10n.checkout} - ${checkoutSummary.summary.total.toStringAsFixed(2)} $currency',
+                onPressed: state.canPlaceOrder ? onPlaceOrder : null,
+              ),
           ],
         ),
         if (state.isPlacingOrder)

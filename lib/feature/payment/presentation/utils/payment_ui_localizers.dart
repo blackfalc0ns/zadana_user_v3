@@ -146,10 +146,9 @@ IconData resolvePaymentMethodIcon(String code) {
     case 'card':
       return Icons.credit_card;
     case 'apple_pay':
-      // This icon only identifies Apple Pay in the payment-method selector.
-      // The payment action itself uses Apple's native "Buy with Apple Pay"
-      // button on the following screen.
-      return Icons.apple;
+      // Keep Apple branding out of this tappable method selector. The actual
+      // payment action uses Apple's native "Buy with Apple Pay" button.
+      return Icons.account_balance_wallet_outlined;
     case 'cash':
       return Icons.money;
     case 'bank':

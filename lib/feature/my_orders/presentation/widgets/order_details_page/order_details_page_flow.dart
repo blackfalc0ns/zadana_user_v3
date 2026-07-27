@@ -13,6 +13,7 @@ import 'package:zadana_user_v3/feature/notifications/data/services/notifications
 import 'package:zadana_user_v3/feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callback_result.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_payment_screen.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/services/moyasar_apple_pay_service.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/moyasar_payment_confirmer.dart';
 
 class OrderDetailsPageFlow {
@@ -52,17 +53,43 @@ class OrderDetailsPageFlow {
       return;
     }
 
-    final sdkResult = await Navigator.push<PaymentCallbackResult>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => MoyasarPaymentScreen(
-          config: payment.providerConfig!,
+    final providerConfig = payment.providerConfig!;
+    final PaymentCallbackResult? sdkResult;
+    if (MoyasarApplePayService.isApplePayConfig(providerConfig)) {
+      try {
+        sdkResult = await const MoyasarApplePayService().startPayment(
+          config: providerConfig,
           orderId: targetOrderId,
+        );
+      } on ApplePayUnavailableException {
+        if (!context.mounted) return;
+        CustomSnackbar.showInfo(
+          context: context,
+          message: l10n.apple_pay_unavailable,
+        );
+        return;
+      } catch (_) {
+        if (!context.mounted) return;
+        CustomSnackbar.showError(
+          context: context,
+          message: l10n.error_other_desc,
+        );
+        return;
+      }
+    } else {
+      sdkResult = await Navigator.push<PaymentCallbackResult>(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MoyasarPaymentScreen(
+            config: providerConfig,
+            orderId: targetOrderId,
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     if (!context.mounted) return;
+    if (sdkResult == null) return;
 
     // The payment form has just closed, but the backend still needs to
     // confirm the transaction. Keep the order-details page covered so it
