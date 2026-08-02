@@ -1772,6 +1772,30 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacy_policy;
 
+  /// No description provided for @sign_up_terms_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the '**
+  String get sign_up_terms_prefix;
+
+  /// No description provided for @sign_up_terms_and.
+  ///
+  /// In en, this message translates to:
+  /// **' and the '**
+  String get sign_up_terms_and;
+
+  /// No description provided for @sign_up_terms_suffix.
+  ///
+  /// In en, this message translates to:
+  /// **' of Zadana.'**
+  String get sign_up_terms_suffix;
+
+  /// No description provided for @sign_up_terms_required.
+  ///
+  /// In en, this message translates to:
+  /// **'You must accept the Terms and Privacy Policy to create an account.'**
+  String get sign_up_terms_required;
+
   /// No description provided for @faq.
   ///
   /// In en, this message translates to:

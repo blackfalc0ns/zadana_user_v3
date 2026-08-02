@@ -902,6 +902,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get privacy_policy => 'سياسة الخصوصية';
 
   @override
+  String get sign_up_terms_prefix => 'أوافق على ';
+
+  @override
+  String get sign_up_terms_and => ' و';
+
+  @override
+  String get sign_up_terms_suffix => ' الخاصة بتطبيق زدانا.';
+
+  @override
+  String get sign_up_terms_required =>
+      'يجب الموافقة على الشروط والأحكام وسياسة الخصوصية لإنشاء الحساب.';
+
+  @override
   String get faq => 'الأسئلة الشائعة';
 
   @override

@@ -77,7 +77,6 @@ class _SignUpFormState extends State<SignUpForm> {
   Widget build(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocBuilder<RegisterViewModel, RegisterState>(
       builder: (context, state) {
@@ -99,7 +98,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               const SizedBox(height: Spacing.base),
 
-              FieldLabel(locale.label_email),
+              FieldLabel(locale.label_email_or_phone),
               CustomTextField(
                 controller: _emailController,
                 hint: locale.hint_email,
@@ -116,7 +115,7 @@ class _SignUpFormState extends State<SignUpForm> {
               CustomTextField(
                 controller: _phoneController,
                 hint: locale.hint_phone,
-                validator: (v) => Validations.validatePhoneNumber(context, v),
+                //validator: (v) => Validations.validatePhoneNumber(context, v),
                 prefix: Icon(
                   Icons.phone_outlined,
                   color: color.onSurfaceVariant,
@@ -150,7 +149,6 @@ class _SignUpFormState extends State<SignUpForm> {
               _TermsAcceptanceField(
                 value: _hasAcceptedTerms,
                 showError: _showTermsError,
-                isArabic: isArabic,
                 onChanged: (value) {
                   setState(() {
                     _hasAcceptedTerms = value ?? false;
@@ -181,7 +179,6 @@ class _TermsAcceptanceField extends StatelessWidget {
   const _TermsAcceptanceField({
     required this.value,
     required this.showError,
-    required this.isArabic,
     required this.onChanged,
     required this.onOpenTerms,
     required this.onOpenPrivacy,
@@ -189,13 +186,13 @@ class _TermsAcceptanceField extends StatelessWidget {
 
   final bool value;
   final bool showError;
-  final bool isArabic;
   final ValueChanged<bool?> onChanged;
   final VoidCallback onOpenTerms;
   final VoidCallback onOpenPrivacy;
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.localization;
     final color = context.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,11 +206,11 @@ class _TermsAcceptanceField extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 12),
                 child: Wrap(
                   children: [
-                    Text(isArabic ? 'أوافق على ' : 'I agree to the '),
+                    Text(locale.sign_up_terms_prefix),
                     InkWell(
                       onTap: onOpenTerms,
                       child: Text(
-                        isArabic ? 'الشروط والأحكام' : 'Terms and Conditions',
+                        locale.terms_conditions,
                         style: TextStyle(
                           color: color.primary,
                           decoration: TextDecoration.underline,
@@ -221,11 +218,11 @@ class _TermsAcceptanceField extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(isArabic ? ' و' : ' and the '),
+                    Text(locale.sign_up_terms_and),
                     InkWell(
                       onTap: onOpenPrivacy,
                       child: Text(
-                        isArabic ? 'سياسة الخصوصية' : 'Privacy Policy',
+                        locale.privacy_policy,
                         style: TextStyle(
                           color: color.primary,
                           decoration: TextDecoration.underline,
@@ -233,7 +230,7 @@ class _TermsAcceptanceField extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(isArabic ? ' الخاصة بتطبيق زدانا.' : ' of Zadana.'),
+                    Text(locale.sign_up_terms_suffix),
                   ],
                 ),
               ),
@@ -244,9 +241,7 @@ class _TermsAcceptanceField extends StatelessWidget {
           Padding(
             padding: const EdgeInsetsDirectional.only(start: 12),
             child: Text(
-              isArabic
-                  ? 'يجب الموافقة على الشروط والأحكام وسياسة الخصوصية لإنشاء الحساب.'
-                  : 'You must accept the Terms and Privacy Policy to create an account.',
+              locale.sign_up_terms_required,
               style: TextStyle(color: color.error, fontSize: 12),
             ),
           ),

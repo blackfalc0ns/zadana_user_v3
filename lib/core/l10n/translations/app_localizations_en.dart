@@ -924,6 +924,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_policy => 'Privacy Policy';
 
   @override
+  String get sign_up_terms_prefix => 'I agree to the ';
+
+  @override
+  String get sign_up_terms_and => ' and the ';
+
+  @override
+  String get sign_up_terms_suffix => ' of Zadana.';
+
+  @override
+  String get sign_up_terms_required =>
+      'You must accept the Terms and Privacy Policy to create an account.';
+
+  @override
   String get faq => 'FAQ';
 
   @override
