@@ -1,7 +1,11 @@
+import 'dart:developer' as developer;
+
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart' as pretty_dio;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zadana_user_v3/core/services/captcha_service.dart';
 import 'package:zadana_user_v3/core/services/device_id_interceptor.dart';
@@ -74,6 +78,11 @@ abstract class ExternalModules {
         ),
       ),
     );
+    if (kDebugMode) {
+      dio.interceptors.add(
+        pretty_dio.PrettyDioLogger(requestBody: true, maxWidth: 120),
+      );
+    }
     dio.interceptors.add(retryInterceptor);
 
     // Temporary: log the real error behind DioExceptionType.unknown
@@ -81,12 +90,14 @@ abstract class ExternalModules {
       InterceptorsWrapper(
         onError: (error, handler) {
           if (error.type == DioExceptionType.unknown) {
-            // ignore: avoid_print
-            print('⚠️ DIO UNKNOWN ERROR ⚠️');
-            print('URL: ${error.requestOptions.uri}');
-            print('Inner error: ${error.error}');
-            print('Inner error type: ${error.error.runtimeType}');
-            print('Stack: ${error.stackTrace}');
+            developer.log(
+              'DIO UNKNOWN ERROR\n'
+              'URL: ${error.requestOptions.uri}\n'
+              'Inner error: ${error.error}\n'
+              'Inner error type: ${error.error.runtimeType}',
+              name: 'DioUnknownError',
+              stackTrace: error.stackTrace,
+            );
           }
           handler.next(error);
         },

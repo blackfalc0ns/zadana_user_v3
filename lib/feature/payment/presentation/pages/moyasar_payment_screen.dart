@@ -9,6 +9,7 @@ import 'package:zadana_user_v3/core/widgets/app_scaffold.dart';
 import 'package:zadana_user_v3/core/widgets/custom_app_bar.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callback_result.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/apple_pay_token_encoder.dart';
 
 /// Safely extracts the `message` field from the payment source object.
 /// The source is typed as `dynamic` in the Moyasar SDK.
@@ -221,8 +222,8 @@ class _ApplePayPurchaseButtonState extends State<_ApplePayPurchaseButton> {
   Future<void> _submitPayment(Map<String, dynamic> paymentResult) async {
     if (_isProcessing) return;
 
-    final token = paymentResult['token'];
-    if (token is! String || token.isEmpty) {
+    final token = encodeApplePayToken(paymentResult['token']);
+    if (token == null) {
       widget.onPaymentResult(UnprocessableTokenError());
       return;
     }

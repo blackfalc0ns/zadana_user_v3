@@ -15,12 +15,15 @@ class ConfirmPaymentResponseDto {
   factory ConfirmPaymentResponseDto.fromJson(Map<String, dynamic> json) {
     return ConfirmPaymentResponseDto(
       message: resolveLocalizedApiMessage(json),
-      paymentId: json['paymentId']?.toString() ?? '',
-      paymentStatus: json['paymentStatus']?.toString() ?? '',
-      userId: json['userId']?.toString() ?? '',
-      orderId: json['orderId']?.toString() ?? '',
-      orderStatus: json['orderStatus']?.toString() ?? '',
-      alreadyConfirmed: json['alreadyConfirmed'] == true,
+      paymentId: (json['paymentId'] ?? json['payment_id'])?.toString() ?? '',
+      paymentStatus:
+          (json['paymentStatus'] ?? json['payment_status'])?.toString() ?? '',
+      userId: (json['userId'] ?? json['user_id'])?.toString() ?? '',
+      orderId: (json['orderId'] ?? json['order_id'])?.toString() ?? '',
+      orderStatus:
+          (json['orderStatus'] ?? json['order_status'])?.toString() ?? '',
+      alreadyConfirmed:
+          json['alreadyConfirmed'] == true || json['already_confirmed'] == true,
     );
   }
 
