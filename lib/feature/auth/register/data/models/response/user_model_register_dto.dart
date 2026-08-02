@@ -8,7 +8,7 @@ class UserModelRegisterDto {
     required this.id,
     required this.fullName,
     required this.email,
-    required this.phone,
+    this.phone,
     required this.role,
   });
 
@@ -17,7 +17,7 @@ class UserModelRegisterDto {
   final String id;
   final String fullName;
   final String email;
-  final String phone;
+  final String? phone;
   final String role;
 
   Map<String, dynamic> toJson() => _$UserModelRegisterDtoToJson(this);

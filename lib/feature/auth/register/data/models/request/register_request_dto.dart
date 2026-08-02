@@ -7,7 +7,7 @@ class RegisterRequestDto {
   RegisterRequestDto({
     required this.fullName,
     required this.email,
-    required this.phone,
+    this.phone,
     required this.password,
     required this.addressLine,
     required this.label,
@@ -24,7 +24,8 @@ class RegisterRequestDto {
       _$RegisterRequestDtoFromJson(json);
   final String fullName;
   final String email;
-  final String phone;
+  @JsonKey(includeIfNull: false)
+  final String? phone;
   final String password;
   final String addressLine;
   final String label;

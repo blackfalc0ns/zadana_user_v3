@@ -80,6 +80,12 @@ class ShowCartItemsUnavailableAtBranchEffect extends PaymentUiEffect {
   final String message;
 }
 
+class OpenProfileDetailsForPhoneEffect extends PaymentUiEffect {
+  const OpenProfileDetailsForPhoneEffect(this.message);
+
+  final String message;
+}
+
 class ConfirmUnavailableItemsEffect extends PaymentUiEffect {
   const ConfirmUnavailableItemsEffect({required this.unavailableItemsCount});
 

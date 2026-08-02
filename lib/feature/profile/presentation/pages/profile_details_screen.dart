@@ -173,6 +173,10 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   Widget build(BuildContext context) {
     final locale = context.localization;
     final colorScheme = context.colorScheme;
+    final profileHintStyle = TextStyle(
+      color: Colors.grey.shade400,
+      fontSize: 14,
+    );
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -249,6 +253,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                               AppTextField(
                                 controller: _nameController,
                                 hint: locale.hint_full_name,
+                                hintStyle: profileHintStyle,
                                 keyboardType: TextInputType.name,
                                 validator: (v) =>
                                     Validations.validateName(context, v),
@@ -262,6 +267,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                               AppTextField(
                                 controller: _emailController,
                                 hint: locale.hint_email,
+                                hintStyle: profileHintStyle,
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (v) =>
                                     Validations.validateEmail(context, v),
@@ -275,6 +281,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                               AppPhoneField(
                                 controller: _phoneController,
                                 hint: locale.hint_phone,
+                                hintStyle: profileHintStyle,
                                 validator: (v) =>
                                     Validations.validatePhoneNumber(context, v),
                               ),

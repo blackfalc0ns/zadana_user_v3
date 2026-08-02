@@ -12,7 +12,7 @@ ProfileResponseModelDto _$ProfileResponseModelDtoFromJson(
   id: json['id'] as String,
   fullName: json['fullName'] as String,
   email: json['email'] as String,
-  phone: json['phone'] as String,
+  phone: json['phone'] as String?,
   role: json['role'] as String,
   favoritesCount: (json['favoritesCount'] as num?)?.toInt() ?? 0,
   profilePhotoUrl: json['profilePhotoUrl'] as String?,

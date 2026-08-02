@@ -111,7 +111,10 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               const SizedBox(height: Spacing.base),
 
-              FieldLabel(locale.label_phone),
+              FieldLabel(
+                locale.label_phone,
+                secondaryText: locale.label_optional_parenthetical,
+              ),
               CustomTextField(
                 controller: _phoneController,
                 hint: locale.hint_phone,

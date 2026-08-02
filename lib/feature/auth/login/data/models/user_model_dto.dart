@@ -11,7 +11,7 @@ class UserModelDto {
     required this.id,
     required this.fullName,
     required this.email,
-    required this.phone,
+    this.phone,
     required this.role,
     this.profilePhotoUrl,
   });
@@ -21,7 +21,7 @@ class UserModelDto {
   final String id;
   final String fullName;
   final String email;
-  final String phone;
+  final String? phone;
   final String role;
   final String? profilePhotoUrl;
 
@@ -33,7 +33,7 @@ class UserModelDto {
       id: id,
       fullName: fullName,
       email: email,
-      phone: phone,
+      phone: phone ?? '',
       role: role,
       profilePhotoUrl: profilePhotoUrl,
     );

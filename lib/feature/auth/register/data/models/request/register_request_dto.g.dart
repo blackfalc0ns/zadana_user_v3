@@ -10,7 +10,7 @@ RegisterRequestDto _$RegisterRequestDtoFromJson(Map<String, dynamic> json) =>
     RegisterRequestDto(
       fullName: json['fullName'] as String,
       email: json['email'] as String,
-      phone: json['phone'] as String,
+      phone: json['phone'] as String?,
       password: json['password'] as String,
       addressLine: json['addressLine'] as String,
       label: json['label'] as String,
@@ -27,7 +27,7 @@ Map<String, dynamic> _$RegisterRequestDtoToJson(RegisterRequestDto instance) =>
     <String, dynamic>{
       'fullName': instance.fullName,
       'email': instance.email,
-      'phone': instance.phone,
+      if (instance.phone case final value?) 'phone': value,
       'password': instance.password,
       'addressLine': instance.addressLine,
       'label': instance.label,

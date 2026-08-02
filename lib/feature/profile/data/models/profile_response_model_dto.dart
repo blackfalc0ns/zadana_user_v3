@@ -11,7 +11,7 @@ class ProfileResponseModelDto {
     required this.id,
     required this.fullName,
     required this.email,
-    required this.phone,
+    this.phone,
     required this.role,
     this.favoritesCount = 0,
     this.profilePhotoUrl,
@@ -22,7 +22,7 @@ class ProfileResponseModelDto {
   final String id;
   final String fullName;
   final String email;
-  final String phone;
+  final String? phone;
   final String role;
   @JsonKey(defaultValue: 0)
   final int favoritesCount;
@@ -36,7 +36,7 @@ class ProfileResponseModelDto {
       id: id,
       fullName: fullName,
       email: email,
-      phone: phone,
+      phone: phone ?? '',
       role: role,
       favoritesCount: favoritesCount,
       profilePhotoUrl: profilePhotoUrl,

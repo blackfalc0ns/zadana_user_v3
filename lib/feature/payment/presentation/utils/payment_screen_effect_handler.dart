@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
+import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/core/widgets/custom_snackbar.dart';
 import 'package:zadana_user_v3/feature/cart/presentation/widget/cart_dialogs.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart';
@@ -13,7 +14,10 @@ import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_paymen
 import 'package:zadana_user_v3/feature/payment/presentation/services/moyasar_apple_pay_service.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/moyasar_payment_confirmer.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_address_selector_bottom_sheet.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_phone_required_dialog.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/pickup_branch_selector_bottom_sheet.dart';
+import 'package:zadana_user_v3/feature/profile/domain/entities/profile_response_entity.dart';
+import 'package:zadana_user_v3/feature/profile/domain/usecase/profile_usecase.dart';
 
 class PaymentScreenEffectHandler {
   const PaymentScreenEffectHandler._();
@@ -242,6 +246,36 @@ class PaymentScreenEffectHandler {
       );
       if (!context.mounted || result == null) return;
       viewModel.doIntent(PaymentSelectPickupBranchEvent(result));
+      return;
+    }
+
+    if (effect is OpenProfileDetailsForPhoneEffect) {
+      viewModel.doIntent(const PaymentClearUiEffectEvent());
+      final shouldOpenProfile = await showCheckoutPhoneRequiredDialog(
+        context: context,
+        message: effect.message,
+      );
+      if (!context.mounted || !shouldOpenProfile) return;
+
+      final profileResult = await getIt<ProfileUseCase>().call();
+      if (!context.mounted) return;
+
+      switch (profileResult) {
+        case ApiSuccessResult<ProfileResponseEntity>():
+          final updatedProfile = await Navigator.of(
+            context,
+          ).pushNamed(AppRoutes.profileDetails, arguments: profileResult.data);
+          if (!context.mounted) return;
+          if (updatedProfile is ProfileResponseEntity &&
+              updatedProfile.phone.trim().isNotEmpty) {
+            viewModel.doIntent(const PaymentRetryEvent());
+          }
+        case ApiErrorResult<ProfileResponseEntity>():
+          CustomSnackbar.showError(
+            context: context,
+            message: profileResult.failure.errorMessage,
+          );
+      }
       return;
     }
 

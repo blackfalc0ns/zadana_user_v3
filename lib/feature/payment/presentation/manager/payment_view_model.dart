@@ -854,16 +854,19 @@ class PaymentViewModel extends Cubit<PaymentState> {
         final insufficientStock =
             result.failure.code == 'INSUFFICIENT_STOCK' ||
             result.failure.code == 'insufficient_stock';
+        final isCustomerPhoneRequired =
+            result.failure.code == 'CUSTOMER_PHONE_REQUIRED' ||
+            result.failure.code == 'customer_phone_required';
+        final isHandledUiError =
+            requiresUnavailableItemsConfirmation ||
+            isCartItemsUnavailable ||
+            isCustomerPhoneRequired;
 
         _emitIfOpen(
           state.copyWith(
             isPlacingOrder: false,
-            actionFailure:
-                requiresUnavailableItemsConfirmation || isCartItemsUnavailable
-                ? null
-                : result.failure,
-            clearActionFailure:
-                requiresUnavailableItemsConfirmation || isCartItemsUnavailable,
+            actionFailure: isHandledUiError ? null : result.failure,
+            clearActionFailure: isHandledUiError,
             uiEffect: requiresUnavailableItemsConfirmation
                 ? ConfirmUnavailableItemsEffect(
                     unavailableItemsCount:
@@ -873,6 +876,8 @@ class PaymentViewModel extends Cubit<PaymentState> {
                 ? ShowCartItemsUnavailableAtBranchEffect(
                     result.failure.errorMessage,
                   )
+                : isCustomerPhoneRequired
+                ? OpenProfileDetailsForPhoneEffect(result.failure.errorMessage)
                 : null,
           ),
         );

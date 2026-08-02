@@ -10,7 +10,7 @@ UserModelDto _$UserModelDtoFromJson(Map<String, dynamic> json) => UserModelDto(
   id: json['id'] as String,
   fullName: json['fullName'] as String,
   email: json['email'] as String,
-  phone: json['phone'] as String,
+  phone: json['phone'] as String?,
   role: json['role'] as String,
   profilePhotoUrl: json['profilePhotoUrl'] as String?,
 );

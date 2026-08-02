@@ -25,7 +25,7 @@ extension UserModelMapper on UserModelDto {
       id: id,
       fullName: fullName,
       email: email,
-      phone: phone,
+      phone: phone ?? '',
       role: role,
       profilePhotoUrl: profilePhotoUrl,
     );

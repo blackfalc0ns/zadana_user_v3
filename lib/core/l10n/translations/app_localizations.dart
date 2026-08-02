@@ -836,6 +836,18 @@ abstract class AppLocalizations {
   /// **'Phone'**
   String get label_phone;
 
+  /// No description provided for @label_phone_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (optional)'**
+  String get label_phone_optional;
+
+  /// No description provided for @label_optional_parenthetical.
+  ///
+  /// In en, this message translates to:
+  /// **'(optional)'**
+  String get label_optional_parenthetical;
+
   /// No description provided for @label_password.
   ///
   /// In en, this message translates to:
@@ -4789,6 +4801,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update'**
   String get profile_update_action;
+
+  /// No description provided for @checkout_add_phone_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Add phone number'**
+  String get checkout_add_phone_action;
 
   /// No description provided for @pickup_branch_title.
   ///

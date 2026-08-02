@@ -398,6 +398,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get label_phone => 'رقم الجوال';
 
   @override
+  String get label_phone_optional => 'رقم الجوال (اختياري)';
+
+  @override
+  String get label_optional_parenthetical => '(اختياري)';
+
+  @override
   String get label_password => 'كلمة المرور';
 
   @override
@@ -2499,6 +2505,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profile_update_action => 'تحديث';
+
+  @override
+  String get checkout_add_phone_action => 'إضافة الرقم';
 
   @override
   String get pickup_branch_title => 'فرع الاستلام';

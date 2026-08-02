@@ -417,6 +417,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get label_phone => 'Phone';
 
   @override
+  String get label_phone_optional => 'Phone (optional)';
+
+  @override
+  String get label_optional_parenthetical => '(optional)';
+
+  @override
   String get label_password => 'Password';
 
   @override
@@ -2554,6 +2560,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_update_action => 'Update';
+
+  @override
+  String get checkout_add_phone_action => 'Add phone number';
 
   @override
   String get pickup_branch_title => 'Pickup branch';

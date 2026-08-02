@@ -12,7 +12,7 @@ UserModelRegisterDto _$UserModelRegisterDtoFromJson(
   id: json['id'] as String,
   fullName: json['fullName'] as String,
   email: json['email'] as String,
-  phone: json['phone'] as String,
+  phone: json['phone'] as String?,
   role: json['role'] as String,
 );
 

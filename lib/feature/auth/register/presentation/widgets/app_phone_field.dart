@@ -7,11 +7,13 @@ class AppPhoneField extends StatelessWidget {
     super.key,
     required this.controller,
     this.hint,
+    this.hintStyle,
     this.validator,
   });
 
   final TextEditingController controller;
   final String? hint;
+  final TextStyle? hintStyle;
   final String? Function(String?)? validator;
 
   @override
@@ -22,6 +24,7 @@ class AppPhoneField extends StatelessWidget {
     return AppTextField(
       controller: controller,
       hint: hint ?? locale.hint_phone,
+      hintStyle: hintStyle,
       keyboardType: TextInputType.phone,
       validator: validator,
       prefixIcon: Icon(Icons.phone, color: color.onSurfaceVariant),

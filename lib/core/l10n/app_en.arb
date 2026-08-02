@@ -134,6 +134,8 @@
 "label_full_name"      : "Full Name",
 "label_email"          : "Email",
 "label_phone"          : "Phone",
+"label_phone_optional" : "Phone (optional)",
+"label_optional_parenthetical" : "(optional)",
 "label_password"       : "Password",
 
 
@@ -986,6 +988,7 @@
   "profile_photo_edit_tooltip": "Edit profile photo",
   "profile_updated": "Profile updated successfully",
   "profile_update_action": "Update"
+  ,"checkout_add_phone_action": "Add phone number"
   ,"pickup_branch_title": "Pickup branch"
   ,"pickup_code_title": "Pickup code"
   ,"pickup_code_instruction": "Show this code to the vendor when collecting your order."

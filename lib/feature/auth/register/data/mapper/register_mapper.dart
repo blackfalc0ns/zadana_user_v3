@@ -5,10 +5,11 @@ import 'package:zadana_user_v3/feature/auth/register/domain/entities/register_re
 
 class RegisterMapper {
   static RegisterRequestDto toDto(RegisterRequestEntity entity) {
+    final phone = entity.phone.trim();
     return RegisterRequestDto(
       fullName: entity.fullName,
       email: entity.email,
-      phone: entity.phone,
+      phone: phone.isEmpty ? null : phone,
       password: entity.password,
       addressLine: entity.addressLine,
       label: entity.label,
