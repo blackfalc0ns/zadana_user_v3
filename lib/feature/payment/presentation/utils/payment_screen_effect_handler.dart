@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_stat
 import 'package:zadana_user_v3/feature/payment/presentation/manager/payment_view_model.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callback_result.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_payment_screen.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/services/moyasar_apple_pay_service.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/moyasar_payment_confirmer.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/checkout_address_selector_bottom_sheet.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/pickup_branch_selector_bottom_sheet.dart';
@@ -246,19 +247,46 @@ class PaymentScreenEffectHandler {
 
     if (effect is OpenMoyasarPaymentEffect) {
       final placedOrderId = state.placedOrder?.order.id;
+      final orderId = effect.orderId ?? placedOrderId;
       viewModel.doIntent(const PaymentClearPlacedOrderEvent());
       viewModel.doIntent(const PaymentClearUiEffectEvent());
-      final sdkResult = await Navigator.push<PaymentCallbackResult>(
-        context,
-        MaterialPageRoute(
-          builder: (_) => MoyasarPaymentScreen(
+      final PaymentCallbackResult? sdkResult;
+
+      if (MoyasarApplePayService.isApplePayConfig(effect.providerConfig)) {
+        try {
+          sdkResult = await const MoyasarApplePayService().startPayment(
             config: effect.providerConfig,
-            orderId: effect.orderId ?? placedOrderId,
+            orderId: orderId,
+          );
+        } on ApplePayUnavailableException {
+          if (!context.mounted) return;
+          CustomSnackbar.showInfo(
+            context: context,
+            message: l10n.apple_pay_unavailable,
+          );
+          return;
+        } catch (_) {
+          if (!context.mounted) return;
+          CustomSnackbar.showError(
+            context: context,
+            message: l10n.error_other_desc,
+          );
+          return;
+        }
+      } else {
+        sdkResult = await Navigator.push<PaymentCallbackResult>(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MoyasarPaymentScreen(
+              config: effect.providerConfig,
+              orderId: orderId,
+            ),
           ),
-        ),
-      );
+        );
+      }
 
       if (!context.mounted) return;
+      if (sdkResult == null) return;
 
       // Show loading overlay while confirming payment with backend.
       _showConfirmingOverlay(context);
@@ -280,7 +308,7 @@ class PaymentScreenEffectHandler {
         result: paymentResult,
         fallbackErrorMessage: l10n.error_other_desc,
         pendingMessage: l10n.order_pending,
-        fallbackOrderId: placedOrderId,
+        fallbackOrderId: orderId,
       );
       return;
     }

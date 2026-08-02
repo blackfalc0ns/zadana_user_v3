@@ -30,9 +30,14 @@ class CartViewModel extends Cubit<CartState> {
   final RemoveCartItemUseCase _removeCartItemUseCase;
   final UpdateCartItemQuantityUseCase _updateCartItemQuantityUseCase;
 
-  static const int _limit = 20;
+  void _emitIfOpen(CartState nextState) {
+    if (isClosed) return;
+    super.emit(nextState);
+  }
 
   void doIntent(CartEvent event) {
+    if (isClosed) return;
+
     switch (event) {
       case CartLoadVendorsEvent():
       case CartRetryVendorsEvent():
@@ -55,7 +60,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   void clearCartFeedback() {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         clearClearCartSuccessMessage: true,
         clearClearCartErrorMessage: true,
@@ -64,7 +69,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   void clearRemoveItemFeedback() {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         clearRemoveItemSuccessMessage: true,
         clearRemoveItemErrorMessage: true,
@@ -74,7 +79,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   void clearUpdateQuantityFeedback() {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         clearUpdateQuantityErrorMessage: true,
         clearUpdatedQuantityItemId: true,
@@ -83,7 +88,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   void _resetAfterCheckout() {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         vendors: const [],
         items: const [],
@@ -116,7 +121,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   Future<void> _loadVendors() async {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isLoadingVendors: true,
         isVendorsSuccess: false,
@@ -129,15 +134,13 @@ class CartViewModel extends Cubit<CartState> {
 
     developer.log('Loading cart vendors offset=0', name: 'CartViewModel');
 
-    final result = await _getCartVendorsUseCase.call(
-      limit: _limit,
-      offset: 0,
-    );
+    final result = await _getCartVendorsUseCase.call();
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
         developer.log('Cart vendors loaded', name: 'CartViewModel');
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingVendors: false,
             isVendorsSuccess: true,
@@ -153,7 +156,7 @@ class CartViewModel extends Cubit<CartState> {
           'Cart vendors failed: ${result.failure.errorMessage}',
           name: 'CartViewModel',
         );
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingVendors: false,
             isVendorsSuccess: false,
@@ -165,7 +168,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   Future<void> _loadItems(String? vendorId) async {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isLoadingItems: true,
         isItemsSuccess: false,
@@ -178,16 +181,13 @@ class CartViewModel extends Cubit<CartState> {
 
     developer.log('Loading cart items offset=0', name: 'CartViewModel');
 
-    final result = await _getCartUseCase.call(
-      vendorId: vendorId,
-      limit: _limit,
-      offset: 0,
-    );
+    final result = await _getCartUseCase.call(vendorId: vendorId);
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
         developer.log('Cart items loaded', name: 'CartViewModel');
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingItems: false,
             isItemsSuccess: true,
@@ -205,7 +205,7 @@ class CartViewModel extends Cubit<CartState> {
           'Cart items failed: ${result.failure.errorMessage}',
           name: 'CartViewModel',
         );
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingItems: false,
             isItemsSuccess: false,
@@ -217,26 +217,33 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   Future<void> _loadMoreItems(String? vendorId) async {
-    if (state.isLoadingItems || state.isLoadingMoreItems || !state.hasMoreItems) {
+    if (state.isLoadingItems ||
+        state.isLoadingMoreItems ||
+        !state.hasMoreItems) {
       return;
     }
 
     final nextOffset = state.currentOffset;
 
-    emit(state.copyWith(isLoadingMoreItems: true, clearItemsFailure: true));
+    _emitIfOpen(
+      state.copyWith(isLoadingMoreItems: true, clearItemsFailure: true),
+    );
 
-    developer.log('Loading cart items offset=$nextOffset', name: 'CartViewModel');
+    developer.log(
+      'Loading cart items offset=$nextOffset',
+      name: 'CartViewModel',
+    );
 
     final result = await _getCartUseCase.call(
       vendorId: vendorId,
-      limit: _limit,
       offset: nextOffset,
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
         final allItems = [...state.items, ...result.data.items];
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingMoreItems: false,
             items: allItems,
@@ -247,7 +254,7 @@ class CartViewModel extends Cubit<CartState> {
           ),
         );
       case ApiErrorResult():
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isLoadingMoreItems: false,
             itemsErrorMessage: result.failure.code,
@@ -258,7 +265,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   Future<void> _clearCart() async {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isClearingCart: true,
         clearClearCartSuccessMessage: true,
@@ -269,11 +276,12 @@ class CartViewModel extends Cubit<CartState> {
     developer.log('Clearing cart', name: 'CartViewModel');
 
     final result = await _clearCartUseCase.call();
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
         developer.log('Cart cleared', name: 'CartViewModel');
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isClearingCart: false,
             items: const [],
@@ -291,7 +299,7 @@ class CartViewModel extends Cubit<CartState> {
           'Clear cart failed: ${result.failure.errorMessage}',
           name: 'CartViewModel',
         );
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isClearingCart: false,
             clearCartErrorMessage: result.failure.code,
@@ -302,7 +310,7 @@ class CartViewModel extends Cubit<CartState> {
   }
 
   Future<void> _removeItem(CartItemModel item) async {
-    emit(
+    _emitIfOpen(
       state.copyWith(
         isRemovingItem: true,
         clearRemoveItemSuccessMessage: true,
@@ -314,12 +322,13 @@ class CartViewModel extends Cubit<CartState> {
     developer.log('Removing cart item: ${item.id}', name: 'CartViewModel');
 
     final result = await _removeCartItemUseCase.call(item.id);
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
         final updatedItems = state.items.where((e) => e.id != item.id).toList();
         developer.log('Cart item removed: ${item.id}', name: 'CartViewModel');
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRemovingItem: false,
             items: updatedItems,
@@ -334,7 +343,7 @@ class CartViewModel extends Cubit<CartState> {
           'Remove cart item failed: ${result.failure.errorMessage}',
           name: 'CartViewModel',
         );
-        emit(
+        _emitIfOpen(
           state.copyWith(
             isRemovingItem: false,
             removeItemErrorMessage: result.failure.code,
@@ -356,6 +365,7 @@ class CartViewModel extends Cubit<CartState> {
       vendorId: event.vendorId,
       request: UpdateCartItemQuantityRequestEntity(quantity: event.quantity),
     );
+    if (isClosed) return;
 
     switch (result) {
       case ApiSuccessResult():
@@ -365,7 +375,7 @@ class CartViewModel extends Cubit<CartState> {
                   item.id == result.data.item.id ? result.data.item : item,
             )
             .toList();
-        emit(
+        _emitIfOpen(
           state.copyWith(
             items: updatedItems,
             summary: result.data.summary,
@@ -381,7 +391,7 @@ class CartViewModel extends Cubit<CartState> {
                   : item,
             )
             .toList();
-        emit(
+        _emitIfOpen(
           state.copyWith(
             items: revertedItems,
             updateQuantityErrorMessage: result.failure.code,

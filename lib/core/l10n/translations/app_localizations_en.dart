@@ -1930,6 +1930,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apple_pay_subtitle => 'Fast and secure payment';
 
   @override
+  String get apple_pay_unavailable =>
+      'Apple Pay is not available with an eligible card on this device. Add a supported card to Wallet or go back and choose another payment method.';
+
+  @override
   String get cash_on_delivery => 'Cash on Delivery';
 
   @override
