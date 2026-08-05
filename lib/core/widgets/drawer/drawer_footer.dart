@@ -28,10 +28,16 @@ class _DrawerFooterState extends State<DrawerFooter> {
   Widget build(BuildContext context) {
     final locale = context.localization;
     final color = context.colorScheme;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom + Spacing.md;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.base),
+      padding: EdgeInsets.fromLTRB(
+        Spacing.base,
+        0,
+        Spacing.base,
+        bottomPadding,
+      ),
       decoration: BoxDecoration(
         color: color.surface,
         border: Border(
@@ -90,8 +96,6 @@ class _DrawerFooterState extends State<DrawerFooter> {
               );
             },
           ),
-          FooterInfoTile(onTap: () => showDeveloperDialog(context)),
-          const SizedBox(height: Spacing.xss),
         ],
       ),
     );
