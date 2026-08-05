@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:zadana_user_v3/core/network/api_results.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/confirm_payment_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/domain/usecase/confirm_moyasar_payment_usecase.dart';
@@ -22,24 +24,37 @@ class MoyasarPaymentConfirmer {
 
   /// Confirms the payment with the backend and returns an updated
   /// [PaymentCallbackResult] reflecting the server's verdict.
-  ///
-  /// If the SDK result has no `paymentId`, or if the confirm call fails,
-  /// falls back to the original SDK result.
   Future<PaymentCallbackResult?> confirmAndResolve(
     PaymentCallbackResult? sdkResult,
   ) async {
     if (sdkResult == null) return null;
 
-    final moyasarPaymentId = sdkResult['paymentId'];
+    final moyasarPaymentId = sdkResult['paymentId']?.trim();
 
-    // If SDK didn't return a Moyasar payment ID (e.g. user cancelled before
-    // the form submitted), we can't confirm — return the SDK result as-is.
     if (moyasarPaymentId == null || moyasarPaymentId.isEmpty) {
-      return sdkResult;
+      final sdkStatus = sdkResult['status']?.trim().toLowerCase();
+      if (sdkStatus != 'success') return sdkResult;
+
+      // A successful SDK callback without a provider ID cannot be verified.
+      // Never promote it to a paid order.
+      developer.log(
+        'SDK reported success without a Moyasar payment ID; '
+        'backend confirmation was not attempted.',
+        name: 'MoyasarPaymentConfirmer',
+        level: 1000,
+      );
+      return <String, String?>{
+        ...sdkResult,
+        'source': 'moyasar_confirm',
+        'status': 'pending',
+      };
     }
 
-    // If the SDK already reports failure, still try to confirm in case the
-    // payment actually went through (3DS completed but SDK reported error).
+    developer.log(
+      'Confirming Moyasar payment ID ${_maskedId(moyasarPaymentId)} '
+      'with the backend.',
+      name: 'MoyasarPaymentConfirmer',
+    );
     final confirmResult = await _confirmUseCase(moyasarPaymentId);
 
     switch (confirmResult) {
@@ -53,6 +68,13 @@ class MoyasarPaymentConfirmer {
         } else {
           resolvedStatus = 'pending';
         }
+        developer.log(
+          'Backend confirmation completed: '
+          'paymentStatus=${entity.paymentStatus}, '
+          'orderStatus=${entity.orderStatus}, '
+          'resolvedStatus=$resolvedStatus.',
+          name: 'MoyasarPaymentConfirmer',
+        );
         return <String, String?>{
           'source': 'moyasar_confirm',
           'status': resolvedStatus,
@@ -63,20 +85,28 @@ class MoyasarPaymentConfirmer {
           'message': entity.message,
         };
       case ApiErrorResult<ConfirmPaymentResponseEntity>():
-        if (confirmResult.failure.code == 'ORDER_PAYMENT_RESERVATION_EXPIRED' ||
-            confirmResult.failure.code == 'order_payment_reservation_expired') {
-          return <String, String?>{
-            'source': 'moyasar_confirm',
-            'status': 'failed',
-            'paymentId': moyasarPaymentId,
-            'message':
-                'Order reservation expired. Please start checkout again.',
-          };
-        }
-        // Confirm failed (network error, server error, etc.).
-        // Do NOT blindly trust the SDK status — the backend is authoritative.
-        // Mark as pending so the user doesn't see a false success.
-        return sdkResult;
+        final failure = confirmResult.failure;
+        final normalizedCode = failure.code.trim().toLowerCase();
+        final isReservationExpired =
+            normalizedCode == 'order_payment_reservation_expired';
+        developer.log(
+          'Backend confirmation failed: '
+          'code=${failure.code}, message=${failure.errorMessage}.',
+          name: 'MoyasarPaymentConfirmer',
+          level: 1000,
+        );
+        return <String, String?>{
+          'source': 'moyasar_confirm',
+          'status': isReservationExpired ? 'failed' : 'pending',
+          'paymentId': moyasarPaymentId,
+          'orderId': sdkResult['orderId'],
+          'message': failure.errorMessage,
+        };
     }
+  }
+
+  static String _maskedId(String value) {
+    if (value.length <= 6) return '***';
+    return '***${value.substring(value.length - 6)}';
   }
 }

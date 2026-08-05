@@ -1,17 +1,30 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
 import 'package:pay/pay.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/models/payment_callback_result.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/apple_pay_token_encoder.dart';
 
 class ApplePayUnavailableException implements Exception {
-  const ApplePayUnavailableException();
+  const ApplePayUnavailableException([this.reason = 'unknown']);
+
+  final String reason;
+
+  @override
+  String toString() => 'ApplePayUnavailableException(reason: $reason)';
 }
 
 class MoyasarApplePayService {
   const MoyasarApplePayService();
+
+  static const _diagnosticsChannel = MethodChannel(
+    'com.zadnauser/apple_pay_diagnostics',
+  );
+  static const _logName = 'ApplePayDiagnostics';
 
   /// Can be overridden per build environment with
   /// `--dart-define=APPLE_PAY_MERCHANT_ID=merchant.com.example`.
@@ -61,21 +74,65 @@ class MoyasarApplePayService {
     required MoyasarProviderConfigEntity config,
     required String? orderId,
   }) async {
+    final supportedNetworkNames = _supportedNetworkNames(config);
+    _log(
+      'Payment started: '
+      'orderId=${_maskedId(orderId)}, '
+      'amountMinor=${config.amount}, '
+      'currency=${config.currency}, '
+      'merchantId=$merchantId, '
+      'API methods=${config.methods}, '
+      'API networks=${config.supportedNetworks}, '
+      'normalizedNetworks=$supportedNetworkNames',
+    );
+
     if (merchantId.isEmpty) {
-      throw const ApplePayUnavailableException();
+      _log('Availability failed: APPLE_PAY_MERCHANT_ID is empty.', level: 1000);
+      throw const ApplePayUnavailableException('merchant_id_empty');
     }
+
+    await _logNativeDiagnostics(supportedNetworkNames);
 
     const provider = PayProvider.apple_pay;
     final payClient = Pay({provider: buildPaymentConfiguration(config)});
 
-    if (!await payClient.userCanPay(provider)) {
-      throw const ApplePayUnavailableException();
+    final bool userCanPay;
+    try {
+      _log('Calling pay.userCanPay().');
+      userCanPay = await payClient.userCanPay(provider);
+      _log('pay.userCanPay() returned $userCanPay.');
+    } catch (error, stackTrace) {
+      _log(
+        'pay.userCanPay() threw an exception.',
+        error: error,
+        stackTrace: stackTrace,
+        level: 1000,
+      );
+      rethrow;
+    }
+
+    if (!userCanPay) {
+      _log(
+        'Availability failed: no eligible card for the requested networks '
+        'or Apple Pay is restricted on this device.',
+        level: 900,
+      );
+      throw const ApplePayUnavailableException('user_cannot_pay');
     }
 
     try {
+      _log('Presenting the native Apple Pay sheet.');
       final paymentResult = await payClient.showPaymentSelector(
         provider,
         buildPaymentItems(config),
+      );
+      final rawToken = paymentResult['token'];
+      final encodedToken = encodeApplePayToken(rawToken);
+      _log(
+        'Apple Pay sheet returned successfully: '
+        'resultKeys=${paymentResult.keys.toList()}, '
+        'rawTokenType=${rawToken.runtimeType}, '
+        'tokenEncodable=${encodedToken != null}.',
       );
       return submitToken(
         config: config,
@@ -83,9 +140,23 @@ class MoyasarApplePayService {
         paymentResult: paymentResult,
       );
     } on PlatformException catch (error) {
+      _log(
+        'Apple Pay platform result: '
+        'code=${error.code}, message=${error.message}.',
+        error: error,
+        level: error.code == 'paymentCanceled' ? 800 : 1000,
+      );
       // Closing the system sheet is a customer cancellation, not a failed
       // payment. Leave the pending order retryable without showing an error.
       if (error.code == 'paymentCanceled') return null;
+      rethrow;
+    } catch (error, stackTrace) {
+      _log(
+        'Apple Pay sheet or token submission failed.',
+        error: error,
+        stackTrace: stackTrace,
+        level: 1000,
+      );
       rethrow;
     }
   }
@@ -95,11 +166,18 @@ class MoyasarApplePayService {
     required String? orderId,
     required Map<String, dynamic> paymentResult,
   }) async {
-    final token = paymentResult['token'];
-    if (token is! String || token.isEmpty) {
+    final rawToken = paymentResult['token'];
+    final token = encodeApplePayToken(rawToken);
+    if (token == null) {
+      _log(
+        'Token validation failed: '
+        'rawTokenType=${rawToken.runtimeType}, token is empty or unsupported.',
+        level: 1000,
+      );
       throw StateError('Apple Pay returned an invalid payment token.');
     }
 
+    _log('Apple Pay token received; submitting it to Moyasar.');
     final paymentConfig = buildMoyasarPaymentConfig(config);
     final applePay = paymentConfig.applePay!;
     final source = ApplePayPaymentRequestSource(
@@ -112,6 +190,18 @@ class MoyasarApplePayService {
       apiKey: paymentConfig.publishableApiKey,
       paymentRequest: request,
     );
+
+    if (result is PaymentResponse) {
+      _log(
+        'Moyasar responded: '
+        'status=${result.status.name}, paymentId=${_maskedId(result.id)}.',
+      );
+    } else {
+      _log(
+        'Moyasar returned an unexpected result type: ${result.runtimeType}.',
+        level: 900,
+      );
+    }
 
     return mapMoyasarResult(result, orderId: orderId);
   }
@@ -198,6 +288,56 @@ class MoyasarApplePayService {
       }
     }
     return networks.toSet().toList();
+  }
+
+  Future<void> _logNativeDiagnostics(List<String> networks) async {
+    try {
+      final diagnostics = await _diagnosticsChannel
+          .invokeMapMethod<String, dynamic>('collect', <String, dynamic>{
+            'merchantIdentifier': merchantId,
+            'supportedNetworks': networks,
+          });
+      _log('Native PassKit diagnostics: ${jsonEncode(diagnostics)}');
+    } on MissingPluginException {
+      _log('Native PassKit diagnostics are unavailable on this platform.');
+    } catch (error, stackTrace) {
+      _log(
+        'Could not collect native PassKit diagnostics.',
+        error: error,
+        stackTrace: stackTrace,
+        level: 900,
+      );
+    }
+  }
+
+  static String _maskedId(String? value) {
+    if (value == null || value.isEmpty) return 'none';
+    if (value.length <= 6) return '***';
+    return '***${value.substring(value.length - 6)}';
+  }
+
+  static void _log(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    int level = 800,
+  }) {
+    developer.log(
+      message,
+      name: _logName,
+      error: error,
+      stackTrace: stackTrace,
+      level: level,
+    );
+    unawaited(
+      _diagnosticsChannel
+          .invokeMethod<void>('log', <String, dynamic>{
+            'message': message,
+            'level': level,
+            if (error != null) 'errorType': error.runtimeType.toString(),
+          })
+          .catchError((_) {}),
+    );
   }
 
   String? _extractSourceMessage(dynamic source) {

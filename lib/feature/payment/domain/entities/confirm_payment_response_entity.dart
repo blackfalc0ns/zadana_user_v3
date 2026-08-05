@@ -18,5 +18,5 @@ class ConfirmPaymentResponseEntity {
   final bool alreadyConfirmed;
 
   /// Returns true when the backend has confirmed the payment as paid.
-  bool get isPaid => paymentStatus.toLowerCase() == 'paid';
+  bool get isPaid => paymentStatus.trim().toLowerCase() == 'paid';
 }

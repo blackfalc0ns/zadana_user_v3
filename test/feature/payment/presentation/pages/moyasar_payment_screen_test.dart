@@ -7,6 +7,7 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'package:zadana_user_v3/feature/payment/domain/entities/place_order_response_entity.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/pages/moyasar_payment_screen.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/services/moyasar_apple_pay_service.dart';
+import 'package:zadana_user_v3/feature/payment/presentation/utils/apple_pay_token_encoder.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/utils/payment_ui_localizers.dart';
 import 'package:zadana_user_v3/feature/payment/presentation/widgets/payment_bottom_action.dart';
 
@@ -26,6 +27,34 @@ void main() {
       Icons.account_balance_wallet_outlined,
     );
     expect(resolvePaymentMethodIcon('apple_pay'), isNot(Icons.apple));
+  });
+
+  test('preserves an Apple Pay token returned as a JSON string', () {
+    const token = '{"version":"EC_v1","data":"encrypted"}';
+
+    expect(encodeApplePayToken(token), token);
+  });
+
+  test('encodes an Apple Pay token returned as a decoded JSON object', () {
+    final token = <String, dynamic>{
+      'version': 'EC_v1',
+      'data': 'encrypted',
+      'header': <String, dynamic>{'transactionId': 'transaction-1'},
+      'signature': 'signature',
+    };
+
+    expect(
+      encodeApplePayToken(token),
+      '{"version":"EC_v1","data":"encrypted","header":'
+      '{"transactionId":"transaction-1"},"signature":"signature"}',
+    );
+  });
+
+  test('rejects missing, empty, and unsupported Apple Pay tokens', () {
+    expect(encodeApplePayToken(null), isNull);
+    expect(encodeApplePayToken(''), isNull);
+    expect(encodeApplePayToken(<String, dynamic>{}), isNull);
+    expect(encodeApplePayToken(123), isNull);
   });
 
   testWidgets('checkout action uses Apple native checkout button', (
