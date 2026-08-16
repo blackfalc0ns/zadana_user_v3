@@ -57,16 +57,7 @@ class BaseErrorWidget extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  accent.withValues(alpha: 0.16),
-                  colorScheme.surface,
-                  colorScheme.surfaceContainerLowest,
-                ],
-                stops: const [0, 0.48, 1],
-              ),
+              color: colorScheme.surface,
               border: Border.all(color: accent.withValues(alpha: 0.18)),
               boxShadow: [
                 BoxShadow(
@@ -208,14 +199,7 @@ class _ErrorVisual extends StatelessWidget {
               height: 86,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    accent.withValues(alpha: 0.22),
-                    accent.withValues(alpha: 0.08),
-                  ],
-                ),
+                color: accent.withValues(alpha: 0.12),
               ),
               child: Icon(icon, size: 46, color: accent),
             ),
