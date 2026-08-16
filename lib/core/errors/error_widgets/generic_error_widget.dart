@@ -5,8 +5,6 @@ import 'package:zadana_user_v3/core/l10n/translations/app_localizations.dart';
 import 'base_error_widget.dart';
 
 class GenericErrorWidget extends BaseErrorWidget {
-  // رسالة الـ server المخصصة
-
   const GenericErrorWidget({
     super.key,
     required this.errorType,
@@ -19,7 +17,9 @@ class GenericErrorWidget extends BaseErrorWidget {
          icon: Icons.error,
          onSecondaryAction: onGoBack,
          secondaryActionText: '',
+         secondaryActionIcon: Icons.arrow_back_rounded,
        );
+
   final ApiErrorType errorType;
   final String? serverMessage;
 
@@ -30,52 +30,48 @@ class GenericErrorWidget extends BaseErrorWidget {
     String title;
     String description;
     IconData iconData = Icons.error;
-    Color color = Colors.red;
+    ErrorVisualType visualType = ErrorVisualType.generic;
 
     switch (errorType) {
       case ApiErrorType.locationServiceDisabled:
         title = l10n?.location_service_disabled ?? '';
         description = l10n?.location_service_disabled_message ?? '';
         iconData = Icons.location_off_rounded;
-        color = Colors.red;
+        visualType = ErrorVisualType.location;
         break;
       case ApiErrorType.locationPermissionDenied:
         title = l10n?.location_permission_denied ?? '';
         description = l10n?.location_permission_denied_message ?? '';
         iconData = Icons.location_disabled_rounded;
-        color = Colors.red;
+        visualType = ErrorVisualType.location;
         break;
       case ApiErrorType.locationPermissionDeniedForever:
         title = l10n?.location_permission_denied_forever ?? '';
         description = l10n?.location_permission_denied_forever_message ?? '';
         iconData = Icons.location_off_outlined;
-        color = Colors.red;
+        visualType = ErrorVisualType.location;
         break;
       case ApiErrorType.cancelled:
         title = l10n?.error_cancelled ?? '';
         description = l10n?.error_cancelled_desc ?? '';
-        iconData = Icons.cancel;
-        color = Colors.grey;
+        iconData = Icons.cancel_rounded;
         break;
       case ApiErrorType.unknown:
         title = l10n?.error_unknown ?? '';
         description = l10n?.error_unknown_desc ?? '';
-        iconData = Icons.help_outline;
-        color = Colors.grey;
+        iconData = Icons.help_outline_rounded;
         break;
       case ApiErrorType.other:
         title = l10n?.error_other ?? '';
         description = l10n?.error_other_desc ?? '';
-        iconData = Icons.error_outline;
+        iconData = Icons.error_outline_rounded;
         break;
       default:
         title = l10n?.error_unknown ?? '';
         description = l10n?.error_unknown_desc ?? '';
-        iconData = Icons.help_outline;
-        color = Colors.grey;
+        iconData = Icons.help_outline_rounded;
     }
 
-    // لا تعرض رسالة الـ server إذا كانت تحتوي على تفاصيل تقنية
     final finalDescription = serverMessage ?? description;
 
     return BaseErrorWidget(
@@ -87,7 +83,8 @@ class GenericErrorWidget extends BaseErrorWidget {
       secondaryActionText: onSecondaryAction == null
           ? null
           : l10n?.go_back ?? '',
-      primaryColor: color,
+      visualType: visualType,
+      secondaryActionIcon: Icons.arrow_back_rounded,
     );
   }
 

@@ -20,6 +20,7 @@ class EmptyStateWidget extends StatelessWidget {
       description: description,
       icon: icon,
       primaryColor: Theme.of(context).colorScheme.primary,
+      visualType: ErrorVisualType.empty,
     );
   }
 }

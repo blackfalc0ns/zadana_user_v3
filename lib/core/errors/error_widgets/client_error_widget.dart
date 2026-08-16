@@ -20,7 +20,8 @@ class ClientErrorWidget extends BaseErrorWidget {
          icon: Icons.warning,
          onSecondaryAction: onGoBack,
          secondaryActionText: '',
-         primaryColor: Colors.orange,
+         visualType: ErrorVisualType.client,
+         secondaryActionIcon: Icons.arrow_back_rounded,
        );
   final ApiErrorType clientErrorType;
   final int? statusCode;
@@ -33,7 +34,6 @@ class ClientErrorWidget extends BaseErrorWidget {
     String title;
     String description;
     IconData iconData = Icons.warning;
-    Color color = Colors.orange;
     bool showRetry = true;
 
     switch (clientErrorType) {
@@ -47,14 +47,12 @@ class ClientErrorWidget extends BaseErrorWidget {
         title = l10n?.error_unauthorized ?? '';
         description = l10n?.error_unauthorized_desc ?? '';
         iconData = Icons.lock;
-        color = Colors.red;
         showRetry = false;
         break;
       case ApiErrorType.forbidden:
         title = l10n?.error_forbidden ?? '';
         description = l10n?.error_forbidden_desc ?? '';
         iconData = Icons.block;
-        color = Colors.red;
         showRetry = false;
         break;
       case ApiErrorType.notFound:
@@ -138,7 +136,6 @@ class ClientErrorWidget extends BaseErrorWidget {
         title = l10n?.error_too_many_requests ?? '';
         description = l10n?.error_too_many_requests_desc ?? '';
         iconData = Icons.speed;
-        color = Colors.amber;
         break;
       default:
         title = l10n?.error_unknown ?? '';
@@ -156,7 +153,8 @@ class ClientErrorWidget extends BaseErrorWidget {
       onRetry: showRetry ? onRetry : null,
       onSecondaryAction: onSecondaryAction,
       secondaryActionText: l10n?.go_back ?? '',
-      primaryColor: color,
+      visualType: ErrorVisualType.client,
+      secondaryActionIcon: Icons.arrow_back_rounded,
     );
   }
 

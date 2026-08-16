@@ -13,7 +13,8 @@ class TimeoutErrorWidget extends BaseErrorWidget {
          title: '',
          description: '',
          icon: Icons.access_time,
-         primaryColor: Colors.amber,
+         visualType: ErrorVisualType.timeout,
+         retryIcon: Icons.replay_circle_filled_rounded,
        );
   final ApiErrorType timeoutType;
 
@@ -51,7 +52,8 @@ class TimeoutErrorWidget extends BaseErrorWidget {
       description: description,
       icon: Icons.access_time,
       onRetry: onRetry,
-      primaryColor: Colors.amber,
+      visualType: ErrorVisualType.timeout,
+      retryIcon: Icons.replay_circle_filled_rounded,
     );
   }
 

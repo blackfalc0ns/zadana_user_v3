@@ -47,10 +47,29 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeScreenView extends StatelessWidget {
+class _HomeScreenView extends StatefulWidget {
   const _HomeScreenView({this.onMenuTap});
 
   final VoidCallback? onMenuTap;
+
+  @override
+  State<_HomeScreenView> createState() => _HomeScreenViewState();
+}
+
+class _HomeScreenViewState extends State<_HomeScreenView> {
+  bool _requestedInitialLoad = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_requestedInitialLoad) return;
+
+    final viewModel = context.read<HomeViewModel>();
+    if (!viewModel.state.hasStartedLoadingContent) {
+      _requestedInitialLoad = true;
+      viewModel.doIntent(const HomeLoadEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +77,7 @@ class _HomeScreenView extends StatelessWidget {
 
     return Scaffold(
       appBar: HomeAppBar(
-        onMenuTap: onMenuTap,
+        onMenuTap: widget.onMenuTap,
         onLocationTap: () => _openCustomerAddresses(context),
         onSearchTap: () => _openShoppingSearch(context),
         onNotificationsTap: () => _openNotifications(context),
@@ -79,6 +98,8 @@ class _HomeScreenView extends StatelessWidget {
                 state.hasStartedLoadingContent &&
                 !state.hasAnyData &&
                 state.firstFailure == null;
+            final showInitialLoading =
+                !state.hasStartedLoadingContent && !state.hasAnyData;
 
             return CustomScrollView(
               key: const PageStorageKey<String>('home_scroll_view'),
@@ -99,6 +120,8 @@ class _HomeScreenView extends StatelessWidget {
                       ),
                     ),
                   )
+                else if (showInitialLoading)
+                  const SliverToBoxAdapter(child: HomeBannerSection())
                 else if (showEmptyState)
                   SliverFillRemaining(
                     hasScrollBody: false,

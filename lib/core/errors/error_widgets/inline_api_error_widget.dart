@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/config/theme/spacing.dart';
 import 'package:zadana_user_v3/config/theme/text_styles.dart';
 import 'package:zadana_user_v3/core/network/failures.dart';
@@ -12,18 +11,19 @@ class InlineApiErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = _resolveScheme(failure.code);
+    final colors = Theme.of(context).colorScheme;
+    final scheme = _resolveScheme(context, failure.code);
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(Spacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: scheme.borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: colors.shadow.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -51,7 +51,7 @@ class InlineApiErrorWidget extends StatelessWidget {
                   child: Text(
                     scheme.title,
                     style: AppTextStyles.labelLarge.copyWith(
-                      color: AppColors.textPrimary,
+                      color: colors.onSurface,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -92,7 +92,7 @@ class InlineApiErrorWidget extends StatelessWidget {
           Text(
             failure.errorMessage,
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: colors.onSurfaceVariant,
               height: 1.45,
             ),
           ),
@@ -101,33 +101,38 @@ class InlineApiErrorWidget extends StatelessWidget {
     );
   }
 
-  _InlineErrorScheme _resolveScheme(String code) {
+  _InlineErrorScheme _resolveScheme(BuildContext context, String code) {
+    final colors = Theme.of(context).colorScheme;
+    final accent = colors.primary;
+    final soft = accent.withValues(alpha: 0.1);
+    final border = accent.withValues(alpha: 0.22);
+
     switch (code) {
       case 'error_no_internet':
-        return const _InlineErrorScheme(
+        return _InlineErrorScheme(
           title: 'لا يوجد اتصال بالإنترنت',
           icon: Icons.wifi_off_rounded,
-          accentColor: Color(0xFFE68A00),
-          softColor: Color(0xFFFFF7EB),
-          borderColor: Color(0xFFFFE1B5),
+          accentColor: accent,
+          softColor: soft,
+          borderColor: border,
         );
       case 'error_connection_timeout':
       case 'error_send_timeout':
       case 'error_receive_timeout':
-        return const _InlineErrorScheme(
+        return _InlineErrorScheme(
           title: 'انتهت مهلة الاتصال',
           icon: Icons.schedule_rounded,
-          accentColor: Color(0xFFE68A00),
-          softColor: Color(0xFFFFF7EB),
-          borderColor: Color(0xFFFFE1B5),
+          accentColor: accent,
+          softColor: soft,
+          borderColor: border,
         );
       default:
-        return const _InlineErrorScheme(
+        return _InlineErrorScheme(
           title: 'تعذر تحديث البيانات',
           icon: Icons.error_outline_rounded,
-          accentColor: AppColors.error,
-          softColor: AppColors.errorLight,
-          borderColor: Color(0xFFF1D0D5),
+          accentColor: accent,
+          softColor: soft,
+          borderColor: border,
         );
     }
   }

@@ -13,7 +13,9 @@ class NoInternetErrorWidget extends BaseErrorWidget {
          icon: Icons.wifi_off,
          onSecondaryAction: onCheckConnection,
          secondaryActionText: '',
-         primaryColor: Colors.orange,
+         visualType: ErrorVisualType.network,
+         retryIcon: Icons.wifi_find_rounded,
+         secondaryActionIcon: Icons.settings_input_antenna_rounded,
        );
 
   @override
@@ -27,7 +29,9 @@ class NoInternetErrorWidget extends BaseErrorWidget {
       onRetry: onRetry,
       onSecondaryAction: onSecondaryAction,
       secondaryActionText: l10n?.check_connection ?? '',
-      primaryColor: Colors.orange,
+      visualType: ErrorVisualType.network,
+      retryIcon: Icons.wifi_find_rounded,
+      secondaryActionIcon: Icons.settings_input_antenna_rounded,
     );
   }
 
