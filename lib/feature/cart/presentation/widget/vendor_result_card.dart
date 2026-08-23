@@ -111,7 +111,7 @@ class VendorResultCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   if (!isCheapest && savings > 0)
                     Text(
-                      '${l10n.more_expensive_by} ${savings.toStringAsFixed(0)} ج.م',
+                      '${l10n.more_expensive_by} ${savings.toStringAsFixed(0)} ${l10n.currency}',
                       style: AppTextStyles.labelSmall.copyWith(
                         color: AppColors.error,
                       ),
@@ -123,7 +123,7 @@ class VendorResultCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '${total.toStringAsFixed(0)} ج.م',
+                  '${total.toStringAsFixed(0)} ${l10n.currency}',
                   style: AppTextStyles.labelLarge.copyWith(
                     color: isCheapest
                         ? AppColors.primary

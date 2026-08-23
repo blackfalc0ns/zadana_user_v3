@@ -5,15 +5,20 @@ import 'package:injectable/injectable.dart';
 import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/config/theme/colors.dart';
 import 'package:zadana_user_v3/core/services/app_navigator_service.dart';
+import 'package:zadana_user_v3/core/services/notification_deduplicator.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/push_notification_service.dart';
 import 'package:zadana_user_v3/feature/notifications/domain/entities/app_notification_entity.dart';
 
 @lazySingleton
 class LocalNotificationService {
-  LocalNotificationService(this._appNavigatorService);
+  LocalNotificationService(
+    this._appNavigatorService,
+    this._deduplicator,
+  );
 
   final AppNavigatorService _appNavigatorService;
+  final NotificationDeduplicator _deduplicator;
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
@@ -53,14 +58,26 @@ class LocalNotificationService {
 
     if (title.isEmpty && body.isEmpty) return;
 
+    final payload = _payloadDataFromNotification(notification);
+    final orderId = NotificationPayloadResolver.resolveOrderId(payload);
+    final status = NotificationPayloadResolver.resolveStatus(payload);
+    final systemId = _deduplicator.resolveSystemNotificationId(
+      notificationId: notification.id,
+      orderId: orderId,
+      status: status,
+      type: notification.type,
+      title: title,
+      body: body,
+    );
+
     await showSystemNotification(
-      id: notification.id.hashCode,
+      id: systemId,
       title: title.isEmpty ? body : title,
       body: body.isEmpty ? null : body,
       androidChannelId: _channelId,
       androidChannelName: _channelName,
       androidChannelDescription: _channelDescription,
-      payloadData: _payloadDataFromNotification(notification),
+      payloadData: payload,
     );
   }
 
@@ -111,20 +128,27 @@ class LocalNotificationService {
     String? body,
     Map<String, dynamic>? additionalData,
   }) async {
-    final payload = additionalData ?? const <String, dynamic>{};
+    final payload = _payloadDataFromAdditionalData(additionalData ?? const <String, dynamic>{});
     final notificationId = payload['notificationId']?.toString().trim();
-    final idSeed = (notificationId?.isNotEmpty ?? false)
-        ? notificationId!
-        : DateTime.now().microsecondsSinceEpoch.toString();
+    final orderId = NotificationPayloadResolver.resolveOrderId(payload);
+    final status = NotificationPayloadResolver.resolveStatus(payload);
+    final systemId = _deduplicator.resolveSystemNotificationId(
+      notificationId: notificationId,
+      orderId: orderId,
+      status: status,
+      type: payload['type']?.toString(),
+      title: title,
+      body: body,
+    );
 
     await showSystemNotification(
-      id: idSeed.hashCode,
+      id: systemId,
       title: title,
       body: body,
       androidChannelId: _channelId,
       androidChannelName: _channelName,
       androidChannelDescription: _channelDescription,
-      payloadData: _payloadDataFromAdditionalData(payload),
+      payloadData: payload,
     );
   }
 

@@ -399,6 +399,7 @@ import '../services/guest_cart_signature_service.dart' as _i1021;
 import '../services/language_interceptor.dart' as _i32;
 import '../services/language_service.dart' as _i819;
 import '../services/local_notification_service.dart' as _i762;
+import '../services/notification_deduplicator.dart' as _i669;
 import '../services/notification_device_service.dart' as _i823;
 import '../services/push_token_service.dart' as _i92;
 import '../services/retry_interceptor.dart' as _i844;
@@ -437,6 +438,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i900.CategoryNavigationService>(
       () => _i900.CategoryNavigationService(),
     );
+    gh.lazySingleton<_i669.NotificationDeduplicator>(
+      () => _i669.NotificationDeduplicator(),
+    );
     gh.factory<_i118.CaptchaInterceptor>(
       () => _i118.CaptchaInterceptor(gh<_i118.CaptchaService>()),
     );
@@ -448,7 +452,10 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'osmDio',
     );
     gh.lazySingleton<_i762.LocalNotificationService>(
-      () => _i762.LocalNotificationService(gh<_i179.AppNavigatorService>()),
+      () => _i762.LocalNotificationService(
+        gh<_i179.AppNavigatorService>(),
+        gh<_i669.NotificationDeduplicator>(),
+      ),
     );
     gh.factory<_i227.TokenService>(
       () => _i227.TokenService(
@@ -1095,6 +1102,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i525.GetCustomerAddressesUseCase>(),
       ),
     );
+    gh.lazySingleton<_i1050.RealtimeNotificationOverlayService>(
+      () => _i1050.RealtimeNotificationOverlayService(
+        gh<_i1040.WatchRealtimeNotificationsUseCase>(),
+        gh<_i823.NotificationDeviceService>(),
+        gh<_i762.LocalNotificationService>(),
+        gh<_i179.AppNavigatorService>(),
+        gh<_i669.NotificationDeduplicator>(),
+      ),
+    );
     gh.factory<_i393.OrderDetailsViewModel>(
       () => _i393.OrderDetailsViewModel(
         gh<_i372.GetOrderDetailsUseCase>(),
@@ -1103,14 +1119,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i890.CancelOrderUseCase>(),
         gh<_i842.RetryOrderPaymentUseCase>(),
         gh<_i631.DeleteOrderUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i1050.RealtimeNotificationOverlayService>(
-      () => _i1050.RealtimeNotificationOverlayService(
-        gh<_i1040.WatchRealtimeNotificationsUseCase>(),
-        gh<_i823.NotificationDeviceService>(),
-        gh<_i762.LocalNotificationService>(),
-        gh<_i179.AppNavigatorService>(),
       ),
     );
     gh.factoryParam<_i1008.BrandDetailsCubit, _i1044.BrandModel, dynamic>(

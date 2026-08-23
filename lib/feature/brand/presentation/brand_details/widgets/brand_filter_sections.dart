@@ -47,8 +47,8 @@ class PriceRangeSection extends StatelessWidget {
           max: sliderMax,
           divisions: 50,
           labels: RangeLabels(
-            '${clampedRange.start.round()} ${locale.egp}',
-            '${clampedRange.end.round()} ${locale.egp}',
+            '${clampedRange.start.round()} ${locale.currency}',
+            '${clampedRange.end.round()} ${locale.currency}',
           ),
           onChanged: onChanged,
         ),

@@ -758,15 +758,13 @@ class _DeliveryUnavailableDialog extends StatelessWidget {
                       color: Color(0xFFF57C00),
                     ),
                     const SizedBox(width: 8),
-                    Flexible(
+                    Expanded(
                       child: Text(
                         message,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                         style: getMediumStyle(
                           fontFamily: FontConstant.cairo,
                           color: const Color(0xFF4E342E),
-                        ),
+                        ).copyWith(height: 1.5),
                       ),
                     ),
                   ],

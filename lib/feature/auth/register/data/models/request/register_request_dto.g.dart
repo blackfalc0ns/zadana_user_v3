@@ -27,7 +27,7 @@ Map<String, dynamic> _$RegisterRequestDtoToJson(RegisterRequestDto instance) =>
     <String, dynamic>{
       'fullName': instance.fullName,
       'email': instance.email,
-      if (instance.phone case final value?) 'phone': value,
+      'phone': ?instance.phone,
       'password': instance.password,
       'addressLine': instance.addressLine,
       'label': instance.label,

@@ -41,7 +41,7 @@ class _SelectAddressFromMapViewState extends State<_SelectAddressFromMapView> {
   late final MapController _mapController;
   final TextEditingController _searchController = TextEditingController();
 
-  final ll.LatLng _initialPosition = const ll.LatLng(24.7136, 46.6753);
+  final ll.LatLng _initialPosition = const ll.LatLng(26.4207, 50.0888);
 
   Timer? _mapReverseDebounce;
   bool _isConfirmingLocation = false;

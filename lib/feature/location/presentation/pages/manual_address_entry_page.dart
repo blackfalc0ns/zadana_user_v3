@@ -53,9 +53,14 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView>
   final _floorController = TextEditingController();
   final _apartmentController = TextEditingController();
 
+  double? _latitude;
+  double? _longitude;
+
   @override
   void initState() {
     super.initState();
+    _latitude = widget.initialLocation?.latitude;
+    _longitude = widget.initialLocation?.longitude;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = context.read<LocationViewModel>().state;
       _addressController.text = state.addressLine;
@@ -64,6 +69,12 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView>
       _buildingController.text = state.buildingNo;
       _floorController.text = state.floorNo;
       _apartmentController.text = state.apartmentNo;
+      if (_latitude == null || _latitude == 0.0) {
+        _latitude = state.selectedLocation?.latitude;
+      }
+      if (_longitude == null || _longitude == 0.0) {
+        _longitude = state.selectedLocation?.longitude;
+      }
     });
     initializeLabel();
   }
@@ -93,8 +104,8 @@ class _ManualAddressEntryViewState extends State<_ManualAddressEntryView>
       addressLine: _addressController.text.trim(),
       city: _cityController.text.trim(),
       area: _areaController.text.trim(),
-      latitude: 0.0,
-      longitude: 0.0,
+      latitude: _latitude ?? 0.0,
+      longitude: _longitude ?? 0.0,
       buildingNo: _buildingController.text.trim(),
       floorNo: _floorController.text.trim(),
       apartmentNo: _apartmentController.text.trim(),

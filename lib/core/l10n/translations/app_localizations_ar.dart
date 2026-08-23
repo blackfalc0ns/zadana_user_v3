@@ -1073,7 +1073,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get available_vendors => 'المتاجر';
 
   @override
-  String get sar => 'ريال';
+  String get sar => 'ر.س';
 
   @override
   String get free => 'مجاني';
@@ -1394,7 +1394,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get brand_filter_measurement_value_title => 'الحجم';
 
   @override
-  String get currency => 'ريال';
+  String get currency => 'ر.س';
 
   @override
   String get filter_type => 'النوع';

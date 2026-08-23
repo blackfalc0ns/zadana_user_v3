@@ -10,6 +10,7 @@ import 'package:zadana_user_v3/config/routing/app_routes.dart';
 import 'package:zadana_user_v3/core/di/di.dart';
 import 'package:zadana_user_v3/core/services/app_navigator_service.dart';
 import 'package:zadana_user_v3/core/services/local_notification_service.dart';
+import 'package:zadana_user_v3/core/services/notification_deduplicator.dart';
 import 'package:zadana_user_v3/core/services/notification_device_service.dart';
 import 'package:zadana_user_v3/core/services/notification_payload_resolver.dart';
 import 'package:zadana_user_v3/core/services/token_service.dart';
@@ -98,6 +99,29 @@ class PushNotificationService {
         }
 
         event.preventDefault();
+
+        final notificationId = normalizedData['notificationId']?.toString().trim();
+        final orderId = NotificationPayloadResolver.resolveOrderId(normalizedData);
+        final status = NotificationPayloadResolver.resolveStatus(normalizedData);
+        final type = normalizedData['type']?.toString();
+
+        final shouldDisplay = getIt<NotificationDeduplicator>().shouldDisplay(
+          notificationId: notificationId,
+          orderId: orderId,
+          status: status,
+          type: type,
+          title: displayContent.title,
+          body: displayContent.body,
+          source: 'onesignal_foreground',
+        );
+
+        if (!shouldDisplay) {
+          _logger.i(
+            'OneSignal foreground push deduplicated (skipped display). '
+            '${NotificationPayloadResolver.resolveDebugSummary(normalizedData, title: displayContent.title, body: displayContent.body)}',
+          );
+          return;
+        }
 
         await getIt<LocalNotificationService>().showPushNotification(
           title: displayContent.title,

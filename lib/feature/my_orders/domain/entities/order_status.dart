@@ -52,6 +52,8 @@ enum OrderStatus {
       case 'preparing':
       case 'ready_for_pickup':
       case 'readyforpickup':
+      case 'cancellation_requested':
+      case 'cancellationrequested':
         return OrderStatus.processing;
       case 'shipped':
       case 'out_for_delivery':

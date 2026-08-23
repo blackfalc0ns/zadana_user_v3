@@ -52,6 +52,58 @@ void main() {
       );
     },
   );
+
+  test('blocks placeOrder when selected delivery address has missing coordinates', () async {
+    final paymentRepository = _CheckoutPaymentRepository();
+    final addressesRepository = _MockAddressesRepository(
+      addresses: const [
+        CustomerAddressEntity(
+          id: 'addr-1',
+          contactName: 'Ahmed',
+          contactPhone: '0501234567',
+          addressLine: 'King Fahd Road',
+          label: 'Home',
+          buildingNo: '12',
+          floorNo: '2',
+          apartmentNo: '4',
+          city: 'Dammam',
+          area: 'Al Faisaliyah',
+          latitude: 0.0,
+          longitude: 0.0,
+          isDefault: true,
+        ),
+      ],
+    );
+    final viewModel = PaymentViewModel(
+      GetCheckoutConfigUseCase(paymentRepository),
+      GetCheckoutSummaryUseCase(paymentRepository),
+      GetPickupBranchesUseCase(paymentRepository),
+      ApplyCheckoutPromoCodeUseCase(paymentRepository),
+      RemoveCheckoutPromoCodeUseCase(paymentRepository),
+      PlaceOrderUseCase(paymentRepository),
+      GetCustomerAddressesUseCase(addressesRepository),
+    );
+
+    viewModel.doIntent(const PaymentPlaceOrderEvent());
+    await Future<void>.delayed(Duration.zero);
+
+    expect(viewModel.state.actionFailure, isNotNull);
+    await viewModel.close();
+  });
+}
+
+class _MockAddressesRepository implements CustomerAddressesRepository {
+  _MockAddressesRepository({this.addresses = const []});
+
+  final List<CustomerAddressEntity> addresses;
+
+  @override
+  Future<ApiResult<List<CustomerAddressEntity>>> getCustomerAddresses() async {
+    return ApiSuccessResult(data: addresses);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _CheckoutPaymentRepository implements PaymentRepository {

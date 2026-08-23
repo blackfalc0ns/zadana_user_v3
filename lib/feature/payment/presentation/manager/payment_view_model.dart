@@ -746,12 +746,39 @@ class PaymentViewModel extends Cubit<PaymentState> {
       return;
     }
 
+    // Block order placement if delivery address has no valid coordinates.
+    if (!state.isPickup && selectedAddressId != null) {
+      final selectedAddr = state.addresses
+          .where((a) => a.id == selectedAddressId)
+          .firstOrNull;
+      if (selectedAddr != null) {
+        final lat = selectedAddr.latitude;
+        final lng = selectedAddr.longitude;
+        final hasCoordinates = lat != null &&
+            lng != null &&
+            !(lat == 0.0 && lng == 0.0);
+        if (!hasCoordinates) {
+          _emitIfOpen(
+            state.copyWith(
+              actionFailure: Failure(
+                errorMessage:
+                    'العنوان المختار لا يحتوي على إحداثيات موقع دقيقة. يرجى تحديد الموقع على الخريطة أولاً.',
+              ),
+            ),
+          );
+          return;
+        }
+      }
+    }
+
     // Block order placement if delivery check indicates invalid delivery.
     if (!state.isPickup && !checkoutSummary.isDeliveryValid) {
       final message =
           checkoutSummary.deliveryCheck?.messageAr.isNotEmpty == true
           ? checkoutSummary.deliveryCheck!.messageAr
-          : 'Delivery is not available for the selected address.';
+          : (checkoutSummary.deliveryCheck?.messageEn.isNotEmpty == true
+              ? checkoutSummary.deliveryCheck!.messageEn
+              : 'Delivery is not available for the selected address.');
       _emitIfOpen(
         state.copyWith(actionFailure: Failure(errorMessage: message)),
       );

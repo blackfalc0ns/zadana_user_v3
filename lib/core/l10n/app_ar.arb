@@ -409,7 +409,7 @@
   "clear_filters_confirm": "بنحذف السعر والبراند وأي تصفية مفعلة حاليًا. تبغى تكمل؟",
 
   "available_vendors": "المتاجر",
-  "sar": "ريال",
+  "sar": "ر.س",
   "free": "مجاني",
   "quantity": "الكمية",
 
@@ -650,7 +650,7 @@
   "comparison_results": "نتائج المقارنة",
   "complete_from": "كمّل من",
   "credit_card_subtitle": "فيزا، ماستركارد، مدى",
-  "currency": "ريال",
+  "currency": "ر.س",
   "currently_selected": "المحدد الآن",
   "delete": "حذف",
   "delete_item_confirmation": "حذف",
